@@ -8,8 +8,12 @@
 /produit/perles-de-ceramique-em-pack-100-aimez-la-nature/ /perles-ceramique-em/pack-100-perles/ 301
 /produit/offre-pack-100-perles-de-ceramique-et-gourde-ecologique-filtrante-avec-perles-de-ceramique-em-aimez-la-nature/ /perles-ceramique-em/pack-gourde-ceramique-em/ 301
 /products/perles-de-ceramique-pack100                     /perles-ceramique-em/pack-100-perles/ 301
-/products/bouteille-ecologique-avec-perles-de-ceramique   /perles-ceramique-em/pack-gourde-ceramique-em/ 301
-/products/gourde-ecologique-avec-perles-de-ceramique      /perles-ceramique-em/pack-gourde-ceramique-em/ 301
+# Ces anciennes URLs Shopify désignent la bouteille seule : elles pointent
+# vers la Gourde Écologique, remise en vente le 2026-07-20 (elles renvoyaient
+# vers le bundle tant que la gourde seule n'existait pas sur le site).
+/products/bouteille-ecologique-avec-perles-de-ceramique   /perles-ceramique-em/gourde-ecologique/ 301
+/products/gourde-ecologique-avec-perles-de-ceramique      /perles-ceramique-em/gourde-ecologique/ 301
+/produit/gourde-ecologique-avec-perles-de-ceramique-em-aimez-la-nature-cadeau-ecologique/ /perles-ceramique-em/gourde-ecologique/ 301
 /collections/perles-ceramiques-em                         /perles-ceramique-em/                 301
 /collections/all                                          /perles-ceramique-em/                 301
 /product-category/perles-ceramiques-em/                   /perles-ceramique-em/                 301

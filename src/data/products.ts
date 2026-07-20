@@ -7,10 +7,16 @@ export interface Product {
   priceOriginal: number;
   discountPercent: number;
   inStock: boolean;
-  quantity: number;
+  /** Nombre de perles fournies. Absent quand le produit n'est pas vendu au nombre de perles. */
+  quantity?: number;
   includesBottle: boolean;
-  rating: number;
-  reviewCount: number;
+  /**
+   * Note et nombre d'avis vérifiés. Absents tant qu'un produit n'a reçu aucun avis :
+   * on n'affiche alors pas d'étoiles et le schema omet `aggregateRating`, plutôt
+   * que d'afficher une note inventée (interdit par Google et trompeur pour l'acheteur).
+   */
+  rating?: number;
+  reviewCount?: number;
   description: string;
   usages: string[];
   qa: { question: string; answer: string }[];
@@ -119,16 +125,18 @@ Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullitio
     priceCurrent: 59.9,
     priceOriginal: 72.8,
     discountPercent: 18,
-    inStock: false,
+    inStock: true,
     quantity: 100,
     includesBottle: true,
     rating: 4.9,
     reviewCount: 192,
-    description: `Le Pack Gourde regroupe notre Pack 100 Perles de Céramique EM® et une gourde écologique filtrante conçue pour accueillir les perles. Le duo parfait pour boire une eau purifiée, sans plastique, à la maison comme en déplacement.
+    description: `Le Pack Gourde regroupe notre Pack 100 Perles de Céramique EM® et la Gourde Écologique en verre double paroi conçue pour accueillir les perles. Le duo parfait pour boire une eau purifiée, sans plastique, à la maison comme en déplacement.
 
-La gourde est fabriquée dans un matériau sans BPA, avec un design pensé pour accueillir directement les perles de céramique dans son compartiment intégré. Plus besoin de filtre à remplacer régulièrement : les perles se régénèrent par simple ébullition.
+La gourde de 500 ml est en verre borosilicate double paroi, sans plastique au contact de l'eau, avec un compartiment intégré qui reçoit directement les perles. Plus besoin de cartouche à remplacer : les perles se régénèrent par simple ébullition.
 
-Ce bundle est temporairement en rupture de stock. Inscrivez-vous pour être notifié dès le retour en stock.`,
+Avec 100 perles, vous équipez la gourde et gardez de quoi traiter une carafe, une bouilloire ou un lave-vaisselle en parallèle. C'est la formule la plus complète de la gamme.
+
+Emballage biodégradable, 2,5 % de votre achat finance des puits d'eau potable.`,
     usages: ["Gourde sport", "Usage quotidien", "Voyage", "Bureau"],
     qa: [
       {
@@ -136,12 +144,61 @@ Ce bundle est temporairement en rupture de stock. Inscrivez-vous pour être noti
         answer: "La gourde est conçue pour accueillir des perles de 6 à 10 mm de diamètre. Elle est optimisée pour nos Perles de Céramique EM® mais peut techniquement accueillir des perles de taille similaire.",
       },
       {
-        question: "Ce pack est en rupture de stock, quand sera-t-il disponible ?",
-        answer: "Nous travaillons à réapprovisionner ce bundle. En attendant, vous pouvez commander le Pack 100 Perles seul et utiliser votre propre gourde.",
+        question: "Quelle différence avec la Gourde Écologique vendue seule ?",
+        answer: "C'est la même gourde 500 ml. Le Pack Gourde y ajoute 100 perles de céramique EM®, de quoi équiper la gourde et traiter en plus une carafe ou une bouilloire. Si vous avez déjà des perles, la gourde seule à 29,90 € suffit.",
+      },
+      {
+        question: "Combien de perles mettre dans la gourde ?",
+        answer: "Comptez 15 à 35 perles pour une gourde de 500 ml. Les perles restantes du pack peuvent équiper une carafe, une bouilloire ou votre lave-vaisselle.",
       },
     ],
     metaTitle: "Pack Gourde + 100 Perles Céramique EM® — 59,90€ | Aimez la Nature",
-    metaDescription: "Bundle gourde écologique + 100 Perles de Céramique EM® japonaises. Eau pure en déplacement, zéro plastique. En rupture — notifiez-moi dès le retour.",
+    metaDescription: "Gourde écologique 500 ml en verre + 100 Perles de Céramique EM® japonaises. Eau pure en déplacement, zéro plastique. Livraison offerte dès 50 €.",
+  },
+  {
+    slug: "gourde-ecologique",
+    name: "Gourde Écologique avec Perles de Céramique EM®",
+    shortName: "Gourde Écologique",
+    sku: "ALN-EM-GOURDE-500",
+    priceCurrent: 29.9,
+    priceOriginal: 39.9,
+    discountPercent: 25,
+    inStock: true,
+    includesBottle: true,
+    description: `La Gourde Écologique de 500 ml est pensée pour emporter votre eau purifiée partout : au bureau, en voyage, au sport. Elle est livrée avec des Perles de Céramique EM® logées dans son compartiment intégré.
+
+Le corps est en verre borosilicate double paroi : aucun plastique au contact de l'eau, pas de goût parasite, et une paroi isolante qui garde la boisson à température plus longtemps. Le bouchon et la base sont protégés par un revêtement antidérapant.
+
+Le compartiment inférieur reçoit les perles et les maintient en place quand vous buvez. Comme pour tous nos formats, les perles se régénèrent par ébullition de 10 à 15 minutes tous les 3 à 6 mois — rien à racheter.
+
+Vous avez déjà des perles ? Cette gourde seule vous suffit. Sinon, le Pack Gourde ajoute 100 perles pour équiper aussi votre carafe ou votre bouilloire.
+
+2,5 % de votre achat finance des puits d'eau potable.`,
+    usages: ["Gourde 500 ml", "Bureau", "Voyage", "Sport"],
+    qa: [
+      {
+        question: "Combien de perles sont fournies avec la gourde ?",
+        answer: "La gourde est livrée avec des perles de céramique EM® pour son compartiment. Si vous souhaitez en équiper d'autres contenants (carafe, bouilloire, lave-vaisselle), choisissez plutôt le Pack Gourde qui inclut 100 perles.",
+      },
+      {
+        question: "Quelle est la contenance de la gourde ?",
+        answer: "500 ml, un format qui tient dans un sac et dans la plupart des porte-gobelets. Comptez 15 à 35 perles pour ce volume.",
+      },
+      {
+        question: "La gourde est-elle en plastique ?",
+        answer: "Non. Le corps est en verre borosilicate double paroi : aucun plastique n'est en contact avec votre eau. C'est cohérent avec notre objectif — remplacer les bouteilles plastique, pas les déplacer.",
+      },
+      {
+        question: "Peut-on mettre une boisson chaude dedans ?",
+        answer: "Le verre borosilicate double paroi supporte les liquides chauds et isole la main. Évitez cependant les chocs thermiques brutaux (eau bouillante dans une gourde sortie du réfrigérateur).",
+      },
+      {
+        question: "Comment nettoyer la gourde ?",
+        answer: "À la main, à l'eau tiède savonneuse, en retirant les perles au préalable. Les perles, elles, se régénèrent séparément par ébullition 10 à 15 minutes tous les 3 à 6 mois.",
+      },
+    ],
+    metaTitle: "Gourde Écologique 500 ml avec Perles de Céramique EM® — 29,90€",
+    metaDescription: "Gourde filtrante 500 ml en verre double paroi avec Perles de Céramique EM®. Zéro plastique au contact de l'eau, perles régénérables. Livraison offerte dès 50 €.",
   },
 ];
 

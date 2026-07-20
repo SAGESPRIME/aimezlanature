@@ -119,7 +119,7 @@ const testimonials = [
           {heroPhoto && (
             <Image
               src={heroPhoto}
-              alt={getProductImageAlt('Perles de Céramique EM® Pack 55')}
+              alt={getProductImageAlt('pack-55-perles')}
               width={460}
               height={460}
               widths={[400, 460, 920]}
@@ -195,22 +195,35 @@ const testimonials = [
           </div>
         </a>
 
-        <!-- Pack Gourde — pleine largeur — en rupture -->
-        <div class="md:col-span-5 relative rounded-3xl overflow-hidden p-7 flex flex-col justify-between min-h-[220px] opacity-60 bg-[#D0D8D4]" aria-label="Pack Gourde, en rupture de stock">
+        <!-- Pack Gourde — 3/5 cols -->
+        <a href="/perles-ceramique-em/pack-gourde-ceramique-em/" class="md:col-span-3 relative rounded-3xl overflow-hidden p-7 flex flex-col justify-between min-h-[220px] group transition-transform hover:scale-[1.01] bg-[#D0D8D4]">
           <span class="absolute right-4 bottom-3 font-display text-[55px] font-bold leading-none select-none opacity-[0.08] text-[#57534e]" aria-hidden="true">Gourde</span>
           <div>
-            <span class="inline-block bg-[#57534e] text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">En rupture de stock</span>
+            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">La formule complète</span>
             <h3 class="font-display text-2xl text-[#1A1A16] mb-1">Pack Gourde + 100 Perles</h3>
-            <p class="text-[#57534e] text-sm">Gourde écologique + 100 perles EM®. Eau pure en déplacement.</p>
+            <p class="text-[#57534e] text-sm">Gourde 500 ml en verre + 100 perles EM®. De quoi équiper aussi votre carafe.</p>
           </div>
           <div class="flex items-end justify-between">
             <div>
               <p class="text-xs text-[#8B6F47] line-through">72,80€</p>
-              <p class="font-display text-xl text-[#57534e] font-bold">59,90€</p>
+              <p class="font-display text-2xl text-[#166534] font-bold">59,90€</p>
             </div>
-            <span class="border border-[#57534e] text-[#57534e] px-5 py-2 rounded-full text-sm cursor-not-allowed">Bientôt disponible</span>
+            <span class="bg-[#166534] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#0D4A25] transition-colors">Commander →</span>
           </div>
-        </div>
+        </a>
+
+        <!-- Gourde Écologique seule — 2/5 cols -->
+        <a href="/perles-ceramique-em/gourde-ecologique/" class="md:col-span-2 relative rounded-3xl overflow-hidden p-7 flex flex-col justify-between min-h-[220px] group transition-transform hover:scale-[1.01] bg-[#EDE4D3]">
+          <span class="absolute right-3 top-0 font-display text-[70px] font-bold leading-none select-none opacity-[0.08] text-[#8B6F47]" aria-hidden="true">500</span>
+          <div>
+            <h3 class="font-display text-2xl text-[#1A1A16] mb-1">Gourde Écologique</h3>
+            <p class="text-[#57534e] text-sm">500 ml en verre double paroi. Si vous avez déjà vos perles.</p>
+          </div>
+          <div>
+            <p class="text-xs text-[#8B6F47] line-through">39,90€</p>
+            <p class="font-display text-2xl text-[#166534] font-bold">29,90€</p>
+          </div>
+        </a>
 
       </div>
     </div>

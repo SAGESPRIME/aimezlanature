@@ -31,13 +31,19 @@ export function buildProductSchema(p: Product, imageUrl?: string) {
         shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'FR' },
       },
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: p.rating,
-      reviewCount: p.reviewCount,
-      bestRating: 5,
-      worstRating: 1,
-    },
+    // Omis tant que le produit n'a aucun avis : publier une note inventée
+    // violerait les règles Google sur les avis et tromperait l'acheteur.
+    ...(p.rating && p.reviewCount
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: p.rating,
+            reviewCount: p.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
   };
 }
 

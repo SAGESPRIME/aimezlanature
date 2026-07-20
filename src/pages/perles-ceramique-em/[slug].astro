@@ -35,7 +35,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
         {photo ? (
           <Image
             src={photo}
-            alt={getProductImageAlt(p.name)}
+            alt={getProductImageAlt(p.slug)}
             width={1080}
             height={1080}
             widths={[480, 800, 1080]}
@@ -66,10 +66,12 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
       <div>
         <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">Céramique EM® · Fabriqué au Japon</p>
         <h1 class="font-display text-3xl lg:text-4xl xl:text-5xl text-[#1A1A16] leading-tight mb-3">{p.name}</h1>
-        <p class="text-sm text-[#57534e] mb-5" aria-label={`Note ${p.rating} sur 5 basée sur ${p.reviewCount} avis`}>
-          <span class="text-[#166534] font-bold">★★★★★</span>
-          <strong class="text-[#1A1A16]"> {p.rating.toString().replace('.', ',')}/5</strong> · {p.reviewCount} avis vérifiés
-        </p>
+        {p.rating && p.reviewCount && (
+          <p class="text-sm text-[#57534e] mb-5" aria-label={`Note ${p.rating} sur 5 basée sur ${p.reviewCount} avis`}>
+            <span class="text-[#166534] font-bold">★★★★★</span>
+            <strong class="text-[#1A1A16]"> {p.rating.toString().replace('.', ',')}/5</strong> · {p.reviewCount} avis vérifiés
+          </p>
+        )}
 
         <div class="flex items-end gap-3 mb-6">
           <p class="font-display text-4xl font-bold text-[#166534]">{fmt(p.priceCurrent)} €</p>

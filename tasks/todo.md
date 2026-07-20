@@ -31,6 +31,12 @@
   - 301 ajoutée depuis l'ancienne URL WooCommerce **et** depuis la fiche supprimée
   - ✅ Vérification : 13 pages (au lieu de 14), absent du sitemap, aucune référence produit restante (les « 25 à 35 perles par litre » conservés = conseil de dosage générique)
 
+- [x] Gourde Écologique seule remise en vente (29,90 € au lieu de 39,90 €) + Pack Gourde repassé en stock à 59,90 €
+  - Données et photo récupérées du catalogue en ligne ; description rédigée **sans** les allégations non sourcées du site actuel (« 2,3x mieux », « perles 10 ans ») pour rester cohérent avec la ligne honnête du site
+  - La gourde seule n'ayant aucun avis, `rating`/`reviewCount` sont devenus optionnels : pas d'étoiles affichées et `aggregateRating` omis du schema, au lieu d'inventer une note
+  - Anciennes URLs Shopify de la bouteille redirigées vers la gourde seule (elles pointaient vers le bundle faute de mieux)
+  - ✅ Vérification : build OK 14 pages, schema gourde `InStock` 29,90 € sans aggregateRating, bundle `InStock` sans mention de rupture, grilles accueil et collection équilibrées (contrôle navigateur)
+
 ## Prochaine étape en cours
 - [ ] Paiement en ligne via Stripe Payment Links (direction validée)
   - ⏳ Bloqué : nécessite que l'utilisateur crée les liens dans son dashboard Stripe et fournisse les URLs `https://buy.stripe.com/...` (une par pack)
