@@ -1,7 +1,8 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
+import Icon from '../../components/Icon.astro';
 import { products, SITE, type Product } from '../../data/products';
 import { buildFaqSchema, buildProductSchema } from '../../lib/seo';
 import { getProductImage, getProductImageAlt } from '../../lib/productImages';
@@ -16,16 +17,25 @@ interface Props {
 const { product: p } = Astro.props;
 
 const photo = getProductImage(p.slug);
+// Image pour le schema Product et l'og:image : passer par getImage() garantit
+// qu'un fichier est réellement émis dans le build. Référencer `photo.src`
+// directement pointait vers un .jpg jamais généré (seuls les .webp du composant
+// <Image> existaient) → URL 404 envoyée à Google et aux réseaux sociaux.
+// Format jpg : requis par certains crawlers sociaux (WhatsApp, X) qui
+// n'affichent pas le WebP.
+const socialImage = photo
+  ? await getImage({ src: photo, width: 1080, height: 1080, format: 'jpg' })
+  : undefined;
 const others = products.filter((o) => o.slug !== p.slug && o.inStock).slice(0, 3);
 const paragraphs = p.description.split('\n\n');
-const jsonLd = [buildProductSchema(p, photo?.src), buildFaqSchema(p.qa)];
+const jsonLd = [buildProductSchema(p, socialImage?.src), buildFaqSchema(p.qa)];
 
 const orderMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Commande — ${p.name} (${p.sku})`)}`;
 const notifyMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Retour en stock — ${p.name}`)}`;
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 ---
 
-<BaseLayout title={p.metaTitle} description={p.metaDescription} jsonLd={jsonLd} ogImage={photo?.src}>
+<BaseLayout title={p.metaTitle} description={p.metaDescription} jsonLd={jsonLd} ogImage={socialImage?.src}>
   <!-- FICHE PRODUIT -->
   <section class="px-4 py-10 bg-[#F5F0E8]">
     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
@@ -45,7 +55,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
             class="w-full h-full object-cover"
           />
         ) : (
-          <div class="text-center text-[#8B6F47] bg-[#EDE8E0] w-full h-full flex flex-col items-center justify-center">
+          <div class="text-center text-[#75592F] bg-[#EDE8E0] w-full h-full flex flex-col items-center justify-center">
             <svg class="w-24 h-24 mx-auto opacity-30" viewBox="0 0 80 80" fill="none" aria-hidden="true">
               <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5" />
               <circle cx="40" cy="30" r="6" fill="currentColor" opacity="0.4" />
@@ -64,7 +74,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
       <!-- Infos & achat -->
       <div>
-        <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">Céramique EM® · Fabriqué au Japon</p>
+        <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">Céramique EM® · Fabriqué au Japon</p>
         <h1 class="font-display text-3xl lg:text-4xl xl:text-5xl text-[#1A1A16] leading-tight mb-3">{p.name}</h1>
         {p.rating && p.reviewCount && (
           <p class="text-sm text-[#57534e] mb-5" aria-label={`Note ${p.rating} sur 5 basée sur ${p.reviewCount} avis`}>
@@ -75,7 +85,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
         <div class="flex items-end gap-3 mb-6">
           <p class="font-display text-4xl font-bold text-[#166534]">{fmt(p.priceCurrent)} €</p>
-          <p class="text-lg text-[#8B6F47] line-through mb-1">{fmt(p.priceOriginal)} €</p>
+          <p class="text-lg text-[#75592F] line-through mb-1">{fmt(p.priceOriginal)} €</p>
         </div>
 
         <ul class="flex flex-wrap gap-2 mb-7">
@@ -102,9 +112,9 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
         )}
 
         <div class="flex flex-wrap gap-4 text-xs text-[#57534e] border-t border-[#D4C9B8] pt-5 mt-6">
-          <span>🚚 Livraison offerte dès {SITE.freeShippingThreshold} €</span>
-          <span>🔄 Garantie 30 jours</span>
-          <span>💧 {SITE.donationPercent} % reversés aux puits</span>
+          <span class="inline-flex items-center gap-1.5"><Icon name="truck" class="w-4 h-4 text-[#166534]" /> Livraison offerte dès {SITE.freeShippingThreshold} €</span>
+          <span class="inline-flex items-center gap-1.5"><Icon name="shield" class="w-4 h-4 text-[#166534]" /> Garantie 30 jours</span>
+          <span class="inline-flex items-center gap-1.5"><Icon name="droplet" class="w-4 h-4 text-[#166534]" /> {SITE.donationPercent} % des bénéfices pour des puits</span>
         </div>
       </div>
     </div>
@@ -117,9 +127,12 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
       {paragraphs.map((par) => (
         <p class="text-[#57534e] leading-relaxed mb-4">{par}</p>
       ))}
-      <p class="text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4 mt-6">
-        💡 Première utilisation, dosage, entretien : tout est expliqué pas à pas dans notre guide
-        <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">Comment ça marche ?</a>
+      <p class="flex items-start gap-2 text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4 mt-6">
+        <Icon name="bulb" class="w-4 h-4 mt-0.5 flex-shrink-0 text-[#166534]" />
+        <span>
+          Première utilisation, dosage, entretien : tout est expliqué pas à pas dans notre guide
+          <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">Comment ça marche ?</a>
+        </span>
       </p>
     </div>
   </section>

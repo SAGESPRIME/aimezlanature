@@ -4,6 +4,12 @@ export interface Product {
   shortName: string;
   sku: string;
   priceCurrent: number;
+  /**
+   * Prix barré. ⚠️ Directive Omnibus (L112-1-1 Code conso) : un prix barré doit
+   * être le prix le plus bas pratiqué dans les 30 jours précédant la remise.
+   * Valeurs relevées sur aimezlanature.fr le 2026-07-20 (mêmes remises -18/-23/-30 %
+   * affichées en ligne) — à faire confirmer par le marchand avant toute mise en prod.
+   */
   priceOriginal: number;
   discountPercent: number;
   inStock: boolean;
@@ -44,12 +50,12 @@ Fabriquées au Japon selon le procédé EM® original (Effective Microorganisms)
 
 Conditionnées dans un emballage biodégradable avec sachet coton BIO, les 55 perles se glissent dans votre carafe ou directement dans le réservoir d'eau de votre cafetière ou machine à thé.
 
-Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois. 2,5 % de votre achat finance l'accès à l'eau potable dans des régions défavorisées.`,
+Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois. 2,5 % de nos bénéfices financent l'accès à l'eau potable dans des régions défavorisées.`,
     usages: ["Carafe 1,5-2 L", "Bouilloire", "Machine à café", "Machine à thé", "Gourde XL"],
     qa: [
       {
         question: "Pourquoi le Pack 55 est-il le plus populaire ?",
-        answer: "Le Pack 55 est notre bestseller car il convient au format de carafe le plus courant (1,5 à 2 L) et offre le meilleur rapport perles/prix. Il couvre aussi la bouilloire et les machines à boissons chaudes.",
+        answer: "Parce qu'il couvre exactement les deux usages quotidiens les plus fréquents : 30 perles pour une carafe de 2 L et 25 pour la bouilloire ou la cafetière, soit les 55 perles du pack.",
       },
       {
         question: "Puis-je utiliser les 55 perles dans ma cafetière ?",
@@ -65,10 +71,10 @@ Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois. 2,5 % de v
       },
       {
         question: "Peut-on utiliser le Pack 55 dans le lave-vaisselle ?",
-        answer: "Le Pack 55 est conçu pour les volumes de 1,5 à 2 L. Pour le lave-vaisselle, qui nécessite un volume d'eau plus important, nous recommandons le Pack 100 perles.",
+        answer: "Le lave-vaisselle demande à lui seul 40 perles, en permanence dans le panier à couverts. Le Pack 55 y suffirait tout juste sans rien laisser pour votre carafe : pour cumuler les deux, prenez plutôt le Pack 100.",
       },
     ],
-    metaTitle: "Perles Céramique EM® Pack 55 — Bestseller 19,90€ | Aimez la Nature",
+    metaTitle: "Perles de Céramique EM® Pack 55 — 19,90 € | Aimez la Nature",
     metaDescription: "55 Perles de Céramique EM® japonaises : note 4,91/5. Idéal carafe 2L, bouilloire, cafetière. Purifie l'eau naturellement. Livraison offerte dès 50€.",
   },
   {
@@ -84,22 +90,22 @@ Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois. 2,5 % de v
     includesBottle: false,
     rating: 4.94,
     reviewCount: 51,
-    description: `Le Pack 100 Perles de Céramique EM® est notre offre la plus complète pour un usage maison intensif : bonbonne de 5 à 10 litres, lave-vaisselle, machine à laver, vase ou bassine. C'est aussi le choix économique par excellence — le coût par perle est le plus bas de notre gamme.
+    description: `Le Pack 100 Perles de Céramique EM® est notre offre la plus complète pour un usage maison intensif : bonbonne, lave-vaisselle, machine à laver, vase ou bassine. C'est aussi le choix économique par excellence — le coût par perle est le plus bas de notre gamme.
 
 100 perles d'argile japonaise enrichies en EM® (Micro-organismes Efficaces) pour traiter de grands volumes d'eau. Véritable anti-calcaire naturel pour le lave-vaisselle et la machine à laver, elles réduisent aussi le chlore et améliorent le goût — testées et plébiscitées avec une note de 4,94/5 sur 51 avis clients vérifiés.
 
 Idéal pour les foyers de 3 personnes et plus, les adeptes du zéro déchet souhaitant supprimer totalement les bouteilles plastique, ou pour équiper plusieurs usages simultanément.
 
-Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullition 10-15 min tous les 3-6 mois. 2,5 % de votre achat finance des puits d'eau potable.`,
-    usages: ["Bonbonne 5-10 L", "Lave-vaisselle", "Machine à laver", "Vase", "Bassine"],
+Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullition 10-15 min tous les 3-6 mois. 2,5 % de nos bénéfices financent des puits d'eau potable.`,
+    usages: ["Bonbonne jusqu'à 6 L", "Lave-vaisselle", "Machine à laver", "Vase", "Bassine"],
     qa: [
       {
         question: "Combien de perles faut-il pour un lave-vaisselle ?",
-        answer: "Comptez 50 à 100 perles selon la taille de votre lave-vaisselle. Placez-les dans le panier inférieur ou dans le bac à sel. Le Pack 100 est la solution idéale pour traiter l'eau de votre lave-vaisselle.",
+        answer: "Comptez 40 perles, placées dans un filet en permanence dans le panier à couverts. Le Pack 100 permet d'équiper le lave-vaisselle tout en gardant de quoi traiter une carafe et une bouilloire.",
       },
       {
         question: "Peut-on utiliser les perles dans la machine à laver ?",
-        answer: "Oui, 50 à 100 perles placées dans le tambour de votre machine à laver améliorent la qualité de l'eau de lavage et peuvent réduire la quantité de lessive nécessaire.",
+        answer: "Oui : 50 perles dans un filet de lavage, directement dans le tambour. Elles améliorent la qualité de l'eau de lavage et permettent de réduire les quantités de lessive et d'adoucissant.",
       },
       {
         question: "Pourquoi le Pack 100 a-t-il la meilleure note (4,94/5) ?",
@@ -107,11 +113,11 @@ Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullitio
       },
       {
         question: "Peut-on diviser le Pack 100 entre plusieurs usages ?",
-        answer: "Absolument. Vous pouvez répartir les 100 perles entre votre carafe (35), votre bouilloire (20) et votre lave-vaisselle (45) par exemple.",
+        answer: "Absolument, c'est même l'intérêt du format. Une répartition typique : 30 perles dans une carafe de 2 L, 25 dans la bouilloire et 40 dans le lave-vaisselle — soit 95 des 100 perles.",
       },
       {
         question: "Le Pack 100 convient-il pour une bonbonne de 10 litres ?",
-        answer: "Oui, 100 perles sont adaptées à une bonbonne de 5 à 10 litres. Placez-les directement au fond avant de remplir d'eau du robinet.",
+        answer: "À raison de 15 perles par litre, 100 perles traitent environ 6,5 litres d'eau de boisson. Pour une bonbonne de 10 litres remplie à ras bord, comptez plutôt 150 perles, soit un pack et demi.",
       },
     ],
     metaTitle: "Perles Céramique EM® Pack 100 — 29,90€ | Aimez la Nature",
@@ -136,7 +142,7 @@ La gourde de 500 ml est en verre borosilicate double paroi, sans plastique au co
 
 Avec 100 perles, vous équipez la gourde et gardez de quoi traiter une carafe, une bouilloire ou un lave-vaisselle en parallèle. C'est la formule la plus complète de la gamme.
 
-Emballage biodégradable, 2,5 % de votre achat finance des puits d'eau potable.`,
+Emballage biodégradable, 2,5 % de nos bénéfices financent des puits d'eau potable.`,
     usages: ["Gourde sport", "Usage quotidien", "Voyage", "Bureau"],
     qa: [
       {
@@ -149,10 +155,10 @@ Emballage biodégradable, 2,5 % de votre achat finance des puits d'eau potable.`
       },
       {
         question: "Combien de perles mettre dans la gourde ?",
-        answer: "Comptez 15 à 35 perles pour une gourde de 500 ml. Les perles restantes du pack peuvent équiper une carafe, une bouilloire ou votre lave-vaisselle.",
+        answer: "Comptez 8 à 10 perles pour une gourde de 500 ml, à raison de 15 perles par litre. Les perles restantes du pack équipent une carafe, une bouilloire ou votre lave-vaisselle.",
       },
     ],
-    metaTitle: "Pack Gourde + 100 Perles Céramique EM® — 59,90€ | Aimez la Nature",
+    metaTitle: "Pack Gourde + 100 Perles EM® — 59,90 € | Aimez la Nature",
     metaDescription: "Gourde écologique 500 ml en verre + 100 Perles de Céramique EM® japonaises. Eau pure en déplacement, zéro plastique. Livraison offerte dès 50 €.",
   },
   {
@@ -173,7 +179,7 @@ Le compartiment inférieur reçoit les perles et les maintient en place quand vo
 
 Vous avez déjà des perles ? Cette gourde seule vous suffit. Sinon, le Pack Gourde ajoute 100 perles pour équiper aussi votre carafe ou votre bouilloire.
 
-2,5 % de votre achat finance des puits d'eau potable.`,
+2,5 % de nos bénéfices financent des puits d'eau potable.`,
     usages: ["Gourde 500 ml", "Bureau", "Voyage", "Sport"],
     qa: [
       {
@@ -182,7 +188,7 @@ Vous avez déjà des perles ? Cette gourde seule vous suffit. Sinon, le Pack Gou
       },
       {
         question: "Quelle est la contenance de la gourde ?",
-        answer: "500 ml, un format qui tient dans un sac et dans la plupart des porte-gobelets. Comptez 15 à 35 perles pour ce volume.",
+        answer: "500 ml, un format qui tient dans un sac et dans la plupart des porte-gobelets. À 15 perles par litre, comptez 8 à 10 perles pour ce volume.",
       },
       {
         question: "La gourde est-elle en plastique ?",
@@ -220,6 +226,14 @@ export const SITE = {
    */
   totalReviews: 96,
   globalRating: 4.93,
+  /**
+   * Don — formulation unique pour tout le site : « 2,5 % de nos bénéfices ».
+   * ⚠️ Aucune trace de cet engagement sur le site en ligne actuel (vérifié le
+   * 2026-07-20 : accueil, fiches produit, qui-sommes-nous). La formulation
+   * « bénéfices » (la plus prudente juridiquement) a été retenue partout à la
+   * place du mélange bénéfices/commande/achat — à faire confirmer par le marchand.
+   */
   donationPercent: 2.5,
+  donationClaim: "2,5 % de nos bénéfices financent des puits d'eau potable",
   freeShippingThreshold: 50,
 };

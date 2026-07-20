@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaPacks from '../components/CtaPacks.astro';
+import { guides } from '../data/guides';
+
+const metaTitle = 'Page introuvable | Aimez la Nature';
+const metaDescription =
+  'Cette page n\'existe pas ou plus. Retrouvez nos packs de Perles de Céramique EM® et nos guides pratiques.';
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} noindex>
+  <section class="bg-[#F5F0E8] px-4 pt-16 pb-16">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="font-display text-7xl text-[#9C8358] font-bold mb-4" aria-hidden="true">404</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Cette page s'est évaporée
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed mb-8">
+        L'adresse demandée n'existe pas ou plus. Pas de panique : tout ce qui compte
+        est à portée de clic.
+      </p>
+      <a
+        href="/perles-ceramique-em/"
+        class="inline-flex items-center gap-2 bg-[#166534] text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#0D4A25] transition-colors"
+      >
+        Voir nos packs de perles <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="py-14 px-4 bg-white" aria-labelledby="guides-404">
+    <div class="max-w-4xl mx-auto">
+      <h2 id="guides-404" class="font-display text-2xl text-[#1A1A16] mb-6">Ou consultez un guide</h2>
+      <ul class="grid sm:grid-cols-2 gap-3 text-sm">
+        {guides.map((g) => (
+          <li>
+            <a href={g.href} class="block rounded-xl border border-[#EDE8E0] bg-[#FDFBF7] px-4 py-3 text-[#166534] font-semibold hover:border-[#C4B89A] transition-colors">
+              {g.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaPacks />
+</BaseLayout>

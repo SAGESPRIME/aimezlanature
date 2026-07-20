@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 
 const metaTitle = 'Contact | Aimez la Nature';
 const metaDescription =
@@ -10,7 +11,7 @@ const metaDescription =
   <!-- HERO -->
   <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
     <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Contact</p>
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Contact</p>
       <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
         Une question ? Écrivez-nous
       </h1>
@@ -44,11 +45,14 @@ const metaDescription =
       </div>
     </div>
     <div class="max-w-3xl mx-auto mt-6">
-      <p class="text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4">
-        💡 Pour commander directement, utilisez le bouton « Commander par email » présent sur
-        chaque fiche produit — vous recevrez un lien de paiement sécurisé sous 24 h. La plupart
-        des questions courantes (livraison, paiement, garantie) sont déjà traitées dans notre
-        <a href="/faq/" class="text-[#166534] font-semibold hover:underline">FAQ</a>.
+      <p class="flex items-start gap-2 text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4">
+        <Icon name="bulb" class="w-4 h-4 mt-0.5 flex-shrink-0 text-[#166534]" />
+        <span>
+          Pour commander directement, utilisez le bouton « Commander par email » présent sur
+          chaque fiche produit — vous recevrez un lien de paiement sécurisé sous 24 h. La plupart
+          des questions courantes (livraison, paiement, garantie) sont déjà traitées dans notre
+          <a href="/faq/" class="text-[#166534] font-semibold hover:underline">FAQ</a>.
+        </span>
       </p>
     </div>
   </section>

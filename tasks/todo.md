@@ -37,6 +37,21 @@
   - Anciennes URLs Shopify de la bouteille redirigées vers la gourde seule (elles pointaient vers le bundle faute de mieux)
   - ✅ Vérification : build OK 14 pages, schema gourde `InStock` 29,90 € sans aggregateRating, bundle `InStock` sans mention de rupture, grilles accueil et collection équilibrées (contrôle navigateur)
 
+## Audit complet 4 axes (2026-07-20) — CORRECTIONS FAITES ✅
+- [x] Audit → rapport : `docs/audit/rapport-audit-2026-07-20.md`
+- [x] Corrections validées par l'utilisateur et appliquées, documentées dans
+      SEO-NOTES.md / SECURITY-NOTES.md / COPY-NOTES.md / DESIGN-NOTES.md
+- ✅ Vérifications : build 17 pages OK · 4 images schema Product existent dans dist ·
+  Lighthouse accueil mobile A11y 95→100, SEO 100, BP 100 · CLS 0, LCP 395 ms (local) ·
+  menu mobile testé au navigateur (375 px) · don unifié (0 ancienne formulation) ·
+  0 vulnérabilité npm
+- ⚠️ **2 confirmations attendues du marchand** :
+  1. Le don « 2,5 % de nos bénéfices → puits » : AUCUNE trace sur le site en ligne actuel.
+     Formulation prudente « bénéfices » appliquée partout en attendant (`SITE.donationClaim`).
+  2. Prix barrés (25,90/42,90/39,90/72,80 €) : conformité Omnibus (prix le plus bas
+     des 30 derniers jours) à confirmer.
+- [ ] Lighthouse complet 16 pages × mobile/desktop depuis la prod Cloudflare (après déploiement)
+
 ## Prochaine étape en cours
 - [ ] Paiement en ligne via Stripe Payment Links (direction validée)
   - ⏳ Bloqué : nécessite que l'utilisateur crée les liens dans son dashboard Stripe et fournisse les URLs `https://buy.stripe.com/...` (une par pack)

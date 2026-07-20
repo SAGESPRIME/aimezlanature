@@ -1,0 +1,15 @@
+# En-têtes de sécurité — servis par Cloudflare pour toutes les pages.
+# Le build (@astrojs/cloudflare) ajoute automatiquement à ce fichier la ligne
+# de cache immuable pour /_astro/*.
+#
+# CSP stricte possible car : CSS et JS en fichiers externes servis par notre
+# domaine (inlineStylesheets: 'never' + public/js/site.js), polices auto-
+# hébergées, aucun service tiers. Les blocs JSON-LD inline ne sont pas
+# concernés : non exécutables, la CSP ne s'y applique pas.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

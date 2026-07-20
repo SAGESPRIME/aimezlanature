@@ -14,6 +14,11 @@ export default defineConfig({
   // servis par le CDN avec un cache immuable : aucune invocation de Worker ni
   // facturation de transformation à chaque affichage.
   adapter: cloudflare({ imageService: 'compile' }),
+  build: {
+    // CSS toujours en fichier externe (jamais inliné dans un <style>) :
+    // condition nécessaire à la CSP stricte `style-src 'self'` de public/_headers.
+    inlineStylesheets: 'never',
+  },
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/succes'),

@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE } from '../data/products';
+import { SITE, getProduct } from '../data/products';
 
 interface Props {
   title: string;
@@ -29,7 +29,31 @@ const schemas = jsonLd
     : [jsonLd]
   : [];
 
-// Schema BreadcrumbList pour toutes les pages
+// Schema BreadcrumbList pour toutes les pages.
+// Libellés lisibles : sans cette map, Google recevrait les slugs capitalisés
+// (« Perles Ceramique Em », « Cgv ») dans le fil d'Ariane des résultats.
+const segmentLabels: Record<string, string> = {
+  'perles-ceramique-em': 'Perles de Céramique EM',
+  'comment-ca-marche': 'Comment ça marche',
+  'utilisations': '16 utilisations',
+  'perles-de-ceramique-avis': 'Avis & science',
+  'purifier-eau-robinet-comparatif': 'Comparatif purification',
+  'blog': 'Guides',
+  'a-propos': 'À propos',
+  'faq': 'FAQ',
+  'cgv': 'CGV',
+  'contact': 'Contact',
+  'mentions-legales': 'Mentions légales',
+};
+
+function segmentLabel(seg: string): string {
+  return (
+    segmentLabels[seg] ??
+    getProduct(seg)?.shortName ??
+    seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  );
+}
+
 const breadcrumbSegments = Astro.url.pathname
   .replace(/\/$/, '')
   .split('/')
@@ -40,7 +64,7 @@ const breadcrumbItems = [
   ...breadcrumbSegments.map((seg, i) => ({
     '@type': 'ListItem',
     position: i + 2,
-    name: seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    name: segmentLabel(seg),
     item: SITE.url + '/' + breadcrumbSegments.slice(0, i + 1).join('/') + '/',
   })),
 ];
@@ -86,13 +110,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Polices auto-hébergées (@fontsource, importées dans global.css) :
+         supprime les requêtes render-blocking vers Google Fonts et le
+         transfert d'IP vers Google (position CNIL/RGPD). -->
 
     <!-- JSON-LD Structured Data (SSR only) -->
     {allSchemas.map((schema) => (
@@ -100,25 +120,61 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     ))}
   </head>
   <body class="bg-stone-50 text-stone-800 font-sans antialiased overflow-x-hidden">
+    <a
+      href="#contenu"
+      class="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:top-2 focus:left-2 focus:bg-white focus:text-green-800 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow"
+    >
+      Aller au contenu
+    </a>
+
     <!-- Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
-      <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between" aria-label="Navigation principale">
         <a href="/" class="font-display text-xl font-bold text-green-800 hover:text-green-700 transition-colors">
           Aimez la Nature
         </a>
         <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
           <li><a href="/perles-ceramique-em/" class="hover:text-green-700 transition-colors">Nos Perles</a></li>
+          <li><a href="/blog/" class="hover:text-green-700 transition-colors">Guides</a></li>
           <li><a href="/comment-ca-marche/" class="hover:text-green-700 transition-colors">Comment ça marche</a></li>
           <li><a href="/faq/" class="hover:text-green-700 transition-colors">FAQ</a></li>
           <li><a href="/a-propos/" class="hover:text-green-700 transition-colors">Notre mission</a></li>
         </ul>
-        <a
-          href="/perles-ceramique-em/"
-          class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
-        >
-          Commander
-        </a>
+        <div class="flex items-center gap-2">
+          <a
+            href="/perles-ceramique-em/"
+            class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
+          >
+            Commander
+          </a>
+          <button
+            id="menu-toggle"
+            type="button"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-stone-200 text-stone-700 hover:bg-stone-100 transition-colors"
+            aria-expanded="false"
+            aria-controls="menu-mobile"
+            aria-label="Ouvrir le menu"
+          >
+            <svg class="w-5 h-5 menu-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+            <svg class="w-5 h-5 menu-icon-close hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
       </nav>
+      <!-- Panneau mobile, replié par défaut, déplié par le bouton (js/site.js).
+           Sans JS, tous les liens restent accessibles via le footer. -->
+      <ul id="menu-mobile" class="hidden md:hidden border-t border-stone-200 bg-white px-4 py-3 space-y-1 text-sm font-medium text-stone-700">
+        <li><a href="/perles-ceramique-em/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Nos Perles</a></li>
+        <li><a href="/blog/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Guides</a></li>
+        <li><a href="/comment-ca-marche/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Comment ça marche</a></li>
+        <li><a href="/utilisations/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">16 utilisations</a></li>
+        <li><a href="/faq/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">FAQ</a></li>
+        <li><a href="/a-propos/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Notre mission</a></li>
+        <li><a href="/contact/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Contact</a></li>
+      </ul>
     </header>
 
     <!-- Breadcrumb (visible only on inner pages) -->
@@ -140,7 +196,7 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     )}
 
     <!-- Main content -->
-    <main>
+    <main id="contenu">
       <slot />
     </main>
 
@@ -166,7 +222,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
         <div>
           <p class="text-white font-semibold mb-3">Informations</p>
           <ul class="space-y-2 text-sm">
+            <li><a href="/blog/" class="hover:text-white transition-colors">Guides perles de céramique</a></li>
             <li><a href="/comment-ca-marche/" class="hover:text-white transition-colors">Comment ça marche</a></li>
+            <li><a href="/utilisations/" class="hover:text-white transition-colors">16 utilisations des perles</a></li>
             <li><a href="/perles-de-ceramique-avis/" class="hover:text-white transition-colors">Avis & science : le vrai du faux</a></li>
             <li><a href="/purifier-eau-robinet-comparatif/" class="hover:text-white transition-colors">Comparatif : purifier l'eau du robinet</a></li>
             <li><a href="/faq/" class="hover:text-white transition-colors">FAQ</a></li>
@@ -177,9 +235,13 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
           </ul>
         </div>
       </div>
-      <div class="border-t border-stone-700 py-4 text-center text-xs text-stone-500">
+      <div class="border-t border-stone-700 py-4 text-center text-xs text-stone-400">
         © {new Date().getFullYear()} Aimez la Nature — Tous droits réservés
       </div>
     </footer>
+
+    <!-- JS minimal, servi en fichier externe pour rester compatible avec la CSP
+         (script-src 'self') : menu mobile + apparitions au défilement. -->
+    <script src="/js/site.js" defer></script>
   </body>
 </html>

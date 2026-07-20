@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaPacks from '../components/CtaPacks.astro';
+import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
+import {
+  PERLES_PAR_LITRE,
+  categoriesLabels,
+  dosagesParCategorie,
+  type CategorieUsage,
+} from '../data/dosages';
+
+const metaTitle = 'Les 16 utilisations des perles de céramique EM® | Aimez la Nature';
+const metaDescription =
+  `Carafe, bouilloire, lave-vaisselle, réfrigérateur, baignoire, arrosage, aquarium : les 16 usages des perles de céramique EM® avec le dosage de chacun.`;
+
+// Lien de l'ebook officiel offert (hébergé sur Google Drive par Aimez la Nature).
+const EBOOK_URL = 'https://drive.google.com/file/d/1DPRibEB4N3Rfp3xH83vXbyy4oEmIFlDf/view';
+
+const groupes: CategorieUsage[] = ['boisson', 'electromenager', 'maison', 'jardin'];
+
+const introGroupes: Record<CategorieUsage, string> = {
+  boisson:
+    `La règle de base est simple : ${PERLES_PAR_LITRE} perles par litre d'eau. Lors du premier remplissage, laissez agir 30 minutes à 1 heure ; ensuite, les perles restent en permanence au fond du contenant.`,
+  electromenager:
+    'Les appareils ne se dosent pas au litre mais au forfait : les perles y restent en permanence et limitent le tartre sur les résistances, tout en réduisant les doses de détergent.',
+  maison:
+    'Au-delà de la boisson, les perles agissent partout où le calcaire et le chlore posent problème — de la corbeille à fruits à la salle de bain.',
+  jardin:
+    'Les perles conviennent aussi aux volumes destinés aux plantes et aux animaux, jusqu\'à des contenances très importantes.',
+};
+
+// NB : pas de question « Combien de perles par litre ? » ici — elle est déjà
+// dans le schema FAQPage de /comment-ca-marche/. La même question envoyée à
+// Google depuis deux pages crée une concurrence interne entre elles.
+const faqItems = [
+  {
+    question: 'Peut-on utiliser les perles de céramique dans le lave-linge ?',
+    answer:
+      'Oui. Placez 50 perles dans un filet de lavage, directement dans le tambour. Elles adoucissent l\'eau de lavage et permettent de réduire les quantités de lessive et d\'adoucissant, tout en protégeant l\'appareil du tartre.',
+  },
+  {
+    question: 'Les perles de céramique fonctionnent-elles dans un aquarium ?',
+    answer:
+      'Oui, comptez 40 à 80 perles au fond de l\'aquarium selon sa taille. Elles participent à l\'équilibre de l\'eau sans produit chimique.',
+  },
+  {
+    question: 'Peut-on mettre les perles dans la chasse d\'eau des toilettes ?',
+    answer:
+      'Oui : 20 perles placées en permanence dans le réservoir limitent la formation de tartre et réduisent la quantité de détergent nécessaire.',
+  },
+  {
+    question: 'Combien de perles pour une piscine ou un récupérateur d\'eau ?',
+    answer:
+      'Pour les très grands volumes, la règle est de 1 kg de perles pour 1 m³ d\'eau, soit 1 000 litres.',
+  },
+  {
+    question: 'Faut-il des perles différentes selon l\'usage ?',
+    answer:
+      'Non, ce sont les mêmes Perles de Céramique EM®. Seule la quantité change. Un même pack peut donc être réparti entre plusieurs usages — une carafe, une bouilloire et un lave-vaisselle par exemple.',
+  },
+];
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'Les 16 utilisations des perles de céramique EM®',
+    description: metaDescription,
+    path: '/utilisations/',
+    datePublished: '2026-07-20',
+  }),
+  buildFaqSchema(faqItems),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Guide des utilisations</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Les 16 utilisations des perles de céramique EM®
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed mb-6">
+        On les connaît pour la carafe d'eau. Mais les mêmes perles servent aussi dans la
+        bouilloire, le lave-vaisselle, la machine à laver, le réfrigérateur, la baignoire,
+        l'arrosoir ou l'aquarium — avec, à chaque fois, un dosage précis.
+      </p>
+      <p class="text-[#57534e]">
+        <strong class="text-[#1A1A16]">La règle à retenir :</strong> {PERLES_PAR_LITRE} perles
+        par litre pour l'eau de boisson. Les appareils, eux, ont un dosage forfaitaire.
+      </p>
+    </div>
+  </section>
+
+  <!-- USAGES PAR CATÉGORIE -->
+  {groupes.map((cat) => (
+    <section class="py-14 px-4 odd:bg-white even:bg-[#FDFBF7]" aria-labelledby={`titre-${cat}`}>
+      <div class="max-w-3xl mx-auto">
+        <h2 id={`titre-${cat}`} class="font-display text-3xl text-[#1A1A16] mb-3">
+          {categoriesLabels[cat]}
+        </h2>
+        <p class="text-[#57534e] leading-relaxed mb-8">{introGroupes[cat]}</p>
+
+        <div class="space-y-4">
+          {dosagesParCategorie(cat).map((d) => (
+            <article class="rounded-2xl border border-[#EDE8E0] bg-white p-6">
+              <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
+                <h3 class="font-semibold text-[#1A1A16]">{d.usage}</h3>
+                <p class="font-display text-lg font-bold text-[#166534]">{d.nb}</p>
+              </div>
+              {d.detail && <p class="text-sm text-[#57534e] leading-relaxed">{d.detail}</p>}
+              {d.packSlug && (
+                <a
+                  href={`/perles-ceramique-em/${d.packSlug}/`}
+                  class="inline-block mt-3 text-sm font-semibold text-[#166534] hover:underline"
+                >
+                  {d.packLabel} →
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- EBOOK -->
+  <section class="py-14 px-4 bg-[#0D2818] text-white" aria-labelledby="ebook-titre">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">Ebook offert</p>
+      <h2 id="ebook-titre" class="font-display text-3xl lg:text-4xl mb-5">
+        Le guide complet, à garder sous la main
+      </h2>
+      <p class="text-[#B8CCB4] leading-relaxed mb-8">
+        Tous ces usages sont réunis dans notre ebook gratuit, avec les dosages et les temps
+        d'action. Il est également envoyé après chaque commande.
+      </p>
+      <a
+        href={EBOOK_URL}
+        target="_blank"
+        rel="noopener"
+        class="inline-block bg-[#A8C4A0] text-[#0D2818] px-8 py-4 rounded-full font-semibold hover:bg-white transition-colors"
+      >
+        Télécharger l'ebook gratuit →
+      </a>
+    </div>
+  </section>
+
+  <!-- RAPPEL ENTRETIEN -->
+  <section class="py-14 px-4 bg-white" aria-labelledby="entretien-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="entretien-titre" class="font-display text-3xl text-[#1A1A16] mb-4">
+        Un seul entretien, quel que soit l'usage
+      </h2>
+      <p class="text-[#57534e] leading-relaxed mb-4">
+        Quel que soit l'endroit où vous les utilisez, les perles se régénèrent de la même
+        façon : une ébullition de 10 à 15 minutes dans de l'eau claire, sans savon ni
+        vinaigre, tous les 3 à 6 mois. Elles retrouvent alors toute leur efficacité.
+      </p>
+      <p class="text-[#57534e] leading-relaxed">
+        La première utilisation, l'activation et la régénération sont détaillées pas à pas dans
+        notre guide <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">Comment ça marche ?</a>
+        Et pour savoir ce que les perles font réellement — et ce qu'elles ne font pas —
+        consultez notre <a href="/perles-de-ceramique-avis/" class="text-[#166534] font-semibold hover:underline">page avis &amp; science</a>.
+      </p>
+    </div>
+  </section>
+
+  <Faq items={faqItems} title="Vos questions sur les utilisations" />
+  <CtaPacks />
+</BaseLayout>

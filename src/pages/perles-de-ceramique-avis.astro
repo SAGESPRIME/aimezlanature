@@ -5,9 +5,9 @@ import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
 
-const metaTitle = 'Perles de céramique : dangers, avis scientifique — le vrai du faux | Aimez la Nature';
+const metaTitle = 'Perles de céramique : danger et avis scientifique | Aimez la Nature';
 const metaDescription =
-  'Les perles de céramique sont-elles dangereuses ? Que dit la science, que dit l\'UFC-Que Choisir ? Notre réponse honnête et sourcée : ce qui est prouvé, ce qui ne l\'est pas.';
+  'Les perles de céramique sont-elles dangereuses ? Que disent la science et l\'UFC-Que Choisir ? Notre réponse honnête : ce qui est prouvé, ce qui ne l\'est pas.';
 
 // Ce que les perles font / ne font pas — cohérent avec la FAQ produit et /comment-ca-marche/
 const verites = [
@@ -21,7 +21,7 @@ const verites = [
 
 const statutStyle: Record<string, string> = {
   vrai: 'bg-[#D4E4D0] text-[#166534]',
-  constaté: 'bg-[#EDE4D3] text-[#8B6F47]',
+  constaté: 'bg-[#EDE4D3] text-[#75592F]',
   faux: 'bg-[#F2DEDE] text-[#9B3B3B]',
   'non prouvé': 'bg-[#EDE8E0] text-[#57534e]',
 };
@@ -69,7 +69,7 @@ const jsonLd = [
   <!-- HERO -->
   <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
     <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Avis & science · Réponse honnête</p>
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Avis & science · Réponse honnête</p>
       <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
         Perles de céramique : dangers, avis scientifique — le vrai du faux
       </h1>
@@ -152,7 +152,7 @@ const jsonLd = [
           </p>
         </div>
         <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
-          <p class="font-semibold text-[#8B6F47] mb-2">Non démontré scientifiquement</p>
+          <p class="font-semibold text-[#75592F] mb-2">Non démontré scientifiquement</p>
           <p class="text-sm text-[#57534e] leading-relaxed">
             Les notions de « dynamisation », « restructuration » ou « mémoire » de l'eau n'ont aucun
             fondement scientifique établi. De même, aucune étude sérieuse ne montre une action des

@@ -3,19 +3,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { buildFaqSchema } from '../lib/seo';
+import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
 
-const metaTitle = 'Comment utiliser les perles de céramique ? Guide complet | Aimez la Nature';
+const metaTitle = 'Combien de perles de céramique par litre d\'eau ? | Aimez la Nature';
 const metaDescription =
-  'Combien de perles de céramique par litre d\'eau, première utilisation, entretien, régénération par ébullition : le guide complet pour bien utiliser vos perles EM®.';
+  `Comptez ${PERLES_PAR_LITRE} perles de céramique par litre d'eau. Dosage, première utilisation, entretien et régénération par ébullition : le guide complet des perles EM®.`;
 
-// Dosage : la question n°1 sur Google (« combien de perles de céramique par litre d'eau »)
-const dosages = [
-  { contenant: 'Gourde 500 ml à 1 L', nb: '15 à 35 perles', pack: 'Pack 55', slug: 'pack-55-perles' },
-  { contenant: 'Carafe 1 à 2 L, bouilloire, cafetière', nb: '35 à 55 perles', pack: 'Pack 55', slug: 'pack-55-perles' },
-  { contenant: 'Bonbonne 5 à 10 L', nb: '100 perles', pack: 'Pack 100', slug: 'pack-100-perles' },
-  { contenant: 'Lave-vaisselle', nb: '50 à 100 perles', pack: 'Pack 100', slug: 'pack-100-perles' },
-  { contenant: 'Machine à laver', nb: '50 à 100 perles', pack: 'Pack 100', slug: 'pack-100-perles' },
-];
+// Dosage : la question n°1 sur Google (« combien de perles de céramique par litre d'eau »).
+// Les chiffres viennent de src/data/dosages.ts, aligné sur le guide officiel.
+const dosages = tousLesDosages.filter((d) =>
+  ['boisson', 'electromenager'].includes(d.categorie)
+);
 
 const etapes = [
   {
@@ -36,7 +34,7 @@ const faqItems = [
   {
     question: 'Combien de perles de céramique par litre d\'eau ?',
     answer:
-      'Comptez environ 25 à 35 perles par litre d\'eau. Concrètement : 35 perles pour une carafe de 1 à 1,5 L, 55 perles pour une carafe de 2 L ou une bouilloire, 100 perles pour une bonbonne de 5 à 10 L ou un lave-vaisselle.',
+      `Comptez ${PERLES_PAR_LITRE} perles de céramique par litre d'eau de boisson. Concrètement : 15 perles pour une carafe de 1 L, 30 perles pour une carafe de 2 L, 75 perles pour une bonbonne de 5 L. Les appareils ont un dosage forfaitaire : 25 perles pour une bouilloire ou une cafetière, 40 pour un lave-vaisselle, 50 pour un lave-linge.`,
   },
   {
     question: 'Comment utiliser les perles de céramique pour la première fois ?',
@@ -61,7 +59,7 @@ const faqItems = [
   {
     question: 'Peut-on mettre les perles de céramique au lave-vaisselle ou dans la machine à laver ?',
     answer:
-      'Oui. Placez 50 à 100 perles dans le panier à couverts du lave-vaisselle ou directement dans le tambour de la machine à laver (dans leur sachet coton). Elles limitent le calcaire et peuvent réduire la dose de détergent nécessaire.',
+      'Oui. Comptez 40 perles dans un filet placé en permanence dans le panier à couverts du lave-vaisselle, et 50 perles dans un filet de lavage directement dans le tambour du lave-linge. Elles limitent le calcaire et permettent de réduire la dose de détergent, de lessive et d\'adoucissant.',
   },
 ];
 
@@ -85,7 +83,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
   <!-- HERO -->
   <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
     <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Mode d'emploi</p>
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Mode d'emploi</p>
       <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
         Comment utiliser les perles de céramique ? Le guide complet
       </h1>
@@ -103,7 +101,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
       <ol class="space-y-8">
         {etapes.map((e, i) => (
           <li class="flex gap-5">
-            <span class="font-display text-3xl text-[#C4B89A] font-bold leading-none flex-shrink-0 w-12" aria-hidden="true">
+            <span class="font-display text-3xl text-[#9C8358] font-bold leading-none flex-shrink-0 w-12" aria-hidden="true">
               0{i + 1}
             </span>
             <div>
@@ -121,8 +119,8 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
     <div class="max-w-3xl mx-auto">
       <h2 id="dosage-titre" class="font-display text-3xl text-[#1A1A16] mb-4">Combien de perles par litre d'eau ?</h2>
       <p class="text-[#57534e] mb-8">
-        La règle simple : <strong class="text-[#1A1A16]">25 à 35 perles par litre</strong>.
-        Voici le dosage recommandé contenant par contenant :
+        La règle simple : <strong class="text-[#1A1A16]">{PERLES_PAR_LITRE} perles par litre</strong>
+        d'eau de boisson. Les appareils électroménagers ont, eux, un dosage forfaitaire :
       </p>
       <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8] bg-white">
         <table class="w-full text-sm text-left">
@@ -136,16 +134,25 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
           <tbody>
             {dosages.map((d, i) => (
               <tr class={i % 2 ? 'bg-[#FDFBF7]' : 'bg-white'}>
-                <td class="px-5 py-3.5 text-[#57534e]">{d.contenant}</td>
+                <td class="px-5 py-3.5 text-[#57534e]">{d.usage}</td>
                 <td class="px-5 py-3.5 font-semibold text-[#1A1A16]">{d.nb}</td>
                 <td class="px-5 py-3.5">
-                  <a href={`/perles-ceramique-em/${d.slug}/`} class="font-semibold text-[#166534] hover:underline">{d.pack}</a>
+                  {d.packSlug ? (
+                    <a href={`/perles-ceramique-em/${d.packSlug}/`} class="font-semibold text-[#166534] hover:underline">{d.packLabel}</a>
+                  ) : (
+                    <span class="text-[#75592F]">—</span>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <p class="text-sm text-[#57534e] mt-4">
+        Les perles servent aussi hors de la cuisine — réfrigérateur, baignoire, arrosage,
+        aquarium, piscine : retrouvez les 16 usages détaillés dans notre
+        <a href="/utilisations/" class="text-[#166534] font-semibold hover:underline">guide des utilisations</a>.
+      </p>
     </div>
   </section>
 
@@ -165,7 +172,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
           </ul>
         </div>
         <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
-          <p class="font-semibold text-[#8B6F47] mb-3">✗ Ce qu'elles ne font pas</p>
+          <p class="font-semibold text-[#75592F] mb-3">✗ Ce qu'elles ne font pas</p>
           <ul class="space-y-2 text-sm text-[#57534e]">
             <li>Éliminer bactéries et virus</li>
             <li>Filtrer métaux lourds, nitrates, pesticides</li>

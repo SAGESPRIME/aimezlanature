@@ -5,10 +5,11 @@ import Faq from '../../components/Faq.astro';
 import { products, SITE } from '../../data/products';
 import { buildFaqSchema, buildItemListSchema } from '../../lib/seo';
 import { getProductImage, getProductImageAlt } from '../../lib/productImages';
+import { PERLES_PAR_LITRE } from '../../data/dosages';
 
-const metaTitle = 'Perles de Céramique EM® pour Purifier l\'Eau du Robinet | Aimez la Nature';
+const metaTitle = 'Perles de Céramique EM® : Purifier l\'Eau | Aimez la Nature';
 const metaDescription =
-  'Perles de céramique EM® japonaises : réduisent le chlore, le tartre et améliorent le goût de l\'eau. Packs 55 et 100 perles dès 19,90 €. Livraison offerte dès 50 €.';
+  'Perles de céramique EM® japonaises : moins de chlore et de tartre, meilleur goût de l\'eau. Packs 55 et 100 perles dès 19,90 €. Livraison offerte dès 50 €.';
 
 // Questions issues des « Autres questions posées » de Google (recherche DataForSEO)
 const faqItems = [
@@ -41,10 +42,12 @@ const faqItems = [
 
 const jsonLd = [buildItemListSchema(products), buildFaqSchema(faqItems)];
 
-// Guide de choix rapide : usage → pack recommandé
+// Guide de choix rapide : usage → pack recommandé.
+// Les packs se choisissent par cumul d'usages, pas par contenant unique :
+// à 15 perles/litre, une carafe de 2 L n'en demande que 30.
 const usageGuide = [
-  { usage: 'Carafe 1 à 2 L, gourde, bouilloire, cafetière', pack: 'Pack 55', slug: 'pack-55-perles', perles: '55 perles' },
-  { usage: 'Lave-vaisselle, machine à laver, bonbonne', pack: 'Pack 100', slug: 'pack-100-perles', perles: '100 perles' },
+  { usage: 'Une carafe + la bouilloire ou la cafetière', pack: 'Pack 55', slug: 'pack-55-perles', perles: '55 perles' },
+  { usage: 'Plusieurs usages : carafe, lave-vaisselle, machine à laver', pack: 'Pack 100', slug: 'pack-100-perles', perles: '100 perles' },
   { usage: 'Eau pure en déplacement', pack: 'Pack Gourde', slug: 'pack-gourde-ceramique-em', perles: 'Gourde + 100 perles' },
   { usage: 'Vous avez déjà des perles', pack: 'Gourde Écologique', slug: 'gourde-ecologique', perles: 'Gourde 500 ml seule' },
 ];
@@ -54,7 +57,7 @@ const usageGuide = [
   <!-- HERO collection -->
   <section class="bg-[#F5F0E8] px-4 pt-12 pb-16">
     <div class="max-w-6xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Fabriquées au Japon · Procédé EM® original</p>
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Fabriquées au Japon · Procédé EM® original</p>
       <h1 class="font-display text-4xl lg:text-5xl xl:text-6xl text-[#1A1A16] leading-[1.08] max-w-3xl mb-6">
         Perles de céramique EM® : purifiez l'eau du robinet <em class="not-italic text-[#166534]">naturellement</em>
       </h1>
@@ -106,13 +109,13 @@ const usageGuide = [
                   <a href={`/perles-ceramique-em/${p.slug}/`} class="hover:text-[#166534] transition-colors">{p.name}</a>
                 </h3>
                 {p.rating && p.reviewCount && (
-                  <p class="text-sm text-[#8B6F47] mt-1" aria-label={`Note ${p.rating} sur 5, ${p.reviewCount} avis`}>
+                  <p class="text-sm text-[#75592F] mt-1" aria-label={`Note ${p.rating} sur 5, ${p.reviewCount} avis`}>
                     ★ {p.rating.toString().replace('.', ',')}/5 · {p.reviewCount} avis
                   </p>
                 )}
               </div>
               <div class="text-right flex-shrink-0">
-                <p class="text-xs text-[#8B6F47] line-through">{p.priceOriginal.toFixed(2).replace('.', ',')} €</p>
+                <p class="text-xs text-[#75592F] line-through">{p.priceOriginal.toFixed(2).replace('.', ',')} €</p>
                 <p class="font-display text-2xl font-bold text-[#166534]">{p.priceCurrent.toFixed(2).replace('.', ',')} €</p>
                 <p class="text-xs text-[#57534e]">-{p.discountPercent} %</p>
               </div>
@@ -126,7 +129,7 @@ const usageGuide = [
               href={`/perles-ceramique-em/${p.slug}/`}
               class={`mt-auto inline-flex justify-center items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-colors ${p.inStock ? 'bg-[#166534] text-white hover:bg-[#0D4A25]' : 'border border-[#57534e] text-[#57534e]'}`}
             >
-              {p.inStock ? 'Voir le pack →' : 'Voir · Être notifié'}
+              {p.inStock ? 'Choisir ce pack →' : 'Voir · Être notifié'}
             </a>
           </article>
         ))}
@@ -137,7 +140,7 @@ const usageGuide = [
   <!-- GUIDE DE CHOIX -->
   <section class="py-16 px-4 bg-[#F5F0E8]" aria-labelledby="choix-titre">
     <div class="max-w-4xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">Guide de choix</p>
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">Guide de choix</p>
       <h2 id="choix-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16] mb-8">Quel pack pour quel usage ?</h2>
       <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8] bg-white">
         <table class="w-full text-sm text-left">
@@ -162,7 +165,7 @@ const usageGuide = [
         </table>
       </div>
       <p class="text-sm text-[#57534e] mt-4">
-        Règle simple : comptez <strong>environ 25 à 35 perles par litre d'eau</strong>.
+        Règle simple : comptez <strong>{PERLES_PAR_LITRE} perles par litre d'eau</strong> de boisson.
         Tous les détails dans notre guide <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">Comment ça marche ?</a>
       </p>
     </div>
@@ -174,12 +177,12 @@ const usageGuide = [
       <h2 id="guides-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Avant d'acheter, informez-vous</h2>
       <div class="grid sm:grid-cols-2 gap-5">
         <a href="/perles-de-ceramique-avis/" class="group rounded-2xl border border-[#EDE8E0] p-6 hover:border-[#C4B89A] transition-colors">
-          <p class="text-xs tracking-widest uppercase text-[#8B6F47] mb-2">Avis & science</p>
+          <p class="text-xs tracking-widest uppercase text-[#75592F] mb-2">Avis & science</p>
           <p class="font-display text-xl text-[#1A1A16] group-hover:text-[#166534] transition-colors mb-2">Perles de céramique : dangers, avis scientifique, ce qui est prouvé</p>
           <p class="text-sm text-[#57534e]">Notre réponse honnête aux questions que tout le monde se pose. →</p>
         </a>
         <a href="/purifier-eau-robinet-comparatif/" class="group rounded-2xl border border-[#EDE8E0] p-6 hover:border-[#C4B89A] transition-colors">
-          <p class="text-xs tracking-widest uppercase text-[#8B6F47] mb-2">Comparatif</p>
+          <p class="text-xs tracking-widest uppercase text-[#75592F] mb-2">Comparatif</p>
           <p class="font-display text-xl text-[#1A1A16] group-hover:text-[#166534] transition-colors mb-2">Perles, charbon binchotan, carafe filtrante ou osmoseur ?</p>
           <p class="text-sm text-[#57534e]">Le match des solutions pour purifier l'eau du robinet. →</p>
         </a>
