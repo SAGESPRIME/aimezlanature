@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaPacks from '../components/CtaPacks.astro';
+import { SITE } from '../data/products';
+import { buildFaqSchema } from '../lib/seo';
+
+const metaTitle = 'FAQ — Livraison, paiement, garantie | Aimez la Nature';
+const metaDescription =
+  'Livraison, paiement, garantie 30 jours, retours : toutes les réponses à vos questions sur les commandes Aimez la Nature.';
+
+const faqItems = [
+  {
+    question: 'Quels sont les délais et frais de livraison ?',
+    answer: `La livraison est offerte dès ${SITE.freeShippingThreshold} € d'achat en France métropolitaine. Comptez 2 à 5 jours ouvrés à réception de votre paiement.`,
+  },
+  {
+    question: 'Comment payer ma commande ?',
+    answer:
+      'Passez commande par email : vous recevez sous 24 h un lien de paiement sécurisé pour régler en ligne par carte bancaire. Le paiement en ligne direct depuis le site arrive bientôt.',
+  },
+  {
+    question: 'Que couvre la garantie 30 jours ?',
+    answer:
+      'Si les perles ne vous conviennent pas, vous disposez de 30 jours après réception pour être remboursé. Ce délai s\'ajoute au droit de rétractation légal de 14 jours — voir le détail dans nos CGV.',
+  },
+  {
+    question: 'Comment vous contacter ?',
+    answer:
+      'Par email à contact@aimezlanature.fr ou au +33 1 84 80 15 22. Nous répondons sous 24 h ouvrées.',
+  },
+  {
+    question: 'Comment utiliser et entretenir les perles ?',
+    answer:
+      'Dosage par litre, première utilisation, régénération par ébullition : tout est expliqué pas à pas dans notre guide Comment ça marche.',
+  },
+  {
+    question: 'Les perles sont-elles efficaces contre les bactéries et métaux lourds ?',
+    answer:
+      'Non, elles agissent sur le goût, le chlore ressenti et le tartre — pas sur les bactéries ni les métaux lourds. Le détail scientifique est dans notre article Avis & science.',
+  },
+];
+
+const jsonLd = buildFaqSchema(faqItems);
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">FAQ</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Questions fréquentes
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Livraison, paiement, garantie, contact : les réponses aux questions les plus posées avant
+        et après commande.
+      </p>
+    </div>
+  </section>
+
+  <Faq items={faqItems} title="Vos questions" />
+  <CtaPacks />
+</BaseLayout>

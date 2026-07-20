@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/products';
+
+const metaTitle = 'Conditions Générales de Vente | Aimez la Nature';
+const metaDescription =
+  "Conditions Générales de Vente d'Aimez la Nature : commande, prix, livraison, droit de rétractation et garanties applicables à vos achats.";
+---
+
+<BaseLayout title={metaTitle} description={metaDescription}>
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Conditions de vente</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1]">
+        Conditions Générales de Vente
+      </h1>
+    </div>
+  </section>
+
+  <section class="py-16 px-4 bg-white" aria-labelledby="cgv-titre">
+    <div class="max-w-3xl mx-auto space-y-10 text-[#57534e] leading-relaxed">
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">1. Champ d'application</h2>
+        <p>
+          Les présentes CGV s'appliquent à toute commande de produits passée auprès de
+          SAS Naturalis Vert (« Aimez la Nature ») par un client particulier résidant en France
+          métropolitaine. Passer commande implique l'acceptation pleine et entière de ces
+          conditions.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">2. Produits et prix</h2>
+        <p>
+          Les prix affichés sur le site sont exprimés en euros, toutes taxes comprises (TTC).
+          SAS Naturalis Vert se réserve le droit de modifier ses prix à tout moment, les produits
+          étant facturés au tarif en vigueur au moment de la validation de la commande.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">3. Commande et paiement</h2>
+        <p>
+          La commande se fait actuellement par email via le bouton « Commander par email » présent
+          sur chaque fiche produit. Vous recevez sous 24 h un lien de paiement sécurisé permettant
+          de régler en ligne par carte bancaire. La commande n'est confirmée qu'après réception du
+          paiement. Un paiement en ligne directement intégré au site sera proposé prochainement.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">4. Livraison</h2>
+        <p>
+          Les commandes sont livrées en France métropolitaine sous 2 à 5 jours ouvrés à compter de
+          la confirmation du paiement. La livraison est offerte dès {SITE.freeShippingThreshold} €
+          d'achat ; en dessous de ce montant, les frais de port sont indiqués avant validation de
+          la commande.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">5. Droit de rétractation</h2>
+        <p>
+          Conformément aux articles L221-18 et suivants du Code de la consommation, vous disposez
+          d'un délai de 14 jours à compter de la réception de votre commande pour exercer votre
+          droit de rétractation, sans avoir à justifier de motif ni à payer de pénalité. Les
+          produits doivent être retournés dans leur état d'origine. Les frais de retour restent à
+          la charge du client, sauf erreur de notre part.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">6. Garantie « satisfait ou remboursé » 30 jours</h2>
+        <p>
+          En complément du droit de rétractation légal, SAS Naturalis Vert propose une garantie
+          commerciale de 30 jours à compter de la réception : si les perles ne vous conviennent
+          pas, contactez-nous à
+          <a href="mailto:contact@aimezlanature.fr" class="text-[#166534] font-semibold hover:underline">contact@aimezlanature.fr</a>
+          pour un remboursement.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">7. Garanties légales</h2>
+        <p>
+          Tous nos produits bénéficient de la garantie légale de conformité (articles L217-3 et
+          suivants du Code de la consommation) et de la garantie légale contre les vices cachés
+          (articles 1641 et suivants du Code civil), en plus de la garantie commerciale décrite
+          ci-dessus.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">8. Réclamations et contact</h2>
+        <p>
+          Pour toute question ou réclamation relative à une commande, contactez-nous à
+          <a href="mailto:contact@aimezlanature.fr" class="text-[#166534] font-semibold hover:underline">contact@aimezlanature.fr</a>
+          ou au +33 1 84 80 15 22. Nous répondons sous 24 h ouvrées.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">9. Droit applicable et juridiction</h2>
+        <p>
+          Les présentes CGV sont soumises au droit français. Tout litige relatif à leur
+          interprétation ou leur exécution relève, à défaut de résolution amiable, de la
+          compétence des tribunaux de Versailles.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

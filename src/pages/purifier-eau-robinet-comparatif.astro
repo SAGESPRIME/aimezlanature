@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaPacks from '../components/CtaPacks.astro';
+import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
+
+const metaTitle = 'Purifier l\'eau du robinet : perles, charbon, carafe ou osmoseur ? | Aimez la Nature';
+const metaDescription =
+  'Comparatif honnête des 4 solutions pour purifier l\'eau du robinet : perles de céramique, charbon binchotan, carafe filtrante, osmoseur. Prix, durée de vie, déchets, efficacité.';
+
+const solutions = [
+  {
+    nom: 'Perles de céramique EM®',
+    prix: '15-30 € (achat unique)',
+    duree: 'Plusieurs années',
+    cout: '~0 €/an après achat',
+    dechets: 'Zéro',
+    traite: 'Goût, chlore ressenti, tartre',
+    entretien: 'Ébullition tous les 3-6 mois',
+  },
+  {
+    nom: 'Charbon actif binchotan',
+    prix: '10-15 € le bâton',
+    duree: '3-6 mois par bâton',
+    cout: '~30-50 €/an',
+    dechets: 'Faibles (compostable)',
+    traite: 'Chlore, goût, certains polluants organiques',
+    entretien: 'Ébullition mensuelle, remplacement',
+  },
+  {
+    nom: 'Carafe filtrante',
+    prix: '20-40 € + cartouches',
+    duree: '1 mois par cartouche',
+    cout: '~60-100 €/an',
+    dechets: '12 cartouches plastique/an',
+    traite: 'Chlore, tartre, plomb (partiel)',
+    entretien: 'Cartouche à changer chaque mois',
+  },
+  {
+    nom: 'Osmoseur',
+    prix: '150-600 € + installation',
+    duree: 'Membrane 2-3 ans',
+    cout: '~50-150 €/an',
+    dechets: 'Membranes, préfiltres',
+    traite: 'Quasi tout : nitrates, pesticides, métaux lourds',
+    entretien: 'Maintenance technique, rejet d\'eau',
+  },
+];
+
+const faqItems = [
+  {
+    question: 'Quelle est la meilleure solution pour purifier l\'eau du robinet ?',
+    answer:
+      'Cela dépend de votre problème. Goût de chlore et tartre : perles de céramique ou charbon binchotan, les deux solutions les plus simples et les plus écologiques. Polluants avérés (nitrates, plomb, pesticides — cas rare en France) : osmoseur ou filtre à charbon actif certifié. La carafe filtrante est un entre-deux pratique mais coûteux à l\'année en cartouches.',
+  },
+  {
+    question: 'Quelle alternative à la carafe filtrante choisir ?',
+    answer:
+      'Les deux alternatives zéro déchet les plus crédibles sont les perles de céramique (achat unique 15-30 €, durent des années, agissent sur le goût et le tartre) et le charbon binchotan (10-15 €, à remplacer tous les 3-6 mois, adsorbe le chlore efficacement). Les deux suppriment l\'achat mensuel de cartouches plastique — environ 60 à 100 € d\'économie par an.',
+  },
+  {
+    question: 'Perles de céramique ou charbon actif : que choisir ?',
+    answer:
+      'Le charbon binchotan adsorbe davantage de chlore et certains composés organiques, mais doit être remplacé tous les 3 à 6 mois. Les perles de céramique durent des années avec une simple ébullition et agissent aussi sur le tartre. Les deux sont complémentaires : beaucoup de nos clients utilisent perles + binchotan dans la même carafe.',
+  },
+  {
+    question: 'L\'eau du robinet est-elle vraiment sûre en France ?',
+    answer:
+      'Oui : c\'est l\'un des aliments les plus contrôlés de France, avec des analyses régulières publiées par les Agences Régionales de Santé. Les solutions de cette page ne servent pas à la rendre potable — elle l\'est déjà — mais à améliorer son goût, limiter le tartre ou traiter des cas particuliers (vieilles canalisations au plomb, zones agricoles à nitrates).',
+  },
+  {
+    question: 'Un osmoseur est-il utile pour un particulier ?',
+    answer:
+      'Rarement. L\'osmose inverse retire quasiment tout — y compris les minéraux — au prix d\'un équipement coûteux, d\'une installation sous évier et d\'un rejet de 2 à 4 litres d\'eau par litre filtré. Il se justifie si une analyse révèle une contamination réelle (nitrates, pesticides), pas pour un simple problème de goût.',
+  },
+];
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'Purifier l\'eau du robinet : perles de céramique, charbon, carafe filtrante ou osmoseur ?',
+    description: metaDescription,
+    path: '/purifier-eau-robinet-comparatif/',
+    datePublished: '2026-07-20',
+  }),
+  buildFaqSchema(faqItems),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Comparatif · Sans langue de bois</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Purifier l'eau du robinet : perles, charbon, carafe filtrante ou osmoseur ?
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Nous vendons des perles de céramique — et pourtant ce comparatif vous dira quand
+        <em>ne pas</em> en acheter. Chaque solution a son terrain de jeu : voici lequel,
+        chiffres à l'appui.
+      </p>
+    </div>
+  </section>
+
+  <!-- TABLEAU COMPARATIF -->
+  <section class="py-14 px-4 bg-white" aria-labelledby="tableau-titre">
+    <div class="max-w-5xl mx-auto">
+      <h2 id="tableau-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Le match en un tableau</h2>
+      <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8]">
+        <table class="w-full text-sm text-left min-w-[720px]">
+          <thead>
+            <tr class="bg-[#0D2818] text-white">
+              <th scope="col" class="px-4 py-3.5 font-semibold">Solution</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Prix</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Durée de vie</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Coût/an</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Déchets</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Agit sur</th>
+            </tr>
+          </thead>
+          <tbody>
+            {solutions.map((s, i) => (
+              <tr class={i % 2 ? 'bg-[#FDFBF7]' : 'bg-white'}>
+                <td class="px-4 py-3.5 font-semibold text-[#1A1A16]">{s.nom}</td>
+                <td class="px-4 py-3.5 text-[#57534e]">{s.prix}</td>
+                <td class="px-4 py-3.5 text-[#57534e]">{s.duree}</td>
+                <td class="px-4 py-3.5 text-[#57534e]">{s.cout}</td>
+                <td class="px-4 py-3.5 text-[#57534e]">{s.dechets}</td>
+                <td class="px-4 py-3.5 text-[#57534e]">{s.traite}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-sm text-[#57534e] mt-4">
+        Coûts estimés pour un foyer de 2-3 personnes, prix constatés en France en 2026.
+      </p>
+    </div>
+  </section>
+
+  <!-- DETAIL PAR SOLUTION -->
+  <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="detail-titre">
+    <div class="max-w-3xl mx-auto space-y-10">
+      <h2 id="detail-titre" class="font-display text-3xl text-[#1A1A16]">Chaque solution en détail</h2>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Perles de céramique EM® — le confort zéro déchet</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          Des perles d'argile japonaise à déposer une fois pour toutes dans la carafe, la bouilloire
+          ou le lave-vaisselle. Elles adoucissent le goût, réduisent la sensation de chlore et
+          limitent le tartre. Achat unique, régénération par simple
+          <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">ébullition tous les 3-6 mois</a>.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          <strong class="text-[#166534]">Pour :</strong> goût, tartre, budget, zéro déchet ·
+          <strong class="text-[#9B3B3B]">Contre :</strong> aucune action sur bactéries, nitrates, métaux lourds —
+          <a href="/perles-de-ceramique-avis/" class="text-[#166534] font-semibold hover:underline">on vous le dit clairement ici</a>.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Charbon actif binchotan — l'adsorbant naturel</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          Un bâton de charbon de chêne ubame japonais qui adsorbe le chlore et certains composés
+          organiques. Efficace sur le goût, esthétique dans une carafe, compostable en fin de vie.
+          Son point faible : il sature — comptez un remplacement tous les 3 à 6 mois.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          <strong class="text-[#166534]">Pour :</strong> chlore, goût, naturel ·
+          <strong class="text-[#9B3B3B]">Contre :</strong> rachat récurrent, fragile, inefficace sur le tartre.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Carafe filtrante — pratique mais chère à l'année</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          La solution la plus répandue. Les cartouches (charbon actif + résine échangeuse d'ions)
+          réduisent chlore, tartre et partiellement le plomb. Mais à ~5-8 € la cartouche mensuelle,
+          le coût réel atteint 60 à 100 € par an, avec douze cartouches plastique jetées. Mal
+          entretenue (cartouche périmée, carafe tiède), elle peut même dégrader la qualité de l'eau.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          <strong class="text-[#166534]">Pour :</strong> simplicité, disponibilité partout ·
+          <strong class="text-[#9B3B3B]">Contre :</strong> abonnement de fait, déchets plastique, entretien strict.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Osmoseur — l'artillerie lourde, pour les vrais problèmes</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          L'osmose inverse pousse l'eau à travers une membrane qui retient quasiment tout :
+          nitrates, pesticides, métaux lourds, médicaments… et aussi les minéraux. C'est la seule
+          solution de cette page qui traite une eau réellement contaminée. En contrepartie :
+          150 à 600 € d'équipement, une installation sous évier, et 2 à 4 litres d'eau rejetés
+          par litre produit.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          <strong class="text-[#166534]">Pour :</strong> contamination avérée (analyse à l'appui) ·
+          <strong class="text-[#9B3B3B]">Contre :</strong> prix, gaspillage d'eau, eau déminéralisée au goût plat.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUEL PROFIL, QUELLE SOLUTION -->
+  <section class="py-14 px-4 bg-white" aria-labelledby="profil-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="profil-titre" class="font-display text-3xl text-[#1A1A16] mb-8">En résumé : quelle solution pour vous ?</h2>
+      <div class="space-y-4">
+        <div class="rounded-2xl border border-[#D4E4D0] bg-[#F4F9F2] p-6">
+          <p class="font-semibold text-[#166534] mb-1">« L'eau a un goût de chlore, ma bouilloire s'entartre »</p>
+          <p class="text-sm text-[#57534e]">
+            → Perles de céramique (achat unique) ou binchotan (si le goût est votre seul critère).
+            Voir <a href="/perles-ceramique-em/" class="text-[#166534] font-semibold hover:underline">nos packs de perles EM®</a>.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
+          <p class="font-semibold text-[#8B6F47] mb-1">« Je veux remplacer ma carafe filtrante sans racheter de cartouches »</p>
+          <p class="text-sm text-[#57534e]">
+            → Perles dans votre carafe actuelle : mêmes gestes, zéro rachat, zéro déchet.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
+          <p class="font-semibold text-[#8B6F47] mb-1">« Mon analyse d'eau révèle nitrates, plomb ou pesticides »</p>
+          <p class="text-sm text-[#57534e]">
+            → Osmoseur ou filtre charbon actif certifié NSF. Les perles ne traitent pas ces polluants —
+            aucun produit « miracle » ne le fait.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Faq items={faqItems} title="Vos questions sur la purification de l'eau" />
+  <CtaPacks />
+</BaseLayout>

@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Faq from '../../components/Faq.astro';
+import { products, SITE, type Product } from '../../data/products';
+import { buildFaqSchema, buildProductSchema } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
+}
+
+interface Props {
+  product: Product;
+}
+const { product: p } = Astro.props;
+
+const others = products.filter((o) => o.slug !== p.slug && o.inStock).slice(0, 3);
+const paragraphs = p.description.split('\n\n');
+const jsonLd = [buildProductSchema(p), buildFaqSchema(p.qa)];
+
+const orderMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Commande — ${p.name} (${p.sku})`)}`;
+const notifyMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Retour en stock — ${p.name}`)}`;
+const fmt = (n: number) => n.toFixed(2).replace('.', ',');
+---
+
+<BaseLayout title={p.metaTitle} description={p.metaDescription} jsonLd={jsonLd}>
+  <!-- FICHE PRODUIT -->
+  <section class="px-4 py-10 bg-[#F5F0E8]">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+      <!-- Visuel produit (placeholder en attendant les photos) -->
+      <div class="relative rounded-3xl bg-[#EDE8E0] aspect-square flex items-center justify-center">
+        <div class="text-center text-[#8B6F47]">
+          <svg class="w-24 h-24 mx-auto opacity-30" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+            <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="40" cy="30" r="6" fill="currentColor" opacity="0.4" />
+            <path d="M16 62 Q40 48 64 62" stroke="currentColor" stroke-width="1.5" fill="none" />
+            <circle cx="24" cy="52" r="3" fill="currentColor" opacity="0.3" />
+            <circle cx="56" cy="54" r="4" fill="currentColor" opacity="0.3" />
+          </svg>
+          <p class="text-xs tracking-widest uppercase opacity-40 mt-2">Photo {p.shortName}</p>
+        </div>
+        <span class="absolute top-5 left-5 bg-[#166534] text-white text-xs font-bold px-3 py-1.5 rounded-full">-{p.discountPercent} %</span>
+        {!p.inStock && (
+          <span class="absolute top-5 right-5 bg-[#57534e] text-white text-xs font-semibold px-3 py-1.5 rounded-full">Rupture de stock</span>
+        )}
+      </div>
+
+      <!-- Infos & achat -->
+      <div>
+        <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">Céramique EM® · Fabriqué au Japon</p>
+        <h1 class="font-display text-3xl lg:text-4xl xl:text-5xl text-[#1A1A16] leading-tight mb-3">{p.name}</h1>
+        <p class="text-sm text-[#57534e] mb-5" aria-label={`Note ${p.rating} sur 5 basée sur ${p.reviewCount} avis`}>
+          <span class="text-[#166534] font-bold">★★★★★</span>
+          <strong class="text-[#1A1A16]"> {p.rating.toString().replace('.', ',')}/5</strong> · {p.reviewCount} avis vérifiés
+        </p>
+
+        <div class="flex items-end gap-3 mb-6">
+          <p class="font-display text-4xl font-bold text-[#166534]">{fmt(p.priceCurrent)} €</p>
+          <p class="text-lg text-[#8B6F47] line-through mb-1">{fmt(p.priceOriginal)} €</p>
+        </div>
+
+        <ul class="flex flex-wrap gap-2 mb-7">
+          {p.usages.map((u) => (
+            <li class="text-xs bg-white border border-[#EDE8E0] text-[#57534e] px-3 py-1.5 rounded-full">{u}</li>
+          ))}
+        </ul>
+
+        {p.inStock ? (
+          <div class="mb-3">
+            <a href={orderMail} class="inline-flex w-full sm:w-auto justify-center items-center gap-2 bg-[#166534] text-white px-10 py-4 rounded-full font-semibold hover:bg-[#0D4A25] transition-colors">
+              Commander par email →
+            </a>
+            <p class="text-xs text-[#57534e] mt-2">
+              Réponse sous 24 h avec le lien de paiement sécurisé. Paiement en ligne direct bientôt disponible.
+            </p>
+          </div>
+        ) : (
+          <div class="mb-3">
+            <a href={notifyMail} class="inline-flex w-full sm:w-auto justify-center items-center gap-2 border-2 border-[#166534] text-[#166534] px-10 py-4 rounded-full font-semibold hover:bg-[#166534] hover:text-white transition-colors">
+              Me notifier au retour en stock
+            </a>
+          </div>
+        )}
+
+        <div class="flex flex-wrap gap-4 text-xs text-[#57534e] border-t border-[#D4C9B8] pt-5 mt-6">
+          <span>🚚 Livraison offerte dès {SITE.freeShippingThreshold} €</span>
+          <span>🔄 Garantie 30 jours</span>
+          <span>💧 {SITE.donationPercent} % reversés aux puits</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESCRIPTION -->
+  <section class="py-16 px-4 bg-white" aria-labelledby="description-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="description-titre" class="font-display text-3xl text-[#1A1A16] mb-6">Description</h2>
+      {paragraphs.map((par) => (
+        <p class="text-[#57534e] leading-relaxed mb-4">{par}</p>
+      ))}
+      <p class="text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4 mt-6">
+        💡 Première utilisation, dosage, entretien : tout est expliqué pas à pas dans notre guide
+        <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">Comment ça marche ?</a>
+      </p>
+    </div>
+  </section>
+
+  <Faq items={p.qa} title={`Questions sur le ${p.shortName}`} />
+
+  <!-- CROSS-SELL -->
+  <section class="py-16 px-4 bg-[#F5F0E8]" aria-labelledby="autres-titre">
+    <div class="max-w-5xl mx-auto">
+      <h2 id="autres-titre" class="font-display text-2xl text-[#1A1A16] mb-6">Les autres packs</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {others.map((o) => (
+          <a href={`/perles-ceramique-em/${o.slug}/`} class="bg-white rounded-2xl border border-[#EDE8E0] p-5 hover:border-[#C4B89A] transition-colors">
+            <p class="font-display text-lg text-[#1A1A16] mb-1">{o.shortName}</p>
+            <p class="text-xs text-[#57534e] mb-3">{o.usages[0]}</p>
+            <p class="font-bold text-[#166534]">{fmt(o.priceCurrent)} €</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaPacks from '../components/CtaPacks.astro';
+import { buildFaqSchema } from '../lib/seo';
+
+const metaTitle = 'Comment utiliser les perles de céramique ? Guide complet | Aimez la Nature';
+const metaDescription =
+  'Combien de perles de céramique par litre d\'eau, première utilisation, entretien, régénération par ébullition : le guide complet pour bien utiliser vos perles EM®.';
+
+// Dosage : la question n°1 sur Google (« combien de perles de céramique par litre d'eau »)
+const dosages = [
+  { contenant: 'Gourde 500 ml à 1 L', nb: '15 à 35 perles', pack: 'Pack 35', slug: 'pack-35-perles' },
+  { contenant: 'Carafe 1 à 1,5 L', nb: '35 perles', pack: 'Pack 35', slug: 'pack-35-perles' },
+  { contenant: 'Carafe 1,5 à 2 L, bouilloire, cafetière', nb: '55 perles', pack: 'Pack 55', slug: 'pack-55-perles' },
+  { contenant: 'Bonbonne 5 à 10 L', nb: '100 perles', pack: 'Pack 100', slug: 'pack-100-perles' },
+  { contenant: 'Lave-vaisselle', nb: '50 à 100 perles', pack: 'Pack 100', slug: 'pack-100-perles' },
+  { contenant: 'Machine à laver', nb: '50 à 100 perles', pack: 'Pack 100', slug: 'pack-100-perles' },
+];
+
+const etapes = [
+  {
+    titre: 'Activez les perles (première utilisation)',
+    texte: 'Faites bouillir vos perles 10 minutes dans de l\'eau claire pour les activer, puis placez-les dans votre contenant rempli d\'eau du robinet et attendez 30 minutes. Cette étape ne se fait qu\'une seule fois.',
+  },
+  {
+    titre: 'Laissez-les agir au quotidien',
+    texte: 'Les perles restent en permanence au fond de votre carafe, gourde ou appareil. Remplissez, l\'eau s\'améliore en continu : moins de goût de chlore, moins de tartre, un goût plus doux. Aucune attente après la première utilisation.',
+  },
+  {
+    titre: 'Régénérez tous les 3 à 6 mois',
+    texte: 'Faites bouillir les perles 10 à 15 minutes dans de l\'eau claire, sans savon ni détergent. Cette ébullition leur redonne toute leur efficacité. À répéter selon la dureté de votre eau et votre fréquence d\'utilisation.',
+  },
+];
+
+const faqItems = [
+  {
+    question: 'Combien de perles de céramique par litre d\'eau ?',
+    answer:
+      'Comptez environ 25 à 35 perles par litre d\'eau. Concrètement : 35 perles pour une carafe de 1 à 1,5 L, 55 perles pour une carafe de 2 L ou une bouilloire, 100 perles pour une bonbonne de 5 à 10 L ou un lave-vaisselle.',
+  },
+  {
+    question: 'Comment utiliser les perles de céramique pour la première fois ?',
+    answer:
+      'Faites-les bouillir 10 minutes dans de l\'eau claire pour les activer, puis placez-les au fond de votre contenant rempli d\'eau du robinet et attendez 30 minutes avant de boire. Ensuite, aucune attente n\'est nécessaire.',
+  },
+  {
+    question: 'Comment nettoyer et régénérer les perles de céramique ?',
+    answer:
+      'Faites-les bouillir 10 à 15 minutes dans de l\'eau claire, sans savon, sans détergent et sans vinaigre. Répétez tous les 3 à 6 mois. Si un dépôt blanc apparaît (calcaire), l\'ébullition suffit à le faire disparaître.',
+  },
+  {
+    question: 'Quels sont les effets des perles de céramique sur l\'eau ?',
+    answer:
+      'Elles réduisent le goût et l\'odeur de chlore, limitent les dépôts de tartre sur les parois et les résistances, et adoucissent le goût de l\'eau. Elles n\'éliminent pas les bactéries ni les métaux lourds — voir notre article avis & science pour le détail de ce qui est prouvé.',
+  },
+  {
+    question: 'Combien de temps durent les perles de céramique ?',
+    answer:
+      'Plusieurs années avec une régénération régulière. Contrairement aux cartouches de carafe filtrante, il n\'y a rien à racheter chaque mois : c\'est un achat unique.',
+  },
+  {
+    question: 'Peut-on mettre les perles de céramique au lave-vaisselle ou dans la machine à laver ?',
+    answer:
+      'Oui. Placez 50 à 100 perles dans le panier à couverts du lave-vaisselle ou directement dans le tambour de la machine à laver (dans leur sachet coton). Elles limitent le calcaire et peuvent réduire la dose de détergent nécessaire.',
+  },
+];
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Comment utiliser les perles de céramique EM®',
+  description: metaDescription,
+  step: etapes.map((e, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: e.titre,
+    text: e.texte,
+  })),
+};
+
+const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Mode d'emploi</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Comment utiliser les perles de céramique ? Le guide complet
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Dosage par litre, première utilisation, entretien, régénération : tout ce qu'il faut
+        savoir pour tirer le meilleur de vos perles EM® — en 3 étapes et quelques minutes.
+      </p>
+    </div>
+  </section>
+
+  <!-- 3 ÉTAPES -->
+  <section class="py-16 px-4 bg-white" aria-labelledby="etapes-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="etapes-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Les 3 étapes essentielles</h2>
+      <ol class="space-y-8">
+        {etapes.map((e, i) => (
+          <li class="flex gap-5">
+            <span class="font-display text-3xl text-[#C4B89A] font-bold leading-none flex-shrink-0 w-12" aria-hidden="true">
+              0{i + 1}
+            </span>
+            <div>
+              <h3 class="font-semibold text-lg text-[#1A1A16] mb-2">{e.titre}</h3>
+              <p class="text-[#57534e] leading-relaxed">{e.texte}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- DOSAGE -->
+  <section class="py-16 px-4 bg-[#F5F0E8]" aria-labelledby="dosage-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="dosage-titre" class="font-display text-3xl text-[#1A1A16] mb-4">Combien de perles par litre d'eau ?</h2>
+      <p class="text-[#57534e] mb-8">
+        La règle simple : <strong class="text-[#1A1A16]">25 à 35 perles par litre</strong>.
+        Voici le dosage recommandé contenant par contenant :
+      </p>
+      <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8] bg-white">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-[#0D2818] text-white">
+              <th scope="col" class="px-5 py-3.5 font-semibold">Contenant</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Nombre de perles</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Pack adapté</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dosages.map((d, i) => (
+              <tr class={i % 2 ? 'bg-[#FDFBF7]' : 'bg-white'}>
+                <td class="px-5 py-3.5 text-[#57534e]">{d.contenant}</td>
+                <td class="px-5 py-3.5 font-semibold text-[#1A1A16]">{d.nb}</td>
+                <td class="px-5 py-3.5">
+                  <a href={`/perles-ceramique-em/${d.slug}/`} class="font-semibold text-[#166534] hover:underline">{d.pack}</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CE QUE ÇA FAIT / NE FAIT PAS -->
+  <section class="py-16 px-4 bg-white" aria-labelledby="effets-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="effets-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Ce que les perles font — et ne font pas</h2>
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div class="rounded-2xl border border-[#D4E4D0] bg-[#F4F9F2] p-6">
+          <p class="font-semibold text-[#166534] mb-3">✓ Ce qu'elles font</p>
+          <ul class="space-y-2 text-sm text-[#57534e]">
+            <li>Réduisent le goût et l'odeur de chlore</li>
+            <li>Limitent les dépôts de tartre</li>
+            <li>Adoucissent le goût de l'eau</li>
+            <li>Durent des années (achat unique)</li>
+            <li>Zéro déchet, zéro plastique</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
+          <p class="font-semibold text-[#8B6F47] mb-3">✗ Ce qu'elles ne font pas</p>
+          <ul class="space-y-2 text-sm text-[#57534e]">
+            <li>Éliminer bactéries et virus</li>
+            <li>Filtrer métaux lourds, nitrates, pesticides</li>
+            <li>Rendre potable une eau qui ne l'est pas</li>
+          </ul>
+          <p class="text-xs text-[#57534e] mt-4">
+            On vous explique pourquoi, sources à l'appui, dans notre article
+            <a href="/perles-de-ceramique-avis/" class="text-[#166534] font-semibold hover:underline">avis & science</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Faq items={faqItems} title="Vos questions sur l'utilisation" />
+  <CtaPacks />
+</BaseLayout>

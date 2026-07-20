@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /succes
+
+Sitemap: https://www.aimezlanature.fr/sitemap-index.xml

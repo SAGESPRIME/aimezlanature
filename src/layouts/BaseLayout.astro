@@ -1,0 +1,185 @@
+---
+import '../styles/global.css';
+import { SITE } from '../data/products';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  jsonLd?: object | object[];
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  jsonLd,
+  noindex = false,
+  ogImage = '/og-default.jpg',
+} = Astro.props;
+
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.url).href;
+
+// Normalise jsonLd en tableau pour le slot
+const schemas = jsonLd
+  ? Array.isArray(jsonLd)
+    ? jsonLd
+    : [jsonLd]
+  : [];
+
+// Schema BreadcrumbList pour toutes les pages
+const breadcrumbSegments = Astro.url.pathname
+  .replace(/\/$/, '')
+  .split('/')
+  .filter(Boolean);
+
+const breadcrumbItems = [
+  { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE.url + '/' },
+  ...breadcrumbSegments.map((seg, i) => ({
+    '@type': 'ListItem',
+    position: i + 2,
+    name: seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    item: SITE.url + '/' + breadcrumbSegments.slice(0, i + 1).join('/') + '/',
+  })),
+];
+
+const breadcrumbSchema =
+  breadcrumbItems.length > 1
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbItems,
+      }
+    : null;
+
+const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:image" content={new URL(ogImage, SITE.url).href} />
+    <meta property="og:locale" content="fr_FR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, SITE.url).href} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JSON-LD Structured Data (SSR only) -->
+    {allSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+  </head>
+  <body class="bg-stone-50 text-stone-800 font-sans antialiased overflow-x-hidden">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
+      <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="font-display text-xl font-bold text-green-800 hover:text-green-700 transition-colors">
+          Aimez la Nature
+        </a>
+        <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
+          <li><a href="/perles-ceramique-em/" class="hover:text-green-700 transition-colors">Nos Perles</a></li>
+          <li><a href="/comment-ca-marche/" class="hover:text-green-700 transition-colors">Comment ça marche</a></li>
+          <li><a href="/faq/" class="hover:text-green-700 transition-colors">FAQ</a></li>
+          <li><a href="/a-propos/" class="hover:text-green-700 transition-colors">Notre mission</a></li>
+        </ul>
+        <a
+          href="/perles-ceramique-em/"
+          class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
+        >
+          Commander
+        </a>
+      </nav>
+    </header>
+
+    <!-- Breadcrumb (visible only on inner pages) -->
+    {breadcrumbItems.length > 1 && (
+      <div class="max-w-6xl mx-auto px-4 py-3">
+        <ol class="flex items-center gap-2 text-xs text-stone-500">
+          {breadcrumbItems.map((item, i) => (
+            <li class="flex items-center gap-2">
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {i < breadcrumbItems.length - 1 ? (
+                <a href={item.item} class="hover:text-green-700 transition-colors">{item.name}</a>
+              ) : (
+                <span class="text-stone-700 font-medium">{item.name}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    )}
+
+    <!-- Main content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-800 text-stone-300 mt-20">
+      <div class="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <p class="font-display text-white font-bold text-lg mb-3">Aimez la Nature</p>
+          <p class="text-sm leading-relaxed">
+            Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement.
+            2,5 % de nos bénéfices financent des puits d'eau potable.
+          </p>
+        </div>
+        <div>
+          <p class="text-white font-semibold mb-3">Nos produits</p>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/perles-ceramique-em/pack-35-perles/" class="hover:text-white transition-colors">Pack 35 Perles</a></li>
+            <li><a href="/perles-ceramique-em/pack-55-perles/" class="hover:text-white transition-colors">Pack 55 Perles</a></li>
+            <li><a href="/perles-ceramique-em/pack-100-perles/" class="hover:text-white transition-colors">Pack 100 Perles</a></li>
+            <li><a href="/perles-ceramique-em/pack-gourde-ceramique-em/" class="hover:text-white transition-colors">Pack Gourde</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-semibold mb-3">Informations</p>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/comment-ca-marche/" class="hover:text-white transition-colors">Comment ça marche</a></li>
+            <li><a href="/perles-de-ceramique-avis/" class="hover:text-white transition-colors">Avis & science : le vrai du faux</a></li>
+            <li><a href="/purifier-eau-robinet-comparatif/" class="hover:text-white transition-colors">Comparatif : purifier l'eau du robinet</a></li>
+            <li><a href="/faq/" class="hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="/a-propos/" class="hover:text-white transition-colors">Notre mission</a></li>
+            <li><a href="/contact/" class="hover:text-white transition-colors">Contact</a></li>
+            <li><a href="/mentions-legales/" class="hover:text-white transition-colors">Mentions légales</a></li>
+            <li><a href="/cgv/" class="hover:text-white transition-colors">CGV</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-stone-700 py-4 text-center text-xs text-stone-500">
+        © {new Date().getFullYear()} Aimez la Nature — Tous droits réservés
+      </div>
+    </footer>
+  </body>
+</html>

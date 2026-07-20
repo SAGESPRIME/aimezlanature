@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Faq from '../../components/Faq.astro';
+import { products, SITE } from '../../data/products';
+import { buildFaqSchema, buildItemListSchema } from '../../lib/seo';
+
+const metaTitle = 'Perles de Céramique EM® pour Purifier l\'Eau du Robinet | Aimez la Nature';
+const metaDescription =
+  'Perles de céramique EM® japonaises : réduisent le chlore, le tartre et améliorent le goût de l\'eau. Packs 35, 55 et 100 perles dès 15,90 €. Livraison offerte dès 50 €.';
+
+// Questions issues des « Autres questions posées » de Google (recherche DataForSEO)
+const faqItems = [
+  {
+    question: 'Quels sont les bienfaits des perles de céramique ?',
+    answer:
+      'Les perles de céramique EM® réduisent le goût et l\'odeur de chlore, limitent les dépôts de tartre et adoucissent le goût de l\'eau du robinet. Elles remplacent les bouteilles plastique et les cartouches filtrantes jetables : une solution zéro déchet qui dure des années avec un simple entretien.',
+  },
+  {
+    question: 'Quelle est la durée de vie des perles de céramique ?',
+    answer:
+      'Avec une régénération régulière (ébullition 10 à 15 minutes tous les 3 à 6 mois), les perles conservent leurs propriétés pendant plusieurs années. C\'est leur grand avantage face aux carafes filtrantes dont la cartouche doit être remplacée chaque mois.',
+  },
+  {
+    question: 'Comment activer les perles de céramique avant la première utilisation ?',
+    answer:
+      'Faites-les bouillir 10 minutes dans de l\'eau claire, puis laissez-les reposer 30 minutes dans votre premier contenant rempli d\'eau. Ensuite, plus aucune attente n\'est nécessaire au quotidien.',
+  },
+  {
+    question: 'Quelle est la différence entre perles de céramique et billes de céramique ?',
+    answer:
+      'Aucune : « billes de céramique », « perles de céramique » ou « perles EM® » désignent le même produit — des petits cylindres d\'argile enrichie en micro-organismes efficaces (EM®), cuits à haute température selon le procédé japonais original.',
+  },
+  {
+    question: 'Les perles de céramique filtrent-elles les bactéries et les métaux lourds ?',
+    answer:
+      'Non. Les perles améliorent le goût, réduisent le chlore et limitent le tartre, mais elles ne remplacent pas un filtre à charbon actif ou un osmoseur pour les métaux lourds et les bactéries. Nous le disons clairement : consultez notre comparatif des solutions de purification pour choisir selon votre eau.',
+  },
+];
+
+const jsonLd = [buildItemListSchema(products), buildFaqSchema(faqItems)];
+
+// Guide de choix rapide : usage → pack recommandé
+const usageGuide = [
+  { usage: 'Carafe 1 à 1,5 L / gourde', pack: 'Pack 35', slug: 'pack-35-perles', perles: '35 perles' },
+  { usage: 'Carafe 1,5-2 L, bouilloire, cafetière', pack: 'Pack 55', slug: 'pack-55-perles', perles: '55 perles' },
+  { usage: 'Lave-vaisselle, machine à laver, bonbonne', pack: 'Pack 100', slug: 'pack-100-perles', perles: '100 perles' },
+  { usage: 'Eau pure en déplacement', pack: 'Pack Gourde', slug: 'pack-gourde-ceramique-em', perles: 'Gourde + 100 perles' },
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO collection -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-16">
+    <div class="max-w-6xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Fabriquées au Japon · Procédé EM® original</p>
+      <h1 class="font-display text-4xl lg:text-5xl xl:text-6xl text-[#1A1A16] leading-[1.08] max-w-3xl mb-6">
+        Perles de céramique EM® : purifiez l'eau du robinet <em class="not-italic text-[#166534]">naturellement</em>
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed max-w-2xl mb-6">
+        Aussi appelées billes de céramique, nos perles d'argile enrichie en Micro-organismes
+        Efficaces (EM®) réduisent le chlore, adoucissent le goût et limitent le tartre —
+        sans cartouche à remplacer, sans plastique, pendant des années.
+      </p>
+      <div class="flex flex-wrap items-center gap-5 text-sm text-[#57534e]">
+        <span><strong class="text-[#1A1A16]">★ {SITE.globalRating.toString().replace('.', ',')}/5</strong> · {SITE.totalReviews} avis vérifiés</span>
+        <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
+        <span>Livraison offerte dès {SITE.freeShippingThreshold} €</span>
+        <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
+        <span>Garantie 30 jours</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRILLE PRODUITS -->
+  <section class="py-16 px-4 bg-white" aria-labelledby="packs-titre">
+    <div class="max-w-6xl mx-auto">
+      <h2 id="packs-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16] mb-10">Nos packs de perles EM®</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {products.map((p) => (
+          <article class={`relative rounded-3xl border p-7 lg:p-8 flex flex-col gap-4 transition-shadow hover:shadow-lg ${p.inStock ? 'border-[#EDE8E0] bg-[#FDFBF7]' : 'border-[#EDE8E0] bg-[#F7F5F2] opacity-70'}`}>
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                {p.slug === 'pack-55-perles' && (
+                  <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-2">Bestseller</span>
+                )}
+                {!p.inStock && (
+                  <span class="inline-block bg-[#57534e] text-white text-xs font-semibold px-3 py-1 rounded-full mb-2">En rupture de stock</span>
+                )}
+                <h3 class="font-display text-2xl text-[#1A1A16]">
+                  <a href={`/perles-ceramique-em/${p.slug}/`} class="hover:text-[#166534] transition-colors">{p.name}</a>
+                </h3>
+                <p class="text-sm text-[#8B6F47] mt-1" aria-label={`Note ${p.rating} sur 5, ${p.reviewCount} avis`}>
+                  ★ {p.rating.toString().replace('.', ',')}/5 · {p.reviewCount} avis
+                </p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="text-xs text-[#8B6F47] line-through">{p.priceOriginal.toFixed(2).replace('.', ',')} €</p>
+                <p class="font-display text-2xl font-bold text-[#166534]">{p.priceCurrent.toFixed(2).replace('.', ',')} €</p>
+                <p class="text-xs text-[#57534e]">-{p.discountPercent} %</p>
+              </div>
+            </div>
+            <ul class="flex flex-wrap gap-2">
+              {p.usages.map((u) => (
+                <li class="text-xs bg-[#F5F0E8] text-[#57534e] px-3 py-1.5 rounded-full">{u}</li>
+              ))}
+            </ul>
+            <a
+              href={`/perles-ceramique-em/${p.slug}/`}
+              class={`mt-auto inline-flex justify-center items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-colors ${p.inStock ? 'bg-[#166534] text-white hover:bg-[#0D4A25]' : 'border border-[#57534e] text-[#57534e]'}`}
+            >
+              {p.inStock ? 'Voir le pack →' : 'Voir · Être notifié'}
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE DE CHOIX -->
+  <section class="py-16 px-4 bg-[#F5F0E8]" aria-labelledby="choix-titre">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">Guide de choix</p>
+      <h2 id="choix-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16] mb-8">Quel pack pour quel usage ?</h2>
+      <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8] bg-white">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-[#0D2818] text-white">
+              <th scope="col" class="px-5 py-3.5 font-semibold">Votre usage</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Pack recommandé</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Contenu</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usageGuide.map((row, i) => (
+              <tr class={i % 2 ? 'bg-[#FDFBF7]' : 'bg-white'}>
+                <td class="px-5 py-3.5 text-[#57534e]">{row.usage}</td>
+                <td class="px-5 py-3.5">
+                  <a href={`/perles-ceramique-em/${row.slug}/`} class="font-semibold text-[#166534] hover:underline">{row.pack}</a>
+                </td>
+                <td class="px-5 py-3.5 text-[#57534e]">{row.perles}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-sm text-[#57534e] mt-4">
+        Règle simple : comptez <strong>environ 25 à 35 perles par litre d'eau</strong>.
+        Tous les détails dans notre guide <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">Comment ça marche ?</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- MAILLAGE GUIDES -->
+  <section class="py-16 px-4 bg-white" aria-labelledby="guides-titre">
+    <div class="max-w-4xl mx-auto">
+      <h2 id="guides-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Avant d'acheter, informez-vous</h2>
+      <div class="grid sm:grid-cols-2 gap-5">
+        <a href="/perles-de-ceramique-avis/" class="group rounded-2xl border border-[#EDE8E0] p-6 hover:border-[#C4B89A] transition-colors">
+          <p class="text-xs tracking-widest uppercase text-[#8B6F47] mb-2">Avis & science</p>
+          <p class="font-display text-xl text-[#1A1A16] group-hover:text-[#166534] transition-colors mb-2">Perles de céramique : dangers, avis scientifique, ce qui est prouvé</p>
+          <p class="text-sm text-[#57534e]">Notre réponse honnête aux questions que tout le monde se pose. →</p>
+        </a>
+        <a href="/purifier-eau-robinet-comparatif/" class="group rounded-2xl border border-[#EDE8E0] p-6 hover:border-[#C4B89A] transition-colors">
+          <p class="text-xs tracking-widest uppercase text-[#8B6F47] mb-2">Comparatif</p>
+          <p class="font-display text-xl text-[#1A1A16] group-hover:text-[#166534] transition-colors mb-2">Perles, charbon binchotan, carafe filtrante ou osmoseur ?</p>
+          <p class="text-sm text-[#57534e]">Le match des solutions pour purifier l'eau du robinet. →</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Faq items={faqItems} title="Questions fréquentes sur les perles de céramique" />
+</BaseLayout>

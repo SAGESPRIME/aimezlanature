@@ -1,0 +1,12 @@
+# Redirects 301 — migration depuis WooCommerce et Shopify
+
+/produit/perles-de-ceramique-em-pack-35-aimez-la-nature/  /perles-ceramique-em/pack-35-perles/  301
+/produit/perles-de-ceramique-em-pack-55-aimez-la-nature/  /perles-ceramique-em/pack-55-perles/  301
+/produit/perles-de-ceramique-em-pack-100-aimez-la-nature/ /perles-ceramique-em/pack-100-perles/ 301
+/produit/offre-pack-100-perles-de-ceramique-et-gourde-ecologique-filtrante-avec-perles-de-ceramique-em-aimez-la-nature/ /perles-ceramique-em/pack-gourde-ceramique-em/ 301
+/products/perles-de-ceramique-pack100                     /perles-ceramique-em/pack-100-perles/ 301
+/products/bouteille-ecologique-avec-perles-de-ceramique   /perles-ceramique-em/pack-gourde-ceramique-em/ 301
+/products/gourde-ecologique-avec-perles-de-ceramique      /perles-ceramique-em/pack-gourde-ceramique-em/ 301
+/collections/perles-ceramiques-em                         /perles-ceramique-em/                 301
+/collections/all                                          /perles-ceramique-em/                 301
+/product-category/perles-ceramiques-em/                   /perles-ceramique-em/                 301

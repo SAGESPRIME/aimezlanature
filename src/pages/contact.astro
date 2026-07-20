@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const metaTitle = 'Contact | Aimez la Nature';
+const metaDescription =
+  'Contactez Aimez la Nature par email ou téléphone pour toute question sur nos Perles de Céramique EM® ou votre commande. Réponse sous 24 h.';
+---
+
+<BaseLayout title={metaTitle} description={metaDescription}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">Contact</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Une question ? Écrivez-nous
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Notre équipe répond sous 24 h ouvrées, que ce soit pour une commande, un conseil d'usage
+        ou une question sur la mission puits.
+      </p>
+    </div>
+  </section>
+
+  <!-- MOYENS DE CONTACT -->
+  <section class="py-16 px-4 bg-white" aria-labelledby="moyens-titre">
+    <div class="max-w-3xl mx-auto grid sm:grid-cols-2 gap-5">
+      <div class="rounded-2xl border border-[#EDE8E0] p-6">
+        <p class="font-semibold text-[#1A1A16] mb-2">Par email</p>
+        <p class="text-sm text-[#57534e] mb-3">
+          Pour une question générale ou un suivi de commande.
+        </p>
+        <a href="mailto:contact@aimezlanature.fr" class="text-[#166534] font-semibold hover:underline">
+          contact@aimezlanature.fr
+        </a>
+      </div>
+      <div class="rounded-2xl border border-[#EDE8E0] p-6">
+        <p class="font-semibold text-[#1A1A16] mb-2">Par téléphone</p>
+        <p class="text-sm text-[#57534e] mb-3">
+          Du lundi au vendredi, aux heures de bureau.
+        </p>
+        <a href="tel:+33184801522" class="text-[#166534] font-semibold hover:underline">
+          +33 1 84 80 15 22
+        </a>
+      </div>
+    </div>
+    <div class="max-w-3xl mx-auto mt-6">
+      <p class="text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4">
+        💡 Pour commander directement, utilisez le bouton « Commander par email » présent sur
+        chaque fiche produit — vous recevrez un lien de paiement sécurisé sous 24 h. La plupart
+        des questions courantes (livraison, paiement, garantie) sont déjà traitées dans notre
+        <a href="/faq/" class="text-[#166534] font-semibold hover:underline">FAQ</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

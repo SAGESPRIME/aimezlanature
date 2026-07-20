@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaPacks from '../components/CtaPacks.astro';
+import { SITE } from '../data/products';
+
+const metaTitle = 'Notre mission : une eau pure, ici et là-bas | Aimez la Nature';
+const metaDescription =
+  'Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, zéro plastique, et 2,5 % de chaque commande reversés au financement de puits d\'eau potable.';
+
+const engagements = [
+  {
+    titre: 'Des perles EM® authentiques',
+    texte: 'Nos perles sont fabriquées au Japon selon le procédé EM® original du professeur Teruo Higa. Pas de copies génériques : la certification EM® garantit la composition et le processus de fabrication.',
+  },
+  {
+    titre: 'Zéro plastique, du produit au colis',
+    texte: 'Tube biodégradable, sachet en coton BIO certifié, emballage d\'expédition en papier recyclé. Un produit qui sert à supprimer les bouteilles plastique ne peut pas arriver emballé dedans.',
+  },
+  {
+    titre: 'De l\'honnêteté avant tout',
+    texte: 'Nos pages disent ce que les perles font — goût, chlore ressenti, tartre — et ce qu\'elles ne font pas : bactéries, métaux lourds, pesticides. Vendre correctement, c\'est d\'abord informer correctement.',
+  },
+  {
+    titre: `${SITE.donationPercent} % pour l'accès à l'eau potable`,
+    texte: 'Sur chaque commande, 2,5 % financent la construction et l\'entretien de puits d\'eau potable dans des régions qui en manquent. Purifier votre eau ici, c\'est aussi en donner l\'accès là-bas.',
+  },
+];
+
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: metaTitle,
+  description: metaDescription,
+  url: `${SITE.url}/a-propos/`,
+  mainEntity: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.url,
+    description: SITE.description,
+  },
+};
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={aboutSchema}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-4">À propos</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Une eau pure, <em class="not-italic text-[#166534]">ici et là-bas</em>
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Aimez la Nature est née d'un constat simple : en France, on jette des millions de bouteilles
+        plastique pour éviter un goût de chlore, pendant qu'ailleurs, des millions de personnes
+        n'ont pas accès à l'eau potable. Nous avons voulu agir sur les deux tableaux.
+      </p>
+    </div>
+  </section>
+
+  <!-- HISTOIRE -->
+  <section class="py-14 px-4 bg-white" aria-labelledby="histoire-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="histoire-titre" class="font-display text-3xl text-[#1A1A16] mb-6">Pourquoi les perles de céramique ?</h2>
+      <p class="text-[#57534e] leading-relaxed mb-4">
+        Parce que c'est la solution la plus sobre que nous ayons trouvée : un objet unique, fabriqué
+        en argile naturelle, qui dure des années, ne demande ni cartouche, ni électricité, ni
+        plastique — et qui se régénère avec une simple casserole d'eau bouillante.
+      </p>
+      <p class="text-[#57534e] leading-relaxed mb-4">
+        Nous avons choisi les perles EM® japonaises authentiques plutôt que des copies, parce que
+        la qualité de l'argile et du processus de fermentation fait la différence entre un produit
+        qui agit et un simple caillou décoratif.
+      </p>
+      <p class="text-[#57534e] leading-relaxed">
+        Aujourd'hui, {SITE.totalReviews} clients nous font confiance, avec une note moyenne de
+        {SITE.globalRating.toString().replace('.', ',')}/5. Notre meilleure publicité reste leur
+        eau du matin.
+      </p>
+    </div>
+  </section>
+
+  <!-- ENGAGEMENTS -->
+  <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="engagements-titre">
+    <div class="max-w-4xl mx-auto">
+      <h2 id="engagements-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Nos quatre engagements</h2>
+      <div class="grid sm:grid-cols-2 gap-5">
+        {engagements.map((e, i) => (
+          <div class="bg-white rounded-2xl border border-[#EDE8E0] p-6">
+            <p class="font-display text-2xl text-[#C4B89A] font-bold mb-2" aria-hidden="true">0{i + 1}</p>
+            <h3 class="font-semibold text-[#1A1A16] mb-2">{e.titre}</h3>
+            <p class="text-sm text-[#57534e] leading-relaxed">{e.texte}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION PUITS -->
+  <section class="py-14 px-4 bg-[#0D2818] text-white" aria-labelledby="puits-titre">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">La mission puits</p>
+      <h2 id="puits-titre" class="font-display text-3xl lg:text-4xl mb-6">Où vont vos {SITE.donationPercent} % ?</h2>
+      <p class="text-[#B8CCB4] leading-relaxed mb-4">
+        Nous reversons {SITE.donationPercent} % de chaque commande à des programmes de construction
+        et d'entretien de puits d'eau potable, menés par des associations spécialisées dans les
+        zones où l'accès à l'eau reste un combat quotidien.
+      </p>
+      <p class="text-[#B8CCB4] leading-relaxed">
+        Un puits change une école, un dispensaire, un village. C'est la partie de notre travail
+        dont nous sommes le plus fiers — et elle n'existe que grâce à vos commandes.
+      </p>
+    </div>
+  </section>
+
+  <CtaPacks />
+</BaseLayout>

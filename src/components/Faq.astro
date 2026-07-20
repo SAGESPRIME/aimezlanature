@@ -1,0 +1,28 @@
+---
+// Accordéon de questions/réponses — le schema FAQPage est généré par la page
+// appelante via buildFaqSchema() pour rester la source unique de vérité.
+interface Props {
+  items: { question: string; answer: string }[];
+  title?: string;
+  eyebrow?: string;
+}
+const { items, title = 'Questions fréquentes', eyebrow = 'FAQ' } = Astro.props;
+---
+
+<section class="py-16 px-4" aria-labelledby="faq-titre">
+  <div class="max-w-3xl mx-auto">
+    <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">{eyebrow}</p>
+    <h2 id="faq-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16] mb-8">{title}</h2>
+    <div class="space-y-3">
+      {items.map(({ question, answer }) => (
+        <details class="group bg-white rounded-2xl border border-[#EDE8E0] open:border-[#C4B89A] transition-colors">
+          <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 font-semibold text-[#1A1A16] [&::-webkit-details-marker]:hidden">
+            <span>{question}</span>
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#F5F0E8] text-[#166534] flex items-center justify-center text-sm transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+          </summary>
+          <p class="px-6 pb-5 text-[#57534e] text-sm leading-relaxed">{answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
