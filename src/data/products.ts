@@ -50,7 +50,7 @@ Fabriquées au Japon selon le procédé EM® original (Effective Microorganisms)
 
 Conditionnées dans un emballage biodégradable avec sachet coton BIO, les 55 perles se glissent dans votre carafe ou directement dans le réservoir d'eau de votre cafetière ou machine à thé.
 
-Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois. 2,5 % de nos bénéfices financent l'accès à l'eau potable dans des régions défavorisées.`,
+Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois.`,
     usages: ["Carafe 1,5-2 L", "Bouilloire", "Machine à café", "Machine à thé", "Gourde XL"],
     qa: [
       {
@@ -96,7 +96,7 @@ Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois. 2,5 % de n
 
 Idéal pour les foyers de 3 personnes et plus, les adeptes du zéro déchet souhaitant supprimer totalement les bouteilles plastique, ou pour équiper plusieurs usages simultanément.
 
-Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullition 10-15 min tous les 3-6 mois. 2,5 % de nos bénéfices financent des puits d'eau potable.`,
+Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullition 10-15 min tous les 3-6 mois.`,
     usages: ["Bonbonne jusqu'à 6 L", "Lave-vaisselle", "Machine à laver", "Vase", "Bassine"],
     qa: [
       {
@@ -142,7 +142,7 @@ La gourde de 500 ml est en verre borosilicate double paroi, sans plastique au co
 
 Avec 100 perles, vous équipez la gourde et gardez de quoi traiter une carafe, une bouilloire ou un lave-vaisselle en parallèle. C'est la formule la plus complète de la gamme.
 
-Emballage biodégradable, 2,5 % de nos bénéfices financent des puits d'eau potable.`,
+Emballage biodégradable, sans plastique.`,
     usages: ["Gourde sport", "Usage quotidien", "Voyage", "Bureau"],
     qa: [
       {
@@ -177,9 +177,7 @@ Le corps est en verre borosilicate double paroi : aucun plastique au contact de 
 
 Le compartiment inférieur reçoit les perles et les maintient en place quand vous buvez. Comme pour tous nos formats, les perles se régénèrent par ébullition de 10 à 15 minutes tous les 3 à 6 mois — rien à racheter.
 
-Vous avez déjà des perles ? Cette gourde seule vous suffit. Sinon, le Pack Gourde ajoute 100 perles pour équiper aussi votre carafe ou votre bouilloire.
-
-2,5 % de nos bénéfices financent des puits d'eau potable.`,
+Vous avez déjà des perles ? Cette gourde seule vous suffit. Sinon, le Pack Gourde ajoute 100 perles pour équiper aussi votre carafe ou votre bouilloire.`,
     usages: ["Gourde 500 ml", "Bureau", "Voyage", "Sport"],
     qa: [
       {
@@ -226,14 +224,9 @@ export const SITE = {
    */
   totalReviews: 96,
   globalRating: 4.93,
-  /**
-   * Don — formulation unique pour tout le site : « 2,5 % de nos bénéfices ».
-   * ⚠️ Aucune trace de cet engagement sur le site en ligne actuel (vérifié le
-   * 2026-07-20 : accueil, fiches produit, qui-sommes-nous). La formulation
-   * « bénéfices » (la plus prudente juridiquement) a été retenue partout à la
-   * place du mélange bénéfices/commande/achat — à faire confirmer par le marchand.
-   */
-  donationPercent: 2.5,
-  donationClaim: "2,5 % de nos bénéfices financent des puits d'eau potable",
+  // ⚠️ Ne PAS réintroduire de « don 2,5 % / puits » : cet engagement n'existe
+  // nulle part sur le site marchand (vérifié le 2026-07-20 et confirmé par le
+  // marchand). Il avait été inventé lors d'une session précédente et a été
+  // retiré de tout le site le 2026-07-20.
   freeShippingThreshold: 50,
 };

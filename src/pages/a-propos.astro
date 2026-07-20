@@ -3,9 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
 
-const metaTitle = 'Notre mission : une eau pure, ici et là-bas | Aimez la Nature';
+const metaTitle = 'Notre mission : une eau meilleure, sans plastique | Aimez la Nature';
 const metaDescription =
-  'Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, zéro plastique, et 2,5 % des bénéfices reversés à des puits d\'eau potable.';
+  'Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, un emballage zéro plastique et une ligne honnête sur ce que les perles font — et ne font pas.';
 
 const engagements = [
   {
@@ -21,8 +21,8 @@ const engagements = [
     texte: 'Nos pages disent ce que les perles font — goût, chlore ressenti, tartre — et ce qu\'elles ne font pas : bactéries, métaux lourds, pesticides. Vendre correctement, c\'est d\'abord informer correctement.',
   },
   {
-    titre: `${SITE.donationPercent} % pour l'accès à l'eau potable`,
-    texte: '2,5 % de nos bénéfices financent la construction et l\'entretien de puits d\'eau potable dans des régions qui en manquent. Purifier votre eau ici, c\'est aussi en donner l\'accès là-bas.',
+    titre: 'Un service client qui répond',
+    texte: 'Une question sur le dosage, une commande, un retour : nous répondons sous 24 h ouvrées, par email ou par téléphone. Pas de robot, pas de ticket perdu.',
   },
 ];
 
@@ -47,12 +47,12 @@ const aboutSchema = {
     <div class="max-w-3xl mx-auto">
       <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">À propos</p>
       <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
-        Une eau pure, <em class="not-italic text-[#166534]">ici et là-bas</em>
+        Une eau meilleure, <em class="not-italic text-[#166534]">sans plastique</em>
       </h1>
       <p class="text-[#57534e] text-lg leading-relaxed">
-        Aimez la Nature est née d'un constat simple : en France, on jette des millions de bouteilles
-        plastique pour éviter un goût de chlore, pendant qu'ailleurs, des millions de personnes
-        n'ont pas accès à l'eau potable. Nous avons voulu agir sur les deux tableaux.
+        Aimez la Nature est née d'un constat simple : en France, on jette des millions de
+        bouteilles plastique pour éviter un goût de chlore. Notre mission est de rendre
+        l'eau du robinet assez agréable pour que ces bouteilles deviennent inutiles.
       </p>
     </div>
   </section>
@@ -95,19 +95,15 @@ const aboutSchema = {
     </div>
   </section>
 
-  <!-- MISSION PUITS -->
-  <section class="py-14 px-4 bg-[#0D2818] text-white" aria-labelledby="puits-titre">
+  <!-- MISSION -->
+  <section class="py-14 px-4 bg-[#0D2818] text-white" aria-labelledby="mission-titre">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">La mission puits</p>
-      <h2 id="puits-titre" class="font-display text-3xl lg:text-4xl mb-6">Où vont vos {SITE.donationPercent} % ?</h2>
-      <p class="text-[#B8CCB4] leading-relaxed mb-4">
-        Nous reversons {SITE.donationPercent} % de nos bénéfices à des programmes de construction
-        et d'entretien de puits d'eau potable, menés par des associations spécialisées dans les
-        zones où l'accès à l'eau reste un combat quotidien.
-      </p>
+      <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">Notre mission</p>
+      <h2 id="mission-titre" class="font-display text-3xl lg:text-4xl mb-6">Moins de plastique, une eau meilleure</h2>
       <p class="text-[#B8CCB4] leading-relaxed">
-        Un puits change une école, un dispensaire, un village. C'est la partie de notre travail
-        dont nous sommes le plus fiers — et elle n'existe que grâce à vos commandes.
+        Chaque foyer qui passe aux perles, c'est de l'eau en bouteille qui n'est plus achetée,
+        du plastique qui n'est plus jeté et des cartouches qui ne sont plus remplacées.
+        C'est modeste à l'échelle d'une maison — et considérable à l'échelle de milliers.
       </p>
     </div>
   </section>

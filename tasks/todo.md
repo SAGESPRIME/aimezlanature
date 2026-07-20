@@ -45,11 +45,13 @@
   Lighthouse accueil mobile A11y 95→100, SEO 100, BP 100 · CLS 0, LCP 395 ms (local) ·
   menu mobile testé au navigateur (375 px) · don unifié (0 ancienne formulation) ·
   0 vulnérabilité npm
-- ⚠️ **2 confirmations attendues du marchand** :
-  1. Le don « 2,5 % de nos bénéfices → puits » : AUCUNE trace sur le site en ligne actuel.
-     Formulation prudente « bénéfices » appliquée partout en attendant (`SITE.donationClaim`).
-  2. Prix barrés (25,90/42,90/39,90/72,80 €) : conformité Omnibus (prix le plus bas
-     des 30 derniers jours) à confirmer.
+- [x] Don 2,5 % / puits : le marchand a confirmé qu'il n'existe pas → SUPPRIMÉ de tout
+      le site le 2026-07-20 (0 mention dans le HTML généré, vérifié). Mission remplacée
+      par l'angle réel « zéro plastique ». Ne jamais le réintroduire (commentaire dans
+      products.ts).
+- ⚠️ **1 confirmation encore attendue du marchand** :
+  Prix barrés (25,90/42,90/39,90/72,80 €) : conformité Omnibus (prix le plus bas
+  des 30 derniers jours) à confirmer.
 - [ ] Lighthouse complet 16 pages × mobile/desktop depuis la prod Cloudflare (après déploiement)
 
 ## Prochaine étape en cours
