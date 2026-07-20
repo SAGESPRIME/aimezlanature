@@ -9,7 +9,7 @@ const heroPhoto = getProductImage('pack-55-perles');
 
 const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Nature';
 const metaDescription =
-  'Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. 192+ avis, livraison offerte dès 50€, garantie 30 jours. Zéro plastique.';
+  `Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. ${SITE.totalReviews} avis vérifiés, livraison offerte dès ${SITE.freeShippingThreshold}€, garantie 30 jours. Zéro plastique.`;
 
 const organizationSchema = {
   '@context': 'https://schema.org',
@@ -102,7 +102,7 @@ const testimonials = [
       <div class="flex flex-wrap items-center gap-5 text-sm text-[#57534e]">
         <div class="flex items-center gap-2">
           <span class="text-[#166534] font-bold" aria-label="Note 5 étoiles">★★★★★</span>
-          <span><strong class="text-[#1A1A16]">4,92/5</strong> · 192 avis</span>
+          <span><strong class="text-[#1A1A16]">{SITE.globalRating.toString().replace('.', ',')}/5</strong> · {SITE.totalReviews} avis</span>
         </div>
         <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
         <span>Livraison offerte dès 50€</span>
@@ -137,7 +137,7 @@ const testimonials = [
       </div>
       <div class="absolute bottom-12 left-8 bg-[#166534] text-white rounded-2xl px-4 py-3">
         <p class="text-xs opacity-75">Avis clients vérifiés</p>
-        <p class="font-bold text-sm">192 avis · 4,92/5</p>
+        <p class="font-bold text-sm">{SITE.totalReviews} avis · {SITE.globalRating.toString().replace('.', ',')}/5</p>
       </div>
     </div>
   </section>
@@ -268,8 +268,8 @@ const testimonials = [
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-12">
         <p class="text-xs tracking-[0.3em] uppercase text-[#8B6F47] mb-3">Ce qu'ils en disent</p>
-        <h2 id="avis-titre" class="font-display text-4xl text-[#1A1A16]">192 clients satisfaits</h2>
-        <p class="text-[#166534] text-xl mt-2" aria-label="Note globale 4,92 sur 5">★★★★★ <span class="text-[#57534e] text-base">4,92 / 5</span></p>
+        <h2 id="avis-titre" class="font-display text-4xl text-[#1A1A16]">{SITE.totalReviews} clients satisfaits</h2>
+        <p class="text-[#166534] text-xl mt-2" aria-label={`Note globale ${SITE.globalRating} sur 5`}>★★★★★ <span class="text-[#57534e] text-base">{SITE.globalRating.toString().replace('.', ',')} / 5</span></p>
       </div>
       <div class="grid md:grid-cols-3 gap-5">
         {testimonials.map(({ name, pack, texte }) => (

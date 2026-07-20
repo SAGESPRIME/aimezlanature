@@ -128,8 +128,8 @@ Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullitio
     inStock: true,
     quantity: 100,
     includesBottle: true,
-    rating: 4.9,
-    reviewCount: 192,
+    // Aucun avis client à ce jour (vérifié sur aimezlanature.fr le 2026-07-20) :
+    // pas de note affichée ni d'aggregateRating dans le schema.
     description: `Le Pack Gourde regroupe notre Pack 100 Perles de Céramique EM® et la Gourde Écologique en verre double paroi conçue pour accueillir les perles. Le duo parfait pour boire une eau purifiée, sans plastique, à la maison comme en déplacement.
 
 La gourde de 500 ml est en verre borosilicate double paroi, sans plastique au contact de l'eau, avec un compartiment intégré qui reçoit directement les perles. Plus besoin de cartouche à remplacer : les perles se régénèrent par simple ébullition.
@@ -210,8 +210,16 @@ export const SITE = {
   name: "Aimez la Nature",
   url: "https://www.aimezlanature.fr",
   description: "Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement.",
-  totalReviews: 192,
-  globalRating: 4.92,
+  /**
+   * Avis clients — chiffres vérifiés sur aimezlanature.fr le 2026-07-20.
+   * Pack 55 : 4,91/5 sur 45 avis · Pack 100 : 4,94/5 sur 51 avis.
+   * Le Pack Gourde et la Gourde Écologique n'ont encore aucun avis.
+   * Total = 45 + 51 = 96 ; moyenne pondérée = (4,91×45 + 4,94×51) / 96 = 4,93.
+   * Ne pas modifier ces valeurs sans les recompter sur la source : elles sont
+   * affichées publiquement et envoyées à Google dans le schema Organization.
+   */
+  totalReviews: 96,
+  globalRating: 4.93,
   donationPercent: 2.5,
   freeShippingThreshold: 50,
 };
