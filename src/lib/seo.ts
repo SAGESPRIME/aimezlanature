@@ -1,7 +1,14 @@
 import { SITE, type Product } from '../data/products';
 
-/** Schema.org Product avec offre, note et avis — utilisé sur chaque fiche produit. */
-export function buildProductSchema(p: Product) {
+/**
+ * Schema.org Product avec offre, note et avis — utilisé sur chaque fiche produit.
+ *
+ * `imageUrl` doit être l'URL (absolue ou racine) d'une photo réellement servie.
+ * Si aucune photo n'existe pour le produit, on omet la propriété : Google
+ * préfère un champ absent à une URL en 404, qui déclenche une erreur dans
+ * Search Console et supprime le rich result.
+ */
+export function buildProductSchema(p: Product, imageUrl?: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -10,7 +17,7 @@ export function buildProductSchema(p: Product) {
     brand: { '@type': 'Brand', name: SITE.name },
     description: p.metaDescription,
     url: `${SITE.url}/perles-ceramique-em/${p.slug}/`,
-    image: `${SITE.url}/images/${p.slug}.jpg`,
+    ...(imageUrl ? { image: new URL(imageUrl, SITE.url).href } : {}),
     offers: {
       '@type': 'Offer',
       price: p.priceCurrent,

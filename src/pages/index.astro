@@ -1,6 +1,11 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
+import { getProductImage, getProductImageAlt } from '../lib/productImages';
+
+// Visuel du hero : le Pack 55, notre bestseller.
+const heroPhoto = getProductImage('pack-55-perles');
 
 const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Nature';
 const metaDescription =
@@ -12,7 +17,7 @@ const organizationSchema = {
   name: SITE.name,
   url: SITE.url,
   description: SITE.description,
-  logo: `${SITE.url}/logo.svg`,
+  logo: `${SITE.url}/logo.png`,
   contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', availableLanguage: 'French' },
 };
 
@@ -110,16 +115,20 @@ const testimonials = [
       <div class="relative w-[400px] h-[400px] xl:w-[460px] xl:h-[460px]">
         <div class="absolute inset-0 rounded-full border-2 border-[#C4B89A] opacity-30"></div>
         <div class="absolute inset-4 rounded-full border border-[#C4B89A] opacity-20"></div>
-        <div class="absolute inset-0 rounded-full bg-[#F5F0E8] flex items-center justify-center flex-col gap-2 text-[#8B6F47]">
-          <svg class="w-20 h-20 opacity-30" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-            <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="40" cy="30" r="6" fill="currentColor" opacity="0.4"/>
-            <path d="M16 62 Q40 48 64 62" stroke="currentColor" stroke-width="1.5" fill="none"/>
-            <circle cx="24" cy="52" r="3" fill="currentColor" opacity="0.3"/>
-            <circle cx="56" cy="54" r="4" fill="currentColor" opacity="0.3"/>
-            <circle cx="40" cy="56" r="2.5" fill="currentColor" opacity="0.2"/>
-          </svg>
-          <p class="text-xs tracking-widest uppercase opacity-40">Photo produit</p>
+        <div class="absolute inset-0 rounded-full bg-[#F5F0E8] overflow-hidden">
+          {heroPhoto && (
+            <Image
+              src={heroPhoto}
+              alt={getProductImageAlt('Perles de Céramique EM® Pack 55')}
+              width={460}
+              height={460}
+              widths={[400, 460, 920]}
+              sizes="460px"
+              loading="eager"
+              fetchpriority="high"
+              class="w-full h-full object-cover"
+            />
+          )}
         </div>
       </div>
       <div class="absolute top-8 right-8 bg-white rounded-2xl px-4 py-3 shadow-sm border border-[#EDE8E0]">

@@ -1,8 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
 import { products, SITE, type Product } from '../../data/products';
 import { buildFaqSchema, buildProductSchema } from '../../lib/seo';
+import { getProductImage, getProductImageAlt } from '../../lib/productImages';
 
 export function getStaticPaths() {
   return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
@@ -13,32 +15,47 @@ interface Props {
 }
 const { product: p } = Astro.props;
 
+const photo = getProductImage(p.slug);
 const others = products.filter((o) => o.slug !== p.slug && o.inStock).slice(0, 3);
 const paragraphs = p.description.split('\n\n');
-const jsonLd = [buildProductSchema(p), buildFaqSchema(p.qa)];
+const jsonLd = [buildProductSchema(p, photo?.src), buildFaqSchema(p.qa)];
 
 const orderMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Commande — ${p.name} (${p.sku})`)}`;
 const notifyMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Retour en stock — ${p.name}`)}`;
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 ---
 
-<BaseLayout title={p.metaTitle} description={p.metaDescription} jsonLd={jsonLd}>
+<BaseLayout title={p.metaTitle} description={p.metaDescription} jsonLd={jsonLd} ogImage={photo?.src}>
   <!-- FICHE PRODUIT -->
   <section class="px-4 py-10 bg-[#F5F0E8]">
     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
-      <!-- Visuel produit (placeholder en attendant les photos) -->
-      <div class="relative rounded-3xl bg-[#EDE8E0] aspect-square flex items-center justify-center">
-        <div class="text-center text-[#8B6F47]">
-          <svg class="w-24 h-24 mx-auto opacity-30" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-            <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5" />
-            <circle cx="40" cy="30" r="6" fill="currentColor" opacity="0.4" />
-            <path d="M16 62 Q40 48 64 62" stroke="currentColor" stroke-width="1.5" fill="none" />
-            <circle cx="24" cy="52" r="3" fill="currentColor" opacity="0.3" />
-            <circle cx="56" cy="54" r="4" fill="currentColor" opacity="0.3" />
-          </svg>
-          <p class="text-xs tracking-widest uppercase opacity-40 mt-2">Photo {p.shortName}</p>
-        </div>
+      <!-- Visuel produit -->
+      <div class="relative rounded-3xl bg-white overflow-hidden aspect-square flex items-center justify-center">
+        {photo ? (
+          <Image
+            src={photo}
+            alt={getProductImageAlt(p.name)}
+            width={1080}
+            height={1080}
+            widths={[480, 800, 1080]}
+            sizes="(max-width: 1024px) 100vw, 560px"
+            loading="eager"
+            fetchpriority="high"
+            class="w-full h-full object-cover"
+          />
+        ) : (
+          <div class="text-center text-[#8B6F47] bg-[#EDE8E0] w-full h-full flex flex-col items-center justify-center">
+            <svg class="w-24 h-24 mx-auto opacity-30" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+              <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="40" cy="30" r="6" fill="currentColor" opacity="0.4" />
+              <path d="M16 62 Q40 48 64 62" stroke="currentColor" stroke-width="1.5" fill="none" />
+              <circle cx="24" cy="52" r="3" fill="currentColor" opacity="0.3" />
+              <circle cx="56" cy="54" r="4" fill="currentColor" opacity="0.3" />
+            </svg>
+            <p class="text-xs tracking-widest uppercase opacity-40 mt-2">Photo {p.shortName}</p>
+          </div>
+        )}
         <span class="absolute top-5 left-5 bg-[#166534] text-white text-xs font-bold px-3 py-1.5 rounded-full">-{p.discountPercent} %</span>
         {!p.inStock && (
           <span class="absolute top-5 right-5 bg-[#57534e] text-white text-xs font-semibold px-3 py-1.5 rounded-full">Rupture de stock</span>
