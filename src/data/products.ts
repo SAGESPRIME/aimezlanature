@@ -20,52 +20,6 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    slug: "pack-35-perles",
-    name: "Perles de Céramique EM® Pack 35",
-    shortName: "Pack 35 Perles",
-    sku: "ALN-EM-035",
-    priceCurrent: 15.9,
-    priceOriginal: 22.9,
-    discountPercent: 31,
-    inStock: true,
-    quantity: 35,
-    includesBottle: false,
-    rating: 4.88,
-    reviewCount: 192,
-    description: `Le Pack 35 Perles de Céramique EM® est idéal pour débuter avec une carafe de 1 à 1,5 litre, une gourde ou une bouilloire. Fabriquées au Japon à partir d'argile enrichie en Micro-organismes Efficaces (EM®), ces perles purifient naturellement l'eau du robinet en réduisant le chlore, en adoucissant le goût et en limitant le tartre.
-
-Chaque perle est livrée dans un tube biodégradable avec un sachet en coton BIO certifié. 35 perles couvrent parfaitement un volume d'eau de 1 à 1,5 L, soit la capacité parfaite pour une utilisation individuelle quotidienne.
-
-Pour régénérer vos perles et prolonger leur efficacité, faites-les bouillir 10 à 15 minutes tous les 3 à 6 mois selon votre usage. Avec un entretien régulier, elles conservent leurs propriétés sur le long terme.
-
-2,5 % de chaque achat est reversé au financement de puits d'eau potable dans des zones en manque d'accès à l'eau.`,
-    usages: ["Carafe 1-1,5 L", "Gourde", "Bouilloire", "Vase"],
-    qa: [
-      {
-        question: "Combien de perles pour une carafe de 1 litre ?",
-        answer: "35 perles sont parfaitement adaptées à une carafe de 1 à 1,5 litre. Pour un résultat optimal, placez les perles directement au fond de votre carafe avant de la remplir d'eau du robinet.",
-      },
-      {
-        question: "Combien de temps faut-il attendre avant de boire l'eau ?",
-        answer: "Lors de la première utilisation, attendez 30 minutes. Ensuite, vous pouvez remplir et consommer sans attente particulière.",
-      },
-      {
-        question: "Comment régénérer les perles du Pack 35 ?",
-        answer: "Faites bouillir les perles 10 à 15 minutes dans de l'eau claire, sans savon ni détergent. Renouvelez cette opération tous les 3 à 6 mois selon la fréquence d'utilisation et la dureté de votre eau.",
-      },
-      {
-        question: "Le Pack 35 fonctionne-t-il aussi dans une gourde ?",
-        answer: "Oui, 35 perles conviennent aux gourdes de 500 ml à 1 litre. Glissez-les simplement dans votre gourde avant de la remplir.",
-      },
-      {
-        question: "Ces perles filtrent-elles les bactéries ou les métaux lourds ?",
-        answer: "Les Perles de Céramique EM® améliorent le goût de l'eau et réduisent le chlore et le tartre. Elles ne remplacent pas un filtre à charbon actif pour les métaux lourds ou les bactéries. Pour une eau très contaminée, consultez un spécialiste.",
-      },
-    ],
-    metaTitle: "Perles Céramique EM® Pack 35 — 15,90€ | Aimez la Nature",
-    metaDescription: "Pack 35 Perles de Céramique EM® japonaises pour carafe, gourde et bouilloire. Purifie l'eau naturellement. Livraison offerte dès 50€. Garantie 30j.",
-  },
-  {
     slug: "pack-55-perles",
     name: "Perles de Céramique EM® Pack 55",
     shortName: "Pack 55 Perles",

@@ -51,7 +51,9 @@
    - Inclure le mot « billes de céramique » dans le texte (980 recherches cumulées).
    - FAQ (schema FAQPage) avec les PAA : bienfaits ? durée de vie ? comment activer ? défaut majeur ?
 2. **Fiches produits** (données déjà dans `src/data/products.ts`) :
-   - Pack 35 → perles céramique carafe, combien de perles par litre (renvoi FAQ)
+   - ~~Pack 35 → perles céramique carafe, combien de perles par litre (renvoi FAQ)~~
+     **Produit arrêté le 2026-07-20** (absent du catalogue en ligne) : retiré du site,
+     ses mots-clés carafe/gourde sont repris par le Pack 55.
    - Pack 55 → perles céramique bouilloire (40), **billes anti calcaire (390)** — à ajouter au texte
    - Pack 100 → perles céramique lave vaisselle / machine à laver, anti calcaire naturel
    - Pack Gourde → perles céramique gourde + angle « gourde filtrante » (12 100 !) au retour en stock

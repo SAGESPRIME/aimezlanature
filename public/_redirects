@@ -1,6 +1,9 @@
 # Redirects 301 — migration depuis WooCommerce et Shopify
 
-/produit/perles-de-ceramique-em-pack-35-aimez-la-nature/  /perles-ceramique-em/pack-35-perles/  301
+# Pack 35 arrêté (2026-07-20) — l'ancienne URL et la fiche supprimée
+# renvoient vers la collection plutôt que de retourner une 404.
+/produit/perles-de-ceramique-em-pack-35-aimez-la-nature/  /perles-ceramique-em/  301
+/perles-ceramique-em/pack-35-perles/                      /perles-ceramique-em/  301
 /produit/perles-de-ceramique-em-pack-55-aimez-la-nature/  /perles-ceramique-em/pack-55-perles/  301
 /produit/perles-de-ceramique-em-pack-100-aimez-la-nature/ /perles-ceramique-em/pack-100-perles/ 301
 /produit/offre-pack-100-perles-de-ceramique-et-gourde-ecologique-filtrante-avec-perles-de-ceramique-em-aimez-la-nature/ /perles-ceramique-em/pack-gourde-ceramique-em/ 301
