@@ -1,0 +1,35 @@
+---
+/**
+ * Date de publication lisible par l'humain ET par la machine.
+ *
+ * L'ancien blog affichait bien une date, mais dans un <time> sans attribut
+ * `datetime` : illisible pour les moteurs. Ici les deux vont ensemble, et la
+ * date passée doit être la même que le `datePublished` du schema Article de la
+ * page (chaque page définit la sienne une seule fois et la partage aux deux).
+ *
+ * Libellé « Publié le » par défaut : dateModified vaut datePublished tant que
+ * le contenu n'a pas été revu. Passer `label="Mis à jour le"` le jour où la
+ * page est réellement révisée — et mettre à jour la date des deux côtés.
+ */
+interface Props {
+  /** Date ISO courte, ex. « 2026-07-20 ». */
+  date: string;
+  label?: string;
+  class?: string;
+}
+
+const { date, label = 'Publié le', class: className = '' } = Astro.props;
+
+// UTC forcé : sans cela, un serveur situé à l'ouest de Greenwich afficherait
+// la veille de la date saisie.
+const formatted = new Date(`${date}T00:00:00Z`).toLocaleDateString('fr-FR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<p class={`text-sm text-[#75592F] ${className}`}>
+  {label} <time datetime={date}>{formatted}</time>
+</p>

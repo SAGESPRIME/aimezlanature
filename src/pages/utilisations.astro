@@ -1,15 +1,27 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import AnswerBox from '../components/AnswerBox.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
+import { getProductImage, getProductImageAlt } from '../lib/productImages';
 import {
   PERLES_PAR_LITRE,
   categoriesLabels,
   dosagesParCategorie,
   type CategorieUsage,
 } from '../data/dosages';
+
+// Chemin et date définis une seule fois : partagés par le schema Article et
+// par l'affichage, pour qu'ils ne puissent pas diverger.
+const PATH = '/utilisations/';
+const datePublished = '2026-07-20';
+
+// Le Pack 100 est le format qui couvre le plus d'usages simultanés.
+const photoSlug = 'pack-100-perles';
 
 const metaTitle = 'Les 16 utilisations des perles de céramique EM® | Aimez la Nature';
 const metaDescription =
@@ -66,8 +78,8 @@ const jsonLd = [
   buildArticleSchema({
     headline: 'Les 16 utilisations des perles de céramique EM®',
     description: metaDescription,
-    path: '/utilisations/',
-    datePublished: '2026-07-20',
+    path: PATH,
+    datePublished,
   }),
   buildFaqSchema(faqItems),
 ];
@@ -90,8 +102,25 @@ const jsonLd = [
         <strong class="text-[#1A1A16]">La règle à retenir :</strong> {PERLES_PAR_LITRE} perles
         par litre pour l'eau de boisson. Les appareils, eux, ont un dosage forfaitaire.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
+
+  <!-- VISUEL -->
+  <div class="bg-[#F5F0E8] px-4 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <Image
+        src={getProductImage(photoSlug)!}
+        alt={getProductImageAlt(photoSlug)}
+        width={560}
+        widths={[320, 560, 1120]}
+        sizes="(max-width: 640px) 90vw, 560px"
+        loading="eager"
+        fetchpriority="high"
+        class="w-full max-w-[440px] mx-auto rounded-2xl"
+      />
+    </div>
+  </div>
 
   <AnswerBox>
     Les mêmes perles servent bien au-delà de la carafe : bouilloire ou cafetière
@@ -176,5 +205,6 @@ const jsonLd = [
   </section>
 
   <Faq items={faqItems} title="Vos questions sur les utilisations" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>

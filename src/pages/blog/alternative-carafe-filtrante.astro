@@ -1,10 +1,22 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
 import AnswerBox from '../../components/AnswerBox.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import PageDate from '../../components/PageDate.astro';
 import CtaPacks from '../../components/CtaPacks.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
+import { getProductImage, getProductImageAlt } from '../../lib/productImages';
 import { PERLES_PAR_LITRE } from '../../data/dosages';
+
+// Chemin et date définis une seule fois : partagés par le schema Article et
+// par l'affichage, pour qu'ils ne puissent pas diverger.
+const PATH = '/blog/alternative-carafe-filtrante/';
+const datePublished = '2026-07-20';
+
+// Le Pack 55 est l'alternative décrite pour une carafe.
+const photoSlug = 'pack-55-perles';
 
 const metaTitle = 'Alternative à la carafe filtrante : 3 solutions | Aimez la Nature';
 const metaDescription =
@@ -48,8 +60,8 @@ const jsonLd = [
   buildArticleSchema({
     headline: 'Quelle alternative à la carafe filtrante ? 3 solutions sans cartouche',
     description: metaDescription,
-    path: '/blog/alternative-carafe-filtrante/',
-    datePublished: '2026-07-20',
+    path: PATH,
+    datePublished,
   }),
   buildFaqSchema(faqItems),
 ];
@@ -68,8 +80,25 @@ const jsonLd = [
         cartouches. Voici trois alternatives durables, avec les chiffres, et une bonne
         nouvelle : votre carafe actuelle peut resservir.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
+
+  <!-- VISUEL -->
+  <div class="bg-[#F5F0E8] px-4 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <Image
+        src={getProductImage(photoSlug)!}
+        alt={getProductImageAlt(photoSlug)}
+        width={560}
+        widths={[320, 560, 1120]}
+        sizes="(max-width: 640px) 90vw, 560px"
+        loading="eager"
+        fetchpriority="high"
+        class="w-full max-w-[440px] mx-auto rounded-2xl"
+      />
+    </div>
+  </div>
 
   <!-- RÉPONSE COURTE (bloc GEO) -->
   <AnswerBox>
@@ -175,5 +204,6 @@ const jsonLd = [
   </section>
 
   <Faq items={faqItems} title="Vos questions sur les alternatives" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>

@@ -3,7 +3,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import AnswerBox from '../components/AnswerBox.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
+
+// Chemin et date définis une seule fois : partagés par le schema Article et
+// par l'affichage, pour qu'ils ne puissent pas diverger.
+// Pas de photo produit : cette page compare des solutions concurrentes, dont
+// certaines que nous ne vendons pas. Un visuel commercial la déséquilibrerait.
+const PATH = '/purifier-eau-robinet-comparatif/';
+const datePublished = '2026-07-20';
 
 const metaTitle = 'Purifier l\'eau du robinet : le comparatif | Aimez la Nature';
 const metaDescription =
@@ -80,8 +89,8 @@ const jsonLd = [
   buildArticleSchema({
     headline: 'Purifier l\'eau du robinet : perles de céramique, charbon, carafe filtrante ou osmoseur ?',
     description: metaDescription,
-    path: '/purifier-eau-robinet-comparatif/',
-    datePublished: '2026-07-20',
+    path: PATH,
+    datePublished,
   }),
   buildFaqSchema(faqItems),
 ];
@@ -100,6 +109,7 @@ const jsonLd = [
         <em>ne pas</em> en acheter. Chaque solution a son terrain de jeu : voici lequel,
         chiffres à l'appui.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
 
@@ -244,5 +254,6 @@ const jsonLd = [
   </section>
 
   <Faq items={faqItems} title="Vos questions sur la purification de l'eau" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>

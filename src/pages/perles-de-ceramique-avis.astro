@@ -2,8 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import PageDate from '../components/PageDate.astro';
 import { SITE } from '../data/products';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
+
+// Chemin et date définis une seule fois : partagés par le schema Article et
+// par l'affichage, pour qu'ils ne puissent pas diverger.
+// Pas de photo produit sur cette page : elle pèse le pour et le contre, un
+// visuel commercial y affaiblirait la neutralité du propos.
+const PATH = '/perles-de-ceramique-avis/';
+const datePublished = '2026-07-20';
 
 const metaTitle = 'Perles de céramique : danger et avis scientifique | Aimez la Nature';
 const metaDescription =
@@ -58,8 +67,8 @@ const jsonLd = [
   buildArticleSchema({
     headline: 'Perles de céramique : dangers, avis scientifique — le vrai du faux',
     description: metaDescription,
-    path: '/perles-de-ceramique-avis/',
-    datePublished: '2026-07-20',
+    path: PATH,
+    datePublished,
   }),
   buildFaqSchema(faqItems),
 ];
@@ -78,6 +87,7 @@ const jsonLd = [
         vous êtes des centaines à poser ces questions chaque mois. Voici notre réponse —
         y compris quand elle ne nous arrange pas.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
 
@@ -218,5 +228,6 @@ const jsonLd = [
   </section>
 
   <Faq items={faqItems} title="Vos questions sur la fiabilité des perles" eyebrow="Pour aller plus loin" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>

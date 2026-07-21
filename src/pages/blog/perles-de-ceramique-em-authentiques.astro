@@ -1,9 +1,22 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
 import AnswerBox from '../../components/AnswerBox.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import PageDate from '../../components/PageDate.astro';
 import CtaPacks from '../../components/CtaPacks.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
+import { getProductImage, getProductImageAlt } from '../../lib/productImages';
+
+// Chemin et date définis une seule fois : partagés par le schema Article et
+// par l'affichage, pour qu'ils ne puissent pas diverger.
+const PATH = '/blog/perles-de-ceramique-em-authentiques/';
+const datePublished = '2026-07-20';
+
+// L'emballage réel (tube carton + sachet coton) est précisément ce que
+// l'article décrit comme signe d'authenticité.
+const photoSlug = 'pack-100-perles';
 
 const metaTitle = 'Perles de céramique EM authentiques : le guide | Aimez la Nature';
 const metaDescription =
@@ -59,8 +72,8 @@ const jsonLd = [
   buildArticleSchema({
     headline: 'Perles de céramique EM authentiques : comment les reconnaître',
     description: metaDescription,
-    path: '/blog/perles-de-ceramique-em-authentiques/',
-    datePublished: '2026-07-20',
+    path: PATH,
+    datePublished,
   }),
   buildFaqSchema(faqItems),
 ];
@@ -79,8 +92,25 @@ const jsonLd = [
         né au Japon. Voici ce qu'il recouvre exactement — et les signes qui distinguent les
         perles authentiques des copies génériques vendues au même prix.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
+
+  <!-- VISUEL -->
+  <div class="bg-[#F5F0E8] px-4 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <Image
+        src={getProductImage(photoSlug)!}
+        alt={getProductImageAlt(photoSlug)}
+        width={560}
+        widths={[320, 560, 1120]}
+        sizes="(max-width: 640px) 90vw, 560px"
+        loading="eager"
+        fetchpriority="high"
+        class="w-full max-w-[440px] mx-auto rounded-2xl"
+      />
+    </div>
+  </div>
 
   <!-- RÉPONSE COURTE (bloc GEO) -->
   <AnswerBox>
@@ -149,5 +179,6 @@ const jsonLd = [
   </section>
 
   <Faq items={faqItems} title="Vos questions sur l'authenticité" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>

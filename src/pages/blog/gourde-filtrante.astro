@@ -1,9 +1,21 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
 import AnswerBox from '../../components/AnswerBox.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import PageDate from '../../components/PageDate.astro';
 import CtaPacks from '../../components/CtaPacks.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
+import { getProductImage, getProductImageAlt } from '../../lib/productImages';
+
+// Chemin et date définis une seule fois : partagés par le schema Article et
+// par l'affichage, pour qu'ils ne puissent pas diverger.
+const PATH = '/blog/gourde-filtrante/';
+const datePublished = '2026-07-20';
+
+// La gourde en verre est le sujet même de l'article.
+const photoSlug = 'gourde-ecologique';
 
 const metaTitle = 'Gourde filtrante : comment bien choisir | Aimez la Nature';
 const metaDescription =
@@ -65,8 +77,8 @@ const jsonLd = [
   buildArticleSchema({
     headline: 'Gourde filtrante : comment bien choisir selon votre usage réel',
     description: metaDescription,
-    path: '/blog/gourde-filtrante/',
-    datePublished: '2026-07-20',
+    path: PATH,
+    datePublished,
   }),
   buildFaqSchema(faqItems),
 ];
@@ -85,8 +97,25 @@ const jsonLd = [
         dépend d'une seule question : votre eau de départ est-elle potable ? Voici comment
         choisir sans vous faire survendre l'une ou l'autre.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
+
+  <!-- VISUEL -->
+  <div class="bg-[#F5F0E8] px-4 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <Image
+        src={getProductImage(photoSlug)!}
+        alt={getProductImageAlt(photoSlug)}
+        width={560}
+        widths={[320, 560, 1120]}
+        sizes="(max-width: 640px) 90vw, 560px"
+        loading="eager"
+        fetchpriority="high"
+        class="w-full max-w-[440px] mx-auto rounded-2xl"
+      />
+    </div>
+  </div>
 
   <!-- RÉPONSE COURTE (bloc GEO) -->
   <AnswerBox>
@@ -169,5 +198,6 @@ const jsonLd = [
   </section>
 
   <Faq items={faqItems} title="Vos questions sur les gourdes filtrantes" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>

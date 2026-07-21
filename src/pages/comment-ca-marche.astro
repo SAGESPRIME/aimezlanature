@@ -1,10 +1,22 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import AnswerBox from '../components/AnswerBox.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import PageDate from '../components/PageDate.astro';
 import { buildFaqSchema } from '../lib/seo';
+import { getProductImage, getProductImageAlt } from '../lib/productImages';
 import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
+
+const PATH = '/comment-ca-marche/';
+// Cette page porte un schema HowTo (pas Article) : la date n'a donc pas
+// d'équivalent machine à refléter, elle sert uniquement au lecteur.
+const datePublished = '2026-07-20';
+
+// Le Pack 55 est le format de référence pour la carafe décrite dans les étapes.
+const photoSlug = 'pack-55-perles';
 
 const metaTitle = 'Combien de perles de céramique par litre d\'eau ? | Aimez la Nature';
 const metaDescription =
@@ -92,8 +104,25 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
         Dosage par litre, première utilisation, entretien, régénération : tout ce qu'il faut
         savoir pour tirer le meilleur de vos perles EM® — en 3 étapes et quelques minutes.
       </p>
+      <PageDate date={datePublished} class="mt-5" />
     </div>
   </section>
+
+  <!-- VISUEL -->
+  <div class="bg-[#F5F0E8] px-4 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <Image
+        src={getProductImage(photoSlug)!}
+        alt={getProductImageAlt(photoSlug)}
+        width={560}
+        widths={[320, 560, 1120]}
+        sizes="(max-width: 640px) 90vw, 560px"
+        loading="eager"
+        fetchpriority="high"
+        class="w-full max-w-[440px] mx-auto rounded-2xl"
+      />
+    </div>
+  </div>
 
   <AnswerBox>
     Comptez <strong class="text-[#1A1A16]">15 perles par litre</strong> d'eau de boisson.
@@ -197,5 +226,6 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
   </section>
 
   <Faq items={faqItems} title="Vos questions sur l'utilisation" />
+  <RelatedArticles currentHref={PATH} />
   <CtaPacks />
 </BaseLayout>
