@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
+import AnswerBox from '../../components/AnswerBox.astro';
 import CtaPacks from '../../components/CtaPacks.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
 
@@ -82,20 +83,13 @@ const jsonLd = [
   </section>
 
   <!-- RÉPONSE COURTE (bloc GEO) -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="reponse-courte">
-    <div class="max-w-3xl mx-auto">
-      <h2 id="reponse-courte" class="font-display text-3xl text-[#1A1A16] mb-5">Réponse courte</h2>
-      <div class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6">
-        <p class="text-[#57534e] leading-relaxed">
-          Des perles de céramique EM authentiques sont fabriquées à partir d'argile fermentée
-          avec les micro-organismes efficaces (EM®) du procédé du professeur Teruo Higa, puis
-          cuites à haute température. Pour les reconnaître : la mention explicite du procédé
-          EM®, une provenance affichée (Japon ou licence officielle), un prix cohérent avec
-          ce procédé, et des promesses honnêtes sur ce que les perles font — et ne font pas.
-        </p>
-      </div>
-    </div>
-  </section>
+  <AnswerBox>
+    Des perles de céramique EM authentiques sont fabriquées à partir d'argile fermentée
+    avec les micro-organismes efficaces (EM®) du procédé du professeur Teruo Higa, puis
+    cuites à haute température. Pour les reconnaître : la mention explicite du procédé
+    EM®, une provenance affichée (Japon ou licence officielle), un prix cohérent avec
+    ce procédé, et des promesses honnêtes sur ce que les perles font — et ne font pas.
+  </AnswerBox>
 
   <!-- CE QUE VEUT DIRE EM -->
   <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="em-titre">

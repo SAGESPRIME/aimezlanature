@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
+import AnswerBox from '../components/AnswerBox.astro';
 import { buildFaqSchema } from '../lib/seo';
 import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
 
@@ -93,6 +94,14 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
       </p>
     </div>
   </section>
+
+  <AnswerBox>
+    Comptez <strong class="text-[#1A1A16]">15 perles par litre</strong> d'eau de boisson.
+    Rincez-les, déposez-les au fond de la carafe et laissez agir 30 minutes avant la
+    première utilisation : elles restent ensuite en permanence dans l'eau. Tous les 3 à
+    6 mois, régénérez-les en les faisant <strong class="text-[#1A1A16]">bouillir 10 à 15
+    minutes</strong> dans de l'eau claire, sans savon ni vinaigre.
+  </AnswerBox>
 
   <!-- 3 ÉTAPES -->
   <section class="py-16 px-4 bg-white" aria-labelledby="etapes-titre">

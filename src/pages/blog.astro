@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
+import AnswerBox from '../components/AnswerBox.astro';
 import { SITE } from '../data/products';
 import { guides } from '../data/guides';
 import { articles } from '../data/articles';
@@ -56,21 +57,12 @@ const jsonLd = [
     </div>
   </section>
 
-  <section class="py-14 px-4 bg-white" aria-labelledby="reponse-courte">
-    <div class="max-w-4xl mx-auto">
-      <h2 id="reponse-courte" class="font-display text-3xl text-[#1A1A16] mb-5">
-        Réponse courte
-      </h2>
-      <div class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6">
-        <p class="text-[#57534e] leading-relaxed">
-          Les perles de céramique EM s’utilisent avec une eau déjà potable. Elles peuvent
-          améliorer le goût, réduire l’odeur de chlore ressentie et limiter les dépôts de
-          tartre dans certains usages. Elles ne remplacent pas un filtre certifié pour les
-          bactéries, les métaux lourds ou une eau non potable.
-        </p>
-      </div>
-    </div>
-  </section>
+  <AnswerBox>
+    Les perles de céramique EM s’utilisent avec une eau déjà potable. Elles peuvent
+    améliorer le goût, réduire l’odeur de chlore ressentie et limiter les dépôts de
+    tartre dans certains usages. Elles ne remplacent pas un filtre certifié pour les
+    bactéries, les métaux lourds ou une eau non potable.
+  </AnswerBox>
 
   <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="guides-titre">
     <div class="max-w-5xl mx-auto">

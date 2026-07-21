@@ -1,0 +1,37 @@
+---
+/**
+ * Bloc « Réponse courte » — réponse directe de 40 à 60 mots, placée juste après
+ * le H1.
+ *
+ * C'est le format que les moteurs génératifs (ChatGPT, Perplexity, AI Overviews)
+ * extraient en priorité pour citer une page, et que Google reprend dans les
+ * « Autres questions posées ». Le contenu passe par <slot> pour autoriser
+ * <strong> et les liens internes.
+ *
+ * Source unique du markup : modifier ce fichier met à jour tous les blocs du
+ * site d'un coup.
+ */
+interface Props {
+  /** Titre du bloc. « Réponse courte » convient à la plupart des pages. */
+  title?: string;
+  /** Identifiant du H2, cible de aria-labelledby. À changer si la page en a deux. */
+  id?: string;
+  /** Fond de la section, à alterner avec celui de la section suivante. */
+  bg?: string;
+}
+
+const {
+  title = 'Réponse courte',
+  id = 'reponse-courte',
+  bg = 'bg-white',
+} = Astro.props;
+---
+
+<section class={`py-14 px-4 ${bg}`} aria-labelledby={id}>
+  <div class="max-w-3xl mx-auto">
+    <h2 id={id} class="font-display text-3xl text-[#1A1A16] mb-5">{title}</h2>
+    <div class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6">
+      <p class="text-[#57534e] leading-relaxed"><slot /></p>
+    </div>
+  </div>
+</section>

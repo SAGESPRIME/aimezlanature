@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
+import AnswerBox from '../../components/AnswerBox.astro';
 import CtaPacks from '../../components/CtaPacks.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
 
@@ -88,21 +89,14 @@ const jsonLd = [
   </section>
 
   <!-- RÉPONSE COURTE (bloc GEO) -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="reponse-courte">
-    <div class="max-w-3xl mx-auto">
-      <h2 id="reponse-courte" class="font-display text-3xl text-[#1A1A16] mb-5">Réponse courte</h2>
-      <div class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6">
-        <p class="text-[#57534e] leading-relaxed">
-          Eau non potable (randonnée, voyage) : gourde à <strong class="text-[#1A1A16]">membrane
-          certifiée</strong>, la seule qui retient les bactéries. Eau potable mais goût de
-          chlore : gourde à <strong class="text-[#1A1A16]">charbon actif</strong> (filtre à
-          racheter) ou à <strong class="text-[#1A1A16]">perles de céramique</strong> (rien à
-          racheter, verre possible). Pour un usage quotidien maison-bureau-sport, les perles
-          sont la solution la plus simple et la plus durable.
-        </p>
-      </div>
-    </div>
-  </section>
+  <AnswerBox>
+    Eau non potable (randonnée, voyage) : gourde à <strong class="text-[#1A1A16]">membrane
+    certifiée</strong>, la seule qui retient les bactéries. Eau potable mais goût de
+    chlore : gourde à <strong class="text-[#1A1A16]">charbon actif</strong> (filtre à
+    racheter) ou à <strong class="text-[#1A1A16]">perles de céramique</strong> (rien à
+    racheter, verre possible). Pour un usage quotidien maison-bureau-sport, les perles
+    sont la solution la plus simple et la plus durable.
+  </AnswerBox>
 
   <!-- TABLEAU DES 3 TECHNOS -->
   <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="technos-titre">

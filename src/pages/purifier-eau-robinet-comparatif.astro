@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
+import AnswerBox from '../components/AnswerBox.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
 
 const metaTitle = 'Purifier l\'eau du robinet : le comparatif | Aimez la Nature';
@@ -101,6 +102,15 @@ const jsonLd = [
       </p>
     </div>
   </section>
+
+  <AnswerBox>
+    Si votre eau est potable et que seul le goût vous gêne :
+    <strong class="text-[#1A1A16]">perles de céramique</strong> ou
+    <strong class="text-[#1A1A16]">charbon binchotan</strong> suffisent, sans cartouche à
+    racheter. Si une analyse révèle nitrates, plomb ou pesticides, il faut une
+    <strong class="text-[#1A1A16]">filtration certifiée</strong> : charbon actif sur robinet
+    ou osmoseur. Aucune perle ne remplace une filtration certifiée.
+  </AnswerBox>
 
   <!-- TABLEAU COMPARATIF -->
   <section class="py-14 px-4 bg-white" aria-labelledby="tableau-titre">

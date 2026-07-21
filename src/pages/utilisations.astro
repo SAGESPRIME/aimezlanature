@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
+import AnswerBox from '../components/AnswerBox.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
 import {
   PERLES_PAR_LITRE,
@@ -91,6 +92,14 @@ const jsonLd = [
       </p>
     </div>
   </section>
+
+  <AnswerBox>
+    Les mêmes perles servent bien au-delà de la carafe : bouilloire ou cafetière
+    (25 perles), lave-vaisselle (40 perles dans un filet, panier à couverts), machine à
+    laver (50 perles dans le tambour), mais aussi réfrigérateur, baignoire, arrosage et
+    aquarium. La règle : <strong class="text-[#1A1A16]">{PERLES_PAR_LITRE} perles par
+    litre</strong> pour l'eau de boisson, un dosage forfaitaire pour les appareils.
+  </AnswerBox>
 
   <!-- USAGES PAR CATÉGORIE -->
   {groupes.map((cat) => (

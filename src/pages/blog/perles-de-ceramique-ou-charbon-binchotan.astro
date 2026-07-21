@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
+import AnswerBox from '../../components/AnswerBox.astro';
 import CtaPacks from '../../components/CtaPacks.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
 
@@ -74,21 +75,14 @@ const jsonLd = [
   </section>
 
   <!-- RÉPONSE COURTE (bloc GEO) -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="reponse-courte">
-    <div class="max-w-3xl mx-auto">
-      <h2 id="reponse-courte" class="font-display text-3xl text-[#1A1A16] mb-5">Réponse courte</h2>
-      <div class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6">
-        <p class="text-[#57534e] leading-relaxed">
-          Le <strong class="text-[#1A1A16]">binchotan</strong> adsorbe davantage de chlore :
-          si le goût est votre unique critère et que racheter un bâton 2 à 3 fois par an ne
-          vous dérange pas, c'est un très bon choix. Les
-          <strong class="text-[#1A1A16]">perles de céramique</strong> gagnent sur la durée
-          (des années, achat unique), sur le tartre et sur la polyvalence (bouilloire,
-          lave-vaisselle, gourde). Les deux se combinent très bien dans une même carafe.
-        </p>
-      </div>
-    </div>
-  </section>
+  <AnswerBox>
+    Le <strong class="text-[#1A1A16]">binchotan</strong> adsorbe davantage de chlore :
+    si le goût est votre unique critère et que racheter un bâton 2 à 3 fois par an ne
+    vous dérange pas, c'est un très bon choix. Les
+    <strong class="text-[#1A1A16]">perles de céramique</strong> gagnent sur la durée
+    (des années, achat unique), sur le tartre et sur la polyvalence (bouilloire,
+    lave-vaisselle, gourde). Les deux se combinent très bien dans une même carafe.
+  </AnswerBox>
 
   <!-- TABLEAU FACE À FACE -->
   <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="tableau-titre">
