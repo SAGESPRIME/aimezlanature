@@ -37,6 +37,17 @@ Suite à l'audit `docs/audit/rapport-audit-2026-07-20.md`.
 - CTA post-Stripe : « Purifier mon eau — 19,90 € » / « J'essaie 30 jours sans risque » /
   « Commander mon Pack 55 ».
 
+## Ajout du 2026-07-20 (soir) — storytelling à-propos
+- Section « D'où vient Aimez la Nature » ajoutée sur /a-propos/ : frise 2008 → 2013 →
+  2019 → 2020, reprise de la vraie histoire de la fondatrice publiée sur
+  aimezlanature.fr/qui-sommes-nous/ (déclic lessive, virage naturel, découverte des
+  perles, dépôt INPI n° 4664991 le 31/07/2020) + sa devise « la nature ne se trompe
+  jamais » en citation.
+- Garde-fou : les allégations santé du texte original (« guérison complète et
+  indiscutable ») sont volontairement écartées — on raconte le parcours, on ne promet
+  aucun effet thérapeutique. Vérifié dans le HTML : « guérison » et « acné » absents.
+- Schema AboutPage enrichi : foundingDate 2020 (source INPI).
+
 ## Restant
 - Friction n°1 : « Commander par email » — attend les liens Stripe Payment Links (utilisateur).
 - Nommer l'association des puits sur /a-propos/ (info à demander au marchand).

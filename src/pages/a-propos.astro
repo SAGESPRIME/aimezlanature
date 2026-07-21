@@ -3,6 +3,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
 
+// Histoire réelle de la fondatrice, reprise de la page « Qui sommes-nous ? »
+// d'aimezlanature.fr (relevée le 2026-07-20). Les allégations santé du texte
+// original (« guérison complète ») sont volontairement écartées : on raconte
+// le parcours, on ne promet aucun effet thérapeutique.
+const etapes = [
+  {
+    annee: '2008',
+    titre: 'Le déclic',
+    texte: 'Tout part d\'un geste banal : une lessive. Une réaction cutanée sévère pousse notre fondatrice à regarder de près la composition des produits du quotidien — et à ne plus jamais les considérer comme anodins.',
+  },
+  {
+    annee: '2013',
+    titre: 'Le virage naturel',
+    texte: 'Après des années de traitements conventionnels décevants, elle explore les alternatives naturelles — miel de Manuka, vinaigre de cidre non pasteurisé — et repense tout son mode de vie : « un esprit sain dans un corps sain », y compris dans ce qu\'on boit. Les bouteilles plastique sortent de son quotidien.',
+  },
+  {
+    annee: '2019',
+    titre: 'La rencontre avec les perles',
+    texte: 'Elle découvre les perles de céramique EM : un objet simple, durable, qui améliore l\'eau du robinet sans cartouche ni plastique. L\'évidence : c\'est cette solution-là qu\'il faut faire connaître.',
+  },
+  {
+    annee: '2020',
+    titre: 'Naissance d\'Aimez la Nature',
+    texte: 'La marque est créée et déposée à l\'INPI (n° 4664991, publiée le 31 juillet 2020), avec une mission claire : rendre les trésors simples de la nature accessibles à tous, en commençant par l\'eau.',
+  },
+];
+
 const metaTitle = 'Notre mission : une eau meilleure, sans plastique | Aimez la Nature';
 const metaDescription =
   'Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, un emballage zéro plastique et une ligne honnête sur ce que les perles font — et ne font pas.';
@@ -37,6 +64,8 @@ const aboutSchema = {
     name: SITE.name,
     url: SITE.url,
     description: SITE.description,
+    // Marque déposée INPI n° 4664991, publiée le 31/07/2020 (cf. mentions légales)
+    foundingDate: '2020',
   },
 };
 ---
@@ -57,10 +86,33 @@ const aboutSchema = {
     </div>
   </section>
 
-  <!-- HISTOIRE -->
+  <!-- HISTOIRE / TIMELINE -->
   <section class="py-14 px-4 bg-white" aria-labelledby="histoire-titre">
     <div class="max-w-3xl mx-auto">
-      <h2 id="histoire-titre" class="font-display text-3xl text-[#1A1A16] mb-6">Pourquoi les perles de céramique ?</h2>
+      <h2 id="histoire-titre" class="font-display text-3xl text-[#1A1A16] mb-3">D'où vient Aimez la Nature</h2>
+      <p class="text-[#57534e] leading-relaxed mb-10">
+        La marque n'est pas née dans un bureau marketing, mais d'un parcours personnel
+        de douze ans — celui de sa fondatrice, guidée par une conviction qu'elle résume
+        en une phrase : <em class="text-[#1A1A16]">« la nature ne se trompe jamais »</em>.
+      </p>
+      <ol class="space-y-8 mb-4">
+        {etapes.map((e) => (
+          <li class="flex gap-6">
+            <span class="font-display text-2xl text-[#9C8358] font-bold leading-none flex-shrink-0 w-16 pt-0.5" aria-hidden="true">{e.annee}</span>
+            <div>
+              <h3 class="font-semibold text-lg text-[#1A1A16] mb-1">{e.titre}</h3>
+              <p class="text-[#57534e] text-sm leading-relaxed">{e.texte}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- POURQUOI LES PERLES -->
+  <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="pourquoi-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="pourquoi-titre" class="font-display text-3xl text-[#1A1A16] mb-6">Pourquoi les perles de céramique ?</h2>
       <p class="text-[#57534e] leading-relaxed mb-4">
         Parce que c'est la solution la plus sobre que nous ayons trouvée : un objet unique, fabriqué
         en argile naturelle, qui dure des années, ne demande ni cartouche, ni électricité, ni
