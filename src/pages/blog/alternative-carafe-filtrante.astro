@@ -1,0 +1,185 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Faq from '../../components/Faq.astro';
+import CtaPacks from '../../components/CtaPacks.astro';
+import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
+import { PERLES_PAR_LITRE } from '../../data/dosages';
+
+const metaTitle = 'Alternative à la carafe filtrante : 3 solutions | Aimez la Nature';
+const metaDescription =
+  'Marre des cartouches ? 3 alternatives durables à la carafe filtrante : perles de céramique, charbon binchotan ou filtration certifiée. Coûts comparés sur 5 ans.';
+
+const couts = [
+  { poste: 'Carafe filtrante (cartouches mensuelles)', an1: '80-140 €', an5: '320-540 €', dechets: '12 cartouches/an' },
+  { poste: 'Charbon binchotan (2-3 bâtons/an)', an1: '30-50 €', an5: '150-250 €', dechets: 'Compostable' },
+  { poste: 'Perles de céramique (achat unique)', an1: '20-30 €', an5: '20-30 €', dechets: 'Zéro' },
+];
+
+const faqItems = [
+  {
+    question: 'Peut-on mettre des perles de céramique dans une carafe filtrante ?',
+    answer:
+      `Oui, et c'est même la transition la plus simple : retirez la cartouche et déposez ${PERLES_PAR_LITRE} perles par litre au fond de votre carafe actuelle. Vous gardez l'objet, vous arrêtez seulement le rachat mensuel de cartouches.`,
+  },
+  {
+    question: 'Quelle est l\'alternative la moins chère à la carafe filtrante ?',
+    answer:
+      'Sur la durée, les perles de céramique : environ 20 à 30 € une seule fois, contre 60 à 100 € de cartouches chaque année. Le charbon binchotan est un peu plus cher à l\'usage (2 à 3 bâtons par an) mais reste bien en dessous du coût des cartouches.',
+  },
+  {
+    question: 'Les perles de céramique filtrent-elles autant qu\'une cartouche ?',
+    answer:
+      'Non, et il faut le dire clairement : une cartouche au charbon actif + résine retient davantage de composés (dont une partie du plomb). Les perles agissent sur le goût, le chlore ressenti et le tartre. Si votre eau est potable et que votre problème est le goût, elles suffisent ; si une analyse révèle un polluant, il faut une filtration certifiée.',
+  },
+  {
+    question: 'Pourquoi une carafe filtrante mal entretenue peut-elle dégrader l\'eau ?',
+    answer:
+      'Une cartouche saturée ou gardée trop longtemps peut relarguer ce qu\'elle a retenu et devenir un support de développement bactérien, surtout si la carafe reste à température ambiante. C\'est l\'un des reproches récurrents des associations de consommateurs — et une des raisons de chercher une alternative sans cartouche.',
+  },
+  {
+    question: 'Que faire de son ancienne carafe filtrante ?',
+    answer:
+      'Gardez-la ! Sans sa cartouche, c\'est une très bonne carafe en verre ou en plastique sans BPA. Beaucoup de nos clients y mettent directement leurs perles de céramique : mêmes gestes qu\'avant, zéro rachat.',
+  },
+];
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'Quelle alternative à la carafe filtrante ? 3 solutions sans cartouche',
+    description: metaDescription,
+    path: '/blog/alternative-carafe-filtrante/',
+    datePublished: '2026-07-20',
+  }),
+  buildFaqSchema(faqItems),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Alternatives · Article</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Quelle alternative à la carafe filtrante ? 3 solutions sans cartouche
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        La carafe filtrante est pratique — jusqu'au moment où l'on fait le compte des
+        cartouches. Voici trois alternatives durables, avec les chiffres, et une bonne
+        nouvelle : votre carafe actuelle peut resservir.
+      </p>
+    </div>
+  </section>
+
+  <!-- RÉPONSE COURTE (bloc GEO) -->
+  <section class="py-14 px-4 bg-white" aria-labelledby="reponse-courte">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="reponse-courte" class="font-display text-3xl text-[#1A1A16] mb-5">Réponse courte</h2>
+      <div class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6">
+        <p class="text-[#57534e] leading-relaxed">
+          Pour remplacer une carafe filtrante quand l'eau est potable et que le problème est
+          le goût : les <strong class="text-[#1A1A16]">perles de céramique</strong> (achat
+          unique, agissent aussi sur le tartre) ou le <strong class="text-[#1A1A16]">charbon
+          binchotan</strong> (à remplacer 2 à 3 fois par an). Si une analyse d'eau révèle un
+          polluant réel, aucune des deux ne suffit : il faut une
+          <strong class="text-[#1A1A16]">filtration certifiée</strong> (charbon actif sur
+          robinet ou osmoseur).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LE VRAI COÛT -->
+  <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="cout-titre">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="cout-titre" class="font-display text-3xl text-[#1A1A16] mb-4">
+        Le vrai coût d'une carafe filtrante
+      </h2>
+      <p class="text-[#57534e] leading-relaxed mb-8">
+        Le prix d'appel (20 à 40 €) cache un abonnement de fait : une cartouche par mois,
+        à 5-8 € pièce. Sur cinq ans, l'écart avec les alternatives devient spectaculaire —
+        pour un foyer de 2-3 personnes :
+      </p>
+      <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8] bg-white">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr class="bg-[#0D2818] text-white">
+              <th scope="col" class="px-5 py-3.5 font-semibold">Solution</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Coût 1ʳᵉ année</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Coût sur 5 ans</th>
+              <th scope="col" class="px-5 py-3.5 font-semibold">Déchets</th>
+            </tr>
+          </thead>
+          <tbody>
+            {couts.map((c, i) => (
+              <tr class={i % 2 ? 'bg-[#FDFBF7]' : 'bg-white'}>
+                <td class="px-5 py-3.5 text-[#57534e]">{c.poste}</td>
+                <td class="px-5 py-3.5 font-semibold text-[#1A1A16]">{c.an1}</td>
+                <td class="px-5 py-3.5 font-semibold text-[#1A1A16]">{c.an5}</td>
+                <td class="px-5 py-3.5 text-[#57534e]">{c.dechets}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-sm text-[#57534e] mt-4">
+        Estimations pour un foyer de 2-3 personnes, prix constatés en France en 2026,
+        carafe et contenants initiaux non compris.
+      </p>
+    </div>
+  </section>
+
+  <!-- LES 3 ALTERNATIVES -->
+  <section class="py-14 px-4 bg-white" aria-labelledby="alternatives-titre">
+    <div class="max-w-3xl mx-auto space-y-10">
+      <h2 id="alternatives-titre" class="font-display text-3xl text-[#1A1A16]">
+        Les 3 alternatives, selon votre besoin
+      </h2>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">1. Les perles de céramique — pour arrêter tout rachat</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          Des perles d'argile EM® à déposer une fois pour toutes au fond de la carafe
+          ({PERLES_PAR_LITRE} perles par litre). Elles réduisent le goût de chlore et
+          limitent le tartre, se régénèrent par simple ébullition tous les 3 à 6 mois,
+          et durent des années. C'est l'alternative « achat unique » par excellence —
+          et elle fonctionne dans votre carafe filtrante actuelle, cartouche retirée.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          → <a href="/perles-ceramique-em/" class="text-[#166534] font-semibold hover:underline">Nos packs de perles de céramique EM®</a> ·
+          <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">le dosage détaillé</a>
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">2. Le charbon binchotan — pour le goût avant tout</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          Un bâton de charbon actif japonais qui adsorbe le chlore et certains composés
+          organiques. Très efficace sur le goût, compostable en fin de vie, mais il sature :
+          comptez un remplacement tous les 3 à 6 mois. Un bon choix si le goût est votre
+          seul critère et que le rachat périodique ne vous dérange pas.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          → Notre face-à-face détaillé :
+          <a href="/blog/perles-de-ceramique-ou-charbon-binchotan/" class="text-[#166534] font-semibold hover:underline">perles de céramique ou binchotan ?</a>
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">3. La filtration certifiée — pour les vrais polluants</h3>
+        <p class="text-[#57534e] leading-relaxed mb-3">
+          Si une analyse de votre eau révèle nitrates, plomb ou pesticides (cas rare en
+          France, mais réel dans certaines zones), ni les perles ni le binchotan ne
+          suffisent — et une carafe filtrante non plus, d'ailleurs. Il faut un filtre à
+          charbon actif certifié NSF monté sur robinet, ou un osmoseur. C'est plus cher,
+          mais c'est le seul choix honnête dans ce cas.
+        </p>
+        <p class="text-sm text-[#57534e]">
+          → <a href="/purifier-eau-robinet-comparatif/" class="text-[#166534] font-semibold hover:underline">Le comparatif complet des 4 solutions</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Faq items={faqItems} title="Vos questions sur les alternatives" />
+  <CtaPacks />
+</BaseLayout>

@@ -54,6 +54,18 @@
   des 30 derniers jours) à confirmer.
 - [ ] Lighthouse complet 16 pages × mobile/desktop depuis la prod Cloudflare (après déploiement)
 
+## Section blog SEO/GEO (2026-07-20) — FAIT ✅
+Stratégie appliquée : ne PAS recréer les anciens articles (contenu mince, pseudo-science,
+301 en place vers les piliers) mais créer 4 articles NEUFS sur les requêtes non couvertes :
+- [x] `/blog/alternative-carafe-filtrante/` — 110/mois, SERP FAIBLE = opportunité n°1
+- [x] `/blog/perles-de-ceramique-ou-charbon-binchotan/` — binchotan 1 000/mois en longue traîne
+- [x] `/blog/perles-de-ceramique-em-authentiques/` — E-E-A-T ; factuel de l'ancien article repris (5 familles de micro-organismes, Pr Higa), pseudo-science écartée
+- [x] `/blog/gourde-filtrante/` — 12 100/mois en longue traîne, angle honnête, maille Gourde + Pack Gourde
+- [x] `articles.ts` + hub /blog/ (section Articles, ItemList 11 items) + llms.txt + 301 authenticité re-pointée + maillage comparatif ↔ articles
+- ✅ Vérif : build 21 pages OK · 4 articles dans le sitemap · schemas Article+FAQPage valides ·
+  titles 57-65 · descriptions ≤ 160 · 0 doublon sur les 70 questions FAQPage du site ·
+  tous les liens internes des articles résolvent dans dist/ · 0 claim pseudo-science
+
 ## Prochaine étape en cours
 - [ ] Paiement en ligne via Stripe Payment Links (direction validée)
   - ⏳ Bloqué : nécessite que l'utilisateur crée les liens dans son dashboard Stripe et fournisse les URLs `https://buy.stripe.com/...` (une par pack)

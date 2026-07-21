@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
 import { guides } from '../data/guides';
+import { articles } from '../data/articles';
 
 const metaTitle = 'Guides perles de céramique EM | Aimez la Nature';
 const metaDescription =
@@ -29,12 +30,12 @@ const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Guides SEO Aimez la Nature',
-    itemListElement: guides.map((guide, index) => ({
+    name: 'Guides et articles Aimez la Nature',
+    itemListElement: [...guides, ...articles].map((item, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: guide.title,
-      url: `${SITE.url}${guide.href}`,
+      name: item.title,
+      url: `${SITE.url}${item.href}`,
     })),
   },
 ];
@@ -98,7 +99,33 @@ const jsonLd = [
     </div>
   </section>
 
-  <section class="py-14 px-4 bg-white" aria-labelledby="anciens-articles">
+  <section class="py-14 px-4 bg-white" aria-labelledby="articles-titre">
+    <div class="max-w-5xl mx-auto">
+      <div class="mb-9">
+        <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">Pour creuser</p>
+        <h2 id="articles-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16]">
+          Les articles
+        </h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-5">
+        {articles.map((article) => (
+          <article class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
+            <p class="text-xs tracking-widest uppercase text-[#75592F] mb-3">{article.category}</p>
+            <h3 class="font-display text-2xl text-[#1A1A16] mb-3">
+              <a href={article.href} class="hover:text-[#166534] transition-colors">{article.title}</a>
+            </h3>
+            <p class="text-[#57534e] leading-relaxed mb-4">{article.description}</p>
+            <p class="text-sm text-[#75592F] mb-5">{article.intent}</p>
+            <a href={article.href} class="inline-flex text-sm font-semibold text-[#166534] hover:underline">
+              Lire l'article
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="anciens-articles">
     <div class="max-w-4xl mx-auto">
       <h2 id="anciens-articles" class="font-display text-3xl text-[#1A1A16] mb-5">
         Pourquoi l’ancien blog a été consolidé
