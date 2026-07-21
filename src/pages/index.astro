@@ -2,9 +2,11 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
 import { SITE } from '../data/products';
 import { guides } from '../data/guides';
 import { getProductImage, getProductImageAlt } from '../lib/productImages';
+import { buildFaqSchema } from '../lib/seo';
 
 // Visuel du hero : le Pack 55, notre bestseller.
 const heroPhoto = getProductImage('pack-55-perles');
@@ -85,9 +87,45 @@ const testimonials = [
     texte: 'Ces perles correspondent exactement à ce qui était décrit. Je constate une véritable amélioration de la qualité de l\'eau dans ma carafe.',
   },
 ];
+
+// FAQ produit affichée sur l'accueil. Google exige que les réponses soient
+// VISIBLES sur la page pour accepter le schema FAQPage : le composant <Faq>
+// rend l'accordéon, buildFaqSchema() génère le JSON-LD à partir des mêmes
+// données. Questions choisies pour les requêtes informationnelles à fort
+// volume ; réponses fidèles aux données réelles (dosage 15/L, régénération
+// par ébullition, honnêteté sur bactéries/métaux — cf. /perles-de-ceramique-avis).
+const homeFaqItems = [
+  {
+    question: 'Qu\'est-ce que les perles de céramique EM® ?',
+    answer:
+      'Ce sont des perles d\'argile naturelle fabriquées au Japon et enrichies en Micro-organismes Efficaces (EM®). Plongées dans l\'eau du robinet, elles réduisent le goût et l\'odeur de chlore, adoucissent l\'eau et limitent les dépôts de tartre, sans aucun produit chimique.',
+  },
+  {
+    question: 'Combien de perles de céramique faut-il utiliser ?',
+    answer:
+      'Comptez environ 15 perles par litre d\'eau de boisson : 15 pour une carafe d\'1 L, 30 pour une carafe de 2 L, 25 pour une bouilloire ou une cafetière, et 8 à 10 pour une gourde de 500 ml.',
+  },
+  {
+    question: 'Combien de temps durent les perles de céramique ?',
+    answer:
+      'Les perles ne s\'usent pas. Il suffit de les régénérer par ébullition 10 à 15 minutes tous les 3 à 6 mois, selon la dureté de votre eau et votre usage. Elles se conservent ainsi sur de nombreuses années.',
+  },
+  {
+    question: 'Les perles de céramique EM® sont-elles sans danger ?',
+    answer:
+      'Oui : fabriquées à partir d\'argile naturelle selon le procédé EM® japonais, elles ne libèrent aucun produit chimique dans l\'eau. Elles améliorent une eau déjà potable (goût, chlore, tartre) et ne remplacent pas un filtre certifié contre les bactéries ou les métaux lourds.',
+  },
+  {
+    question: 'Comment entretenir et régénérer les perles ?',
+    answer:
+      'Rincez-les à l\'eau claire, puis faites-les bouillir 10 à 15 minutes tous les 3 à 6 mois, sans savon ni vinaigre. Laissez-les sécher et replacez-les dans votre carafe, votre bouilloire ou votre gourde.',
+  },
+];
+
+const homeFaqSchema = buildFaqSchema(homeFaqItems);
 ---
 
-<BaseLayout title={metaTitle} description={metaDescription} jsonLd={[organizationSchema, websiteSchema]}>
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={[organizationSchema, websiteSchema, homeFaqSchema]}>
 
   <!-- ══════════════════════════════════
        HERO — split éditorial
@@ -342,14 +380,25 @@ const testimonials = [
   </section>
 
   <!-- ══════════════════════════════════
+       FAQ — accordéon visible + schema FAQPage (GEO / People Also Ask)
+  ══════════════════════════════════ -->
+  <div class="bg-[#F5F0E8]">
+    <Faq
+      items={homeFaqItems}
+      eyebrow="Questions fréquentes"
+      title="Tout savoir avant de vous lancer"
+    />
+  </div>
+
+  <!-- ══════════════════════════════════
        MISSION
   ══════════════════════════════════ -->
   <section class="py-20 px-4 bg-[#0D2818] text-white">
     <div class="max-w-3xl mx-auto text-center">
       <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">Notre mission</p>
       <h2 class="font-display text-4xl lg:text-5xl mb-6 leading-tight">
-        Moins de bouteilles plastique,<br />
-        <span class="text-[#A8C4A0]">une eau meilleure</span>
+        Purifiez votre eau naturellement,<br />
+        <span class="text-[#A8C4A0]">et jetez moins de plastique</span>
       </h2>
       <p class="text-[#B8CCB4] leading-relaxed mb-10 text-lg">
         Un foyer qui passe aux perles cesse d'acheter de l'eau en bouteille :
