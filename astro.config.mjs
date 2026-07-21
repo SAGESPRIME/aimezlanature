@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.aimezlanature.fr',
+  site: 'https://aimezlanature.fr',
   output: 'static',
   // `imageService: 'compile'` optimise les images au build avec sharp au lieu de
   // les faire transiter par Cloudflare Images à l'exécution (défaut de l'adaptateur).

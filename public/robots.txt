@@ -3,4 +3,4 @@ Allow: /
 
 Disallow: /succes
 
-Sitemap: https://www.aimezlanature.fr/sitemap-index.xml
+Sitemap: https://aimezlanature.fr/sitemap-index.xml

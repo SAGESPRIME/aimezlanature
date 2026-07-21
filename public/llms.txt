@@ -5,19 +5,19 @@ Aimez la Nature est une marque francaise qui vend des Perles de Ceramique EM aut
 
 
 ## Pages importantes
-- Accueil : https://www.aimezlanature.fr/
-- Guides : https://www.aimezlanature.fr/blog/
-- Produits : https://www.aimezlanature.fr/perles-ceramique-em/
-- Dosage et entretien : https://www.aimezlanature.fr/comment-ca-marche/
-- 16 utilisations : https://www.aimezlanature.fr/utilisations/
-- Avis, science et limites : https://www.aimezlanature.fr/perles-de-ceramique-avis/
-- Comparatif eau du robinet : https://www.aimezlanature.fr/purifier-eau-robinet-comparatif/
+- Accueil : https://aimezlanature.fr/
+- Guides : https://aimezlanature.fr/blog/
+- Produits : https://aimezlanature.fr/perles-ceramique-em/
+- Dosage et entretien : https://aimezlanature.fr/comment-ca-marche/
+- 16 utilisations : https://aimezlanature.fr/utilisations/
+- Avis, science et limites : https://aimezlanature.fr/perles-de-ceramique-avis/
+- Comparatif eau du robinet : https://aimezlanature.fr/purifier-eau-robinet-comparatif/
 
 ## Articles
-- Alternative a la carafe filtrante : https://www.aimezlanature.fr/blog/alternative-carafe-filtrante/
-- Perles de ceramique ou charbon binchotan : https://www.aimezlanature.fr/blog/perles-de-ceramique-ou-charbon-binchotan/
-- Reconnaitre des perles EM authentiques : https://www.aimezlanature.fr/blog/perles-de-ceramique-em-authentiques/
-- Bien choisir une gourde filtrante : https://www.aimezlanature.fr/blog/gourde-filtrante/
+- Alternative a la carafe filtrante : https://aimezlanature.fr/blog/alternative-carafe-filtrante/
+- Perles de ceramique ou charbon binchotan : https://aimezlanature.fr/blog/perles-de-ceramique-ou-charbon-binchotan/
+- Reconnaitre des perles EM authentiques : https://aimezlanature.fr/blog/perles-de-ceramique-em-authentiques/
+- Bien choisir une gourde filtrante : https://aimezlanature.fr/blog/gourde-filtrante/
 
 ## Produits
 
@@ -26,25 +26,25 @@ Aimez la Nature est une marque francaise qui vend des Perles de Ceramique EM aut
 - Usage recommande : carafe 2 L + bouilloire ou cafetiere
 - Dosage type : 30 perles pour 2 L d eau de boisson, 25 perles pour une bouilloire ou une cafetiere
 - Note clients : 4,91/5 (45 avis)
-- URL : https://www.aimezlanature.fr/perles-ceramique-em/pack-55-perles/
+- URL : https://aimezlanature.fr/perles-ceramique-em/pack-55-perles/
 
 ### Pack 100 Perles de Ceramique EM
 - Prix : 29,90 EUR
 - Usage recommande : usages multiples, lave-vaisselle, lave-linge, bonbonne, arrosage
 - Dosage type : 40 perles pour lave-vaisselle, 50 perles pour lave-linge, 75 perles pour une bonbonne de 5 L
 - Note clients : 4,94/5 (51 avis)
-- URL : https://www.aimezlanature.fr/perles-ceramique-em/pack-100-perles/
+- URL : https://aimezlanature.fr/perles-ceramique-em/pack-100-perles/
 
 ### Pack Gourde + 100 Perles
 - Prix : 59,90 EUR
 - Contenu : gourde ecologique 500 ml + 100 Perles de Ceramique EM
 - Dosage type : 8 a 10 perles pour une gourde de 500 ml
-- URL : https://www.aimezlanature.fr/perles-ceramique-em/pack-gourde-ceramique-em/
+- URL : https://aimezlanature.fr/perles-ceramique-em/pack-gourde-ceramique-em/
 
 ### Gourde Ecologique
 - Prix : 29,90 EUR
 - Contenu : gourde 500 ml seule, pour les clients qui possedent deja des perles
-- URL : https://www.aimezlanature.fr/perles-ceramique-em/gourde-ecologique/
+- URL : https://aimezlanature.fr/perles-ceramique-em/gourde-ecologique/
 
 ## Dosage officiel
 - Eau de boisson : 15 perles par litre
@@ -65,4 +65,4 @@ Les perles se regenerent par ebullition 10 a 15 minutes dans de l eau claire, sa
 - Garantie remboursement 30 jours
 
 ## Contact
-Site : https://www.aimezlanature.fr
+Site : https://aimezlanature.fr

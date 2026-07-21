@@ -30,5 +30,19 @@
 /perles-de-ceramique-purifier-votre-eau-du-robinet/       /purifier-eau-robinet-comparatif/    301
 /les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/ /purifier-eau-robinet-comparatif/ 301
 /leau-est-une-source-de-vie/                              /purifier-eau-robinet-comparatif/    301
-/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne/ /comment-ca-marche/            301
+/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/ /comment-ca-marche/              301
 /perles-de-ceramique-une-solution-ecologique-et-economique/ /perles-ceramique-em/              301
+
+# Memes anciens articles, mais prefixes /blog/ : c'est la forme servie par la
+# version Next.js du site (verifie le 2026-07-21 sur aimezlanature.vercel.app,
+# canonical vers /blog/<slug>). En production ces URLs redirigent aujourd'hui
+# vers la version racine ; sans ces regles, le nouveau site les mettrait en 404
+# et casserait ce filet de securite. Memes destinations que les regles racine.
+/blog/perles-de-ceramique-une-solution-ecologique-et-economique  /perles-ceramique-em/            301
+/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet /purifier-eau-robinet-comparatif/ 301
+/blog/leau-est-une-source-de-vie                                 /purifier-eau-robinet-comparatif/ 301
+/blog/perles-de-ceramique-purifier-votre-eau-du-robinet          /purifier-eau-robinet-comparatif/ 301
+/blog/les-differents-usages-des-perles-de-ceramique              /utilisations/                   301
+/blog/authenticite-des-perles-de-ceramique-em-et-leur-efficacite /blog/perles-de-ceramique-em-authentiques/ 301
+/blog/les-bienfaits-des-perles-de-ceramique                      /perles-de-ceramique-avis/       301
+/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien /comment-ca-marche/             301

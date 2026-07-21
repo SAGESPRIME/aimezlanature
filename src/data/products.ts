@@ -212,7 +212,7 @@ export function getProduct(slug: string): Product | undefined {
 
 export const SITE = {
   name: "Aimez la Nature",
-  url: "https://www.aimezlanature.fr",
+  url: "https://aimezlanature.fr",
   description: "Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement.",
   /**
    * Avis clients — chiffres vérifiés sur aimezlanature.fr le 2026-07-20.
