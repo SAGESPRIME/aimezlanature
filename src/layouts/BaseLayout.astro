@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE, getProduct } from '../data/products';
+import CartDrawer from '../components/CartDrawer.astro';
 
 interface Props {
   title: string;
@@ -38,7 +39,6 @@ const segmentLabels: Record<string, string> = {
   'perles-ceramique-em': 'Perles de Céramique EM',
   'comment-ca-marche': 'Comment ça marche',
   'utilisations': '16 utilisations',
-  'perles-de-ceramique-avis': 'Avis & science',
   'purifier-eau-robinet-comparatif': 'Comparatif purification',
   'blog': 'Guides',
   'a-propos': 'À propos',
@@ -47,10 +47,14 @@ const segmentLabels: Record<string, string> = {
   'contact': 'Contact',
   'mentions-legales': 'Mentions légales',
   // Articles de blog
-  'alternative-carafe-filtrante': 'Alternative carafe filtrante',
-  'perles-de-ceramique-ou-charbon-binchotan': 'Perles ou binchotan',
-  'perles-de-ceramique-em-authentiques': 'Perles EM authentiques',
-  'gourde-filtrante': 'Gourde filtrante',
+  'perles-de-ceramique-une-solution-ecologique-et-economique': 'Solution écologique et économique',
+  'les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet': 'Alternative bio',
+  'leau-est-une-source-de-vie': 'L\'eau, source de vie',
+  'perles-de-ceramique-purifier-votre-eau-du-robinet': 'Purifier l\'eau du robinet',
+  'les-differents-usages-des-perles-de-ceramique': 'Les usages des perles',
+  'authenticite-des-perles-de-ceramique-em-et-leur-efficacite': 'Authenticité et efficacité',
+  'les-bienfaits-des-perles-de-ceramique': 'Les bienfaits des perles',
+  'perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien': 'Source de vie au quotidien',
 };
 
 function segmentLabel(seg: string): string {
@@ -157,6 +161,22 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
         </ul>
         <div class="flex items-center gap-2">
           <a
+            href="/panier/"
+            data-ouvrir-panier
+            class="relative inline-flex items-center justify-center w-10 h-10 rounded-lg border border-stone-200 text-stone-700 hover:bg-stone-100 transition-colors"
+            aria-label="Voir mon panier"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            <span
+              data-panier-compteur
+              hidden
+              class="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-green-700 text-white text-xs font-bold flex items-center justify-center"
+            >0</span>
+          </a>
+          <a
             href="/perles-ceramique-em/"
             class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
           >
@@ -240,7 +260,6 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
             <li><a href="/blog/" class="hover:text-white transition-colors">Guides perles de céramique</a></li>
             <li><a href="/comment-ca-marche/" class="hover:text-white transition-colors">Comment ça marche</a></li>
             <li><a href="/utilisations/" class="hover:text-white transition-colors">16 utilisations des perles</a></li>
-            <li><a href="/perles-de-ceramique-avis/" class="hover:text-white transition-colors">Avis & science : le vrai du faux</a></li>
             <li><a href="/purifier-eau-robinet-comparatif/" class="hover:text-white transition-colors">Comparatif : purifier l'eau du robinet</a></li>
             <li><a href="/faq/" class="hover:text-white transition-colors">FAQ</a></li>
             <li><a href="/a-propos/" class="hover:text-white transition-colors">Notre mission</a></li>
@@ -257,6 +276,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     <!-- JS minimal, servi en fichier externe pour rester compatible avec la CSP
          (script-src 'self') : menu mobile + apparitions au défilement. -->
+    <CartDrawer />
+
     <script src="/js/site.js" defer></script>
+    <script src="/js/cart.js" defer></script>
   </body>
 </html>

@@ -1,4 +1,5 @@
 import { SITE, type Product } from '../data/products';
+import { reviewsFor } from '../data/reviews';
 
 /**
  * Schema.org Product avec offre, note et avis — utilisé sur chaque fiche produit.
@@ -44,6 +45,31 @@ export function buildProductSchema(p: Product, imageUrl?: string) {
           },
         }
       : {}),
+    // Avis individuels réels (src/data/reviews.ts). Limités à 5 : Google n'en
+    // exploite qu'un échantillon et les envoyer tous alourdirait chaque page
+    // de plusieurs dizaines de kilo-octets pour rien.
+    ...(() => {
+      const list = reviewsFor(p.slug)
+        .filter((r) => r.rating !== null)
+        .slice(0, 5);
+      return list.length > 0
+        ? {
+            review: list.map((r) => ({
+              '@type': 'Review',
+              author: { '@type': 'Person', name: r.author },
+              ...(r.date ? { datePublished: r.date } : {}),
+              ...(r.title ? { name: r.title } : {}),
+              reviewBody: r.text,
+              reviewRating: {
+                '@type': 'Rating',
+                ratingValue: r.rating,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            })),
+          }
+        : {};
+    })(),
   };
 }
 

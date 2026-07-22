@@ -1,0 +1,137 @@
+---
+// Article repris de la version aimezlanature.vercel.app (relevé le 2026-07-22).
+// Contenu conservé tel quel à la demande du client.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageDate from '../../components/PageDate.astro';
+import CtaPacks from '../../components/CtaPacks.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import { buildArticleSchema } from '../../lib/seo';
+
+const PATH = '/blog/leau-est-une-source-de-vie/';
+const datePublished = '2025-03-22';
+
+const metaTitle = 'L\'Eau, Source de Vie : Bien S\'Hydrater | Aimez la Nature';
+const metaDescription = 'L\'eau est essentielle à la vie. Découvrez pourquoi une bonne hydratation est cruciale et comment les perles EM améliorent la qualité de votre eau.';
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'L\'Eau, Source de Vie : Bien S\'Hydrater',
+    description: metaDescription,
+    path: PATH,
+    datePublished,
+  }),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Général</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        L'Eau, Source de Vie : Bien S'Hydrater
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        L'eau est essentielle à la vie. Découvrez pourquoi une bonne hydratation est cruciale et comment les perles EM améliorent la qualité de votre eau.
+      </p>
+      <PageDate date={datePublished} class="mt-5" />
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-0">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-0" class="font-display text-3xl text-[#1A1A16] mb-5">L'eau, source de vie</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">L'eau est la source de vie par excellence. Composée de deux atomes d'hydrogène et d'un atome d'oxygène (H2O), l'eau est indispensable à la vie sur Terre. Le corps humain adulte est composé d'environ 60 % d'eau. Ce chiffre monte à 75 % chez les nouveau-nés et baisse avec l'âge. L'eau est présente dans chaque cellule, chaque tissu et chaque organe de notre corps.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Il est recommandé de boire entre 1,5 et 2 litres d'eau par jour pour maintenir une bonne hydratation. Cette recommandation varie selon l'activité physique, la température ambiante, l'âge et l'état de santé de chaque personne. Par temps chaud ou lors d'un effort physique intense, les besoins peuvent monter à 3 litres ou plus.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">L'eau joue des rôles fondamentaux dans l'organisme :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Transport des nutriments : l'eau véhicule les vitamines, les minéraux et les nutriments vers les cellules qui en ont besoin.</li>
+          <li>Élimination des déchets : les reins filtrent environ 180 litres de sang par jour, grâce à l'eau, pour éliminer les toxines via l'urine.</li>
+          <li>Lubrification des articulations : le liquide synovial qui protège les articulations est principalement composé d'eau.</li>
+          <li>Régulation de la température corporelle : la transpiration, composée d'eau, permet de maintenir le corps autour de 37 degres.</li>
+          <li>Protection des organes : le cerveau, les yeux et la moelle épinière sont protégés par des fluides aqueux.</li>
+        </ul>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-1">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-1" class="font-display text-3xl text-[#1A1A16] mb-5">Les conséquences de la déshydratation</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">La déshydratation peut provoquer de nombreux symptômes qui affectent directement votre qualité de vie au quotidien. Même une déshydratation légère (perte de 1 à 2 % du poids corporel en eau) a des effets mesurables :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Fatigue et baisse d'énergie : l'eau est nécessaire à la production d'énergie cellulaire. En manquer, c'est se priver d'un carburant essentiel.</li>
+          <li>Maux de tête : le cerveau est particulièrement sensible à la déshydratation. Les céphalées sont souvent l'un des premiers signes d'un apport hydrique insuffisant.</li>
+          <li>Sécheresse de la peau : la peau est le dernier organe à recevoir l'eau. En cas de manque, elle se dessèche, perd son élasticité et se ride plus vite.</li>
+          <li>Problèmes de concentration : les performances cognitives diminuent avec la déshydratation. La mémoire, l'attention et la vitesse de traitement des informations sont affectées.</li>
+          <li>Constipation : le corps puise l'eau dans les intestins en cas de manque, ce qui durcit les selles et ralentit le transit.</li>
+          <li>Douleurs articulaires : sans suffisamment d'eau, le liquide synovial est moins efficace pour amortir les chocs au niveau des articulations.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Ces symptômes sont souvent attribués à d'autres causes alors qu'ils pourraient être résolus simplement en buvant plus d'eau de qualité.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-2">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-2" class="font-display text-3xl text-[#1A1A16] mb-5">Les bienfaits d'une bonne hydratation</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Une hydratation suffisante et régulière apporte des bienfaits concrets et mesurables :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Élimination des toxines : l'eau joue un rôle essentiel dans l'élimination des déchets du corps. Les reins, le foie et la peau dépendent de l'eau pour filtrer et évacuer les substances indésirables.</li>
+          <li>Beauté de la peau : elle maintient la peau hydratée et souple. Une peau bien hydratée est plus lumineuse, plus élastique et vieillit moins vite.</li>
+          <li>Thermorégulation : elle participe au maintien de la température interne autour de 37 degres Celsius. Sans eau, le corps ne peut pas transpirer efficacement pour se refroidir.</li>
+          <li>Gestion du poids : elle procure un effet de satiété et ne contient aucune calorie. Boire un grand verre d'eau 30 minutes avant les repas aide à réduire les portions alimentaires.</li>
+          <li>Fonctionnement cérébral : elle joue un rôle important dans les performances cognitives. Des études montrent que l'hydratation améliore la concentration, la mémoire et l'humeur.</li>
+          <li>Santé digestive : l'eau facilite la digestion et prévient la constipation. Elle aide à dissoudre les graisses et les fibres alimentaires.</li>
+          <li>Performance physique : les muscles sont composés d'environ 75 % d'eau. Une bonne hydratation retarde la fatigue musculaire et améliore l'endurance.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Pour profiter pleinement des bienfaits de l'eau, il est essentiel de boire une eau de bonne qualité. Les perles de céramique EM améliorent le goût de l'eau du robinet, ce qui encourage naturellement à boire plus.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-3">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-3" class="font-display text-3xl text-[#1A1A16] mb-5">Pourquoi la qualité de l'eau compte autant que la quantité</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Boire 1,5 à 2 litres d'eau par jour est important. Mais la qualité de cette eau l'est tout autant. Une eau chargée en chlore, en calcaire ou en impuretés peut décourager même les meilleures intentions d'hydratation.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Le goût est le premier facteur qui influence notre consommation d'eau. Si l'eau a un goût de chlore désagréable, on boit moins. On se tourne vers des alternatives plus coûteuses et moins saines : sodas, jus industriels, eau en bouteille. Les perles de céramique EM résolvent ce problème en éliminant le goût de chlore et en rendant l'eau du robinet agréable à boire.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Au-delà du goût, la qualité biologique de l'eau a un impact sur votre santé. L'action probiotique des micro-organismes EM contribue à l'équilibre de la flore intestinale. L'action antioxydante réduit les radicaux libres présents dans l'eau. En traitant votre eau avec les perles EM, vous transformez chaque verre d'eau en un geste bénéfique pour votre corps.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-4">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-4" class="font-display text-3xl text-[#1A1A16] mb-5">Purifier votre eau pour une hydratation optimale</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles de céramique EM sont recommandées pour purifier l'eau du robinet et obtenir une eau de meilleure qualité pour une hydratation optimale. En améliorant le goût de l'eau, elles vous encouragent naturellement à boire la quantité recommandée chaque jour.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Voici comment intégrer facilement les perles dans votre routine d'hydratation :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Le matin au réveil : buvez un grand verre d'eau traitée pour réhydrater votre corps après la nuit. C'est le moment où le corps en a le plus besoin.</li>
+          <li>Tout au long de la journée : gardez une carafe avec les perles sur votre bureau ou votre table de travail. L'eau est toujours prête à être bue.</li>
+          <li>Pendant les repas : servez-vous de l'eau traitée au lieu de boissons sucrées. Votre digestion s'en portera mieux.</li>
+          <li>Avant et après le sport : hydratez-vous avec une eau de qualité pour optimiser votre récupération.</li>
+        </ul>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-5">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-5" class="font-display text-3xl text-[#1A1A16] mb-5">Les erreurs courantes d'hydratation</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Même avec les meilleures intentions, certaines erreurs freinent une bonne hydratation :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Attendre d'avoir soif : la soif est un signal de déshydratation déjà installée. Il faut boire avant d'avoir soif.</li>
+          <li>Boire trop d'un coup : le corps ne peut absorber qu'environ 200 ml d'eau toutes les 15 minutes. Mieux vaut boire régulièrement en petites quantités.</li>
+          <li>Ne boire que du café ou du thé : ces boissons ont un effet diurétique qui peut augmenter la perte d'eau. Elles ne remplacent pas l'eau pure.</li>
+          <li>Ignorer la qualité de l'eau : une eau au goût désagréable sera bue moins volontiers. Traiter l'eau avec les perles EM résout ce problème.</li>
+        </ul>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-6" class="font-display text-3xl text-[#1A1A16] mb-5">FAQ rapide</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Combien d'eau faut-il boire par jour ? Il est recommandé de boire entre 1,5 et 2 litres d'eau par jour, soit environ 8 verres. Cette quantité peut varier selon l'activité physique et la température. Par temps chaud ou lors d'un effort, augmentez à 2,5 ou 3 litres.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Pourquoi le goût de l'eau est-il important ? Une eau au goût agréable encourage à boire plus régulièrement. Les perles de céramique EM éliminent le goût de chlore de l'eau du robinet, la rendant plus agréable à boire et facilitant ainsi une hydratation suffisante au quotidien.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Peut-on trop boire d'eau ? Dans des conditions normales, le corps élimine l'excès d'eau par l'urine. Il est très rare de boire trop d'eau. Les reins peuvent filtrer jusqu'à 0,8 litre par heure. Buvez selon votre soif et votre confort, sans vous forcer mais sans attendre d'avoir soif.</p>
+    </div>
+  </section>
+
+  <RelatedArticles currentHref={PATH} />
+  <CtaPacks />
+</BaseLayout>

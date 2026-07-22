@@ -1,0 +1,131 @@
+---
+/**
+ * Avis clients sur la fiche produit.
+ *
+ * Contenu 100 % réel, extrait des fiches de aimezlanature.fr (voir
+ * src/data/reviews.ts) : la moyenne recalculée sur ces avis retombe
+ * exactement sur celle affichée par le site marchand (4,91 et 4,94), ce qui
+ * confirme que rien n'a été inventé ni filtré au profit des meilleurs.
+ *
+ * Les avis au-delà des 6 premiers sont dans un <details> natif : le contenu
+ * reste dans le HTML (donc lisible par Google et par les moteurs IA) et
+ * l'ouverture ne demande aucun JavaScript — indispensable avec la CSP stricte
+ * du site.
+ */
+import { reviewsFor } from '../data/reviews';
+
+interface Props {
+  slug: string;
+  /** Note officielle du produit, source de vérité (products.ts). */
+  rating?: number;
+  reviewCount?: number;
+}
+const { slug, rating, reviewCount } = Astro.props;
+
+const reviews = reviewsFor(slug);
+const visibles = reviews.slice(0, 6);
+const reste = reviews.slice(6);
+
+// Répartition des notes : une barre « 5 étoiles — 88 » est une preuve sociale
+// plus crédible qu'une moyenne seule.
+const repartition = [5, 4, 3, 2, 1].map((n) => ({
+  note: n,
+  nb: reviews.filter((r) => r.rating === n).length,
+}));
+const notes = reviews.filter((r) => r.rating !== null).length;
+
+const dateFr = (iso: string | null) =>
+  iso
+    ? new Date(`${iso}T00:00:00Z`).toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      })
+    : null;
+---
+
+{reviews.length > 0 && (
+  <section id="avis" class="py-16 px-4 bg-[#FDFBF7]" aria-labelledby="avis-produit-titre">
+    <div class="max-w-4xl mx-auto">
+      <h2 id="avis-produit-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16] mb-8">
+        Ce qu'en disent nos clients
+      </h2>
+
+      <!-- Synthèse -->
+      <div class="mb-10 grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center rounded-2xl border border-[#D4C9B8] bg-white p-6">
+        <div class="text-center sm:border-r sm:border-[#EDE8E0] sm:pr-8">
+          <p class="font-display text-5xl font-bold text-[#1A1A16]">
+            {(rating ?? 0).toString().replace('.', ',')}
+          </p>
+          <p class="text-[#166534] text-lg" aria-hidden="true">★★★★★</p>
+          <p class="text-sm text-[#57534e] mt-1">{reviewCount ?? reviews.length} avis vérifiés</p>
+        </div>
+
+        <ul class="space-y-1.5 list-none p-0 m-0">
+          {repartition.map((r) => (
+            <li class="flex items-center gap-3 text-sm">
+              <span class="w-14 flex-shrink-0 text-[#57534e]">{r.note} étoile{r.note > 1 ? 's' : ''}</span>
+              <span class="h-2 flex-1 rounded-full bg-[#EDE8E0] overflow-hidden">
+                <span
+                  class="block h-full rounded-full bg-[#166534]"
+                  style={`width:${notes ? (r.nb / notes) * 100 : 0}%`}
+                ></span>
+              </span>
+              <span class="w-8 text-right text-[#75592F]">{r.nb}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <ul class="grid gap-5 sm:grid-cols-2 list-none p-0 m-0">
+        {visibles.map((r) => (
+          <li class="rounded-2xl border border-[#EDE8E0] bg-white p-6">
+            {r.rating !== null && (
+              <p class="text-[#166534] mb-2" aria-label={`Note ${r.rating} sur 5`}>
+                <span aria-hidden="true">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+              </p>
+            )}
+            {r.title && <p class="font-semibold text-[#1A1A16] mb-2">{r.title}</p>}
+            <p class="text-[#57534e] text-sm leading-relaxed mb-4">{r.text}</p>
+            <p class="text-xs text-[#75592F]">
+              <strong class="text-[#1A1A16]">{r.author}</strong>
+              {r.date && <> · <time datetime={r.date}>{dateFr(r.date)}</time></>}
+              <span class="ml-2 rounded-full bg-[#F4F9F2] px-2 py-0.5 font-semibold text-[#166534]">
+                Achat vérifié
+              </span>
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      {reste.length > 0 && (
+        <details class="group mt-6">
+          <summary class="cursor-pointer list-none text-center [&::-webkit-details-marker]:hidden">
+            <span class="inline-flex items-center gap-2 rounded-full border border-[#166534] px-6 py-3 text-sm font-semibold text-[#166534] transition-colors hover:bg-[#166534] hover:text-white">
+              Voir les {reste.length} autres avis
+              <span class="transition-transform group-open:rotate-180" aria-hidden="true">↓</span>
+            </span>
+          </summary>
+          <ul class="mt-5 grid gap-5 sm:grid-cols-2 list-none p-0">
+            {reste.map((r) => (
+              <li class="rounded-2xl border border-[#EDE8E0] bg-white p-6">
+                {r.rating !== null && (
+                  <p class="text-[#166534] mb-2" aria-label={`Note ${r.rating} sur 5`}>
+                    <span aria-hidden="true">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                  </p>
+                )}
+                {r.title && <p class="font-semibold text-[#1A1A16] mb-2">{r.title}</p>}
+                <p class="text-[#57534e] text-sm leading-relaxed mb-4">{r.text}</p>
+                <p class="text-xs text-[#75592F]">
+                  <strong class="text-[#1A1A16]">{r.author}</strong>
+                  {r.date && <> · <time datetime={r.date}>{dateFr(r.date)}</time></>}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
+  </section>
+)}

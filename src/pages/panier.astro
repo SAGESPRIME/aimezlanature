@@ -1,0 +1,72 @@
+---
+/**
+ * Panier et départ vers le paiement.
+ *
+ * Le catalogue est injecté ici en JSON (bloc non exécutable, compatible avec
+ * la CSP stricte) pour que public/js/cart.js affiche exactement les prix du
+ * serveur. Le montant réellement débité est de toute façon recalculé dans
+ * /api/checkout : cette page ne fait qu'afficher.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/products';
+import PaymentMethods from '../components/PaymentMethods.astro';
+
+const metaTitle = 'Votre panier | Aimez la Nature';
+const metaDescription =
+  'Récapitulatif de votre commande de Perles de Céramique EM® : quantités, remises et frais de livraison avant paiement sécurisé.';
+
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} noindex>
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-10">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16]">Votre panier</h1>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto grid lg:grid-cols-[1fr_320px] gap-10 items-start">
+      <div>
+        <p id="panier-vide" hidden class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-8 text-center text-[#57534e]">
+          Votre panier est vide.
+          <a href="/perles-ceramique-em/" class="block mt-4 font-semibold text-[#166534] underline">
+            Découvrir nos packs
+          </a>
+        </p>
+        <ul id="panier-contenu" class="list-none p-0 m-0"></ul>
+      </div>
+
+      <aside id="panier-resume" hidden class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6 lg:sticky lg:top-24">
+        <h2 class="font-display text-2xl text-[#1A1A16] mb-5">Récapitulatif</h2>
+        <dl class="space-y-2 text-sm text-[#57534e]">
+          <div class="flex justify-between"><dt>Sous-total</dt><dd id="resume-sous-total">—</dd></div>
+          <div id="resume-ligne-remise" hidden class="flex justify-between text-[#166534] font-semibold"><dt>Remise quantité</dt><dd id="resume-remise">—</dd></div>
+          <div class="flex justify-between"><dt>Livraison</dt><dd id="resume-port">—</dd></div>
+        </dl>
+        <p id="resume-reste" hidden class="mt-3 text-xs text-[#75592F]"></p>
+        <div class="flex justify-between items-baseline border-t border-[#D4C9B8] mt-4 pt-4">
+          <span class="font-semibold text-[#1A1A16]">Total</span>
+          <span id="resume-total" class="font-display text-2xl font-bold text-[#166534]">—</span>
+        </div>
+
+        <button
+          type="button"
+          data-payer
+          class="mt-6 w-full bg-[#166534] text-white px-6 py-4 rounded-full font-semibold hover:bg-[#0D4A25] transition-colors disabled:opacity-60"
+        >
+          Payer ma commande
+        </button>
+        <p data-paiement-erreur hidden role="alert" class="mt-3 text-sm text-[#B91C1C]"></p>
+
+        <PaymentMethods class="mt-4" />
+
+        <ul class="mt-5 space-y-1.5 text-xs text-[#57534e] list-none p-0">
+          <li>✓ Paiement sécurisé par Stripe — carte, Apple Pay, Google Pay</li>
+          <li>✓ Livraison offerte dès {SITE.freeShippingThreshold} €, sous 2 à 5 jours</li>
+          <li>✓ Garantie remboursement 30 jours</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+</BaseLayout>

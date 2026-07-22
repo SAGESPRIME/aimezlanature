@@ -64,8 +64,11 @@ const aboutSchema = {
     name: SITE.name,
     url: SITE.url,
     description: SITE.description,
-    // Marque déposée INPI n° 4664991, publiée le 31/07/2020 (cf. mentions légales)
-    foundingDate: '2020',
+    // Création de la marque en 2019 (source : le marchand). À ne pas confondre
+    // avec le dépôt INPI n° 4664991, publié le 31/07/2020 — c'est la date
+    // d'enregistrement de la marque, pas celle du début d'activité.
+    foundingDate: String(SITE.foundingYear),
+    sameAs: [SITE.amazon.url],
   },
 };
 ---

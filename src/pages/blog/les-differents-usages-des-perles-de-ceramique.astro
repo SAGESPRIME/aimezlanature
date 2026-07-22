@@ -1,0 +1,157 @@
+---
+// Article repris de la version aimezlanature.vercel.app (relevé le 2026-07-22).
+// Contenu conservé tel quel à la demande du client.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageDate from '../../components/PageDate.astro';
+import CtaPacks from '../../components/CtaPacks.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import { buildArticleSchema } from '../../lib/seo';
+
+const PATH = '/blog/les-differents-usages-des-perles-de-ceramique/';
+const datePublished = '2025-02-25';
+
+const metaTitle = 'Les Usages des Perles de Céramique EM | Aimez la Nature';
+const metaDescription = 'Découvrez tous les usages des perles de céramique EM : carafe, bouilloire, lave-linge, réfrigérateur, piscine et bien plus. Guide pratique complet.';
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'Les Usages des Perles de Céramique EM',
+    description: metaDescription,
+    path: PATH,
+    datePublished,
+  }),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Usages</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Les Usages des Perles de Céramique EM
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Découvrez tous les usages des perles de céramique EM : carafe, bouilloire, lave-linge, réfrigérateur, piscine et bien plus. Guide pratique complet.
+      </p>
+      <PageDate date={datePublished} class="mt-5" />
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-0">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-0" class="font-display text-3xl text-[#1A1A16] mb-5">Carafe d'eau -- L'usage principal</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">15 perles dans une carafe, attendez 30 minutes. Vous retrouverez le goût originel de l'eau du robinet, sans mauvais goût de chlore ni mauvaises odeurs. C'est l'usage le plus courant et le plus apprécié des perles de céramique EM.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Pour tirer le meilleur parti de cet usage, voici quelques conseils pratiques :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Laissez les perles en permanence dans la carafe. Remplissez-la d'eau du robinet et attendez 30 minutes avant de consommer. Pas besoin de sortir les perles à chaque fois.</li>
+          <li>Renouvelez l'eau chaque jour pour une fraîcheur optimale. Les perles continuent d'agir tant qu'elles sont en contact avec l'eau.</li>
+          <li>Utilisez une carafe en verre de préférence. Le verre préserve le goût de l'eau et ne retient pas les odeurs.</li>
+          <li>Pour une gourde : 15 perles fonctionnent aussi bien dans une gourde d'un litre qu'une carafe. Idéal pour le bureau ou les déplacements.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">L'eau ainsi traitée est idéale pour boire, mais aussi pour préparer le thé, le café, les jus de fruits ou la cuisine du quotidien. Son goût neutre et doux sublime les boissons et les préparations culinaires.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-1">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-1" class="font-display text-3xl text-[#1A1A16] mb-5">En cuisine -- Bouilloire et cafetière</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">25 perles dans le réservoir de votre bouilloire ou cafetière. Les perles réduisent les dépôts de calcaire pour une meilleure conservation des appareils, et jusqu'à ne presque plus avoir à les détartrer.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Concrètement, les bienfaits en cuisine sont nombreux :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Bouilloire : l'eau chauffée a meilleur goût. Le thé et les infusions révèlent des arômes plus subtils, sans le goût chimique du chlore qui masque les saveurs.</li>
+          <li>Cafetière : le café est moins amer et plus aromatique. Les dépôts de tartre dans la machine diminuent nettement.</li>
+          <li>Cuisson des pâtes et du riz : utilisez l'eau traitée pour une cuisson qui respecte le goût des aliments.</li>
+          <li>Potages et bouillons : une eau de meilleure qualité se ressent directement dans le goût de vos préparations.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles résistent à l'ébullition sans aucun problème. Vous pouvez les laisser en permanence dans la bouilloire sans risquer de les endommager.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-2">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-2" class="font-display text-3xl text-[#1A1A16] mb-5">Réfrigérateur -- Conservation des aliments</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">15 à 30 perles dans le bac à légumes du réfrigérateur. Les perles de céramique EM permettent de conserver les fruits et les légumes plus longtemps. Vous pouvez aussi utiliser 15 perles dans un bol d'eau pour le lavage des fruits et légumes.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Le mécanisme est simple : les micro-organismes efficaces forment une barrière naturelle qui ralentit la prolifération des bactéries responsables de la décomposition. Les résultats sont particulièrement visibles sur :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Les salades et herbes fraîches : elles restent croquantes 3 à 5 jours de plus qu'en conditions normales.</li>
+          <li>Les fruits rouges : fraises, framboises et myrtilles ne moisissent plus aussi vite, un vrai gain financier.</li>
+          <li>Les légumes feuillus : épinards, chou et persil gardent leur fraîcheur et leur couleur.</li>
+          <li>Les fromages : certains utilisateurs constatent une meilleure conservation des fromages à pâte molle.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Astuce supplémentaire : placez un bol d'eau avec 15 perles au milieu du réfrigérateur pour neutraliser les odeurs. Changez l'eau tous les 3 à 4 jours.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-3">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-3" class="font-display text-3xl text-[#1A1A16] mb-5">Lave-linge -- Linge plus doux</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">50 perles dans un sac en coton dans le tambour. Les perles adoucissent l'eau, réduisent les dépôts calcaires, prolongent la durée de vie de l'appareil et permettent d'obtenir un linge plus doux.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Voici ce que vous pouvez constater après quelques semaines d'utilisation :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Linge plus souple : les tissus sont moins rigides, sans besoin d'ajouter un adoucissant chimique.</li>
+          <li>Couleurs préservées : les vêtements gardent leur éclat plus longtemps, car l'eau moins calcaire est moins agressive sur les teintures.</li>
+          <li>Moins de lessive nécessaire : l'eau adoucie par les perles permet de réduire la quantité de lessive de 20 à 30 %.</li>
+          <li>Appareil protégé : la résistance et le tambour du lave-linge s'entartrent moins vite, prolongeant sa durée de vie.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Utilisez un petit sac en coton fermé (un sac à thé en tissu fait l'affaire) pour contenir les perles et éviter qu'elles ne se perdent dans le tambour.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-4">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-4" class="font-display text-3xl text-[#1A1A16] mb-5">Lave-vaisselle -- Vaisselle plus brillante</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">40 perles dans un sac en tissu dans le panier à couverts. Les perles adoucissent l'eau, réduisent les dépôts calcaires et permettent d'obtenir une vaisselle plus brillante.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les résultats les plus visibles concernent :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Les verres : ils retrouvent leur transparence, sans la pellicule blanchâtre causée par le calcaire.</li>
+          <li>Les couverts : moins de traces et de taches d'eau.</li>
+          <li>L'intérieur de la machine : les parois et les bras de projection restent propres plus longtemps.</li>
+          <li>La consommation de produit : vous pouvez réduire la quantité de produit de rinçage.</li>
+        </ul>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-5">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-5" class="font-display text-3xl text-[#1A1A16] mb-5">Autres usages moins connus</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles de céramique EM trouvent leur place dans de nombreuses autres situations du quotidien :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Baignoire : 40 perles dans un petit sac pour un bain relaxant dans une eau adoucie. La peau est moins irritée et la sensation de douceur est immédiate.</li>
+          <li>Toilettes : 20 perles dans le réservoir pour réduire le calcaire et les odeurs. Les parois restent propres plus longtemps.</li>
+          <li>Piscine : 1 kg de perles pour 1 m3 d'eau pour réduire le calcaire et améliorer la qualité de l'eau. Le besoin en produits chimiques est diminué.</li>
+          <li>Fleurs coupées : 10 à 15 perles dans le vase pour conserver la fraîcheur des fleurs plus longtemps, jusqu'à 50 % de durée supplémentaire.</li>
+          <li>Arrosage des plantes : 20 à 40 perles dans l'arrosoir (pour 10 litres). Les plantes bénéficient d'une eau enrichie en micro-organismes bénéfiques.</li>
+          <li>Lavage des fruits et légumes : 15 perles dans un bol d'eau, trempez vos aliments 5 minutes avant de les consommer ou de les stocker.</li>
+          <li>Animalerie : les perles peuvent être placées dans l'abreuvoir de vos animaux de compagnie pour améliorer la qualité de leur eau.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Le Pack 100 perles est idéal pour couvrir plusieurs usages simultanément : carafe, réfrigérateur et lave-linge en même temps. Pour une couverture complète de tous les usages, deux packs sont recommandés.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-6" class="font-display text-3xl text-[#1A1A16] mb-5">Comment organiser vos perles entre les différents usages</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Il est recommandé d'utiliser des perles distinctes pour chaque usage afin d'optimiser leur efficacité. Voici une répartition type avec un Pack 100 perles :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>15 perles pour la carafe d'eau de boisson</li>
+          <li>25 perles pour la bouilloire ou la cafetière</li>
+          <li>30 perles pour le bac à légumes du réfrigérateur</li>
+          <li>30 perles restantes pour les fleurs, l'arrosoir ou un autre usage</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Pour les usages plus gourmands en perles (lave-linge, lave-vaisselle), un second pack sera nécessaire. L'investissement reste minime comparé aux économies réalisées.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-7">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-7" class="font-display text-3xl text-[#1A1A16] mb-5">FAQ rapide</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Combien de perles faut-il pour une carafe d'eau ? 15 perles suffisent pour une carafe d'un litre. Attendez 30 minutes pour obtenir une eau purifiée. Laissez les perles en permanence dans la carafe pour plus de commodité.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Peut-on utiliser les mêmes perles pour différents usages ? Non, il est recommandé d'utiliser des perles distinctes pour chaque usage afin d'optimiser leur efficacité. Des perles utilisées dans les toilettes ne doivent pas être placées dans la carafe d'eau de boisson, par exemple.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles sont-elles dangereuses pour les enfants ou les animaux ? Non, les perles sont fabriquées à partir d'argile naturelle et de micro-organismes. Elles ne contiennent aucun produit chimique. Leur taille (8 mm) empêche l'ingestion accidentelle.</p>
+    </div>
+  </section>
+
+  <RelatedArticles currentHref={PATH} />
+  <CtaPacks />
+</BaseLayout>

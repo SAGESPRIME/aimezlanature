@@ -33,14 +33,6 @@ export const guides: Guide[] = [
     intent: 'Trouver quoi faire avec un pack de perles',
   },
   {
-    title: 'Perles de céramique : avis, dangers et limites',
-    description:
-      'Une réponse prudente aux questions de confiance : ce que les perles peuvent faire, et ce qu’elles ne remplacent pas.',
-    href: '/perles-de-ceramique-avis/',
-    category: 'Confiance',
-    intent: 'Vérifier l’efficacité et les limites avant achat',
-  },
-  {
     title: 'Perles, charbon, carafe filtrante ou osmoseur ?',
     description:
       'Comparatif clair des solutions pour améliorer l’eau du robinet selon le besoin, le budget et les déchets produits.',

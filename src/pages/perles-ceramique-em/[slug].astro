@@ -3,6 +3,10 @@ import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
 import Icon from '../../components/Icon.astro';
+import AmazonProof from '../../components/AmazonProof.astro';
+import BuyBox from '../../components/BuyBox.astro';
+import ProductReviews from '../../components/ProductReviews.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
 import { products, SITE, type Product } from '../../data/products';
 import { buildFaqSchema, buildProductSchema } from '../../lib/seo';
 import { getProductImage, getProductImageAlt } from '../../lib/productImages';
@@ -30,7 +34,6 @@ const others = products.filter((o) => o.slug !== p.slug && o.inStock).slice(0, 3
 const paragraphs = p.description.split('\n\n');
 const jsonLd = [buildProductSchema(p, socialImage?.src), buildFaqSchema(p.qa)];
 
-const orderMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Commande — ${p.name} (${p.sku})`)}`;
 const notifyMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponent(`Retour en stock — ${p.name}`)}`;
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 ---
@@ -83,6 +86,8 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
           </p>
         )}
 
+        <AmazonProof variant="ligne" class="mb-5" />
+
         <div class="flex items-end gap-3 mb-6">
           <p class="font-display text-4xl font-bold text-[#166534]">{fmt(p.priceCurrent)} €</p>
           <p class="text-lg text-[#75592F] line-through mb-1">{fmt(p.priceOriginal)} €</p>
@@ -95,14 +100,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
         </ul>
 
         {p.inStock ? (
-          <div class="mb-3">
-            <a href={orderMail} class="inline-flex w-full sm:w-auto justify-center items-center gap-2 bg-[#166534] text-white px-10 py-4 rounded-full font-semibold hover:bg-[#0D4A25] transition-colors">
-              Commander par email →
-            </a>
-            <p class="text-xs text-[#57534e] mt-2">
-              Réponse sous 24 h avec le lien de paiement sécurisé. Paiement en ligne direct bientôt disponible.
-            </p>
-          </div>
+          <BuyBox product={p} />
         ) : (
           <div class="mb-3">
             <a href={notifyMail} class="inline-flex w-full sm:w-auto justify-center items-center gap-2 border-2 border-[#166534] text-[#166534] px-10 py-4 rounded-full font-semibold hover:bg-[#166534] hover:text-white transition-colors">
@@ -110,15 +108,11 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
             </a>
           </div>
         )}
-
-        <div class="flex flex-wrap gap-4 text-xs text-[#57534e] border-t border-[#D4C9B8] pt-5 mt-6">
-          <span class="inline-flex items-center gap-1.5"><Icon name="truck" class="w-4 h-4 text-[#166534]" /> Livraison offerte dès {SITE.freeShippingThreshold} €</span>
-          <span class="inline-flex items-center gap-1.5"><Icon name="shield" class="w-4 h-4 text-[#166534]" /> Garantie 30 jours</span>
-          <span class="inline-flex items-center gap-1.5"><Icon name="leaf" class="w-4 h-4 text-[#166534]" /> Emballage sans plastique</span>
-        </div>
       </div>
     </div>
   </section>
+
+  <TrustStrip />
 
   <!-- DESCRIPTION -->
   <section class="py-16 px-4 bg-white" aria-labelledby="description-titre">
@@ -136,6 +130,8 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
       </p>
     </div>
   </section>
+
+  <ProductReviews slug={p.slug} rating={p.rating} reviewCount={p.reviewCount} />
 
   <Faq items={p.qa} title={`Questions sur le ${p.shortName}`} />
 

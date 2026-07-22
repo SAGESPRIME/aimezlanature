@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import Faq from '../components/Faq.astro';
+import AmazonProof from '../components/AmazonProof.astro';
 import { SITE } from '../data/products';
 import { guides } from '../data/guides';
 import { getProductImage, getProductImageAlt } from '../lib/productImages';
@@ -22,6 +23,11 @@ const organizationSchema = {
   url: SITE.url,
   description: SITE.description,
   logo: `${SITE.url}/logo.png`,
+  foundingDate: String(SITE.foundingYear),
+  // Canal de vente officiel de la marque : permet à Google de rattacher la
+  // fiche Amazon (816 avis) à cette entité plutôt que de la voir comme un
+  // revendeur tiers sans lien.
+  sameAs: [SITE.amazon.url],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
@@ -347,6 +353,13 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
       </div>
     </div>
   </section>
+
+  <!-- ══════════════════════════════════
+       PREUVE SOCIALE AMAZON
+       Avis Amazon, distincts des avis du site : la mention « sur Amazon »
+       est portée par le composant, jamais mélangée à la note du site.
+  ══════════════════════════════════ -->
+  <AmazonProof />
 
   <!-- ══════════════════════════════════
        GUIDES — blog / ressources

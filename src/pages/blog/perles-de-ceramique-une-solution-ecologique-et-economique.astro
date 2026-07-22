@@ -1,0 +1,149 @@
+---
+// Article repris de la version aimezlanature.vercel.app (relevé le 2026-07-22).
+// Contenu conservé tel quel à la demande du client.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageDate from '../../components/PageDate.astro';
+import CtaPacks from '../../components/CtaPacks.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import { buildArticleSchema } from '../../lib/seo';
+
+const PATH = '/blog/perles-de-ceramique-une-solution-ecologique-et-economique/';
+const datePublished = '2025-04-18';
+
+const metaTitle = 'Perles EM : Solution Ecologique et Eco | Aimez la Nature';
+const metaDescription = 'Les perles de céramique EM sont écologiques et économiques. Fini les bouteilles en plastique, économisez dès aujourd\'hui sur votre eau de boisson.';
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'Perles EM : Solution Ecologique et Eco',
+    description: metaDescription,
+    path: PATH,
+    datePublished,
+  }),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Comparatifs</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Perles EM : Solution Ecologique et Eco
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Les perles de céramique EM sont écologiques et économiques. Fini les bouteilles en plastique, économisez dès aujourd'hui sur votre eau de boisson.
+      </p>
+      <PageDate date={datePublished} class="mt-5" />
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-0">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-0" class="font-display text-3xl text-[#1A1A16] mb-5">Un constat alarmant sur le plastique</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles de céramique sont fabriquées au Japon à base d'argiles et de micro-organismes cuits entre 800 et 1000 degrés suivant le procédé du Professeur Teruo Higa breveté au Japon.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Un foyer en France utilise en moyenne 1650 bouteilles par an et dépense entre 200 et 800 euros dans l'achat des bouteilles d'eau minérale. Chaque année, 8 millions de bouteilles sont déversées dans la mer, car le recyclage devient de plus en plus difficile à gérer.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Ces chiffres sont d'autant plus frappants que l'eau du robinet en France est potable pour 99 % de la population et coûte 120 fois moins cher que l'eau en bouteille. Le paradoxe est total : nous dépensons des centaines d'euros par an pour transporter de l'eau dans des emballages polluants, alors que l'eau de qualité coule directement de notre robinet.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les raisons de ce paradoxe sont principalement le goût de chlore de l'eau du robinet et le manque d'information sur les alternatives naturelles existantes. Les perles de céramique EM résolvent le problème du goût et rendent l'eau du robinet agréable à boire, éliminant ainsi toute justification pour continuer à acheter des bouteilles en plastique.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-1">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-1" class="font-display text-3xl text-[#1A1A16] mb-5">L'impact du plastique sur l'océan</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">L'Océan Pacifique qui mesure 350 millions de km2 supporte le poids de 150 millions de tonnes de déchets plastiques. Les effets négatifs sont immenses :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Destruction de la faune océanique : 1 million d'oiseaux de mer et plusieurs centaines de milliers de mammifères marins sont décimés chaque année. Ils confondent les fragments plastiques avec de la nourriture, s'étouffent ou meurent de malnutrition.</li>
+          <li>Microplastiques dans la chaîne alimentaire : les particules plastiques se retrouvent dans les poissons, tortues et autres espèces marines qui sont ensuite consommées par l'homme. Des études ont détecté des microplastiques dans le sang humain, le placenta et les poumons.</li>
+          <li>Contamination des sols : les microplastiques se déposent aussi sur les terres agricoles via les eaux de pluie et les boues d'épuration utilisées comme engrais.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Des enquêtes démontrent que 93% des eaux embouteillées seraient contaminées par des particules de plastique. L'Institut Pacifique aurait déclaré qu'un quart de l'eau dans les bouteilles serait en réalité de l'eau du robinet.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Ce dernier point est particulièrement révélateur : non seulement les bouteilles polluent, mais l'eau qu'elles contiennent n'est pas nécessairement de meilleure qualité que l'eau du robinet. Pire, elle peut être contaminée par les microplastiques issus de l'emballage lui-même.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-2">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-2" class="font-display text-3xl text-[#1A1A16] mb-5">Les perles de céramique : une solution concrète</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles de céramique se révèlent être une solution écologique et économique pour nos ménages :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Réutilisables pendant 10 ans sans entretien particulier. Un seul achat pour une décennie de purification d'eau. Pas de cartouche à remplacer, pas de consommable à racheter.</li>
+          <li>Investissement abordable : à partir de 19,90 euros pour un pack de 55 perles qui durera plus de 10 ans. Le coût annuel revient à environ 2 euros.</li>
+          <li>Polyvalentes : purification d'eau, conservation des aliments, lave-vaisselle, machine à laver, fleurs, plantes. Un seul produit pour de multiples usages.</li>
+          <li>Zéro déchet : fin des bouteilles en plastique. Les perles ne génèrent aucun déchet pendant toute leur durée de vie. En fin de vie, elles retournent au sol.</li>
+        </ul>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-3">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-3" class="font-display text-3xl text-[#1A1A16] mb-5">Le calcul économique détaillé</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Prenons l'exemple concret d'un foyer de 4 personnes qui boit 1,5 litre d'eau en bouteille par personne et par jour :</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Dépenses actuelles en eau en bouteille :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>6 litres par jour pour le foyer</li>
+          <li>Environ 2 190 litres par an</li>
+          <li>Coût moyen : entre 400 et 800 euros par an (selon les marques)</li>
+          <li>Poids des bouteilles transportées : plus de 2 tonnes par an</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Avec les perles de céramique EM :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Investissement unique : environ 25 euros pour un pack de 55 perles</li>
+          <li>Coût de l'eau du robinet pour 2 190 litres : environ 7 euros par an</li>
+          <li>Économie annuelle : entre 370 et 770 euros</li>
+          <li>Économie sur 10 ans : entre 3 700 et 7 700 euros</li>
+          <li>Retour sur investissement : moins d'un mois</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Ce calcul ne prend même pas en compte les économies réalisées sur les autres usages (moins de lessive, moins de détartrants, moins de produits d'entretien pour les appareils).</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-4">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-4" class="font-display text-3xl text-[#1A1A16] mb-5">L'impact écologique concret de votre choix</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">En choisissant les perles de céramique EM, votre impact écologique est mesurable et significatif :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Bouteilles plastiques évitées : un foyer de 4 personnes élimine environ 1 650 bouteilles par an, soit plus de 16 500 bouteilles sur 10 ans.</li>
+          <li>CO2 économisé : la production, le transport et le recyclage des bouteilles génèrent environ 100 kg de CO2 par personne et par an. Pour un foyer de 4 personnes, c'est 400 kg de CO2 évités chaque année.</li>
+          <li>Eau économisée : la production d'une bouteille en plastique nécessite 3 fois son volume en eau. En éliminant 1 650 bouteilles, vous économisez aussi l'eau utilisée pour les fabriquer.</li>
+          <li>Pétrole économisé : chaque année, environ 17 millions de barils de pétrole sont utilisés pour produire les bouteilles d'eau en plastique dans le monde. Chaque foyer qui passe aux perles EM contribue à réduire cette consommation.</li>
+        </ul>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-5">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-5" class="font-display text-3xl text-[#1A1A16] mb-5">L'eau du robinet en France</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">L'eau du robinet de la France est potable et 99 % de la population y a accès. C'est l'un des meilleurs taux d'accès au monde. L'eau française fait l'objet de contrôles sanitaires rigoureux et réguliers, ce qui en fait l'une des eaux les plus surveillées au monde.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">La qualité de l'eau du robinet varie selon les régions et les communes. Les analyses publiques sont disponibles sur les sites des distributeurs d'eau ou sur demande. Cette transparence vous permet de connaître la composition exacte de l'eau distribuée chez vous.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Autant opter pour cette solution économique, durable pour nous et pour les générations à venir, et surtout qui nous aidera à préserver notre santé. Les perles de céramique EM rendent cette transition facile et agréable en éliminant le goût de chlore qui décourage tant de personnes.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-6" class="font-display text-3xl text-[#1A1A16] mb-5">Comment faire le passage aux perles EM</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Passer des bouteilles en plastique aux perles de céramique EM est simple et rapide :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Commandez votre pack : le Pack 55 perles pour commencer, ou le Pack 100 perles pour couvrir plusieurs usages.</li>
+          <li>Rincez les perles sous l'eau claire avant la première utilisation.</li>
+          <li>Placez 15 perles dans votre carafe et remplissez d'eau du robinet.</li>
+          <li>Attendez 30 minutes et dégustez. Vous constaterez la différence dès le premier verre.</li>
+          <li>Adoptez le réflexe : remplissez votre carafe chaque jour, les perles restent dedans en permanence.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">En quelques jours, le goût des bouteilles en plastique ne vous manquera plus. En quelques semaines, vous aurez oublié que vous en achetiez.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-7">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-7" class="font-display text-3xl text-[#1A1A16] mb-5">FAQ rapide</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Combien économise-t-on avec les perles de céramique EM ? L'eau du robinet coûte 120 fois moins cher que l'eau en bouteille. Un foyer qui dépense 200 à 800 euros par an en bouteilles peut économiser cette somme presque intégralement. L'investissement unique dans les perles est rentabilisé en moins d'un mois.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles EM remplacent-elles vraiment les bouteilles d'eau ? Oui. L'eau du robinet traitée avec les perles EM a un goût amélioré, sans chlore ni odeurs désagréables. La plupart de nos clients ne boivent plus que l'eau du robinet après avoir adopté les perles. Le gain financier et écologique est immédiat.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Que deviennent les perles en fin de vie ? Après plus de 10 ans d'utilisation, les perles peuvent être enfouies dans le jardin où elles enrichiront naturellement le sol grâce aux micro-organismes qu'elles contiennent. Un retour à la terre complet, sans aucun déchet.</p>
+    </div>
+  </section>
+
+  <RelatedArticles currentHref={PATH} />
+  <CtaPacks />
+</BaseLayout>

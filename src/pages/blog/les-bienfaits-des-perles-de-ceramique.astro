@@ -1,0 +1,145 @@
+---
+// Article repris de la version aimezlanature.vercel.app (relevé le 2026-07-22).
+// Contenu conservé tel quel à la demande du client.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageDate from '../../components/PageDate.astro';
+import CtaPacks from '../../components/CtaPacks.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import { buildArticleSchema } from '../../lib/seo';
+
+const PATH = '/blog/les-bienfaits-des-perles-de-ceramique/';
+const datePublished = '2025-01-28';
+
+const metaTitle = 'Bienfaits des Perles de Céramique EM | Aimez la Nature';
+const metaDescription = 'Découvrez tous les bienfaits des perles de céramique EM : eau plus douce, économies, écologie, protection des appareils et conservation des aliments.';
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: 'Bienfaits des Perles de Céramique EM',
+    description: metaDescription,
+    path: PATH,
+    datePublished,
+  }),
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
+  <!-- HERO -->
+  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Utilisation</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+        Bienfaits des Perles de Céramique EM
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Découvrez tous les bienfaits des perles de céramique EM : eau plus douce, économies, écologie, protection des appareils et conservation des aliments.
+      </p>
+      <PageDate date={datePublished} class="mt-5" />
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-0">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-0" class="font-display text-3xl text-[#1A1A16] mb-5">Retrouvez le goût de l'eau</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">C'est le premier bienfait que remarquent les utilisateurs et sans doute le plus spectaculaire. Le goût de chlore, souvent désagréable dans l'eau du robinet française, est nettement réduit après seulement 30 minutes de contact avec les perles. L'eau devient plus douce, plus ronde en bouche, comparable à une eau de source.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Ce résultat s'explique par l'action des micro-organismes anaérobies présents dans la céramique. Au contact de l'eau, ils décomposent le chlore libre en chlorures inoffensifs. Résultat : l'eau ne sent plus le chlore et ne laisse pas ce goût chimique en fin de gorgée.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Ce bienfait a un effet direct sur votre hydratation. Beaucoup de nos clients nous rapportent qu'ils boivent davantage d'eau depuis qu'ils utilisent les perles, simplement parce que le goût est meilleur. Or, une meilleure hydratation se traduit par moins de fatigue, une peau plus éclatante et une meilleure concentration au quotidien.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-1">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-1" class="font-display text-3xl text-[#1A1A16] mb-5">Protégez votre santé</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Hydratez votre corps en buvant une eau assainie. Les perles de céramique EM redynamisent l'eau et lui rendent sa structure originelle, neutralisant les impuretés pour une eau plus douce et de meilleure qualité.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">L'action ne se limite pas à l'élimination du chlore. Les micro-organismes efficaces agissent selon trois mécanismes complémentaires :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>L'action purifiante : réduction du chlore, du calcaire et des impuretés</li>
+          <li>L'action probiotique : les micro-organismes bénéfiques contribuent à l'équilibre de la flore intestinale</li>
+          <li>L'action antioxydante : réduction des radicaux libres et protection des cellules</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">En buvant quotidiennement une eau traitée aux perles EM, vous offrez à votre corps une hydratation de qualité supérieure. Le fait de savoir que votre eau est biologiquement plus saine vous encourage également à maintenir une consommation régulière.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-2">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-2" class="font-display text-3xl text-[#1A1A16] mb-5">Protégez vos appareils électroménagers</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles de céramique EM réduisent les dépôts de calcaire pour une meilleure conservation des appareils électroménagers. Ce bienfait est particulièrement appréciable dans les régions où l'eau est dure, comme le bassin parisien, le nord ou l'est de la France.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Concrètement, voici ce que vous pouvez constater :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Bouilloire : les dépôts blancs de tartre diminuent nettement. Plus besoin de détartrer toutes les semaines.</li>
+          <li>Cafetière : le café a meilleur goût et l'appareil s'entartre moins vite.</li>
+          <li>Lave-linge : le tambour et les résistances sont protégés, prolongeant la durée de vie de la machine.</li>
+          <li>Lave-vaisselle : la vaisselle est plus brillante, avec moins de traces blanches dues au calcaire.</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Le mécanisme est simple : les perles modifient la structure cristalline du calcaire, empêchant les cristaux de s'agglomérer et de se déposer sur les surfaces. Un appareil moins entartré consomme moins d'électricité et dure plus longtemps.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-3">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-3" class="font-display text-3xl text-[#1A1A16] mb-5">Conservez vos aliments plus longtemps</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Conservez mieux et plus longtemps vos aliments au réfrigérateur ou dans la corbeille à fruits. Quelques dizaines de perles dans le bac du réfrigérateur ou dans la corbeille suffisent.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les micro-organismes efficaces forment une barrière naturelle qui ralentit la prolifération des bactéries responsables de la décomposition. Ce phénomène est particulièrement efficace pour les aliments suivants :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Salades et herbes fraîches : elles restent croquantes plusieurs jours de plus</li>
+          <li>Fruits rouges : les fraises et framboises ne moisissent plus aussi vite</li>
+          <li>Légumes feuillus : les épinards et le chou conservent leur fraîcheur</li>
+          <li>Fruits dans la corbeille : les bananes, pommes et agrumes mûrissent moins vite</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Pour le réfrigérateur, placez 15 à 30 perles dans un verre d'eau dans le bac à légumes. Changez l'eau tous les 3 à 4 jours. Vous pouvez aussi utiliser 15 perles dans un bol d'eau pour le lavage des fruits et légumes avant de les stocker.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-4">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-4" class="font-display text-3xl text-[#1A1A16] mb-5">Un linge plus doux et une vaisselle brillante</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">En plaçant 30 à 50 perles dans un sac en tissu dans le tambour de votre lave-linge, vous adoucissez l'eau, réduisez les dépôts calcaires et prolongez la durée de vie de votre appareil. Le linge sort plus souple, les couleurs sont mieux préservées et vous pouvez réduire la quantité de lessive utilisée.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Même principe pour le lave-vaisselle : 30 à 50 perles dans un sac en tissu dans le panier à couverts pour une vaisselle plus brillante et un appareil protégé du calcaire. Les verres en particulier retrouvent leur transparence, sans la pellicule blanchâtre causée par le calcaire.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-5">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-5" class="font-display text-3xl text-[#1A1A16] mb-5">Écologique et économique : le calcul parlant</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Une famille de 4 personnes buvant 1,5 litre d'eau en bouteille par personne et par jour consomme 2190 litres d'eau par an -- soit le transport de 2 tonnes d'eau ! Avec les perles EM, divisez votre facture d'eau à boire par 120.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">En finir avec les bouteilles en plastique : une bonne alternative zéro plastique. On consomme en moyenne 10 kg de bouteilles en plastique par personne et par an. Les perles sont réutilisables pendant plus de 10 ans, sans entretien particulier.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Faisons le calcul pour une famille de 4 personnes :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Coût des bouteilles : entre 200 et 800 euros par an</li>
+          <li>Coût des perles EM : environ 20 à 30 euros, une seule fois, pour plus de 10 ans</li>
+          <li>Économie sur 10 ans : entre 2 000 et 8 000 euros</li>
+          <li>Déchets plastiques évités : plus de 400 kg sur 10 ans</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">C'est l'un des investissements les plus rentables et les plus écologiques que vous puissiez faire pour votre foyer.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-white" aria-labelledby="sec-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-6" class="font-display text-3xl text-[#1A1A16] mb-5">Comment maximiser les bienfaits au quotidien</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Pour profiter pleinement de tous ces bienfaits, voici une organisation type :</p>
+        <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5">
+          <li>Carafe d'eau : 15 perles en permanence, renouvellez l'eau chaque jour</li>
+          <li>Bouilloire : 25 perles laissées en permanence</li>
+          <li>Réfrigérateur : 15 à 30 perles dans le bac à légumes</li>
+          <li>Lave-linge : 50 perles dans un petit sac en coton</li>
+          <li>Lave-vaisselle : 40 perles dans un sac au panier à couverts</li>
+          <li>Arrosoir : 20 à 40 perles pour 10 litres d'eau</li>
+        </ul>
+        <p class="text-[#57534e] leading-relaxed mb-5">Le Pack 100 perles est idéal pour couvrir plusieurs usages simultanément. Le Pack 55 perles convient parfaitement pour commencer avec les usages principaux.</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 bg-[#FDFBF7]" aria-labelledby="sec-7">
+    <div class="max-w-3xl mx-auto">
+      <h2 id="sec-7" class="font-display text-3xl text-[#1A1A16] mb-5">FAQ rapide</h2>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles de céramique EM sont-elles faciles à utiliser ? Oui, il suffit de les placer dans l'eau et d'attendre 30 minutes. Aucun entretien particulier n'est nécessaire, juste un rinçage à l'eau claire une fois par mois. C'est la solution la plus simple du marché.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Combien coûtent les perles de céramique EM ? A partir de 19,90 euros pour un pack de 55 perles, qui durera plus de 10 ans. C'est l'investissement le plus économique pour purifier votre eau et protéger vos appareils.</p>
+        <p class="text-[#57534e] leading-relaxed mb-5">Les perles fonctionnent-elles avec l'eau chaude ? Oui, les perles résistent à l'ébullition sans problème. Vous pouvez les utiliser dans la bouilloire en toute sécurité.</p>
+    </div>
+  </section>
+
+  <RelatedArticles currentHref={PATH} />
+  <CtaPacks />
+</BaseLayout>

@@ -1,28 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CtaPacks from '../components/CtaPacks.astro';
-import AnswerBox from '../components/AnswerBox.astro';
 import { SITE } from '../data/products';
-import { guides } from '../data/guides';
-import { articles } from '../data/articles';
+import { blogPosts } from '../data/blogPosts';
 
-const metaTitle = 'Guides perles de céramique EM | Aimez la Nature';
+// Titres et description repris de la version aimezlanature.vercel.app/blog.
+const metaTitle = 'Blog Perles de Céramique EM | Aimez la Nature';
 const metaDescription =
-  'Tous nos guides sur les perles de céramique EM : dosage par litre, utilisations, avis scientifique, limites et alternatives pour améliorer l’eau du robinet.';
-
-const oldTopics = [
-  'perles de céramique comment ça marche',
-  'bienfaits des perles de céramique',
-  'effets sur l’eau du robinet',
-  'authenticité des perles EM',
-  'alternative aux bouteilles et carafes filtrantes',
-];
+  "Articles et guides sur les perles de céramique EM, la purification naturelle de l'eau et les micro-organismes efficaces. Conseils, comparatifs et astuces.";
 
 const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Guides perles de céramique EM',
+    name: 'Blog — Aimez la Nature',
     description: metaDescription,
     inLanguage: 'fr-FR',
     url: `${SITE.url}/blog/`,
@@ -31,109 +21,79 @@ const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Guides et articles Aimez la Nature',
-    itemListElement: [...guides, ...articles].map((item, index) => ({
+    name: 'Articles du blog Aimez la Nature',
+    itemListElement: blogPosts.map((post, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: item.title,
-      url: `${SITE.url}${item.href}`,
+      name: post.title,
+      url: `${SITE.url}${post.href}`,
     })),
   },
 ];
+
+// UTC forcé : sans cela, un serveur à l'ouest de Greenwich afficherait la veille.
+function formatDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
-  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
-    <div class="max-w-4xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-4">Guides pratiques</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
-        Guides perles de céramique EM : utilisation, avis, dosage et alternatives
+  <!-- EN-TÊTE — titre centré + sous-titre, comme la version d'origine -->
+  <section class="bg-[#F5F0E8] px-4 pt-16 pb-14">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.15] mb-5">
+        Blog — Perles de Céramique EM et Purification de l'Eau
       </h1>
-      <p class="text-[#57534e] text-lg leading-relaxed max-w-3xl">
-        L’ancien blog Aimez la Nature a été consolidé en guides plus clairs. Chaque page
-        répond à une intention précise : comprendre le dosage, vérifier les limites,
-        comparer les solutions et choisir le bon pack.
+      <p class="text-[#57534e] text-lg leading-relaxed">
+        Guides, conseils et comparatifs sur les perles de céramique EM et la
+        purification naturelle de l'eau.
       </p>
     </div>
   </section>
 
-  <AnswerBox>
-    Les perles de céramique EM s’utilisent avec une eau déjà potable. Elles peuvent
-    améliorer le goût, réduire l’odeur de chlore ressentie et limiter les dépôts de
-    tartre dans certains usages. Elles ne remplacent pas un filtre certifié pour les
-    bactéries, les métaux lourds ou une eau non potable.
-  </AnswerBox>
+  <!-- GRILLE D'ARTICLES — cartes blanches 2 colonnes -->
+  <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="articles-titre">
+    <h2 id="articles-titre" class="sr-only">Tous les articles</h2>
+    <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
+      {blogPosts.map((post) => (
+        <article class="flex flex-col rounded-2xl border border-[#EDE8E0] bg-white p-6 transition-colors hover:border-[#C4B89A]">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="inline-flex items-center rounded-full bg-[#D4E4D0] px-3 py-1 text-xs font-semibold text-[#166534]">
+              {post.category}
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs text-[#75592F]">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" stroke-linecap="round" />
+              </svg>
+              {post.readingTime} de lecture
+            </span>
+          </div>
 
-  <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="guides-titre">
-    <div class="max-w-5xl mx-auto">
-      <div class="mb-9">
-        <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">Par intention</p>
-        <h2 id="guides-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16]">
-          Les guides essentiels
-        </h2>
-      </div>
+          <h3 class="font-display text-2xl text-[#1A1A16] leading-snug mb-3">
+            <a href={post.href} class="hover:text-[#166534] transition-colors">{post.title}</a>
+          </h3>
 
-      <div class="grid md:grid-cols-2 gap-5">
-        {guides.map((guide) => (
-          <article class="rounded-2xl border border-[#EDE8E0] bg-white p-6">
-            <p class="text-xs tracking-widest uppercase text-[#75592F] mb-3">{guide.category}</p>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-3">
-              <a href={guide.href} class="hover:text-[#166534] transition-colors">{guide.title}</a>
-            </h3>
-            <p class="text-[#57534e] leading-relaxed mb-4">{guide.description}</p>
-            <p class="text-sm text-[#75592F] mb-5">{guide.intent}</p>
-            <a href={guide.href} class="inline-flex text-sm font-semibold text-[#166534] hover:underline">
-              Lire le guide
+          <p class="text-[#57534e] text-sm leading-relaxed mb-6">{post.excerpt}</p>
+
+          <div class="mt-auto flex items-center justify-between border-t border-[#EDE8E0] pt-4">
+            <time datetime={post.date} class="text-xs text-[#75592F]">
+              {formatDate(post.date)}
+            </time>
+            <a
+              href={post.href}
+              class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#166534] hover:gap-3 transition-all"
+            >
+              Lire <span aria-hidden="true">→</span>
             </a>
-          </article>
-        ))}
-      </div>
+          </div>
+        </article>
+      ))}
     </div>
   </section>
-
-  <section class="py-14 px-4 bg-white" aria-labelledby="articles-titre">
-    <div class="max-w-5xl mx-auto">
-      <div class="mb-9">
-        <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">Pour creuser</p>
-        <h2 id="articles-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16]">
-          Les articles
-        </h2>
-      </div>
-      <div class="grid md:grid-cols-2 gap-5">
-        {articles.map((article) => (
-          <article class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
-            <p class="text-xs tracking-widest uppercase text-[#75592F] mb-3">{article.category}</p>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-3">
-              <a href={article.href} class="hover:text-[#166534] transition-colors">{article.title}</a>
-            </h3>
-            <p class="text-[#57534e] leading-relaxed mb-4">{article.description}</p>
-            <p class="text-sm text-[#75592F] mb-5">{article.intent}</p>
-            <a href={article.href} class="inline-flex text-sm font-semibold text-[#166534] hover:underline">
-              Lire l'article
-            </a>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="anciens-articles">
-    <div class="max-w-4xl mx-auto">
-      <h2 id="anciens-articles" class="font-display text-3xl text-[#1A1A16] mb-5">
-        Pourquoi l’ancien blog a été consolidé
-      </h2>
-      <p class="text-[#57534e] leading-relaxed mb-5">
-        Les anciens articles WordPress traitaient souvent des mêmes sujets avec des angles très
-        proches. Pour le SEO, nous avons regroupé ces contenus dans des pages piliers plus utiles,
-        mieux structurées et plus prudentes sur les promesses produit.
-      </p>
-      <ul class="grid sm:grid-cols-2 gap-3 text-sm text-[#57534e]">
-        {oldTopics.map((topic) => (
-          <li class="rounded-xl border border-[#EDE8E0] bg-[#FDFBF7] px-4 py-3">{topic}</li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <CtaPacks />
 </BaseLayout>

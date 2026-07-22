@@ -1,0 +1,68 @@
+---
+/**
+ * Preuve sociale Amazon — bandeau réutilisable.
+ *
+ * Les 816 avis à 4,6/5 viennent de la fiche Amazon, pas des avis collectés
+ * ici : la mention « sur Amazon » est donc affichée systématiquement, et ces
+ * chiffres ne sont jamais mélangés à la note du site (4,8/5 sur 96 avis).
+ * Les deux notes cohabitent parce qu'elles sont explicitement attribuées à
+ * deux sources différentes.
+ *
+ * Source unique des chiffres : SITE.amazon dans src/data/products.ts.
+ */
+import { SITE } from '../data/products';
+
+interface Props {
+  /** `bandeau` : pleine largeur sur fond crème. `ligne` : compact, en flux. */
+  variant?: 'bandeau' | 'ligne';
+  class?: string;
+}
+
+const { variant = 'bandeau', class: className = '' } = Astro.props;
+
+const note = SITE.amazon.rating.toString().replace('.', ',');
+const avis = SITE.amazon.reviewCount.toLocaleString('fr-FR');
+const label = `Note de ${note} sur 5 sur Amazon, fondée sur ${avis} commentaires`;
+---
+
+{variant === 'ligne' ? (
+  <p class={`flex flex-wrap items-center gap-2 text-sm text-[#57534e] ${className}`}>
+    <span class="text-[#166534]" aria-hidden="true">★★★★★</span>
+    <span>
+      <strong class="text-[#1A1A16]">{note}/5</strong> · {avis} commentaires
+      <span class="text-[#75592F]"> sur Amazon</span>
+    </span>
+    <a
+      href={SITE.amazon.url}
+      rel="nofollow noopener"
+      target="_blank"
+      class="font-semibold text-[#166534] hover:underline"
+    >
+      Voir la fiche<span class="sr-only"> Amazon (nouvel onglet)</span> →
+    </a>
+  </p>
+) : (
+  <section class={`py-10 px-4 bg-[#F5F0E8] ${className}`} aria-labelledby="amazon-titre">
+    <div class="max-w-4xl mx-auto rounded-2xl border border-[#D4C9B8] bg-white px-6 py-6 text-center">
+      <p id="amazon-titre" class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">
+        Aussi vendu sur Amazon
+      </p>
+      <p class="text-[#166534] text-2xl mb-2" aria-label={label}>
+        ★★★★★
+        <span class="font-display font-bold text-[#1A1A16] align-middle ml-2">{note}/5</span>
+      </p>
+      <p class="text-[#57534e] mb-4">
+        <strong class="text-[#1A1A16]">{avis} commentaires</strong> laissés par les clients
+        Amazon sur nos Perles de Céramique EM®, depuis {SITE.foundingYear}.
+      </p>
+      <a
+        href={SITE.amazon.url}
+        rel="nofollow noopener"
+        target="_blank"
+        class="inline-flex text-sm font-semibold text-[#166534] border-b border-[#166534] pb-0.5 hover:text-[#0D2818] hover:border-[#0D2818] transition-colors"
+      >
+        Lire les avis sur Amazon<span class="sr-only"> (nouvel onglet)</span> →
+      </a>
+    </div>
+  </section>
+)}

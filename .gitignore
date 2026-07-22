@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Playwright MCP debug artifacts
 .playwright-mcp/
+
+# Variables locales Wrangler (clés de test, jamais commitées)
+.dev.vars

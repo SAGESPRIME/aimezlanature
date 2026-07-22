@@ -10,7 +10,7 @@
  * pour que chaque page propose un trio différent plutôt que toujours les trois
  * premiers guides.
  */
-import { articles } from '../data/articles';
+import { blogPosts } from '../data/blogPosts';
 import { guides } from '../data/guides';
 
 interface Props {
@@ -24,7 +24,15 @@ const { currentHref, title = 'À lire aussi', limit = 3 } = Astro.props;
 
 // « Achat » = la page catalogue : ce n'est pas un contenu de lecture, on la
 // laisse aux blocs CTA qui suivent.
-const pool = [...guides, ...articles].filter((item) => item.category !== 'Achat');
+const pool = [
+  ...guides,
+  ...blogPosts.map((p) => ({
+    title: p.title,
+    description: p.excerpt,
+    href: p.href,
+    category: p.category,
+  })),
+].filter((item) => item.category !== 'Achat');
 
 const current = pool.findIndex((item) => item.href === currentHref);
 const ordered =

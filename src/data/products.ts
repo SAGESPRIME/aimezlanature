@@ -35,7 +35,7 @@ export const products: Product[] = [
     slug: "pack-55-perles",
     name: "Perles de Céramique EM® Pack 55",
     shortName: "Pack 55 Perles",
-    sku: "ALN-EM-055",
+    sku: "X001BEJHNX",
     priceCurrent: 19.9,
     priceOriginal: 25.9,
     discountPercent: 23,
@@ -81,7 +81,7 @@ Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois.`,
     slug: "pack-100-perles",
     name: "Perles de Céramique EM® Pack 100",
     shortName: "Pack 100 Perles",
-    sku: "ALN-EM-100",
+    sku: "X001GW669N",
     priceCurrent: 29.9,
     priceOriginal: 42.9,
     discountPercent: 30,
@@ -127,11 +127,14 @@ Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullitio
     slug: "pack-gourde-ceramique-em",
     name: "Pack Gourde + 100 Perles de Céramique EM®",
     shortName: "Pack Gourde",
-    sku: "ALN-EM-GOURDE",
+    sku: "QFP7JRDS03",
     priceCurrent: 59.9,
     priceOriginal: 72.8,
     discountPercent: 18,
-    inStock: true,
+    // En rupture sur aimezlanature.fr (relevé le 2026-07-22). Le schema envoie
+    // donc OutOfStock à Google : annoncer un produit disponible qu'on ne peut
+    // pas livrer dégrade la fiche marchand et trompe l'acheteur.
+    inStock: false,
     quantity: 100,
     includesBottle: true,
     // Aucun avis client à ce jour (vérifié sur aimezlanature.fr le 2026-07-20) :
@@ -215,18 +218,45 @@ export const SITE = {
   url: "https://aimezlanature.fr",
   description: "Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement.",
   /**
-   * Avis clients — chiffres vérifiés sur aimezlanature.fr le 2026-07-20.
+   * Avis clients — SOURCE DE VÉRITÉ : aimezlanature.fr (relevé le 2026-07-22).
+   *
+   * Le site en ligne affiche « 4,8/5 Avis clients » dans son bandeau. C'est
+   * cette note qui fait foi, et non la moyenne pondérée des deux fiches
+   * produit (qui donnerait 4,93) : afficher deux notes globales différentes
+   * selon la page mettrait le site en contradiction avec lui-même.
+   *
+   * Détail par produit, également relevé en ligne :
    * Pack 55 : 4,91/5 sur 45 avis · Pack 100 : 4,94/5 sur 51 avis.
-   * Le Pack Gourde et la Gourde Écologique n'ont encore aucun avis.
-   * Total = 45 + 51 = 96 ; moyenne pondérée = (4,91×45 + 4,94×51) / 96 = 4,93.
-   * Ne pas modifier ces valeurs sans les recompter sur la source : elles sont
-   * affichées publiquement et envoyées à Google dans le schema Organization.
+   * Le Pack Gourde et la Gourde Écologique n'ont aucun avis.
+   *
+   * Ne pas modifier sans recompter sur aimezlanature.fr : ces valeurs sont
+   * affichées publiquement et envoyées à Google.
    */
   totalReviews: 96,
-  globalRating: 4.93,
+  globalRating: 4.8,
   // ⚠️ Ne PAS réintroduire de « don 2,5 % / puits » : cet engagement n'existe
   // nulle part sur le site marchand (vérifié le 2026-07-20 et confirmé par le
   // marchand). Il avait été inventé lors d'une session précédente et a été
   // retiré de tout le site le 2026-07-20.
   freeShippingThreshold: 50,
+
+  /** Année de création de la marque, communiquée par le marchand. */
+  foundingYear: 2019,
+
+  /**
+   * Preuve sociale Amazon — relevée sur la fiche produit le 2026-07-22
+   * (ASIN B09J4Y2C1H, « Aimez La Nature 100 Perles de Céramique EM® ») :
+   * 4,6/5 sur 816 commentaires.
+   *
+   * ⚠️ Ces avis sont collectés par Amazon, PAS sur ce site. Ils sont donc
+   * toujours affichés avec la mention explicite « sur Amazon » et ne sont
+   * jamais injectés dans l'aggregateRating des fiches produit : Google exige
+   * que la note publiée par une page reflète les avis collectés par cette
+   * page. Les mélanger ferait sauter les étoiles dans les résultats.
+   */
+  amazon: {
+    rating: 4.6,
+    reviewCount: 816,
+    url: 'https://www.amazon.fr/Aimez-Nature-Ecologique-Purificateur-Filtration/dp/B09J4Y2C1H',
+  },
 };

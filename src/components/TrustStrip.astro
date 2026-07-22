@@ -1,0 +1,63 @@
+---
+/**
+ * Bandeau de réassurance — les 4 objections d'achat les plus fréquentes,
+ * traitées juste après le bloc d'achat.
+ *
+ * Chaque promesse doit correspondre à un engagement réel du marchand :
+ * le seuil de livraison vient de SITE, la garantie 30 jours et l'emballage
+ * sans plastique sont ceux affichés sur aimezlanature.fr, et le paiement
+ * reflète ce qui est réellement activé dans Stripe Checkout. Ne rien ajouter
+ * ici qui ne soit pas tenu — une promesse non honorée est une pratique
+ * commerciale trompeuse (art. L121-2 du Code de la consommation).
+ */
+import { SITE } from '../data/products';
+
+const promesses = [
+  {
+    titre: 'Livraison offerte',
+    texte: `Dès ${SITE.freeShippingThreshold} € d'achat, en 2 à 5 jours ouvrés.`,
+    icone: 'truck',
+  },
+  {
+    titre: 'Garantie 30 jours',
+    texte: 'Remboursé si les perles ne vous conviennent pas.',
+    icone: 'shield',
+  },
+  {
+    titre: 'Paiement sécurisé',
+    texte: 'Traité par Stripe. Aucune donnée bancaire chez nous.',
+    icone: 'lock',
+  },
+  {
+    titre: 'Zéro plastique',
+    texte: 'Tube biodégradable et sachet en coton BIO.',
+    icone: 'leaf',
+  },
+];
+
+const paths: Record<string, string> = {
+  truck: 'M3 7h11v9H3zM14 10h4l3 3v3h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  shield: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z',
+  lock: 'M6 11h12v9H6zM9 11V8a3 3 0 1 1 6 0v3',
+  leaf: 'M4 20c0-8 6-14 16-14 0 10-6 14-12 14H4zM4 20c2-4 5-6 9-7',
+};
+---
+
+<section class="border-y border-[#EDE8E0] bg-white px-4 py-8" aria-labelledby="reassurance-titre">
+  <h2 id="reassurance-titre" class="sr-only">Nos engagements</h2>
+  <ul class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4 list-none p-0">
+    {promesses.map((p) => (
+      <li class="flex items-start gap-3">
+        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F4F9F2]" aria-hidden="true">
+          <svg class="h-5 w-5 text-[#166534]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d={paths[p.icone]} />
+          </svg>
+        </span>
+        <span>
+          <span class="block font-semibold text-[#1A1A16]">{p.titre}</span>
+          <span class="block text-sm leading-relaxed text-[#57534e]">{p.texte}</span>
+        </span>
+      </li>
+    ))}
+  </ul>
+</section>

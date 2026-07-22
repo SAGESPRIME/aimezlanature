@@ -1,0 +1,42 @@
+---
+/**
+ * Réassurance paiement, affichée sous le bouton de commande.
+ *
+ * ⚠️ Volontairement SANS les logos Visa / Mastercard / Apple Pay / Google Pay.
+ * Ce sont des marques déposées assorties de chartes d'usage strictes, et les
+ * reproduire depuis une source non officielle expose à un litige. Les badges
+ * autorisés sont fournis par Stripe (dashboard → Branding → moyens de
+ * paiement) : quand vous les aurez, ils remplaceront la ligne de texte
+ * ci-dessous sans rien changer d'autre.
+ *
+ * Les moyens listés sont ceux réellement activés par Stripe Checkout tel que
+ * configuré dans src/pages/api/checkout.ts — ne pas en ajouter sans les avoir
+ * activés côté Stripe, sous peine de promettre un paiement indisponible.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const moyens = ['Carte bancaire', 'Visa', 'Mastercard', 'Apple Pay', 'Google Pay'];
+---
+
+<div class={`text-center ${className}`}>
+  <p class="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#166534]">
+    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="4" y="10" width="16" height="11" rx="2" />
+      <path d="M8 10V7a4 4 0 1 1 8 0v3" />
+    </svg>
+    Paiement 100 % sécurisé
+  </p>
+  <ul class="mt-2 flex flex-wrap items-center justify-center gap-1.5 list-none p-0">
+    {moyens.map((m) => (
+      <li class="rounded border border-[#EDE8E0] bg-white px-2 py-1 text-[11px] font-medium text-[#57534e]">
+        {m}
+      </li>
+    ))}
+  </ul>
+  <p class="mt-2 text-[11px] text-[#75592F]">
+    Vos coordonnées bancaires sont traitées par Stripe. Elles ne transitent jamais par notre site.
+  </p>
+</div>

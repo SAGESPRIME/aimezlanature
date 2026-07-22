@@ -1,0 +1,56 @@
+---
+/**
+ * Page de retour après un paiement Stripe réussi.
+ *
+ * `noindex` : page de tunnel, sans intérêt pour la recherche et susceptible
+ * de contenir un identifiant de session dans l'URL.
+ *
+ * Le panier est vidé par public/js/commande.js (la CSP interdit le script
+ * en ligne). La confirmation qui fait foi reste l'email envoyé par Stripe :
+ * cette page ne prétend pas valider le paiement côté serveur.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const metaTitle = 'Merci pour votre commande | Aimez la Nature';
+const metaDescription = 'Votre commande de Perles de Céramique EM® est confirmée.';
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} noindex>
+  <section class="bg-[#F5F0E8] px-4 py-20">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-5xl mb-6" aria-hidden="true">🌿</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] mb-5">
+        Merci pour votre commande
+      </h1>
+      <p class="text-[#57534e] text-lg leading-relaxed mb-8">
+        Votre paiement a bien été enregistré. Vous recevez d'ici quelques minutes un email
+        de confirmation avec le détail de votre commande et votre reçu.
+      </p>
+
+      <div class="rounded-2xl border border-[#D4C9B8] bg-white p-6 text-left mb-8">
+        <h2 class="font-display text-xl text-[#1A1A16] mb-4">Et maintenant ?</h2>
+        <ol class="space-y-3 text-sm text-[#57534e] list-decimal pl-5">
+          <li>Votre colis est préparé sous 24 à 48 h ouvrées.</li>
+          <li>Vous recevez un email dès son expédition.</li>
+          <li>Livraison sous 2 à 5 jours ouvrés.</li>
+        </ol>
+      </div>
+
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="/comment-ca-marche/" class="inline-flex bg-[#166534] text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#0D4A25] transition-colors">
+          Comment utiliser vos perles →
+        </a>
+        <a href="/" class="inline-flex border border-[#75592F] text-[#75592F] px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#75592F] hover:text-white transition-colors">
+          Retour à l'accueil
+        </a>
+      </div>
+
+      <p class="mt-8 text-sm text-[#57534e]">
+        Une question ? Écrivez-nous à
+        <a href="mailto:contact@aimezlanature.fr" class="font-semibold text-[#166534] underline">contact@aimezlanature.fr</a>
+      </p>
+    </div>
+  </section>
+
+  <script src="/js/commande.js" defer></script>
+</BaseLayout>
