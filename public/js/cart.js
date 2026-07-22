@@ -102,12 +102,28 @@
 
   var dernierDeclencheur = null;
 
+  // Durée du glissement, alignée sur la transition CSS de global.css.
+  var DUREE_TIROIR = 300;
+  var minuteurFermeture = null;
+
   function ouvrirTiroir(declencheur) {
     var t = $('tiroir-panier'), f = $('tiroir-fond');
     if (!t || !f) return;
     dernierDeclencheur = declencheur || null;
+
+    if (minuteurFermeture) { clearTimeout(minuteurFermeture); minuteurFermeture = null; }
+
     f.hidden = false;
     t.hidden = false;
+    // On retire `hidden` d'abord, puis on ajoute la classe à la frame suivante :
+    // sans ce délai le navigateur n'a pas d'état de départ et n'anime pas.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        t.classList.add('tiroir-ouvert');
+        f.classList.add('tiroir-ouvert');
+      });
+    });
+
     document.body.style.overflow = 'hidden';
     var fermer = $('tiroir-fermer');
     if (fermer) fermer.focus();
@@ -116,11 +132,22 @@
   function fermerTiroir() {
     var t = $('tiroir-panier'), f = $('tiroir-fond');
     if (!t || !f || t.hidden) return;
-    t.hidden = true;
-    f.hidden = true;
+
+    t.classList.remove('tiroir-ouvert');
+    f.classList.remove('tiroir-ouvert');
     document.body.style.overflow = '';
+
+    // Le focus repart tout de suite (ne pas attendre la fin de l'animation),
+    // mais `hidden` n'est posé qu'une fois le glissement terminé.
     if (dernierDeclencheur && document.contains(dernierDeclencheur)) dernierDeclencheur.focus();
     dernierDeclencheur = null;
+
+    if (minuteurFermeture) clearTimeout(minuteurFermeture);
+    minuteurFermeture = setTimeout(function () {
+      t.hidden = true;
+      f.hidden = true;
+      minuteurFermeture = null;
+    }, DUREE_TIROIR);
   }
 
   // Échap ferme, Tab reste piégé dans le tiroir tant qu'il est ouvert.
@@ -154,10 +181,10 @@
       '</div>' +
       '<div class="text-right">' +
         (l.discount > 0
-          ? '<p class="text-xs text-[#75592F]"><s>' + fmt(l.plein) + '</s></p>'
+          ? '<p class="text-xs text-[#6E5330]"><s>' + fmt(l.plein) + '</s></p>'
           : '') +
         '<p class="font-bold text-[#1A1A16]">' + fmt(l.total) + '</p>' +
-        '<button type="button" class="mt-1 text-xs text-[#75592F] underline" data-slug="' + l.product.slug + '" data-qty="0">Retirer</button>' +
+        '<button type="button" class="mt-1 text-xs text-[#6E5330] underline" data-slug="' + l.product.slug + '" data-qty="0">Retirer</button>' +
       '</div>' +
     '</li>';
   }

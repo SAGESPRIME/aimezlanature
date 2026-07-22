@@ -30,7 +30,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
 ---
 
 <div class="mb-6">
-  <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#75592F]">
+  <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#6E5330]">
     Choisissez votre quantité
   </p>
 
@@ -75,7 +75,10 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
           </span>
 
           <span class="flex-shrink-0 text-right">
-            <span class="block font-display text-2xl font-bold leading-none text-[#1A1A16]">
+            <!-- `data-palier-total` : la barre d'achat collante recopie ce montant
+                 pour toujours afficher le total du palier réellement sélectionné,
+                 sans dupliquer le calcul de prix côté JS. -->
+            <span data-palier-total class="block font-display text-2xl font-bold leading-none text-[#1A1A16]">
               {fmtPrice(t.total)} €
             </span>
             {t.saving > 0 && (
@@ -97,8 +100,15 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
     Ajouter au panier
   </button>
 
+  <!-- Réassurance immédiatement sous le bouton : c'est le moment précis où
+       l'acheteur hésite. Les deux promesses reprennent mot pour mot des
+       engagements déjà affichés par le marchand (cf. TrustStrip) — ne rien
+       ajouter ici qui ne soit pas réellement tenu. -->
   <p class="mt-3 text-center text-sm text-[#57534e]">
     Livraison en 2-5 jours — <strong class="text-[#1A1A16]">offerte dès {SITE.freeShippingThreshold} €</strong>
+  </p>
+  <p class="mt-1 text-center text-sm text-[#57534e]">
+    Satisfait ou remboursé 30 jours · Paiement sécurisé
   </p>
 
   <!-- Sans JavaScript, le panier ne fonctionne pas : la commande par email

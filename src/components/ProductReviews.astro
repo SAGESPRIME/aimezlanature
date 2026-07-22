@@ -63,18 +63,24 @@ const dateFr = (iso: string | null) =>
         </div>
 
         <ul class="space-y-1.5 list-none p-0 m-0">
-          {repartition.map((r) => (
-            <li class="flex items-center gap-3 text-sm">
-              <span class="w-14 flex-shrink-0 text-[#57534e]">{r.note} étoile{r.note > 1 ? 's' : ''}</span>
-              <span class="h-2 flex-1 rounded-full bg-[#EDE8E0] overflow-hidden">
-                <span
-                  class="block h-full rounded-full bg-[#166534]"
-                  style={`width:${notes ? (r.nb / notes) * 100 : 0}%`}
-                ></span>
-              </span>
-              <span class="w-8 text-right text-[#75592F]">{r.nb}</span>
-            </li>
-          ))}
+          {repartition.map((r) => {
+            // La largeur de remplissage passe par `data-p` (arrondi au pas de 5)
+            // + une classe CSS externe, PAS par un `style=` inline : la CSP de
+            // production (`style-src 'self'`) bloque les attributs style et les
+            // barres restaient alors vides en ligne. Le pas de 5 % est
+            // imperceptible sur une barre de cette taille.
+            const pct = notes ? (r.nb / notes) * 100 : 0;
+            const p5 = Math.round(pct / 5) * 5;
+            return (
+              <li class="flex items-center gap-3 text-sm">
+                <span class="w-14 flex-shrink-0 text-[#57534e]">{r.note} étoile{r.note > 1 ? 's' : ''}</span>
+                <span class="h-2 flex-1 rounded-full bg-[#EDE8E0] overflow-hidden">
+                  <span class="jauge-note block h-full rounded-full bg-[#166534]" data-p={p5}></span>
+                </span>
+                <span class="w-8 text-right text-[#6E5330]">{r.nb}</span>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -88,7 +94,7 @@ const dateFr = (iso: string | null) =>
             )}
             {r.title && <p class="font-semibold text-[#1A1A16] mb-2">{r.title}</p>}
             <p class="text-[#57534e] text-sm leading-relaxed mb-4">{r.text}</p>
-            <p class="text-xs text-[#75592F]">
+            <p class="text-xs text-[#6E5330]">
               <strong class="text-[#1A1A16]">{r.author}</strong>
               {r.date && <> · <time datetime={r.date}>{dateFr(r.date)}</time></>}
               <span class="ml-2 rounded-full bg-[#F4F9F2] px-2 py-0.5 font-semibold text-[#166534]">
@@ -117,7 +123,7 @@ const dateFr = (iso: string | null) =>
                 )}
                 {r.title && <p class="font-semibold text-[#1A1A16] mb-2">{r.title}</p>}
                 <p class="text-[#57534e] text-sm leading-relaxed mb-4">{r.text}</p>
-                <p class="text-xs text-[#75592F]">
+                <p class="text-xs text-[#6E5330]">
                   <strong class="text-[#1A1A16]">{r.author}</strong>
                   {r.date && <> · <time datetime={r.date}>{dateFr(r.date)}</time></>}
                 </p>

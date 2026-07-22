@@ -71,6 +71,34 @@ Stratégie appliquée : ne PAS recréer les anciens articles (contenu mince, pse
   - ⏳ Bloqué : nécessite que l'utilisateur crée les liens dans son dashboard Stripe et fournisse les URLs `https://buy.stripe.com/...` (une par pack)
   - Une fois fournis : ajouter le champ `stripeUrl` dans products.ts et remplacer le bouton « Commander par email » des fiches
 
+## Audit design & conversion (2026-07-22) — RAPPORT FAIT, corrections à valider
+Rapport complet : `docs/audit/audit-design-2026-07-22.md`
+Build `fe81b54` OK (25 pages) · mesures faites au navigateur sur le build réel, 1440 px et 390 px.
+
+⚠️ MCP 21st : `logo_search` OK, mais les endpoints composants renvoient une réponse vide
+(bug serveur 21st, clé API valide). Et 21st génère du **React** alors que le projet est Astro pur
+avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`.
+
+- [x] Lot A — conversion : sticky add-to-cart mobile · visuel produit dans le hero mobile ·
+      filet de sécurité `data-reveal` (cartes produits sans opacity:0, blocs isolés en try/catch dans site.js) ·
+      `sizes`/`widths` collection (widths [320,560,1120], sizes 560px)
+- [x] Lot B — copywriting : note Amazon reformulée en VOLUME (« + 816 commentaires sur Amazon (4,6/5) »,
+      plus d'étoiles concurrentes) · CTA en bénéfice (« Purifier mon eau », « Choisir mon pack ») ·
+      « Livraison en 2-5 jours — offerte dès 50 € » + « Satisfait ou remboursé 30 j » dans le BuyBox
+- [x] Lot C — finition : logo `whitespace-nowrap` + CTA header masqué < sm · animation tiroir (slide + fondu) ·
+      cross-sell avec images (grid auto-fit) · 1er paragraphe description en accroche · fil d'Ariane en `<nav aria-label>`
+- [x] BONUS bug corrigé : jauges de répartition des notes (ProductReviews) étaient vides en prod —
+      `style="width:…"` inline bloqué par la CSP `style-src 'self'` → passées en `data-p` + classe CSS externe
+- [x] BONUS bug corrigé : barre collante inerte (IntersectionObserver sur repère de hauteur 0 ne se
+      déclenchait jamais) → remplacé par handler scroll throttlé en requestAnimationFrame
+- [x] Contraste `#75592F → #6E5330` propagé PARTOUT y compris les 2 occurrences dans cart.js (RÈGLE N°1)
+- ✅ Vérifications (2026-07-23) : `npm run build` OK 26 pages · 0 occurrence de `#75592F` dans dist ·
+      contrôle navigateur build réel : barre collante masquée en haut / apparaît après le BuyBox (fix scroll+rAF) ·
+      clic barre → +2 au panier (palier coché), tiroir ouvert, total 33,84 € synchro barre/panier · jauges de notes
+      remplies aux bonnes largeurs (41/4/0/0/0) · note Amazon en volume + réassurance BuyBox affichées
+- [ ] ⚠️ À faire confirmer par le marchand AVANT affichage : comparatif chiffré
+      « bouteilles vs perles » (P2.4), délai transporteur réel (P2.3), galerie/visuels d'usage (P2.5, 4.5)
+
 ## En attente
 - [ ] Pack Gourde : au retour en stock, travailler l'angle « gourde filtrante » (12 100/mois)
 - [ ] « Gourde écologique » seule existe dans le catalogue en ligne mais pas sur ce site — à ajouter plus tard (angle SEO « gourde filtrante »)

@@ -26,9 +26,40 @@
   border-radius: 4px;
 }
 
+/* ── Jauges de répartition des notes (ProductReviews) ────────────────
+   La largeur passe par `data-p` (0→100 par pas de 5) et NON par un
+   `style="width:…"` inline : la CSP de production `style-src 'self'`
+   bloque les attributs style, ce qui laissait les barres vides en ligne.
+   Ces règles vivent dans un fichier CSS externe, donc autorisées. */
+.jauge-note { width: 0; }
+.jauge-note[data-p="5"]   { width: 5%; }
+.jauge-note[data-p="10"]  { width: 10%; }
+.jauge-note[data-p="15"]  { width: 15%; }
+.jauge-note[data-p="20"]  { width: 20%; }
+.jauge-note[data-p="25"]  { width: 25%; }
+.jauge-note[data-p="30"]  { width: 30%; }
+.jauge-note[data-p="35"]  { width: 35%; }
+.jauge-note[data-p="40"]  { width: 40%; }
+.jauge-note[data-p="45"]  { width: 45%; }
+.jauge-note[data-p="50"]  { width: 50%; }
+.jauge-note[data-p="55"]  { width: 55%; }
+.jauge-note[data-p="60"]  { width: 60%; }
+.jauge-note[data-p="65"]  { width: 65%; }
+.jauge-note[data-p="70"]  { width: 70%; }
+.jauge-note[data-p="75"]  { width: 75%; }
+.jauge-note[data-p="80"]  { width: 80%; }
+.jauge-note[data-p="85"]  { width: 85%; }
+.jauge-note[data-p="90"]  { width: 90%; }
+.jauge-note[data-p="95"]  { width: 95%; }
+.jauge-note[data-p="100"] { width: 100%; }
+
 /* Apparition au défilement — uniquement si JS actif (sinon contenu visible
    d'emblée) et si l'utilisateur n'a pas demandé moins d'animations.
-   opacity/transform seulement : aucun impact sur le layout (CLS = 0). */
+   opacity/transform seulement : aucun impact sur le layout (CLS = 0).
+
+   ⚠️ Ne jamais poser [data-reveal] sur un bloc indispensable à la vente :
+   tant que site.js n'a pas tourné, l'élément est à opacity 0. Les cartes
+   produits de l'accueil en ont été retirées pour cette raison. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   [data-reveal] {
     opacity: 0;
@@ -38,5 +69,48 @@
   [data-reveal].is-visible {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ── Barre d'achat collante (fiche produit) ──────────────────────────
+   Repliée sous l'écran par défaut ; site.js ajoute .barre-achat-visible
+   quand le bloc d'achat principal est sorti par le haut.
+   `visibility` accompagne `transform` pour que la barre repliée ne soit
+   ni cliquable ni atteignable au clavier. */
+.barre-achat {
+  transform: translateY(115%);
+  visibility: hidden;
+  transition: transform 0.35s ease-out, visibility 0.35s;
+}
+.barre-achat.barre-achat-visible {
+  transform: none;
+  visibility: visible;
+}
+
+/* ── Tiroir panier ───────────────────────────────────────────────────
+   Glissement depuis la droite + fondu du fond assombri. cart.js retire
+   l'attribut `hidden` puis ajoute .tiroir-ouvert à la frame suivante,
+   ce qui déclenche la transition. */
+#tiroir-panier {
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+}
+#tiroir-panier.tiroir-ouvert {
+  transform: none;
+}
+#tiroir-fond {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+#tiroir-fond.tiroir-ouvert {
+  opacity: 1;
+}
+
+/* Respect de « moins d'animations » : tout devient instantané. */
+@media (prefers-reduced-motion: reduce) {
+  .barre-achat,
+  #tiroir-panier,
+  #tiroir-fond {
+    transition: none;
   }
 }

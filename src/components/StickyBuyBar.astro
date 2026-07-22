@@ -1,0 +1,75 @@
+---
+/**
+ * Barre d'achat collante — fiche produit.
+ *
+ * Pourquoi : sur mobile la fiche produit fait ~7 000 px de haut. Passé le bloc
+ * d'achat (vers 1 200 px), l'acheteur traverse la description, les avis, la FAQ
+ * et le cross-sell sans plus aucun moyen d'acheter. C'est le levier de
+ * conversion le plus standard du e-commerce, et il manquait.
+ *
+ * Fonctionnement : `#repere-achat` est placé juste après le BuyBox dans la page.
+ * Dès que ce repère sort par le HAUT de l'écran, site.js ajoute la classe
+ * `.barre-achat-visible` (transition définie dans global.css — pas de style
+ * inline, la CSP l'interdit).
+ *
+ * Le bouton porte `data-ajouter-panier` : cart.js l'intercepte par délégation,
+ * lit le palier coché dans le BuyBox et ouvre le tiroir. Aucune logique de prix
+ * n'est dupliquée ici — le total affiché est recopié depuis le palier
+ * sélectionné (`data-palier-total`).
+ *
+ * Masquée à l'impression et quand le tiroir panier est ouvert (le fond assombri
+ * du tiroir est en z-90, la barre en z-40).
+ */
+import { Image } from 'astro:assets';
+import type { Product } from '../data/products';
+import { SITE } from '../data/products';
+import { tierPrices, fmtPrice } from '../lib/pricing';
+import { getProductImage, getProductImageAlt } from '../lib/productImages';
+
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+
+const photo = getProductImage(product.slug);
+const tiers = tierPrices(product);
+const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
+---
+
+<div
+  id="barre-achat"
+  class="barre-achat fixed inset-x-0 bottom-0 z-40 border-t border-[#D4C9B8] bg-[#FDFBF7]/97 backdrop-blur print:hidden"
+>
+  <div class="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3 sm:gap-4">
+    {photo && (
+      <Image
+        src={photo}
+        alt={getProductImageAlt(product.slug)}
+        width={112}
+        height={112}
+        widths={[56, 112]}
+        sizes="56px"
+        loading="lazy"
+        class="hidden h-14 w-14 flex-shrink-0 rounded-xl object-cover sm:block"
+      />
+    )}
+
+    <div class="min-w-0 flex-1">
+      <p class="truncate font-semibold leading-tight text-[#1A1A16]">{product.shortName}</p>
+      <p class="text-sm text-[#57534e]">
+        <span data-barre-total class="font-display text-lg font-bold text-[#166534]">
+          {fmtPrice(defaut.total)} €
+        </span>
+        <span class="hidden sm:inline"> · livraison offerte dès {SITE.freeShippingThreshold} €</span>
+      </p>
+    </div>
+
+    <button
+      type="button"
+      data-ajouter-panier={product.slug}
+      class="flex-shrink-0 rounded-full bg-[#166534] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25] sm:px-8"
+    >
+      Ajouter au panier
+    </button>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import Faq from '../../components/Faq.astro';
 import Icon from '../../components/Icon.astro';
 import AmazonProof from '../../components/AmazonProof.astro';
 import BuyBox from '../../components/BuyBox.astro';
+import StickyBuyBar from '../../components/StickyBuyBar.astro';
 import ProductReviews from '../../components/ProductReviews.astro';
 import TrustStrip from '../../components/TrustStrip.astro';
 import { products, SITE, type Product } from '../../data/products';
@@ -58,7 +59,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
             class="w-full h-full object-cover"
           />
         ) : (
-          <div class="text-center text-[#75592F] bg-[#EDE8E0] w-full h-full flex flex-col items-center justify-center">
+          <div class="text-center text-[#6E5330] bg-[#EDE8E0] w-full h-full flex flex-col items-center justify-center">
             <svg class="w-24 h-24 mx-auto opacity-30" viewBox="0 0 80 80" fill="none" aria-hidden="true">
               <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5" />
               <circle cx="40" cy="30" r="6" fill="currentColor" opacity="0.4" />
@@ -77,7 +78,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
       <!-- Infos & achat -->
       <div>
-        <p class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">Céramique EM® · Fabriqué au Japon</p>
+        <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">Céramique EM® · Fabriqué au Japon</p>
         <h1 class="font-display text-3xl lg:text-4xl xl:text-5xl text-[#1A1A16] leading-tight mb-3">{p.name}</h1>
         {p.rating && p.reviewCount && (
           <p class="text-sm text-[#57534e] mb-5" aria-label={`Note ${p.rating} sur 5 basée sur ${p.reviewCount} avis`}>
@@ -90,7 +91,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
         <div class="flex items-end gap-3 mb-6">
           <p class="font-display text-4xl font-bold text-[#166534]">{fmt(p.priceCurrent)} €</p>
-          <p class="text-lg text-[#75592F] line-through mb-1">{fmt(p.priceOriginal)} €</p>
+          <p class="text-lg text-[#6E5330] line-through mb-1">{fmt(p.priceOriginal)} €</p>
         </div>
 
         <ul class="flex flex-wrap gap-2 mb-7">
@@ -100,7 +101,12 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
         </ul>
 
         {p.inStock ? (
-          <BuyBox product={p} />
+          <>
+            <BuyBox product={p} />
+            {/* Repère invisible : dès qu'il sort par le haut de l'écran,
+                site.js fait monter la barre d'achat collante. */}
+            <div id="repere-achat" aria-hidden="true"></div>
+          </>
         ) : (
           <div class="mb-3">
             <a href={notifyMail} class="inline-flex w-full sm:w-auto justify-center items-center gap-2 border-2 border-[#166534] text-[#166534] px-10 py-4 rounded-full font-semibold hover:bg-[#166534] hover:text-white transition-colors">
@@ -118,8 +124,17 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   <section class="py-16 px-4 bg-white" aria-labelledby="description-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="description-titre" class="font-display text-3xl text-[#1A1A16] mb-6">Description</h2>
-      {paragraphs.map((par) => (
-        <p class="text-[#57534e] leading-relaxed mb-4">{par}</p>
+      {/* Le premier paragraphe sert d'accroche : plus grand et plus sombre.
+          Sans cette respiration, les 4 paragraphes formaient un pavé uniforme
+          que l'œil survolait sans s'arrêter. */}
+      {paragraphs.map((par, i) => (
+        <p
+          class={i === 0
+            ? 'text-[#1A1A16] text-lg leading-relaxed mb-5'
+            : 'text-[#57534e] leading-relaxed mb-4'}
+        >
+          {par}
+        </p>
       ))}
       <p class="flex items-start gap-2 text-sm text-[#57534e] bg-[#F5F0E8] rounded-2xl px-5 py-4 mt-6">
         <Icon name="bulb" class="w-4 h-4 mt-0.5 flex-shrink-0 text-[#166534]" />
@@ -139,15 +154,37 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   <section class="py-16 px-4 bg-[#F5F0E8]" aria-labelledby="autres-titre">
     <div class="max-w-5xl mx-auto">
       <h2 id="autres-titre" class="font-display text-2xl text-[#1A1A16] mb-6">Les autres packs</h2>
-      <div class="grid sm:grid-cols-3 gap-4">
+      <!-- `auto-fit` plutôt que 3 colonnes fixes : quand il ne reste que 2 packs
+           à proposer, ils occupent toute la largeur au lieu de laisser une
+           colonne vide. -->
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
         {others.map((o) => (
-          <a href={`/perles-ceramique-em/${o.slug}/`} class="bg-white rounded-2xl border border-[#EDE8E0] p-5 hover:border-[#C4B89A] transition-colors">
-            <p class="font-display text-lg text-[#1A1A16] mb-1">{o.shortName}</p>
-            <p class="text-xs text-[#57534e] mb-3">{o.usages[0]}</p>
-            <p class="font-bold text-[#166534]">{fmt(o.priceCurrent)} €</p>
+          <a
+            href={`/perles-ceramique-em/${o.slug}/`}
+            class="group bg-white rounded-2xl border border-[#EDE8E0] overflow-hidden hover:border-[#C4B89A] transition-colors"
+          >
+            {getProductImage(o.slug) && (
+              <Image
+                src={getProductImage(o.slug)!}
+                alt={getProductImageAlt(o.slug)}
+                width={560}
+                height={560}
+                widths={[280, 560]}
+                sizes="(max-width: 640px) 90vw, 280px"
+                loading="lazy"
+                class="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+            )}
+            <div class="p-5">
+              <p class="font-display text-lg text-[#1A1A16] mb-1">{o.shortName}</p>
+              <p class="text-xs text-[#57534e] mb-3">{o.usages[0]}</p>
+              <p class="font-bold text-[#166534]">{fmt(o.priceCurrent)} €</p>
+            </div>
           </a>
         ))}
       </div>
     </div>
   </section>
+
+  {p.inStock && <StickyBuyBar product={p} />}
 </BaseLayout>

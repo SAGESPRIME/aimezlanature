@@ -149,7 +149,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     <!-- Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
       <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between" aria-label="Navigation principale">
-        <a href="/" class="font-display text-xl font-bold text-green-800 hover:text-green-700 transition-colors">
+        <!-- `whitespace-nowrap` : à 390 px le logo se coupait en deux lignes
+             (« Aimez la / Nature »), ce qui déformait toute la barre. -->
+        <a href="/" class="font-display text-lg sm:text-xl font-bold text-green-800 hover:text-green-700 transition-colors whitespace-nowrap">
           Aimez la Nature
         </a>
         <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
@@ -176,9 +178,12 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
               class="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-green-700 text-white text-xs font-bold flex items-center justify-center"
             >0</span>
           </a>
+          <!-- Masqué sous sm : logo + panier + CTA + burger ne tenaient pas sur
+               une ligne à 390 px. Le panier et le menu restent accessibles, et
+               la fiche produit a désormais sa barre d'achat collante. -->
           <a
             href="/perles-ceramique-em/"
-            class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
+            class="hidden sm:inline-flex bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
           >
             Commander
           </a>
@@ -214,8 +219,8 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     <!-- Breadcrumb (visible only on inner pages) -->
     {breadcrumbItems.length > 1 && (
-      <div class="max-w-6xl mx-auto px-4 py-3">
-        <ol class="flex items-center gap-2 text-xs text-stone-500">
+      <nav class="max-w-6xl mx-auto px-4 py-3" aria-label="Fil d'Ariane">
+        <ol class="flex flex-wrap items-center gap-2 text-xs text-stone-500">
           {breadcrumbItems.map((item, i) => (
             <li class="flex items-center gap-2">
               {i > 0 && <span aria-hidden="true">/</span>}
@@ -227,7 +232,7 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
             </li>
           ))}
         </ol>
-      </div>
+      </nav>
     )}
 
     <!-- Main content -->

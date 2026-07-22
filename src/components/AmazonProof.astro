@@ -26,11 +26,17 @@ const label = `Note de ${note} sur 5 sur Amazon, fondée sur ${avis} commentaire
 ---
 
 {variant === 'ligne' ? (
-  <p class={`flex flex-wrap items-center gap-2 text-sm text-[#57534e] ${className}`}>
-    <span class="text-[#166534]" aria-hidden="true">★★★★★</span>
-    <span>
-      <strong class="text-[#1A1A16]">{note}/5</strong> · {avis} commentaires
-      <span class="text-[#75592F]"> sur Amazon</span>
+  /* Pas d'étoiles dans cette variante : elle s'affiche juste sous la note du
+     produit (4,91/5). Deux rangées d'étoiles côte à côte se lisaient comme deux
+     notes concurrentes, et le visiteur retenait la plus basse. Formulée en
+     renfort de VOLUME, la mention Amazon ajoute de la crédibilité au lieu d'en
+     retirer — les deux chiffres restent attribués à leur source, jamais
+     additionnés en un total inventé. */
+  <p class={`flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[#57534e] ${className}`}>
+    <span aria-label={label}>
+      <span aria-hidden="true">+ </span>
+      <strong class="text-[#1A1A16]">{avis} commentaires</strong> sur Amazon
+      <span class="text-[#6E5330]"> ({note}/5)</span>
     </span>
     <a
       href={SITE.amazon.url}
@@ -44,7 +50,7 @@ const label = `Note de ${note} sur 5 sur Amazon, fondée sur ${avis} commentaire
 ) : (
   <section class={`py-10 px-4 bg-[#F5F0E8] ${className}`} aria-labelledby="amazon-titre">
     <div class="max-w-4xl mx-auto rounded-2xl border border-[#D4C9B8] bg-white px-6 py-6 text-center">
-      <p id="amazon-titre" class="text-xs tracking-[0.3em] uppercase text-[#75592F] mb-3">
+      <p id="amazon-titre" class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">
         Aussi vendu sur Amazon
       </p>
       <p class="text-[#166534] text-2xl mb-2" aria-label={label}>
