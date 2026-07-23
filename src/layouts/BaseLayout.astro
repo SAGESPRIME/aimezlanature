@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import { SITE, getProduct } from '../data/products';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
+import AnnouncementBar from '../components/AnnouncementBar.astro';
 import logo from '../assets/logo.png';
 
 interface Props {
@@ -148,6 +149,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     >
       Aller au contenu
     </a>
+
+    <!-- Bande d'annonce (défile hors de l'écran ; le header reste seul en sticky) -->
+    <AnnouncementBar />
 
     <!-- Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">

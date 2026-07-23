@@ -1,0 +1,54 @@
+---
+/**
+ * Bande d'annonce défilante, au-dessus du header — pattern des boutiques
+ * mondiales (Gymshark, Sephora, Aesop…) : un bandeau fin qui fait défiler les
+ * arguments de réassurance.
+ *
+ * Défilement en CSS pur (aucun JS → compatible CSP `script-src 'self'`), mis en
+ * pause au survol, et figé en liste statique sous prefers-reduced-motion.
+ *
+ * Honnêteté (cf. tasks/lessons.md) : chaque message est un engagement RÉEL —
+ * seuil de livraison et note tirés de SITE, garantie/paiement/origine déjà
+ * affichés ailleurs sur le site. Rien d'inventé.
+ *
+ * La piste contient DEUX copies identiques du groupe et défile de -50 % : la
+ * seconde copie (aria-hidden) prend le relais sans couture. Le bandeau n'est pas
+ * collant — il défile hors de l'écran, le header reste seul en sticky.
+ */
+import { SITE } from '../data/products';
+
+const messages = [
+  `Livraison offerte dès ${SITE.freeShippingThreshold} €`,
+  'Satisfait ou remboursé sous 30 jours',
+  'Perles authentiques fabriquées au Japon',
+  `${SITE.totalReviews} avis vérifiés · ${SITE.globalRating.toString().replace('.', ',')}/5`,
+  'Paiement 100 % sécurisé',
+  'Zéro plastique, du produit au colis',
+];
+---
+
+<div class="bande-annonce bg-[#0D2818] text-[#E8EFE4]">
+  <div class="bande-annonce-piste">
+    {[0, 1].map((copie) => (
+      <ul class="bande-annonce-groupe" aria-hidden={copie === 1 ? 'true' : undefined}>
+        {messages.map((m) => (
+          <li>
+            <svg
+              class="bande-annonce-puce"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+            </svg>
+            <span>{m}</span>
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
