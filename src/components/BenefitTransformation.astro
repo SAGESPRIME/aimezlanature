@@ -1,0 +1,105 @@
+---
+/**
+ * Module « avant / après » — rendre tangible le bénéfice cœur du produit.
+ *
+ * Pourquoi : le produit se vend sur le goût, l'odeur et le « zéro plastique »,
+ * trois choses invisibles jusqu'ici décrites uniquement en texte (audit
+ * 2026-07-22, P2.4/P2.5). Ce module montre l'état AVANT (le problème vécu) et
+ * l'état APRÈS (le résultat), ce qui attaque directement l'anxiété d'achat sur
+ * un produit sensoriel.
+ *
+ * Contrainte d'honnêteté (cf. tasks/lessons.md) : chaque ligne reprend un effet
+ * DÉJÀ affirmé et défendable du produit — réduction du chlore/goût, limitation
+ * du calcaire, suppression des bouteilles plastique. Aucun chiffre non sourcé
+ * (pas de « 2,3× », pas de coût annuel) n'est introduit ici : ces allégations
+ * restent en attente de confirmation du marchand.
+ *
+ * Sans JS ni dépendance : SVG inline (même pattern que TrustStrip), visible
+ * d'emblée (pas de [data-reveal] — c'est un bloc de vente, il ne doit jamais
+ * dépendre du chargement d'un script pour s'afficher).
+ */
+const transformations = [
+  {
+    icone: 'droplet',
+    avant: 'Une eau au goût et à l’odeur de chlore.',
+    apres: 'Un goût neutre, une eau plus agréable à boire.',
+  },
+  {
+    icone: 'sparkle',
+    avant: 'Du tartre qui s’accumule sur vos appareils.',
+    apres: 'Moins de dépôts de calcaire sur la bouilloire et la cafetière.',
+  },
+  {
+    icone: 'leaf',
+    avant: 'Des bouteilles en plastique à racheter sans fin.',
+    apres: 'Votre carafe suffit — zéro bouteille, zéro déchet.',
+  },
+];
+
+const paths: Record<string, string> = {
+  droplet: 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z',
+  sparkle: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z',
+  leaf: 'M4 20c0-8 6-14 16-14 0 10-6 14-12 14H4zM4 20c2-4 5-6 9-7',
+};
+---
+
+<section class="bg-[#0D2818] px-4 py-16 lg:py-20" aria-labelledby="transformation-titre">
+  <div class="mx-auto max-w-5xl">
+    <p class="mb-3 text-xs uppercase tracking-[0.3em] text-[#A8C4A0]">Ce qui change chez vous</p>
+    <h2
+      id="transformation-titre"
+      class="mb-10 max-w-2xl font-display text-3xl leading-tight text-[#F5F0E8] lg:text-4xl"
+    >
+      La même eau du robinet, <em class="not-italic text-[#A8C4A0]">transformée</em>.
+    </h2>
+
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0">
+      {transformations.map((t) => (
+        <li class="flex h-full flex-col rounded-3xl bg-[#0F3320] p-6 ring-1 ring-white/5">
+          <span
+            class="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-[#A8C4A0]/15"
+            aria-hidden="true"
+          >
+            <svg
+              class="h-5 w-5 text-[#A8C4A0]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d={paths[t.icone]} />
+            </svg>
+          </span>
+
+          <p class="mb-4 flex items-start gap-2 text-sm leading-relaxed text-[#C9D6C4]/70">
+            <span class="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#C9D6C4]/40" aria-hidden="true"></span>
+            <span><span class="sr-only">Avant : </span>{t.avant}</span>
+          </p>
+
+          <p class="mt-auto flex items-start gap-2 font-medium leading-relaxed text-[#F5F0E8]">
+            <svg
+              class="mt-0.5 h-4 w-4 flex-shrink-0 text-[#A8C4A0]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            <span><span class="sr-only">Après : </span>{t.apres}</span>
+          </p>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-8 max-w-2xl text-sm leading-relaxed text-[#C9D6C4]/70">
+      Les perles d’argile EM® agissent sans filtre, sans électricité et sans produit chimique —
+      il suffit de les déposer dans votre carafe.
+    </p>
+  </div>
+</section>

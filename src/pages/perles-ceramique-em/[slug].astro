@@ -6,6 +6,7 @@ import Icon from '../../components/Icon.astro';
 import AmazonProof from '../../components/AmazonProof.astro';
 import BuyBox from '../../components/BuyBox.astro';
 import StickyBuyBar from '../../components/StickyBuyBar.astro';
+import BenefitTransformation from '../../components/BenefitTransformation.astro';
 import ProductReviews from '../../components/ProductReviews.astro';
 import TrustStrip from '../../components/TrustStrip.astro';
 import { products, SITE, type Product } from '../../data/products';
@@ -119,6 +120,8 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   </section>
 
   <TrustStrip />
+
+  <BenefitTransformation />
 
   <!-- DESCRIPTION -->
   <section class="py-16 px-4 bg-white" aria-labelledby="description-titre">
