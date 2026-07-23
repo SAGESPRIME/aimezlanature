@@ -99,6 +99,24 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
 - [ ] ⚠️ À faire confirmer par le marchand AVANT affichage : comparatif chiffré
       « bouteilles vs perles » (P2.4), délai transporteur réel (P2.3), galerie/visuels d'usage (P2.5, 4.5)
 
+## Design premium via skills ui-ux-pro-max + impeccable (2026-07-23) — FAIT ✅
+- [x] Recherche best-practices avec ui-ux-pro-max (base locale) : pattern retenu = Before-After
+      Transformation. Sortie « Liquid Glass » bleu/cyan écartée (casserait la DA naturelle existante).
+- [x] 3 solutions proposées → retenu Solution B (rendre tangible le bénéfice cœur), la seule
+      encore inexploitée (preuve sociale déjà forte, polish = terrain d'impeccable)
+- [x] Implémenté `src/components/BenefitTransformation.astro` : bande vert nuit avant/après,
+      3 effets DÉJÀ affirmés (chlore/goût, calcaire, plastique), zéro chiffre inventé, sans JS
+- [x] impeccable critique (mode dégradé single-context, sous-agents interdits sans demande) :
+      Nielsen 33/36 (92 %, Excellent) · détecteur mécanique 0 défaut réel (2 faux positifs header,
+      1 note em-dash) · contrastes du module mesurés ≥ 4,5:1 (avant 5,30 / après 12,22 / titre 13,88)
+- ✅ Vérif checklist : UX·UI·A11y·Responsive·SEO·Perf·Conversion·Cohérence·Mobile — tout vert
+- ⚠️ Plafond premium restant = ASSETS non fabricables (photos usage/détail par produit) +
+      chiffres à confirmer marchand. Ne PAS « itérer » du décoratif au-delà : le premium tient
+      maintenant à ces assets réels. Commits fe81b54→3ebd4ad poussés sur origin/master.
+- 📦 Skills installés dans `.agents/skills/` (symlink `.claude/skills/`) : ui-ux-pro-max, impeccable.
+      Aucun hook auto-enregistré. impeccable fait des appels externes (génération d'images) = clé API
+      requise pour ces fonctions ; les fonctions audit/critique restent locales.
+
 ## En attente
 - [ ] Pack Gourde : au retour en stock, travailler l'angle « gourde filtrante » (12 100/mois)
 - [ ] « Gourde écologique » seule existe dans le catalogue en ligne mais pas sur ce site — à ajouter plus tard (angle SEO « gourde filtrante »)
