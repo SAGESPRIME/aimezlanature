@@ -182,8 +182,8 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
          une masquée en CSS seraient toutes deux téléchargées. -->
     <div class="relative order-first lg:order-none flex items-center justify-center bg-[#EDE8E0] overflow-hidden py-8 lg:py-0">
       <div class="relative w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] lg:w-[400px] lg:h-[400px] xl:w-[460px] xl:h-[460px]">
-        <div class="absolute inset-0 rounded-full border-2 border-[#C4B89A] opacity-30"></div>
-        <div class="absolute inset-3 lg:inset-4 rounded-full border border-[#C4B89A] opacity-20"></div>
+        <div class="hero-anneau absolute inset-0 rounded-full border-2 border-[#C4B89A] opacity-30"></div>
+        <div class="hero-anneau absolute inset-3 lg:inset-4 rounded-full border border-[#C4B89A] opacity-20"></div>
         <div class="absolute inset-0 rounded-full bg-[#F5F0E8] overflow-hidden">
           {heroPhoto && (
             <Image
@@ -356,9 +356,9 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
         <p class="text-[#166534] text-xl mt-2" aria-label={`Note globale ${SITE.globalRating} sur 5`}>★★★★★ <span class="text-[#57534e] text-base">{SITE.globalRating.toString().replace('.', ',')} / 5</span></p>
         <p class="text-xs text-[#57534e] mt-1">Extraits mot pour mot d'avis vérifiés publiés sur nos fiches produit.</p>
       </div>
-      <div class="grid md:grid-cols-3 gap-5">
+      <div class="grid md:grid-cols-3 gap-5 reveal-cascade" data-reveal>
         {testimonials.map(({ name, pack, texte }) => (
-          <div class="bg-white rounded-2xl p-6" data-reveal>
+          <div class="carte-hover bg-white rounded-2xl p-6">
             <p class="text-[#166534] mb-3" aria-label="Note 5 étoiles">★★★★★</p>
             <p class="text-[#57534e] text-sm leading-relaxed mb-4 italic">« {texte} »</p>
             <div class="flex items-center justify-between">
@@ -392,9 +392,9 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
           Voir tous les guides →
         </a>
       </div>
-      <div class="grid md:grid-cols-2 gap-5">
+      <div class="grid md:grid-cols-2 gap-5 reveal-cascade" data-reveal>
         {guides.filter((g) => g.category !== 'Achat').map((guide) => (
-          <article class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6" data-reveal>
+          <article class="carte-hover rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
             <p class="text-xs tracking-widest uppercase text-[#6E5330] mb-3">{guide.category}</p>
             <h3 class="font-display text-2xl text-[#1A1A16] mb-3">
               <a href={guide.href} class="hover:text-[#166534] transition-colors">{guide.title}</a>

@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { SITE, getProduct } from '../data/products';
 import CartDrawer from '../components/CartDrawer.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
@@ -241,43 +242,7 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     </main>
 
     <!-- Footer -->
-    <footer class="bg-stone-800 text-stone-300 mt-20">
-      <div class="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <p class="font-display text-white font-bold text-lg mb-3">Aimez la Nature</p>
-          <p class="text-sm leading-relaxed">
-            Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement.
-            Zéro plastique, du produit au colis.
-          </p>
-        </div>
-        <div>
-          <p class="text-white font-semibold mb-3">Nos produits</p>
-          <ul class="space-y-2 text-sm">
-            <li><a href="/perles-ceramique-em/pack-55-perles/" class="hover:text-white transition-colors">Pack 55 Perles</a></li>
-            <li><a href="/perles-ceramique-em/pack-100-perles/" class="hover:text-white transition-colors">Pack 100 Perles</a></li>
-            <li><a href="/perles-ceramique-em/pack-gourde-ceramique-em/" class="hover:text-white transition-colors">Pack Gourde</a></li>
-            <li><a href="/perles-ceramique-em/gourde-ecologique/" class="hover:text-white transition-colors">Gourde Écologique</a></li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-white font-semibold mb-3">Informations</p>
-          <ul class="space-y-2 text-sm">
-            <li><a href="/blog/" class="hover:text-white transition-colors">Guides perles de céramique</a></li>
-            <li><a href="/comment-ca-marche/" class="hover:text-white transition-colors">Comment ça marche</a></li>
-            <li><a href="/utilisations/" class="hover:text-white transition-colors">16 utilisations des perles</a></li>
-            <li><a href="/purifier-eau-robinet-comparatif/" class="hover:text-white transition-colors">Comparatif : purifier l'eau du robinet</a></li>
-            <li><a href="/faq/" class="hover:text-white transition-colors">FAQ</a></li>
-            <li><a href="/a-propos/" class="hover:text-white transition-colors">Notre mission</a></li>
-            <li><a href="/contact/" class="hover:text-white transition-colors">Contact</a></li>
-            <li><a href="/mentions-legales/" class="hover:text-white transition-colors">Mentions légales</a></li>
-            <li><a href="/cgv/" class="hover:text-white transition-colors">CGV</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="border-t border-stone-700 py-4 text-center text-xs text-stone-400">
-        © {new Date().getFullYear()} Aimez la Nature — Tous droits réservés
-      </div>
-    </footer>
+    <Footer />
 
     <!-- JS minimal, servi en fichier externe pour rester compatible avec la CSP
          (script-src 'self') : menu mobile + apparitions au défilement. -->

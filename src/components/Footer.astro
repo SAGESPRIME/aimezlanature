@@ -1,0 +1,108 @@
+---
+/**
+ * Pied de page — refonte sur-marque.
+ *
+ * Avant : `bg-stone-800` (gris froid) qui cassait la palette naturelle
+ * crème/vert/bronze de tout le site — le footer avait l'air d'un template
+ * oublié. Désormais sur le vert nuit `#0D2818` (la teinte la plus sombre de
+ * la marque, déjà utilisée dans le hero mission et le module avant/après),
+ * avec un liseré sauge, une accroche de marque, et les colonnes de navigation
+ * réorganisées (Guides et Aide/Légal séparés pour la lisibilité).
+ *
+ * Rien d'inventé : liens réels, chiffres tirés de SITE, aucun réseau social
+ * fabriqué. Les hovers de liens et l'apparition au défilement sont en CSS pur
+ * (classes `lien-pied` / `[data-reveal]`), compatibles CSP `style-src 'self'`.
+ */
+import { SITE } from '../data/products';
+
+const produits = [
+  { href: '/perles-ceramique-em/pack-55-perles/', label: 'Pack 55 Perles' },
+  { href: '/perles-ceramique-em/pack-100-perles/', label: 'Pack 100 Perles' },
+  { href: '/perles-ceramique-em/pack-gourde-ceramique-em/', label: 'Pack Gourde' },
+  { href: '/perles-ceramique-em/gourde-ecologique/', label: 'Gourde Écologique' },
+];
+const guides = [
+  { href: '/comment-ca-marche/', label: 'Comment ça marche' },
+  { href: '/utilisations/', label: '16 utilisations des perles' },
+  { href: '/purifier-eau-robinet-comparatif/', label: 'Comparatif purification' },
+  { href: '/blog/', label: 'Tous les guides' },
+];
+const aide = [
+  { href: '/faq/', label: 'FAQ' },
+  { href: '/a-propos/', label: 'Notre mission' },
+  { href: '/contact/', label: 'Contact' },
+  { href: '/mentions-legales/', label: 'Mentions légales' },
+  { href: '/cgv/', label: 'CGV' },
+];
+
+const colonnes = [
+  { titre: 'Nos produits', liens: produits },
+  { titre: 'Guides', liens: guides },
+  { titre: 'Aide & mentions', liens: aide },
+];
+---
+
+<footer class="mt-24 bg-[#0D2818] text-[#C9D6C4]">
+  <!-- Liseré sauge : signe que le pied de page est pensé, pas posé. -->
+  <div class="h-px w-full bg-gradient-to-r from-transparent via-[#A8C4A0]/40 to-transparent"></div>
+
+  <div class="mx-auto max-w-6xl px-4 py-16">
+    <!-- Bandeau haut : accroche de marque + rappel d'achat -->
+    <div class="flex flex-col gap-8 border-b border-white/10 pb-12 lg:flex-row lg:items-end lg:justify-between" data-reveal>
+      <div class="max-w-md">
+        <p class="font-display text-2xl font-bold text-[#F5F0E8]">Aimez la Nature</p>
+        <p class="mt-3 text-sm leading-relaxed text-[#C9D6C4]/80">
+          Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement —
+          sans filtre, sans électricité, zéro plastique du produit au colis.
+        </p>
+      </div>
+      <a
+        href="/perles-ceramique-em/"
+        class="group inline-flex items-center gap-2 self-start rounded-full bg-[#A8C4A0] px-6 py-3 text-sm font-semibold text-[#0D2818] transition-colors hover:bg-[#F5F0E8] lg:self-auto"
+      >
+        Découvrir les packs
+        <span class="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <!-- Colonnes de navigation -->
+    <nav
+      class="grid grid-cols-2 gap-8 pt-12 md:grid-cols-4"
+      aria-label="Liens de pied de page"
+    >
+      <div class="col-span-2 md:col-span-1">
+        <p class="text-xs uppercase tracking-[0.2em] text-[#A8C4A0]">Purifiez votre eau</p>
+        <p class="mt-3 text-sm leading-relaxed text-[#C9D6C4]/70">
+          {SITE.totalReviews} avis vérifiés · {SITE.globalRating.toString().replace('.', ',')}/5
+          <br />Livraison offerte dès {SITE.freeShippingThreshold} €.
+        </p>
+      </div>
+
+      {colonnes.map((col) => (
+        <div>
+          <p class="mb-4 font-semibold text-[#F5F0E8]">{col.titre}</p>
+          <ul class="space-y-2.5 text-sm list-none p-0 m-0">
+            {col.liens.map((l) => (
+              <li>
+                <a href={l.href} class="lien-pied text-[#C9D6C4]/80">{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
+
+  <!-- Barre du bas -->
+  <div class="border-t border-white/10">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-xs text-[#C9D6C4]/60 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {new Date().getFullYear()} Aimez la Nature — Tous droits réservés.</p>
+      <p class="flex items-center gap-2">
+        <svg class="h-3.5 w-3.5 text-[#A8C4A0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 11h12v9H6zM9 11V8a3 3 0 1 1 6 0v3" />
+        </svg>
+        Paiement sécurisé par Stripe
+      </p>
+    </div>
+  </div>
+</footer>
