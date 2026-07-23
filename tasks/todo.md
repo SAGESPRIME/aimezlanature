@@ -193,6 +193,41 @@ Page `/revendeurs/` pour les boutiques bio et vendeurs pro. Plan complet :
    « revendeur agréé EM, partenaire officiel »).
 - ⚠️ Jamais vérifié faute de clé : l'envoi réel d'un email par Emailit. À tester au premier essai.
 
+## Reprise de la présentation interactive Manus (2026-07-23) — 3 ajouts FAITS
+Le marchand a fait analyser une présentation externe (aimez-nat-*.manus.space, 8 chapitres).
+Retenu 3 éléments sur 5 (validés par lui) : rituel 3 verbes, les 4 irritants, l'e-book.
+Idées reprises, PAS le format (diaporama JS = incompatible CSP + mauvais SEO).
+
+- [x] **Les 4 irritants** : nouveau composant `src/components/Irritants.astro` (« Le problème
+      n'est pas l'eau » — goût/chlore, packs, plastique, tartre), inséré sur l'accueil entre la
+      TrustStrip et les packs. Décrit le PROBLÈME, jamais un effet produit → rien à sourcer.
+      Extrait en composant car index.astro dépassait 400 lignes (plafond mou).
+- [x] **Rituel 3 verbes** : ajout d'un champ `verbe` aux `steps` d'index.astro + accroche
+      « Déposez. Patientez. Régénérez. » sous le titre « Comment ça marche ». Contenu factuel
+      inchangé, seule la forme mémorisable est ajoutée.
+- [x] **E-book** : PDF fourni (CloudFront) auto-hébergé dans `public/guide-perles-de-ceramique-em.pdf`
+      (68 p, 1,1 Mo), lien dans le BuyBox « Guide d'utilisation offert — le feuilleter (PDF,
+      68 pages) ». Poids/format annoncés dans le libellé, `target=_blank rel=noopener`.
+- ✅ Vérifs : build OK · PDF servi en application/pdf (1 144 366 o) · rendu navigateur 1440 +
+      390 px (0 débordement) · contrastes du bloc irritants 7,14 à 17,45:1 (n° déco 3,62 = large
+      text, seuil 3:1, teinte #9C8358 déjà utilisée par « Comment ça marche ») · espaces des 2
+      nouveaux liens corrects dans dist (`{' '}`)
+
+### ⚠️ Écartés (proposés mais NON retenus / à surveiller)
+- Éléments 1 (module « forme réelle » 7-9 mm) et 2 (audit « 10 ans » du blog) : non demandés
+  cette fois. L'audit « 10 ans » reste une DETTE réelle : le blog affirme sans source « garantit
+  10 ans », « économie 2 000-8 000 € sur 10 ans », « 400 kg plastique évités » — même famille que
+  les « 192 avis » supprimés. À traiter un jour.
+- L'e-book est le document OFFICIEL du fabricant EM, fourni par le marchand qui est revendeur
+  agréé EM avec la documentation scientifique du procédé Higa. La terminologie EM (« antioxydant »,
+  « revitalisation », « structure de l'eau ») est donc celle de la marque distribuée, pas une
+  invention — publié à la demande du marchand, sans réserve sur l'authenticité. Seul point de
+  vigilance étroit, sans présumer quoi que ce soit : garder de quoi justifier les 2 chiffres
+  « 120 x moins coûteuse » et « 10 ans » si un client le demande (marchand informé). NE PAS
+  reformuler cette nuance en jugement global — cf. l'entrée du 2026-07-23 dans lessons.md.
+- Nom « Perles grises » / « Grey Pipes » : 10 recherches/mois, NON introduit (un nom de produit
+  de plus nuirait à la clarté).
+
 ## En attente
 - [ ] Pack Gourde : au retour en stock, travailler l'angle « gourde filtrante » (12 100/mois)
 - [ ] « Gourde écologique » seule existe dans le catalogue en ligne mais pas sur ce site — à ajouter plus tard (angle SEO « gourde filtrante »)

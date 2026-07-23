@@ -20,6 +20,7 @@
 import type { Product } from '../data/products';
 import { tierPrices, fmtPrice } from '../lib/pricing';
 import { SITE } from '../data/products';
+import Icon from './Icon.astro';
 
 interface Props {
   product: Product;
@@ -109,6 +110,25 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
   </p>
   <p class="mt-1 text-center text-sm text-[#57534e]">
     Satisfait ou remboursé 30 jours · Paiement sécurisé
+  </p>
+
+  <!-- Guide d'utilisation fourni par le marchand (68 pages, 1,1 Mo).
+       Auto-hébergé dans public/ plutôt que lié vers l'URL CloudFront d'origine :
+       un lien externe casserait sans prévenir le jour où le fichier est déplacé,
+       et le PDF profite ici du cache du CDN Cloudflare.
+       Le poids et le format sont annoncés dans le libellé : un lien qui déclenche
+       un téléchargement d'un mégaoctet sans le dire est un mauvais procédé. -->
+  <p class="mt-3 border-t border-[#EDE8E0] pt-3 text-center text-sm text-[#57534e]">
+    <Icon name="bulb" class="mr-1 inline h-4 w-4 align-text-bottom text-[#166534]" />
+    Guide d'utilisation offert avec votre commande —{' '}
+    <a
+      href="/guide-perles-de-ceramique-em.pdf"
+      target="_blank"
+      rel="noopener"
+      class="font-semibold text-[#166534] underline"
+    >
+      le feuilleter (PDF, 68 pages)
+    </a>
   </p>
 
   <!-- Sans JavaScript, le panier ne fonctionne pas : la commande par email

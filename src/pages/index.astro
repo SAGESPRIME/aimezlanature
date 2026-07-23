@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import Faq from '../components/Faq.astro';
 import AmazonProof from '../components/AmazonProof.astro';
+import Irritants from '../components/Irritants.astro';
 import { SITE } from '../data/products';
 import { guides } from '../data/guides';
 import { getProductImage, getProductImageAlt } from '../lib/productImages';
@@ -54,19 +55,27 @@ const websiteSchema = {
 // plusieurs produits dans un Product fictif violerait ses consignes.
 // Les notes réelles restent dans le schema Product de chaque fiche.
 
+// Chaque étape porte désormais un VERBE court (`verbe`) en plus de son titre :
+// « Déposez. Patientez. Régénérez. » se retient, contrairement à trois phrases
+// complètes. Le contenu factuel des étapes n'a pas bougé — seule la forme est
+// reprise de la présentation interactive de la marque, qui condensait le mode
+// d'emploi en trois verbes.
 const steps = [
   {
     num: '01',
+    verbe: 'Déposez',
     titre: 'Placez les perles dans votre eau',
     texte: 'Déposez les perles au fond de votre carafe, bouilloire ou gourde. Aucun montage, aucun raccordement.',
   },
   {
     num: '02',
+    verbe: 'Patientez',
     titre: 'L\'eau s\'améliore naturellement',
     texte: 'En 30 minutes, le chlore est réduit, le goût s\'adoucit, le tartre diminue. Efficacité sur 3 à 6 mois.',
   },
   {
     num: '03',
+    verbe: 'Régénérez',
     titre: 'Régénérez par simple ébullition',
     texte: 'Faites bouillir les perles 10 à 15 minutes pour leur redonner toute leur efficacité. Répétez tous les 3-6 mois.',
   },
@@ -230,6 +239,11 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
   </div>
 
   <!-- ══════════════════════════════════
+       LE CONSTAT — nommer le problème avant de montrer la solution
+  ══════════════════════════════════ -->
+  <Irritants />
+
+  <!-- ══════════════════════════════════
        PRODUITS — bento asymétrique
   ══════════════════════════════════ -->
   <section class="py-20 px-4 bg-[#F5F0E8]" aria-labelledby="produits-titre">
@@ -317,7 +331,10 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
       <div>
         <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">Mode d'emploi</p>
-        <h2 id="how-it-works" class="font-display text-4xl text-[#1A1A16] mb-6">Comment ça marche ?</h2>
+        <h2 id="how-it-works" class="font-display text-4xl text-[#1A1A16] mb-4">Comment ça marche ?</h2>
+        <p class="font-display text-2xl text-[#166534] mb-6">
+          Déposez. Patientez. Régénérez.
+        </p>
         <p class="text-[#57534e] leading-relaxed mb-8">
           Les Perles de Céramique EM® sont fabriquées à partir d'argile naturelle enrichie en
           Micro-organismes Efficaces (EM®). Ces micro-organismes bénéfiques améliorent la qualité
@@ -332,10 +349,11 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
         </a>
       </div>
       <div class="space-y-7">
-        {steps.map(({ num, titre, texte }) => (
+        {steps.map(({ num, verbe, titre, texte }) => (
           <div class="flex gap-5">
             <span class="font-display text-3xl text-[#9C8358] font-bold leading-none flex-shrink-0 w-10" aria-hidden="true">{num}</span>
             <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-[#6E5330] mb-1">{verbe}</p>
               <h3 class="font-semibold text-[#1A1A16] mb-1">{titre}</h3>
               <p class="text-[#57534e] text-sm leading-relaxed">{texte}</p>
             </div>
