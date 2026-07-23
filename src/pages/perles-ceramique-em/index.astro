@@ -40,7 +40,10 @@ const faqItems = [
   },
 ];
 
-const jsonLd = [buildItemListSchema(products), buildFaqSchema(faqItems)];
+// Best-seller affiché en premier (tri stable : le reste garde son ordre).
+const displayProducts = [...products].sort((a, b) => Number(b.bestseller ?? false) - Number(a.bestseller ?? false));
+
+const jsonLd = [buildItemListSchema(displayProducts), buildFaqSchema(faqItems)];
 
 // Guide de choix rapide : usage → pack recommandé.
 // Les packs se choisissent par cumul d'usages, pas par contenant unique :
@@ -81,7 +84,7 @@ const usageGuide = [
     <div class="max-w-6xl mx-auto">
       <h2 id="packs-titre" class="font-display text-3xl lg:text-4xl text-[#1A1A16] mb-10">Nos packs de perles EM®</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {products.map((p) => (
+        {displayProducts.map((p) => (
           <article class={`relative rounded-3xl border p-7 lg:p-8 flex flex-col gap-4 transition-shadow hover:shadow-lg ${p.inStock ? 'border-[#EDE8E0] bg-[#FDFBF7]' : 'border-[#EDE8E0] bg-[#F7F5F2] opacity-70'}`}>
             {getProductImage(p.slug) && (
               <a href={`/perles-ceramique-em/${p.slug}/`} class="block rounded-2xl overflow-hidden bg-white -mx-1 -mt-1">
@@ -103,7 +106,7 @@ const usageGuide = [
             )}
             <div class="flex items-start justify-between gap-3">
               <div>
-                {p.slug === 'pack-55-perles' && (
+                {p.bestseller && (
                   <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-2">Bestseller</span>
                 )}
                 {!p.inStock && (

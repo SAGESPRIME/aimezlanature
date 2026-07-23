@@ -23,6 +23,8 @@ export interface Product {
    */
   rating?: number;
   reviewCount?: number;
+  /** Best-seller de la gamme — badge « Bestseller » et mise en avant. Un seul produit à true. */
+  bestseller?: boolean;
   description: string;
   usages: string[];
   qa: { question: string; answer: string }[];
@@ -44,7 +46,7 @@ export const products: Product[] = [
     includesBottle: false,
     rating: 4.91,
     reviewCount: 45,
-    description: `Le Pack 55 Perles de Céramique EM® est notre bestseller, conçu pour une carafe de 1,5 à 2 litres, une bouilloire, une machine à café ou à thé. C'est le format idéal pour une famille de 2 à 3 personnes ou pour un usage quotidien intensif.
+    description: `Le Pack 55 Perles de Céramique EM® est notre format d'entrée, conçu pour une carafe de 1,5 à 2 litres, une bouilloire, une machine à café ou à thé. C'est le choix idéal pour découvrir les perles ou équiper les usages quotidiens d'une personne ou d'un couple.
 
 Fabriquées au Japon selon le procédé EM® original (Effective Microorganisms), ces perles d'argile naturelle agissent sans produit chimique pour améliorer le goût de l'eau du robinet, réduire la sensation de chlore et limiter les dépôts calcaires sur vos appareils. Utilisées comme billes anti calcaire dans la bouilloire, elles réduisent visiblement le tartre sur la résistance.
 
@@ -54,8 +56,8 @@ Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois.`,
     usages: ["Carafe 1,5-2 L", "Bouilloire", "Machine à café", "Machine à thé", "Gourde XL"],
     qa: [
       {
-        question: "Pourquoi le Pack 55 est-il le plus populaire ?",
-        answer: "Parce qu'il couvre exactement les deux usages quotidiens les plus fréquents : 30 perles pour une carafe de 2 L et 25 pour la bouilloire ou la cafetière, soit les 55 perles du pack.",
+        question: "À qui s'adresse le Pack 55 ?",
+        answer: "C'est le format d'entrée : il couvre les deux usages quotidiens les plus fréquents — 30 perles pour une carafe de 2 L et 25 pour la bouilloire ou la cafetière. Pour équiper toute la maison (lave-vaisselle, machine à laver…), le Pack 100 est plus adapté.",
       },
       {
         question: "Puis-je utiliser les 55 perles dans ma cafetière ?",
@@ -90,14 +92,15 @@ Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois.`,
     includesBottle: false,
     rating: 4.94,
     reviewCount: 51,
-    description: `Le Pack 100 Perles de Céramique EM® est notre offre la plus complète pour un usage maison intensif : bonbonne, lave-vaisselle, machine à laver, vase ou bassine. C'est aussi le choix économique par excellence — le coût par perle est le plus bas de notre gamme.
+    bestseller: true,
+    description: `Le Pack 100 Perles de Céramique EM® est notre best-seller — le format famille qui couvre toutes les utilisations à la maison : carafe, bouilloire et cafetière pour l'eau de boisson, puis lave-vaisselle, machine à laver, bonbonne, vase ou bassine. C'est aussi le choix le plus économique : le coût par perle est le plus bas de la gamme, et c'est notre produit le mieux noté (4,94/5 sur 51 avis).
 
 100 perles d'argile japonaise enrichies en EM® (Micro-organismes Efficaces) pour traiter de grands volumes d'eau. Véritable anti-calcaire naturel pour le lave-vaisselle et la machine à laver, elles réduisent aussi le chlore et améliorent le goût — testées et plébiscitées avec une note de 4,94/5 sur 51 avis clients vérifiés.
 
 Idéal pour les foyers de 3 personnes et plus, les adeptes du zéro déchet souhaitant supprimer totalement les bouteilles plastique, ou pour équiper plusieurs usages simultanément.
 
 Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullition 10-15 min tous les 3-6 mois.`,
-    usages: ["Bonbonne jusqu'à 6 L", "Lave-vaisselle", "Machine à laver", "Vase", "Bassine"],
+    usages: ["Carafe & bouilloire", "Lave-vaisselle", "Machine à laver", "Bonbonne", "Toute la maison"],
     qa: [
       {
         question: "Combien de perles faut-il pour un lave-vaisselle ?",

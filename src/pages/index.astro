@@ -9,8 +9,8 @@ import { guides } from '../data/guides';
 import { getProductImage, getProductImageAlt } from '../lib/productImages';
 import { buildFaqSchema } from '../lib/seo';
 
-// Visuel du hero : le Pack 55, notre bestseller.
-const heroPhoto = getProductImage('pack-55-perles');
+// Visuel du hero : le Pack 100, notre best-seller (format famille, toutes utilisations).
+const heroPhoto = getProductImage('pack-100-perles');
 
 const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Nature';
 const metaDescription =
@@ -188,7 +188,7 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
           {heroPhoto && (
             <Image
               src={heroPhoto}
-              alt={getProductImageAlt('pack-55-perles')}
+              alt={getProductImageAlt('pack-100-perles')}
               width={920}
               height={920}
               widths={[200, 280, 460, 560, 920]}
@@ -245,34 +245,34 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
            conservé sur les blocs décoratifs (avis, guides) plus bas. -->
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
 
-        <!-- Pack 55 — bestseller — 3/5 cols -->
-        <a href="/perles-ceramique-em/pack-55-perles/" class="md:col-span-3 relative rounded-3xl overflow-hidden p-8 lg:p-10 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#D4E4D0]">
-          <span class="absolute right-4 top-2 font-display text-[140px] font-bold leading-none select-none opacity-[0.08] text-[#166534]" aria-hidden="true">55</span>
+        <!-- Pack 100 — bestseller — 3/5 cols -->
+        <a href="/perles-ceramique-em/pack-100-perles/" class="md:col-span-3 relative rounded-3xl overflow-hidden p-8 lg:p-10 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#D4E4D0]">
+          <span class="absolute right-4 top-2 font-display text-[140px] font-bold leading-none select-none opacity-[0.08] text-[#166534]" aria-hidden="true">100</span>
           <div>
-            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">Bestseller · ★ 4,91/5 (45 avis)</span>
-            <h3 class="font-display text-3xl text-[#1A1A16] mb-2">Pack 55 Perles</h3>
-            <p class="text-[#57534e] text-sm max-w-xs">Idéal carafe 1,5-2 L, bouilloire, machine à café. Le choix de 45 clients satisfaits.</p>
+            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">Bestseller · ★ 4,94/5 (51 avis)</span>
+            <h3 class="font-display text-3xl text-[#1A1A16] mb-2">Pack 100 Perles</h3>
+            <p class="text-[#57534e] text-sm max-w-xs">Carafe, bouilloire, lave-vaisselle, machine à laver… Le format famille, toutes les utilisations. Le choix de 51 clients satisfaits.</p>
           </div>
           <div class="flex items-end justify-between mt-6">
             <div>
-              <p class="text-xs text-[#6E5330] line-through">25,90€</p>
-              <p class="font-display text-3xl text-[#166534] font-bold">19,90€</p>
+              <p class="text-xs text-[#6E5330] line-through">42,90€</p>
+              <p class="font-display text-3xl text-[#166534] font-bold">29,90€</p>
             </div>
             <span class="bg-[#166534] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#0D4A25] transition-colors">Purifier mon eau →</span>
           </div>
         </a>
 
-        <!-- Pack 100 — 2/5 cols -->
-        <a href="/perles-ceramique-em/pack-100-perles/" class="md:col-span-2 relative rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#DDD8D0]">
-          <span class="absolute right-3 top-1 font-display text-[100px] font-bold leading-none select-none opacity-[0.08] text-[#6E5330]" aria-hidden="true">100</span>
+        <!-- Pack 55 — format d'entrée — 2/5 cols -->
+        <a href="/perles-ceramique-em/pack-55-perles/" class="md:col-span-2 relative rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#DDD8D0]">
+          <span class="absolute right-3 top-1 font-display text-[100px] font-bold leading-none select-none opacity-[0.08] text-[#6E5330]" aria-hidden="true">55</span>
           <div>
-            <span class="inline-block bg-[#6E5330] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">★ 4,94/5 (51 avis)</span>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-2">Pack 100 Perles</h3>
-            <p class="text-[#57534e] text-sm">Lave-vaisselle, bonbonne, machine à laver. Le format maison.</p>
+            <span class="inline-block bg-[#6E5330] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">★ 4,91/5 (45 avis)</span>
+            <h3 class="font-display text-2xl text-[#1A1A16] mb-2">Pack 55 Perles</h3>
+            <p class="text-[#57534e] text-sm">Carafe, bouilloire, cafetière. Le format d'entrée idéal pour découvrir.</p>
           </div>
           <div>
-            <p class="text-xs text-[#6E5330] line-through">42,90€</p>
-            <p class="font-display text-2xl text-[#166534] font-bold">29,90€</p>
+            <p class="text-xs text-[#6E5330] line-through">25,90€</p>
+            <p class="font-display text-2xl text-[#166534] font-bold">19,90€</p>
           </div>
         </a>
 

@@ -1,8 +1,10 @@
 ---
 import '../styles/global.css';
+import { Image } from 'astro:assets';
 import { SITE, getProduct } from '../data/products';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
+import logo from '../assets/logo.png';
 
 interface Props {
   title: string;
@@ -150,10 +152,17 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     <!-- Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
       <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between" aria-label="Navigation principale">
-        <!-- `whitespace-nowrap` : à 390 px le logo se coupait en deux lignes
-             (« Aimez la / Nature »), ce qui déformait toute la barre. -->
-        <a href="/" class="font-display text-lg sm:text-xl font-bold text-green-800 hover:text-green-700 transition-colors whitespace-nowrap">
-          Aimez la Nature
+        <a href="/" class="flex-shrink-0" aria-label="Aimez la Nature — accueil">
+          <Image
+            src={logo}
+            alt="Aimez la Nature"
+            width={373}
+            height={109}
+            widths={[186, 373]}
+            sizes="140px"
+            loading="eager"
+            class="h-8 sm:h-9 w-auto"
+          />
         </a>
         <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
           <li><a href="/perles-ceramique-em/" class="hover:text-green-700 transition-colors">Nos Perles</a></li>
