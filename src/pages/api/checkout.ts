@@ -49,7 +49,7 @@ export const POST: APIRoute = async ({ request, url }) => {
   const items = Array.isArray(body.items) ? body.items : [];
   if (items.length === 0) return json({ error: 'Votre panier est vide.' }, 400);
 
-  const lines: { name: string; unitAmount: number; qty: number }[] = [];
+  const lines: { name: string; short: string; unitAmount: number; qty: number }[] = [];
   let subtotal = 0;
 
   for (const item of items) {
@@ -67,7 +67,12 @@ export const POST: APIRoute = async ({ request, url }) => {
     // Prix serveur, jamais celui envoyé par le navigateur.
     const unit = unitPriceFor(product, qty);
     subtotal += unit * qty;
-    lines.push({ name: product.name, unitAmount: Math.round(unit * 100), qty });
+    lines.push({
+      name: product.name,
+      short: product.shortName,
+      unitAmount: Math.round(unit * 100),
+      qty,
+    });
   }
 
   const shipping = subtotal >= SITE.freeShippingThreshold ? 0 : SHIPPING_FEE;
@@ -83,6 +88,17 @@ export const POST: APIRoute = async ({ request, url }) => {
   form.set('shipping_address_collection[allowed_countries][2]', 'LU');
   form.set('shipping_address_collection[allowed_countries][3]', 'CH');
   form.set('phone_number_collection[enabled]', 'true');
+
+  // Récapitulatif lisible des articles, ex. « Pack 100 Perles ×2, Gourde ×1 ».
+  // Stripe le reprend à deux endroits : sur le reçu de paiement envoyé au client
+  // (si « Paiements réussis » est activé dans Emails clients) et sur la ligne de
+  // paiement du dashboard, qui sert alors de bon de préparation au marchand.
+  // Limite Stripe : 1 000 caractères sur `description` — on coupe bien avant.
+  const summary = lines.map((l) => `${l.short} ×${l.qty}`).join(', ');
+  form.set(
+    'payment_intent_data[description]',
+    summary.length > 500 ? `${summary.slice(0, 499)}…` : summary
+  );
 
   lines.forEach((l, i) => {
     form.set(`line_items[${i}][quantity]`, String(l.qty));

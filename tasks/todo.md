@@ -66,10 +66,49 @@ Stratégie appliquée : ne PAS recréer les anciens articles (contenu mince, pse
   titles 57-65 · descriptions ≤ 160 · 0 doublon sur les 70 questions FAQPage du site ·
   tous les liens internes des articles résolvent dans dist/ · 0 claim pseudo-science
 
-## Prochaine étape en cours
-- [ ] Paiement en ligne via Stripe Payment Links (direction validée)
-  - ⏳ Bloqué : nécessite que l'utilisateur crée les liens dans son dashboard Stripe et fournisse les URLs `https://buy.stripe.com/...` (une par pack)
-  - Une fois fournis : ajouter le champ `stripeUrl` dans products.ts et remplacer le bouton « Commander par email » des fiches
+## Paiement Stripe — état réel (2026-07-23)
+Direction finale : **pas** de Payment Links. `src/pages/api/checkout.ts` crée une vraie
+session Stripe Checkout côté Worker Cloudflare, prix TOUJOURS recalculés serveur depuis
+products.ts (un panier trafiqué dans la console ne peut pas changer le montant débité).
+
+- [x] Récapitulatif des articles envoyé dans `payment_intent_data[description]`
+      (ex. `Pack 100 Perles ×2, Gourde Écologique ×1`, coupé à 500 car., limite Stripe 1 000)
+      → sert au reçu client ET de bon de préparation dans la liste des paiements du dashboard
+  - ✅ Vérif 2026-07-23 : `npm run build` OK 26 pages · paramètre présent dans le bundle
+    (`dist/server/chunks/checkout_3O-oUl5J.mjs:338`) · chaîne rejouée avec les 4 vrais
+    shortName (18/40/56 car.) · reste NON vérifié faute de clé Stripe : le rendu réel
+    du reçu — à contrôler au 1er paiement en mode test
+
+### Après-paiement — décidé, pas encore fait
+Aujourd'hui : aucun webhook, aucun email envoyé par nous, aucune commande stockée.
+Niveau retenu = **niveau 1** (webhook Cloudflare + provider email), à faire APRÈS la
+finalisation du site et le choix du provider (Brevo pressenti : UE/FR, ~300 mails/jour
+gratuits ; Resend en alternative ; ❌ MailChannels n'existe plus en gratuit sur Workers).
+
+- [ ] Cocher « Paiements réussis » dans Stripe → Emails clients (`dashboard.stripe.com/settings/emails`)
+      — désactivé par défaut, sinon le client ne reçoit RIEN. À garder actif même au niveau 1
+      (filet de sécurité si le webhook plante). ⚠️ En mode test, Stripe n'envoie ces reçus
+      qu'à TES adresses vérifiées : un email de test qui n'arrive pas ≠ panne.
+- [ ] `src/pages/api/stripe-webhook.ts` : vérif de signature (Web Crypto, sans SDK, comme
+      checkout.ts) → email de confirmation client + alerte marchand
+- [ ] Anti-doublon (Stripe rejoue les événements) : mémoriser `event.id` dans Cloudflare KV
+- [ ] DNS SPF/DKIM sur aimezlanature.fr pour envoyer depuis contact@ — ⚠️ domaine chez
+      Hostinger, accès utilisateur requis. C'est le vrai point bloquant, à anticiper.
+- [ ] Test bout en bout en mode test Stripe avant le passage en réel
+
+### ⚠️ DETTE ASSUMÉE — à lever avant toute mise en ligne
+`src/pages/commande-confirmee.astro` promet « un email de confirmation **avec le détail de
+votre commande** ». C'est FAUX tant que le webhook n'existe pas (le reçu Stripe ne contient
+ni adresse de livraison, ni délai, ni rétractation). Correction volontairement reportée : le
+texte final sera écrit UNE fois, avec le webhook, pour annoncer les deux emails
+(confirmation détaillée + reçu Stripe). Sans risque tant que ce build n'est pas en prod
+(la prod actuelle est l'ancien site Hostinger).
+**Si le site est déployé avant le webhook → reformuler ce texte AVANT le déploiement.**
+
+### À trancher avec le marchand avant la vente réelle
+- [ ] TVA : la SAS est-elle assujettie ? Aucune mention TTC/HT sur le site, aucun calcul de taxe côté Stripe
+- [ ] Facture sur demande (B2C) : utiliser `invoice_creation` de Stripe plutôt que de bricoler
+- [ ] Stock : `inStock` est en dur dans products.ts, rien ne limite les quantités vendues
 
 ## Audit design & conversion (2026-07-22) — RAPPORT FAIT, corrections à valider
 Rapport complet : `docs/audit/audit-design-2026-07-22.md`
