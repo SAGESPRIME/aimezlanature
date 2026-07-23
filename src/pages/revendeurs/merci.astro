@@ -1,0 +1,65 @@
+---
+/**
+ * Confirmation d'envoi d'une demande revendeur.
+ *
+ * Cette page existe pour que le formulaire fonctionne SANS JavaScript :
+ * /api/revendeur y redirige (303) après un envoi réussi. Avec JavaScript,
+ * public/js/revendeur.js affiche la confirmation sur place et l'utilisateur
+ * n'y arrive jamais.
+ *
+ * `noindex` : page de tunnel, sans intérêt pour la recherche. Elle est aussi
+ * exclue du sitemap dans astro.config.mjs — un sitemap qui contient une page
+ * noindex génère des avertissements dans la Search Console.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMAIL_REVENDEUR } from '../../data/revendeur';
+
+const metaTitle = 'Demande envoyée | Aimez la Nature';
+const metaDescription = 'Votre demande de partenariat revendeur a bien été transmise.';
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} noindex>
+  <section class="bg-[#F5F0E8] px-4 py-20">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-6 text-5xl" aria-hidden="true">🌿</p>
+      <h1 class="font-display mb-5 text-4xl text-[#1A1A16] lg:text-5xl">Demande bien reçue</h1>
+      <p class="mb-8 text-lg leading-relaxed text-[#57534e]">
+        Nous étudions votre activité et revenons vers vous sous 24 h ouvrées avec vos
+        conditions revendeur et votre devis.
+      </p>
+
+      <div class="mb-8 rounded-2xl border border-[#D4C9B8] bg-white p-6 text-left">
+        <h2 class="font-display mb-4 text-xl text-[#1A1A16]">Et maintenant ?</h2>
+        <ol class="list-decimal space-y-3 pl-5 text-sm text-[#57534e]">
+          <li>Nous vérifions votre SIRET.</li>
+          <li>Nous préparons une grille de remise adaptée à votre volume.</li>
+          <li>Vous recevez le devis et les conditions professionnelles par email.</li>
+        </ol>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="/perles-ceramique-em/"
+          class="inline-flex rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25]"
+        >
+          Découvrir le catalogue →
+        </a>
+        <a
+          href="/"
+          class="inline-flex rounded-full border border-[#6E5330] px-7 py-3.5 text-sm font-semibold text-[#6E5330] transition-colors hover:bg-[#6E5330] hover:text-white"
+        >
+          Retour à l'accueil
+        </a>
+      </div>
+
+      <p class="mt-8 text-sm text-[#57534e]">
+        {/* `{' '}` explicite : Astro supprime l'espace de fin de ligne qui
+            précède une balise, ce qui collerait « à » et l'adresse. */}
+        Une précision à ajouter ? Écrivez-nous à{' '}
+        <a href={`mailto:${EMAIL_REVENDEUR}`} class="font-semibold text-[#166534] underline">
+          {EMAIL_REVENDEUR}
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

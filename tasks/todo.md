@@ -156,6 +156,43 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
       Aucun hook auto-enregistré. impeccable fait des appels externes (génération d'images) = clé API
       requise pour ces fonctions ; les fonctions audit/critique restent locales.
 
+## Offre revendeur B2B (2026-07-23) — LIVRÉE, non publiable en l'état
+Page `/revendeurs/` pour les boutiques bio et vendeurs pro. Plan complet :
+`C:\Users\consu\.claude\plans\ajouter-une-offre-kind-quiche.md`
+
+- [x] Recherche DataForSEO préalable (~0,05 $) : « grossiste perles de céramique », « perles de
+      céramique en gros », « revendeur produits écologiques » = **0 recherche/mois**. Conclusion :
+      ce n'est PAS un levier SEO → une seule page de démarchage, pas de cluster, hors menu principal.
+- [x] `src/data/revendeur.ts` (source unique) · `src/pages/revendeurs/index.astro` ·
+      `revendeurs/merci.astro` (noindex) · `components/RevendeurForm.astro` ·
+      `pages/api/revendeur.ts` · `public/js/revendeur.js`
+- [x] Modifs minimales du site existant : 1 lien dans le footer, filtre sitemap, bloc llms.txt,
+      `revendeurs` dans les libellés de fil d'Ariane
+- [x] **Aucun chiffre de remise** : `paliersRemise` est un tableau VIDE, la page affiche le
+      principe. Le jour où le marchand valide sa grille → remplir ce seul tableau, rien d'autre.
+- [x] BONUS bug corrigé : `/commande-confirmee/` (noindex) partait dans le sitemap — le filtre
+      d'`astro.config.mjs` visait `/succes`, page supprimée depuis. Corrigé pour les deux pages.
+- ✅ Vérifications : build 0 erreur · sitemap 25 URLs, `/revendeurs/` dedans, merci et
+      commande-confirmee dehors · noindex présent · 5 questions FAQPage complètes, 0 doublon
+      introduit · **0 chiffre de remise dans dist** · 7 cas de la route testés au réel
+      (503 sans clé + adresse de secours, piège robot → 303, champs manquants, email invalide,
+      SIRET court, envoi instantané, réponse JSON) · formulaire testé au navigateur 1440 et 390 px ·
+      contrastes mesurés 7,26 à 17,45:1 · piège hors écran et non focusable · 0 débordement
+      horizontal · tous les fichiers ≤ 203 lignes
+
+### ⛔ Ne PAS publier cette page tant que :
+1. **Domaine vérifié chez Emailit** — Emailit refuse d'envoyer depuis un domaine non vérifié
+   (pas d'option « expéditeur validé par clic » comme Brevo). Il faut poser les enregistrements
+   SPF/DKIM dans les DNS de aimezlanature.fr, **hébergés chez Hostinger** → accès utilisateur.
+   Ce même réglage servira aux emails clients du niveau 1 : un seul travail pour les deux.
+2. `EMAILIT_API_KEY` (+ `EMAILIT_FROM` si l'expéditeur diffère de `notifications@aimezlanature.fr`)
+   dans les variables Cloudflare, et `.dev.vars` en local.
+3. **CGV pro** : les CGV du site sont B2C (rétractation 14 j) et ne doivent pas encadrer une
+   commande revendeur. La page annonce déjà que les conditions pro arrivent avec le devis.
+4. Droit de sous-distribuer à confirmer auprès du fournisseur EM (le site affirme déjà
+   « revendeur agréé EM, partenaire officiel »).
+- ⚠️ Jamais vérifié faute de clé : l'envoi réel d'un email par Emailit. À tester au premier essai.
+
 ## En attente
 - [ ] Pack Gourde : au retour en stock, travailler l'angle « gourde filtrante » (12 100/mois)
 - [ ] « Gourde écologique » seule existe dans le catalogue en ligne mais pas sur ce site — à ajouter plus tard (angle SEO « gourde filtrante »)

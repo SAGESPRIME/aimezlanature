@@ -21,7 +21,12 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/succes'),
+      // Exclut les pages de tunnel en `noindex` : une URL noindex présente dans
+      // le sitemap déclenche un avertissement dans la Search Console.
+      // Le filtre visait auparavant `/succes`, une page qui n'existe plus —
+      // `/commande-confirmee/` partait donc bel et bien à Google.
+      filter: (page) =>
+        !page.includes('/commande-confirmee') && !page.includes('/revendeurs/merci'),
     }),
   ],
   i18n: {

@@ -1,0 +1,194 @@
+---
+/**
+ * Formulaire de demande revendeur.
+ *
+ * Il fonctionne SANS JavaScript : c'est un `<form method="post">` natif qui
+ * poste sur /api/revendeur, lequel redirige vers /revendeurs/merci/.
+ * public/js/revendeur.js ne fait qu'améliorer l'expérience (envoi sans
+ * rechargement, erreurs affichées sous le bouton). Si le script ne charge pas,
+ * la demande part quand même.
+ *
+ * Aucun service de formulaire tiers (Tally, Google Forms…) : la CSP du site
+ * impose `form-action 'self'`, ils seraient bloqués par le navigateur.
+ *
+ * Aucun attribut `style=` en ligne ici : `style-src 'self'` les bloque
+ * silencieusement (cf. tasks/lessons.md, les jauges d'avis restées vides).
+ * Le champ piège est donc masqué par des classes Tailwind, pas par du style
+ * en ligne.
+ */
+import {
+  CHAMPS,
+  CHAMP_PIEGE,
+  CHAMP_HORODATAGE,
+  typesActivite,
+  volumesEnvisages,
+  EMAIL_REVENDEUR,
+} from '../data/revendeur';
+
+const champClass =
+  'w-full rounded-xl border border-[#D4C9B8] bg-white px-4 py-3 text-sm text-[#1A1A16] placeholder:text-[#8A8378] focus:border-[#166534] focus:outline-none focus:ring-2 focus:ring-[#166534]/30';
+const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
+---
+
+<section class="bg-[#F5F0E8] px-4 py-16" aria-labelledby="demande-titre">
+  <div class="mx-auto max-w-2xl">
+    <p class="mb-3 text-xs uppercase tracking-[0.3em] text-[#6E5330]">Demande</p>
+    <h2 id="demande-titre" class="font-display mb-4 text-3xl text-[#1A1A16] lg:text-4xl">
+      Recevoir la grille revendeur
+    </h2>
+    <p class="mb-8 leading-relaxed text-[#57534e]">
+      Décrivez-nous votre activité : nous revenons vers vous sous 24 h ouvrées avec vos
+      conditions et vos tarifs. Sans engagement.
+    </p>
+
+    <form
+      method="post"
+      action="/api/revendeur"
+      data-formulaire-revendeur
+      class="space-y-5 rounded-2xl border border-[#D4C9B8] bg-white p-6 sm:p-8"
+      novalidate={false}
+    >
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label class={labelClass} for="f-boutique">
+            {CHAMPS.boutique.label} <span class="text-[#166534]">*</span>
+          </label>
+          <input
+            id="f-boutique"
+            name={CHAMPS.boutique.name}
+            type="text"
+            required
+            maxlength="120"
+            autocomplete="organization"
+            class={champClass}
+          />
+        </div>
+
+        <div>
+          <label class={labelClass} for="f-contact">
+            {CHAMPS.contact.label} <span class="text-[#166534]">*</span>
+          </label>
+          <input
+            id="f-contact"
+            name={CHAMPS.contact.name}
+            type="text"
+            required
+            maxlength="80"
+            autocomplete="name"
+            class={champClass}
+          />
+        </div>
+
+        <div>
+          <label class={labelClass} for="f-email">
+            {CHAMPS.email.label} <span class="text-[#166534]">*</span>
+          </label>
+          <input
+            id="f-email"
+            name={CHAMPS.email.name}
+            type="email"
+            required
+            maxlength="120"
+            autocomplete="email"
+            class={champClass}
+          />
+        </div>
+
+        <div>
+          <label class={labelClass} for="f-telephone">{CHAMPS.telephone.label}</label>
+          <input
+            id="f-telephone"
+            name={CHAMPS.telephone.name}
+            type="tel"
+            maxlength="30"
+            autocomplete="tel"
+            class={champClass}
+          />
+        </div>
+
+        <div>
+          <label class={labelClass} for="f-siret">
+            {CHAMPS.siret.label} <span class="text-[#166534]">*</span>
+          </label>
+          <input
+            id="f-siret"
+            name={CHAMPS.siret.name}
+            type="text"
+            required
+            inputmode="numeric"
+            maxlength="20"
+            placeholder="14 chiffres"
+            class={champClass}
+          />
+        </div>
+
+        <div>
+          <label class={labelClass} for="f-activite">
+            {CHAMPS.activite.label} <span class="text-[#166534]">*</span>
+          </label>
+          <select id="f-activite" name={CHAMPS.activite.name} required class={champClass}>
+            <option value="">Choisir…</option>
+            {typesActivite.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label class={labelClass} for="f-volume">{CHAMPS.volume.label}</label>
+          <select id="f-volume" name={CHAMPS.volume.name} class={champClass}>
+            <option value="">Choisir…</option>
+            {volumesEnvisages.map((v) => <option value={v}>{v}</option>)}
+          </select>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class={labelClass} for="f-message">{CHAMPS.message.label}</label>
+          <textarea
+            id="f-message"
+            name={CHAMPS.message.name}
+            rows="4"
+            maxlength="1500"
+            class={champClass}
+            placeholder="Votre clientèle, vos rayons, ce que vous cherchez…"></textarea>
+        </div>
+      </div>
+
+      {/* Champ piège : invisible et hors du parcours clavier. Un humain ne le
+          remplit jamais ; un robot qui remplit tout se trahit. */}
+      <div class="pointer-events-none absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+        <label for="f-piege">Ne pas remplir</label>
+        <input id="f-piege" name={CHAMP_PIEGE} type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      {/* Rempli par public/js/revendeur.js au chargement. Reste vide sans
+          JavaScript — le serveur en tient compte et n'exclut personne. */}
+      <input type="hidden" name={CHAMP_HORODATAGE} value="" data-horodatage />
+
+      <button
+        type="submit"
+        class="w-full rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25] focus:outline-none focus:ring-2 focus:ring-[#166534]/40 focus:ring-offset-2"
+      >
+        Envoyer ma demande
+      </button>
+
+      {/* Rempli par le script en cas d'erreur. `aria-live` fait annoncer le
+          message par les lecteurs d'écran sans déplacer le focus. */}
+      <p
+        data-statut-formulaire
+        role="status"
+        aria-live="polite"
+        class="hidden rounded-xl bg-[#FDF4E7] px-4 py-3 text-sm text-[#7A3E12]"
+      >
+      </p>
+
+      <p class="text-xs leading-relaxed text-[#57534e]">
+        Les informations transmises servent uniquement à traiter votre demande de partenariat.
+        Elles sont envoyées à {EMAIL_REVENDEUR}, ne sont ni revendues ni transmises à un tiers,
+        et sont conservées trois ans après notre dernier échange. Vous pouvez demander leur
+        accès ou leur suppression à cette même adresse — voir nos{' '}
+        <a href="/mentions-legales/" class="font-semibold text-[#166534] underline">mentions légales</a>.
+      </p>
+    </form>
+  </div>
+</section>
+
+<script src="/js/revendeur.js" defer></script>
