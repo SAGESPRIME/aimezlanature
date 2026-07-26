@@ -27,7 +27,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REDIRECTS_FILE = join(__dirname, '..', 'public', '_redirects');
 
 // Cible : argument de ligne de commande, sinon variable d'env, sinon la prod.
-const BASE = (process.argv[2] || process.env.BASE_URL || 'https://aimezlanature.fr').replace(/\/$/, '');
+const PROD = 'https://aimezlanature.fr';
+const cibleExplicite = Boolean(process.argv[2] || process.env.BASE_URL);
+const BASE = (process.argv[2] || process.env.BASE_URL || PROD).replace(/\/$/, '');
 
 // Combien de requêtes en parallèle (rester poli avec le serveur).
 const CONCURRENCY = 8;
@@ -61,32 +63,51 @@ function pathOf(urlOrPath) {
 }
 
 /**
- * Joue une règle : appelle l'URL source sans suivre la redirection et compare
- * le statut + la destination (Location) à ce qui est attendu.
+ * Joue une règle en quatre contrôles :
+ *   1. l'URL source renvoie bien le code attendu (301) avec un en-tête Location ;
+ *   2. la redirection reste sur le même domaine (une redirection cross-domaine
+ *      avec le bon chemin est suspecte et passerait sinon inaperçue) ;
+ *   3. le chemin de destination correspond à celui de la règle ;
+ *   4. la cible existe réellement : on suit la redirection et on exige un 200,
+ *      sinon une destination mal orthographiée donnerait un 301 correct… vers
+ *      une 404, tout en étant comptée comme réussie.
  * @param {{source: string, destination: string, code: number}} rule
  */
 async function checkRule(rule) {
   const isWildcard = rule.source.endsWith('*');
   const requestPath = isWildcard ? sampleForWildcard(rule.source) : rule.source;
   const url = BASE + requestPath;
+  const baseHost = new URL(BASE).host;
+  const headers = { 'user-agent': 'redirect-check/1.0' };
 
   try {
-    const res = await fetch(url, { redirect: 'manual', headers: { 'user-agent': 'redirect-check/1.0' } });
+    const res = await fetch(url, { redirect: 'manual', headers });
 
-    // 3xx attendu → on lit l'en-tête Location.
     const location = res.headers.get('location');
-    const statusOk = res.status === rule.code;
-    const destOk = location ? pathOf(location) === pathOf(rule.destination) : false;
-
-    if (statusOk && destOk) {
-      return { ok: true, rule, requestPath, got: `${res.status} → ${location}` };
+    if (!location) {
+      return { ok: false, rule, requestPath, got: `statut ${res.status} sans en-tête Location` };
     }
-    const reason = !location
-      ? `statut ${res.status} sans en-tête Location`
-      : !statusOk
-        ? `statut ${res.status} au lieu de ${rule.code} (→ ${location})`
-        : `redirige vers ${pathOf(location)} au lieu de ${pathOf(rule.destination)}`;
-    return { ok: false, rule, requestPath, got: reason };
+
+    // Résout Location (absolu ou relatif) contre le domaine testé.
+    const target = new URL(location, BASE + '/');
+
+    if (res.status !== rule.code) {
+      return { ok: false, rule, requestPath, got: `statut ${res.status} au lieu de ${rule.code} (→ ${location})` };
+    }
+    if (target.host !== baseHost) {
+      return { ok: false, rule, requestPath, got: `redirige vers un autre domaine : ${target.host}` };
+    }
+    if (target.pathname !== pathOf(rule.destination)) {
+      return { ok: false, rule, requestPath, got: `redirige vers ${target.pathname} au lieu de ${pathOf(rule.destination)}` };
+    }
+
+    // La cible répond-elle réellement 200 ? On suit la chaîne de redirections.
+    const finalRes = await fetch(target, { redirect: 'follow', headers });
+    if (!finalRes.ok) {
+      return { ok: false, rule, requestPath, got: `301 correct mais la cible ${target.pathname} renvoie ${finalRes.status}` };
+    }
+
+    return { ok: true, rule, requestPath, got: `${res.status} → ${target.pathname} (${finalRes.status})` };
   } catch (err) {
     return { ok: false, rule, requestPath, got: `erreur réseau : ${err instanceof Error ? err.message : String(err)}` };
   }
@@ -112,6 +133,18 @@ async function main() {
     .filter((r) => r !== null);
 
   console.log(`\nTest de ${rules.length} redirections sur ${BASE}\n`);
+
+  // Tant que le basculement WordPress → Astro n'est pas fait, la prod sert
+  // encore l'ancien site : les nouvelles pages y répondent 200 (et non 301),
+  // donc le test échouera « normalement ». On prévient pour éviter la fausse
+  // panique. Après le basculement, ce test doit passer au vert.
+  if (BASE === PROD && !cibleExplicite) {
+    console.log(
+      'ℹ️  Cible = production par défaut. Avant le basculement, des échecs sont\n' +
+      '   attendus (l\'ancien site répond 200). Pour tester la nouvelle version,\n' +
+      '   passez l\'URL de preview : node scripts/check-redirects.mjs https://preview.url\n'
+    );
+  }
 
   const results = await runPooled(rules, checkRule, CONCURRENCY);
 

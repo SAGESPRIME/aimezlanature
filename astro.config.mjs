@@ -25,8 +25,12 @@ export default defineConfig({
       // le sitemap déclenche un avertissement dans la Search Console.
       // Le filtre visait auparavant `/succes`, une page qui n'existe plus —
       // `/commande-confirmee/` partait donc bel et bien à Google.
+      // `/panier/` est aussi en noindex (src/pages/panier.astro) : sans ce filtre
+      // il partait au sitemap et déclenchait pile cet avertissement.
       filter: (page) =>
-        !page.includes('/commande-confirmee') && !page.includes('/revendeurs/merci'),
+        !page.includes('/commande-confirmee') &&
+        !page.includes('/revendeurs/merci') &&
+        !page.includes('/panier'),
     }),
   ],
   i18n: {
