@@ -16,7 +16,7 @@
 /produit/gourde-ecologique-avec-perles-de-ceramique-em-aimez-la-nature-cadeau-ecologique/ /perles-ceramique-em/gourde-ecologique/ 301
 /collections/perles-ceramiques-em                         /perles-ceramique-em/                 301
 /collections/all                                          /perles-ceramique-em/                 301
-/product-category/perles-ceramiques-em/                   /perles-ceramique-em/                 301
+# (les URLs /product-category/* sont redirigées plus bas par une règle joker)
 
 # Anciens articles WordPress servis à la racine.
 # Les articles existent désormais réellement sous /blog/<slug>/ : ces URLs y
