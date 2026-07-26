@@ -10,13 +10,5 @@
 	},
 	"observability": {
 		"enabled": true
-	},
-	// Limiteurs anti-abus natifs Cloudflare, keyés sur l'IP dans le code
-	// (src/lib/rateLimit.ts). RL_REVENDEUR est plus strict car chaque envoi
-	// déclenche un email ; RL_CHECKOUT protège la création de sessions Stripe.
-	// namespace_id : un entier unique par limiteur, propre à ce Worker.
-	"ratelimits": [
-		{ "name": "RL_CHECKOUT", "namespace_id": "1001", "simple": { "limit": 12, "period": 60 } },
-		{ "name": "RL_REVENDEUR", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
-	]
+	}
 }
