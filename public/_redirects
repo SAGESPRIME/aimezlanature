@@ -48,3 +48,48 @@
 # le plus proche du sujet.
 /perles-de-ceramique-quels-effets-ont-elles-sur-leau/     /blog/les-bienfaits-des-perles-de-ceramique/ 301
 /perles-de-ceramique-avis/                                /blog/les-bienfaits-des-perles-de-ceramique/ 301
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Pages WordPress/WooCommerce encore indexées (audit du sitemap live 2026-07-26)
+# sans redirection jusqu'ici : elles renverraient une 404 au basculement.
+# Produits et articles étaient déjà couverts ; ce bloc traite les pages
+# entreprise, légales, catégories et le tunnel WooCommerce.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Boutique & catégories de produits
+/shop/                                                     /perles-ceramique-em/                       301
+/product-category/*                                        /perles-ceramique-em/                       301
+/gourde-filtrante-em/                                      /perles-ceramique-em/gourde-ecologique/     301
+
+# Pages entreprise
+/qui-sommes-nous/                                          /a-propos/                                  301
+/about/                                                    /a-propos/                                  301
+/contactez-aimez-la-nature/                                /contact/                                   301
+/contact-us/                                               /contact/                                   301
+/devenir-revendeur/                                        /revendeurs/                                301
+/blog-2/                                                   /blog/                                      301
+
+# Contenus éditoriaux sans article équivalent → page la plus proche du sujet
+/les-em-la-base-du-fonctionnement-des-perles-de-ceramique/ /comment-ca-marche/                        301
+/pourquoi-nos-perles-en-ceramique-em-vont-revolutionner-votre-facon-de-vous-hydrater/ /perles-ceramique-em/ 301
+/perles-de-ceramique-em-une-vraie-source-de-vie-pour-toute-la-maison/ /blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/ 301
+/ebook/                                                    /comment-ca-marche/                         301
+/ebook-offert/                                             /comment-ca-marche/                         301
+
+# Pages légales WooCommerce (doublons) → mentions légales / CGV
+/lgpd-privacy-policy/                                      /mentions-legales/                          301
+/politique-de-confidentialite-2/                           /mentions-legales/                          301
+/politique-de-retours/                                     /cgv/                                       301
+/politique-de-remboursement/                               /cgv/                                       301
+/conditions-de-retour-et-remboursement/                    /cgv/                                       301
+/conditions-generales-de-vente-et-dutilisation/            /cgv/                                       301
+
+# Pages système WooCommerce (compte, tunnel) — évite les 404 sur d'anciens liens
+/mon-compte/                                               /                                           301
+/customer-dashboard/                                       /                                           301
+/customer-help/                                            /contact/                                   301
+/checkout/                                                 /perles-ceramique-em/                       301
+/validation-de-commande/                                   /perles-ceramique-em/                       301
+/panier-2/                                                 /panier/                                     301
+/suivre-ma-commande/                                       /contact/                                   301
+/sitemap/                                                  /                                           301

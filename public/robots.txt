@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 
-Disallow: /succes
+# Les pages de tunnel (/panier/, /commande-confirmee/, /revendeurs/merci/)
+# portent déjà une balise noindex et sont exclues du sitemap : pas besoin de
+# les bloquer ici. L'ancien « Disallow: /succes » visait une page qui n'a
+# jamais existé sous ce nom (la confirmation Stripe est /commande-confirmee/).
 
 Sitemap: https://aimezlanature.fr/sitemap-index.xml
