@@ -8,6 +8,7 @@ import {
   CHAMP_HORODATAGE,
   EMAIL_REVENDEUR,
 } from '../../data/revendeur';
+import { verifierLimite, type RateLimiter } from '../../lib/rateLimit';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -86,6 +87,16 @@ export const POST: APIRoute = async ({ request, url }) => {
           headers: { 'Content-Type': 'application/json' },
         })
       : pageErreur(message, status);
+
+  // Garde-fou anti-spam : un envoi = un email au marchand. On plafonne le
+  // nombre d'envois par IP et par minute (règle RL_REVENDEUR dans
+  // wrangler.jsonc). Absent en local = ignoré, la protection vit en prod.
+  const limiter = (env as Record<string, unknown>)?.RL_REVENDEUR as
+    | RateLimiter
+    | undefined;
+  if (!(await verifierLimite(limiter, request))) {
+    return echec('Trop de demandes envoyées. Merci de réessayer dans un instant.', 429);
+  }
 
   let form: FormData;
   try {

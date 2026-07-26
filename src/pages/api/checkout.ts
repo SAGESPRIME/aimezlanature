@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { products, SITE } from '../../data/products';
 import { unitPriceFor } from '../../lib/pricing';
+import { verifierLimite, type RateLimiter } from '../../lib/rateLimit';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -28,6 +29,18 @@ export const POST: APIRoute = async ({ request, url }) => {
       status,
       headers: { 'Content-Type': 'application/json' },
     });
+
+  // Garde-fou anti-abus : au plus quelques créations de session par IP et par
+  // minute (règle RL_CHECKOUT dans wrangler.jsonc). Absent en local = ignoré.
+  const limiter = (env as Record<string, unknown>)?.RL_CHECKOUT as
+    | RateLimiter
+    | undefined;
+  if (!(await verifierLimite(limiter, request))) {
+    return json(
+      { error: 'Trop de tentatives. Merci de réessayer dans un instant.' },
+      429
+    );
+  }
 
   const key: string | undefined =
     (env as Record<string, string | undefined>)?.STRIPE_SECRET_KEY;
