@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro';
-// Accès aux variables d'environnement Cloudflare. `Astro.locals.runtime.env`
-// a été supprimé depuis Astro v6 : c'est désormais ce module qui fait foi.
-import { env } from 'cloudflare:workers';
+// Cette route tourne comme fonction serverless Vercel (prerender = false) :
+// l'environnement (clés secrètes) est exposé via process.env.
 import { products, SITE } from '../../data/products';
 import { unitPriceFor } from '../../lib/pricing';
 
@@ -19,7 +18,7 @@ const MAX_QTY = 20;
  * recalculés ici. Un panier modifié dans la console ne peut donc pas changer
  * le montant débité — ne jamais accepter de prix venant du client.
  *
- * La clé secrète est lue dans l'environnement Cloudflare (STRIPE_SECRET_KEY)
+ * La clé secrète est lue dans l'environnement Vercel (STRIPE_SECRET_KEY)
  * et n'apparaît jamais dans le code ni dans le HTML envoyé au navigateur.
  */
 export const POST: APIRoute = async ({ request, url }) => {
@@ -29,8 +28,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
 
-  const key: string | undefined =
-    (env as Record<string, string | undefined>)?.STRIPE_SECRET_KEY;
+  const key: string | undefined = process.env.STRIPE_SECRET_KEY;
 
   if (!key) {
     return json(

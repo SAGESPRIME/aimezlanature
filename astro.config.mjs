@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
+import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
@@ -8,15 +8,14 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://aimezlanature.fr',
   output: 'static',
-  // `imageService: 'compile'` optimise les images au build avec sharp au lieu de
-  // les faire transiter par Cloudflare Images à l'exécution (défaut de l'adaptateur).
-  // Le site étant 100 % statique, les variantes WebP deviennent de simples fichiers
-  // servis par le CDN avec un cache immuable : aucune invocation de Worker ni
-  // facturation de transformation à chaque affichage.
-  adapter: cloudflare({ imageService: 'compile' }),
+  // Site 100 % statique : les images sont optimisées au build par sharp
+  // (comportement par défaut d'Astro) et servies comme simples fichiers par le
+  // CDN Vercel. Les 2 routes en `prerender = false` (/api/checkout, /api/revendeur)
+  // deviennent automatiquement des fonctions serverless Vercel.
+  adapter: vercel(),
   build: {
     // CSS toujours en fichier externe (jamais inliné dans un <style>) :
-    // condition nécessaire à la CSP stricte `style-src 'self'` de public/_headers.
+    // condition nécessaire à la CSP stricte `style-src 'self'` de vercel.json.
     inlineStylesheets: 'never',
   },
   integrations: [
