@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro';
-// Variables d'environnement Cloudflare — même accès que api/checkout.ts.
-// `Astro.locals.runtime.env` a été supprimé depuis Astro v6.
-import { env } from 'cloudflare:workers';
+// Route serverless Vercel (prerender = false) : l'environnement est lu via
+// process.env — même accès que api/checkout.ts.
 import {
   CHAMPS,
   CHAMP_PIEGE,
@@ -135,7 +134,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     return echec('Le SIRET doit comporter 14 chiffres (9 pour un SIREN).', 400);
   }
 
-  const cle: string | undefined = (env as Record<string, string | undefined>)?.EMAILIT_API_KEY;
+  const cle: string | undefined = process.env.EMAILIT_API_KEY;
   if (!cle) {
     console.error('EMAILIT_API_KEY absente : demande revendeur non transmise.');
     return echec(
@@ -144,7 +143,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     );
   }
   const expediteur =
-    (env as Record<string, string | undefined>)?.EMAILIT_FROM ?? EXPEDITEUR_DEFAUT;
+    process.env.EMAILIT_FROM ?? EXPEDITEUR_DEFAUT;
 
   const lignes: [string, string][] = [
     ['Boutique', donnees.boutique],

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/produit/perles-de-ceramique-em-pack-35-aimez-la-nature/", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/perles-ceramique-em/pack-35-perles/", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/produit/perles-de-ceramique-em-pack-55-aimez-la-nature/", "destination": "/perles-ceramique-em/pack-55-perles/", "permanent": true },
+    { "source": "/produit/perles-de-ceramique-em-pack-100-aimez-la-nature/", "destination": "/perles-ceramique-em/pack-100-perles/", "permanent": true },
+    { "source": "/produit/offre-pack-100-perles-de-ceramique-et-gourde-ecologique-filtrante-avec-perles-de-ceramique-em-aimez-la-nature/", "destination": "/perles-ceramique-em/pack-gourde-ceramique-em/", "permanent": true },
+    { "source": "/products/perles-de-ceramique-pack100", "destination": "/perles-ceramique-em/pack-100-perles/", "permanent": true },
+    { "source": "/products/bouteille-ecologique-avec-perles-de-ceramique", "destination": "/perles-ceramique-em/gourde-ecologique/", "permanent": true },
+    { "source": "/products/gourde-ecologique-avec-perles-de-ceramique", "destination": "/perles-ceramique-em/gourde-ecologique/", "permanent": true },
+    { "source": "/produit/gourde-ecologique-avec-perles-de-ceramique-em-aimez-la-nature-cadeau-ecologique/", "destination": "/perles-ceramique-em/gourde-ecologique/", "permanent": true },
+    { "source": "/collections/perles-ceramiques-em", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/collections/all", "destination": "/perles-ceramique-em/", "permanent": true },
+
+    { "source": "/perles-de-ceramique-une-solution-ecologique-et-economique/", "destination": "/blog/perles-de-ceramique-une-solution-ecologique-et-economique/", "permanent": true },
+    { "source": "/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/", "destination": "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/", "permanent": true },
+    { "source": "/leau-est-une-source-de-vie/", "destination": "/blog/leau-est-une-source-de-vie/", "permanent": true },
+    { "source": "/perles-de-ceramique-purifier-votre-eau-du-robinet/", "destination": "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/", "permanent": true },
+    { "source": "/les-differents-usages-des-perles-de-ceramique/", "destination": "/blog/les-differents-usages-des-perles-de-ceramique/", "permanent": true },
+    { "source": "/authenticite-des-perles-de-ceramique-em-et-leur-efficacite/", "destination": "/blog/authenticite-des-perles-de-ceramique-em-et-leur-efficacite/", "permanent": true },
+    { "source": "/les-bienfaits-des-perles-de-ceramique/", "destination": "/blog/les-bienfaits-des-perles-de-ceramique/", "permanent": true },
+    { "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne/", "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/", "permanent": true },
+    { "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/", "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/", "permanent": true },
+    { "source": "/les-perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne/", "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/", "permanent": true },
+    { "source": "/perles-de-ceramique-comment-ca-marche/", "destination": "/comment-ca-marche/", "permanent": true },
+    { "source": "/comment-fonctionnent-perles-de-ceramique-em-pour-purifier-leau-du-robinet/", "destination": "/comment-ca-marche/", "permanent": true },
+    { "source": "/perles-de-ceramique-quels-effets-ont-elles-sur-leau/", "destination": "/blog/les-bienfaits-des-perles-de-ceramique/", "permanent": true },
+    { "source": "/perles-de-ceramique-avis/", "destination": "/blog/les-bienfaits-des-perles-de-ceramique/", "permanent": true },
+
+    { "source": "/shop/", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/product-category/:path*", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/gourde-filtrante-em/", "destination": "/perles-ceramique-em/gourde-ecologique/", "permanent": true },
+
+    { "source": "/qui-sommes-nous/", "destination": "/a-propos/", "permanent": true },
+    { "source": "/about/", "destination": "/a-propos/", "permanent": true },
+    { "source": "/contactez-aimez-la-nature/", "destination": "/contact/", "permanent": true },
+    { "source": "/contact-us/", "destination": "/contact/", "permanent": true },
+    { "source": "/devenir-revendeur/", "destination": "/revendeurs/", "permanent": true },
+    { "source": "/blog-2/", "destination": "/blog/", "permanent": true },
+
+    { "source": "/les-em-la-base-du-fonctionnement-des-perles-de-ceramique/", "destination": "/comment-ca-marche/", "permanent": true },
+    { "source": "/pourquoi-nos-perles-en-ceramique-em-vont-revolutionner-votre-facon-de-vous-hydrater/", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-pour-toute-la-maison/", "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/", "permanent": true },
+    { "source": "/ebook/", "destination": "/comment-ca-marche/", "permanent": true },
+    { "source": "/ebook-offert/", "destination": "/comment-ca-marche/", "permanent": true },
+
+    { "source": "/lgpd-privacy-policy/", "destination": "/mentions-legales/", "permanent": true },
+    { "source": "/politique-de-confidentialite-2/", "destination": "/mentions-legales/", "permanent": true },
+    { "source": "/politique-de-retours/", "destination": "/cgv/", "permanent": true },
+    { "source": "/politique-de-remboursement/", "destination": "/cgv/", "permanent": true },
+    { "source": "/conditions-de-retour-et-remboursement/", "destination": "/cgv/", "permanent": true },
+    { "source": "/conditions-generales-de-vente-et-dutilisation/", "destination": "/cgv/", "permanent": true },
+
+    { "source": "/mon-compte/", "destination": "/", "permanent": true },
+    { "source": "/customer-dashboard/", "destination": "/", "permanent": true },
+    { "source": "/customer-help/", "destination": "/contact/", "permanent": true },
+    { "source": "/checkout/", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/validation-de-commande/", "destination": "/perles-ceramique-em/", "permanent": true },
+    { "source": "/panier-2/", "destination": "/panier/", "permanent": true },
+    { "source": "/suivre-ma-commande/", "destination": "/contact/", "permanent": true },
+    { "source": "/sitemap/", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" }
+      ]
+    }
+  ]
+}

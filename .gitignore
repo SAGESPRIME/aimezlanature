@@ -23,11 +23,11 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Cloudflare Workers local dev cache
-.wrangler/
+# Vercel (sortie de build locale + config de projet liée)
+.vercel
 
 # Playwright MCP debug artifacts
 .playwright-mcp/
 
-# Variables locales Wrangler (clés de test, jamais commitées)
-.dev.vars
+# Variables d'environnement locales (Vercel env pull écrit .env*.local)
+.env*.local
