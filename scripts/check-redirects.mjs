@@ -93,8 +93,13 @@ async function checkRule(rule) {
     // Résout Location (absolu ou relatif) contre le domaine testé.
     const target = new URL(location, BASE + '/');
 
-    if (res.status !== rule.code) {
-      return { ok: false, rule, requestPath, got: `statut ${res.status} au lieu de ${rule.code} (→ ${location})` };
+    // 301 et 308 sont deux redirections permanentes équivalentes (Vercel sert
+    // du 308, Cloudflare du 301) ; 302 et 307 sont les temporaires. On compare
+    // la CLASSE de redirection, pas le code exact, pour rester agnostique.
+    const permanents = [301, 308];
+    const attendus = rule.code === 301 ? permanents : [302, 307];
+    if (!attendus.includes(res.status)) {
+      return { ok: false, rule, requestPath, got: `statut ${res.status} (attendu ${attendus.join(' ou ')}) (→ ${location})` };
     }
     if (target.host !== baseHost) {
       return { ok: false, rule, requestPath, got: `redirige vers un autre domaine : ${target.host}` };
@@ -106,7 +111,7 @@ async function checkRule(rule) {
     // La cible répond-elle réellement 200 ? On suit la chaîne de redirections.
     const finalRes = await fetch(target, { redirect: 'follow', headers });
     if (!finalRes.ok) {
-      return { ok: false, rule, requestPath, got: `301 correct mais la cible ${target.pathname} renvoie ${finalRes.status}` };
+      return { ok: false, rule, requestPath, got: `redirection correcte mais la cible ${target.pathname} renvoie ${finalRes.status}` };
     }
 
     return { ok: true, rule, requestPath, got: `${res.status} → ${target.pathname} (${finalRes.status})` };
