@@ -10,8 +10,9 @@ export default defineConfig({
   output: 'static',
   // Site 100 % statique : les images sont optimisées au build par sharp
   // (comportement par défaut d'Astro) et servies comme simples fichiers par le
-  // CDN Vercel. Les 2 routes en `prerender = false` (/api/checkout, /api/revendeur)
-  // deviennent automatiquement des fonctions serverless Vercel.
+  // CDN Vercel. Les 3 routes en `prerender = false` (/api/checkout,
+  // /api/revendeur, /api/avis) deviennent automatiquement des fonctions
+  // serverless Vercel.
   adapter: vercel(),
   build: {
     // CSS toujours en fichier externe (jamais inliné dans un <style>) :
@@ -29,6 +30,7 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/commande-confirmee') &&
         !page.includes('/revendeurs/merci') &&
+        !page.includes('/avis/merci') &&
         !page.includes('/panier'),
     }),
   ],

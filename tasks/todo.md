@@ -232,3 +232,43 @@ Idées reprises, PAS le format (diaporama JS = incompatible CSP + mauvais SEO).
 - [ ] Pack Gourde : au retour en stock, travailler l'angle « gourde filtrante » (12 100/mois)
 - [ ] « Gourde écologique » seule existe dans le catalogue en ligne mais pas sur ce site — à ajouter plus tard (angle SEO « gourde filtrante »)
 - [ ] ⚠️ Mentions légales : hébergeur indiqué = Hostinger (site actuel). Si ce build Astro passe en prod sur Cloudflare, mettre à jour
+
+---
+
+## Dépôt d'avis natif par les clients (2026-07-28)
+
+**Demande** : permettre aux clients de déposer un avis, sans service tiers.
+**Constat de départ** : impossible aujourd'hui — `src/data/reviews.ts` est écrit à la main,
+aucune route `/api/avis`, aucun formulaire hors revendeur, et la CSP (`connect-src 'self'`,
+`form-action 'self'`) bloquerait de toute façon un widget type Judge.me / Trustpilot.
+
+### Choix d'architecture validés avec le marchand
+1. **Aucune base de données** — l'avis part par email chez le marchand (même canal Emailit que
+   le formulaire revendeur). Il valide, l'avis est ajouté à `reviews.ts`, le site se redéploie.
+   → zéro donnée client stockée, zéro surface d'attaque, zéro coût, modération par construction.
+2. **Vérification d'achat via Stripe** — l'email saisi doit correspondre à une Checkout Session
+   payée. Le badge « Achat vérifié » de `ProductReviews.astro:101` reste donc VRAI, et
+   l'`aggregateRating` envoyé à Google continue de refléter de vrais acheteurs.
+   → **fail-closed** : si Stripe est injoignable ou la clé absente, l'avis est REFUSÉ, jamais
+   accepté « au bénéfice du doute ». Un avis non vérifié publié avec ce badge serait une
+   pratique commerciale trompeuse (L121-2), exactement ce que `reviews.ts:5` interdit.
+3. **Formulaire sur la fiche produit**, replié dans un `<details>` juste sous les avis.
+
+### Étapes
+- [x] `src/lib/antispam.ts` — piège + horodatage extraits en source unique, `revendeur.ts` les
+      ré-exporte (évite que les deux formulaires divergent — RÈGLE N°1)
+- [x] `src/data/avis.ts` — champs, limites, notes, adresse destinataire
+- [x] `src/pages/api/avis.ts` — validation serveur, anti-robot, vérif Stripe, email au marchand
+      avec la ligne `reviews.ts` prête à coller
+- [x] `src/components/AvisForm.astro` — `<form method="post">` natif, fonctionne sans JavaScript
+- [x] `public/js/avis.js` — amélioration progressive (horodatage, envoi sans rechargement)
+- [x] `src/pages/avis/merci.astro` — confirmation sans JavaScript (noindex)
+- [x] Branchement dans `[slug].astro` sous `<ProductReviews>` + filtre sitemap
+
+### Limites assumées (à dire au marchand, pas à masquer)
+- Pas de limitation de débit (pas de KV/base) : la barrière est le piège anti-robot, le délai
+  minimum ET surtout l'obligation d'un email ayant réellement payé.
+- Pas de détection de doublon automatique : deux avis du même client passent, la modération
+  manuelle les voit.
+- La vérification confirme « cette personne a acheté sur le site », pas « elle a acheté CE
+  produit précis » — suffisant pour « Achat vérifié », à resserrer si besoin plus tard.

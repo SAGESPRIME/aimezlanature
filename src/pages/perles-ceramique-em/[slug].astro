@@ -8,6 +8,7 @@ import BuyBox from '../../components/BuyBox.astro';
 import StickyBuyBar from '../../components/StickyBuyBar.astro';
 import BenefitTransformation from '../../components/BenefitTransformation.astro';
 import ProductReviews from '../../components/ProductReviews.astro';
+import AvisForm from '../../components/AvisForm.astro';
 import TrustStrip from '../../components/TrustStrip.astro';
 import { products, SITE, type Product } from '../../data/products';
 import { buildFaqSchema, buildProductSchema } from '../../lib/seo';
@@ -150,6 +151,11 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   </section>
 
   <ProductReviews slug={p.slug} rating={p.rating} reviewCount={p.reviewCount} />
+
+  {/* Placé ici et non dans ProductReviews : ce dernier ne s'affiche pas tant
+      qu'un produit n'a aucun avis, or c'est justement là qu'on a le plus
+      besoin d'en collecter. */}
+  <AvisForm slug={p.slug} nom={p.shortName} />
 
   <Faq items={p.qa} title={`Questions sur le ${p.shortName}`} />
 

@@ -1,0 +1,73 @@
+---
+/**
+ * Confirmation d'envoi d'un avis client.
+ *
+ * Cette page existe pour que le formulaire fonctionne SANS JavaScript :
+ * /api/avis y redirige (303) après un envoi réussi. Avec JavaScript,
+ * public/js/avis.js y amène aussi le client une fois la réponse reçue.
+ *
+ * `noindex` : page de tunnel, sans intérêt pour la recherche. Elle est aussi
+ * exclue du sitemap dans astro.config.mjs — un sitemap qui contient une page
+ * noindex génère des avertissements dans la Search Console.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMAIL_AVIS } from '../../data/avis';
+
+const metaTitle = 'Avis envoyé | Aimez la Nature';
+const metaDescription = 'Votre avis a bien été transmis et sera publié après relecture.';
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} noindex>
+  <section class="bg-[#F5F0E8] px-4 py-20">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-6 text-5xl" aria-hidden="true">🌿</p>
+      <h1 class="font-display mb-5 text-4xl text-[#1A1A16] lg:text-5xl">Merci pour votre avis</h1>
+      <p class="mb-8 text-lg leading-relaxed text-[#57534e]">
+        Votre commande a bien été vérifiée. Votre avis est maintenant en relecture et sera
+        publié sur la fiche produit sous quelques jours.
+      </p>
+
+      <div class="mb-8 rounded-2xl border border-[#D4C9B8] bg-white p-6 text-left">
+        <h2 class="font-display mb-4 text-xl text-[#1A1A16]">Ce que nous faisons de votre avis</h2>
+        <ul class="list-disc space-y-3 pl-5 text-sm text-[#57534e]">
+          <li>
+            Nous le publions tel que vous l'avez écrit. Un avis critique est publié comme un
+            avis enthousiaste : c'est ce qui rend les autres crédibles.
+          </li>
+          <li>
+            Nous ne modifions ni votre texte ni votre note. Seule une insulte ou une donnée
+            personnelle serait retirée.
+          </li>
+          <li>
+            Votre email reste chez nous. Il a servi à vérifier votre commande, il n'apparaîtra
+            jamais sur le site.
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="/perles-ceramique-em/"
+          class="inline-flex rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25]"
+        >
+          Découvrir le catalogue →
+        </a>
+        <a
+          href="/"
+          class="inline-flex rounded-full border border-[#6E5330] px-7 py-3.5 text-sm font-semibold text-[#6E5330] transition-colors hover:bg-[#6E5330] hover:text-white"
+        >
+          Retour à l'accueil
+        </a>
+      </div>
+
+      <p class="mt-8 text-sm text-[#57534e]">
+        {/* `{' '}` explicite : Astro supprime l'espace de fin de ligne qui
+            précède une balise, ce qui collerait « à » et l'adresse. */}
+        Une correction à apporter ? Écrivez-nous à{' '}
+        <a href={`mailto:${EMAIL_AVIS}`} class="font-semibold text-[#166534] underline">
+          {EMAIL_AVIS}
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
