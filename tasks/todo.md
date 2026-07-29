@@ -272,3 +272,34 @@ aucune route `/api/avis`, aucun formulaire hors revendeur, et la CSP (`connect-s
   manuelle les voit.
 - La vérification confirme « cette personne a acheté sur le site », pas « elle a acheté CE
   produit précis » — suffisant pour « Achat vérifié », à resserrer si besoin plus tard.
+
+---
+
+## Migration de la base clients WooCommerce (2026-07-29) — TERMINÉ
+
+**Extraction** via l'API REST WooCommerce (clé en lecture seule, révoquée après usage).
+Fichiers dans `Documents\aimezlanature-archives\` — volontairement HORS du dépôt, qui est public.
+
+- [x] `commandes-brutes.json` — 9,7 Mo, archive intégrale (conservation légale 10 ans)
+- [x] `commandes.csv` — 1 686 commandes, 13 colonnes
+- [x] `clients.csv` — 1 550 personnes, agrégées (nb achats, total, dates, produits)
+- [x] Import des 1 550 contacts dans Emailit, audience `aud_4HBuCHDHyTyTPpfHPijqc3akYzG`
+      (1 549 ajoutés + 1 test, 0 échec, vérifié côté Emailit)
+
+### Chiffres relevés
+CA cumulé 55 447 € · panier moyen 33,48 € · période 07/10/2020 → 20/07/2026
+Commandes par an : 2020 200 · 2021 415 · 2022 367 · **2023 514** · 2024 141 · **2025 12** · 2026 37
+→ **1 507 des 1 550 clients n'ont pas acheté depuis plus de 12 mois** (97 %)
+
+### Décisions
+- **AITable écarté** : société canadienne, DPA non fourni d'après leur propre équipe conformité
+  (info ~2023, à revérifier). Surtout, les commandes sont figées et les nouvelles arrivent dans
+  Stripe → l'outil aurait créé une vue coupée en deux. Le CSV suffit pour le SAV.
+- **Attributs Emailit impossibles** : l'API accepte `custom_fields`, répond 201, stocke un objet
+  vide (5 formats testés, aucun endpoint de déclaration). Les attributs restent dans `clients.csv`,
+  la segmentation se fait par filtre Excel puis audience dédiée.
+
+### Avant la première campagne
+- [ ] Monter en volume progressivement (100-200 d'abord) : domaine d'envoi neuf, adresses vieilles
+      de 6 ans, risque de réputation sur un envoi massif d'un coup
+- [ ] Comprendre la chute 2024-2025 avant d'investir dans la relance
