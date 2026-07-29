@@ -1,0 +1,227 @@
+---
+/**
+ * Dépôt d'un avis client, affiché sous les avis existants d'une fiche produit.
+ *
+ * Il fonctionne SANS JavaScript : c'est un `<form method="post">` natif qui
+ * poste sur /api/avis, lequel redirige vers /avis/merci/. public/js/avis.js
+ * n'ajoute que le confort (horodatage anti-robot, envoi sans rechargement,
+ * erreurs affichées sous le bouton). Si le script ne charge pas, l'avis part
+ * quand même.
+ *
+ * Replié dans un `<details>` natif : sans JavaScript non plus, et sans voler la
+ * vedette aux avis déjà publiés, qui sont l'argument de vente de la section.
+ *
+ * Aucun service d'avis tiers (Judge.me, Trustpilot…) : la CSP du site impose
+ * `form-action 'self'` et `script-src 'self'`, leurs widgets seraient bloqués
+ * par le navigateur. Aucun attribut `style=` en ligne non plus : `style-src
+ * 'self'` les bloque silencieusement (cf. tasks/lessons.md, les jauges d'avis
+ * restées vides).
+ */
+import { CHAMPS_AVIS, NOTES, TEXTE_MINIMUM, EMAIL_AVIS, libelleNote } from '../data/avis';
+import { CHAMP_PIEGE, CHAMP_HORODATAGE } from '../lib/antispam';
+
+interface Props {
+  /** Slug du produit noté. Envoyé en champ caché et revalidé côté serveur. */
+  slug: string;
+  /** Nom court, affiché dans le titre du bloc. */
+  nom: string;
+}
+const { slug, nom } = Astro.props;
+
+const champClass =
+  'w-full rounded-xl border border-[#D4C9B8] bg-white px-4 py-3 text-sm text-[#1A1A16] placeholder:text-[#8A8378] focus:border-[#166534] focus:outline-none focus:ring-2 focus:ring-[#166534]/30';
+const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
+---
+
+<section class="bg-[#FDFBF7] px-4 pb-16" aria-labelledby="deposer-avis-titre">
+  <div class="mx-auto max-w-4xl">
+    <details class="group rounded-2xl border border-[#D4C9B8] bg-white">
+      <summary
+        class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 [&::-webkit-details-marker]:hidden"
+      >
+        <span>
+          <span id="deposer-avis-titre" class="font-display block text-xl text-[#1A1A16]">
+            Vous avez acheté {nom} ? Donnez votre avis
+          </span>
+          <span class="mt-1 block text-sm text-[#57534e]">
+            Réservé aux clients : nous vérifions votre commande avant publication.
+          </span>
+        </span>
+        <span
+          class="flex-shrink-0 text-2xl text-[#166534] transition-transform group-open:rotate-180"
+          aria-hidden="true">↓</span
+        >
+      </summary>
+
+      <form
+        method="post"
+        action="/api/avis"
+        data-formulaire-avis
+        class="space-y-5 border-t border-[#EDE8E0] p-6 sm:p-8"
+      >
+        <input type="hidden" name={CHAMPS_AVIS.produit.name} value={slug} />
+
+        {/* Note — des vrais boutons radio, donc navigables au clavier et
+            utilisables sans JavaScript. L'étoile est décorative : le libellé
+            lu par les lecteurs d'écran vient de `aria-label`. */}
+        <fieldset>
+          <legend class={labelClass}>
+            {CHAMPS_AVIS.note.label} <span class="text-[#166534]">*</span>
+          </legend>
+          <div class="flex flex-wrap gap-2">
+            {NOTES.map((n) => (
+              <div>
+                <input
+                  class="peer sr-only"
+                  type="radio"
+                  id={`avis-note-${n}`}
+                  name={CHAMPS_AVIS.note.name}
+                  value={n}
+                  required
+                  aria-label={libelleNote(n)}
+                />
+                <label
+                  for={`avis-note-${n}`}
+                  class="block cursor-pointer rounded-xl border border-[#D4C9B8] px-4 py-2.5 text-sm text-[#57534e] transition-colors hover:border-[#166534] peer-checked:border-[#166534] peer-checked:bg-[#166534] peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-[#166534]/40 peer-focus-visible:ring-offset-2"
+                >
+                  <span aria-hidden="true">{'★'.repeat(n)}{'☆'.repeat(5 - n)}</span>
+                </label>
+              </div>
+            ))}
+          </div>
+        </fieldset>
+
+        <div>
+          <label class={labelClass} for="avis-titre">{CHAMPS_AVIS.titre.label}</label>
+          <input
+            id="avis-titre"
+            name={CHAMPS_AVIS.titre.name}
+            type="text"
+            maxlength="90"
+            class={champClass}
+            placeholder="Ex. Plus de goût de chlore"
+          />
+        </div>
+
+        <div>
+          <label class={labelClass} for="avis-texte">
+            {CHAMPS_AVIS.texte.label} <span class="text-[#166534]">*</span>
+          </label>
+          <textarea
+            id="avis-texte"
+            name={CHAMPS_AVIS.texte.name}
+            rows="5"
+            required
+            minlength={TEXTE_MINIMUM}
+            maxlength="1500"
+            class={champClass}
+            placeholder="Comment les utilisez-vous ? Qu'avez-vous constaté sur le goût de l'eau ou le tartre ?"
+          ></textarea>
+          <p class="mt-1.5 text-xs text-[#57534e]">
+            {TEXTE_MINIMUM} caractères minimum. Votre expérience concrète aide bien plus les
+            autres acheteurs qu'un « très bien ».
+          </p>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label class={labelClass} for="avis-auteur">
+              {CHAMPS_AVIS.auteur.label} <span class="text-[#166534]">*</span>
+            </label>
+            <input
+              id="avis-auteur"
+              name={CHAMPS_AVIS.auteur.name}
+              type="text"
+              required
+              maxlength="60"
+              autocomplete="nickname"
+              class={champClass}
+              placeholder="Prénom ou pseudo"
+            />
+          </div>
+
+          <div>
+            <label class={labelClass} for="avis-email">
+              {CHAMPS_AVIS.email.label} <span class="text-[#166534]">*</span>
+            </label>
+            <input
+              id="avis-email"
+              name={CHAMPS_AVIS.email.name}
+              type="email"
+              required
+              maxlength="120"
+              autocomplete="email"
+              class={champClass}
+              placeholder="celui de votre commande"
+            />
+            <p class="mt-1.5 text-xs text-[#57534e]">Jamais publié. Sert à vérifier votre achat.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <input
+            id="avis-consentement"
+            name={CHAMPS_AVIS.consentement.name}
+            type="checkbox"
+            value="oui"
+            required
+            class="mt-1 h-4 w-4 flex-shrink-0 accent-[#166534]"
+          />
+          <label for="avis-consentement" class="text-sm leading-relaxed text-[#57534e]">
+            {/* `{' '}` explicite : Astro supprime l'espace de fin de ligne qui
+                précède une balise, ce qui collerait « page. » et l'astérisque. */}
+            J'autorise la publication de mon avis et du nom affiché sur cette page.{' '}
+            <span class="text-[#166534]">*</span>
+          </label>
+        </div>
+
+        {/* Champ piège : invisible et hors du parcours clavier. Un humain ne le
+            remplit jamais ; un robot qui remplit tout se trahit. */}
+        <div
+          class="pointer-events-none absolute -left-[9999px] h-px w-px overflow-hidden"
+          aria-hidden="true"
+        >
+          <label for="avis-piege">Ne pas remplir</label>
+          <input id="avis-piege" name={CHAMP_PIEGE} type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        {/* Rempli par public/js/avis.js au chargement. Reste vide sans
+            JavaScript — le serveur en tient compte et n'exclut personne. */}
+        <input type="hidden" name={CHAMP_HORODATAGE} value="" data-horodatage />
+
+        <button
+          type="submit"
+          class="w-full rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25] focus:outline-none focus:ring-2 focus:ring-[#166534]/40 focus:ring-offset-2"
+        >
+          Envoyer mon avis
+        </button>
+
+        {/* Rempli par le script en cas d'erreur. `aria-live` fait annoncer le
+            message par les lecteurs d'écran sans déplacer le focus. */}
+        <p
+          data-statut-formulaire
+          role="status"
+          aria-live="polite"
+          class="hidden rounded-xl bg-[#FDF4E7] px-4 py-3 text-sm text-[#7A3E12]"
+        >
+        </p>
+
+        <p class="text-xs leading-relaxed text-[#57534e]">
+          Votre avis est relu avant publication : nous vérifions qu'une commande payée
+          correspond à votre email, jamais son contenu — un avis négatif est publié comme un
+          autre. Votre email sert uniquement à cette vérification, n'est ni publié, ni revendu,
+          ni transmis à un tiers. Écrivez à{' '}
+          <a href={`mailto:${EMAIL_AVIS}`} class="font-semibold text-[#166534] underline"
+            >{EMAIL_AVIS}</a
+          >{' '}
+          pour faire retirer un avis publié — voir nos{' '}
+          <a href="/mentions-legales/" class="font-semibold text-[#166534] underline"
+            >mentions légales</a
+          >.
+        </p>
+      </form>
+    </details>
+  </div>
+</section>
+
+<script src="/js/avis.js" defer></script>

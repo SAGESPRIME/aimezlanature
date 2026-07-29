@@ -7,6 +7,9 @@ import {
   CHAMP_HORODATAGE,
   EMAIL_REVENDEUR,
 } from '../../data/revendeur';
+// `echapperHtml` importé sous le nom `echapper` : même fonction, désormais
+// partagée avec les autres routes, sans avoir à renommer chaque appel ici.
+import { envoyerEmail, echapperHtml as echapper } from '../../lib/email';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -22,9 +25,6 @@ export const prerender = false;
  * L'email part vers la boîte du marchand, jamais vers le professionnel :
  * aucune donnée saisie n'est renvoyée à un tiers.
  */
-
-/** Expéditeur. DOIT appartenir au domaine vérifié dans le workspace Emailit. */
-const EXPEDITEUR_DEFAUT = 'Aimez la Nature <notifications@aimezlanature.fr>';
 
 /** Délai minimum de remplissage. En dessous, c'est un robot. */
 const DELAI_MINIMUM_MS = 3000;
@@ -44,15 +44,6 @@ function lire(form: FormData, nom: string): string {
   const brut = form.get(nom);
   if (typeof brut !== 'string') return '';
   return brut.trim().slice(0, LIMITES[nom] ?? 200);
-}
-
-/** Échappe le HTML : le contenu vient d'un formulaire public. */
-function echapper(texte: string): string {
-  return texte
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 /**
@@ -134,17 +125,6 @@ export const POST: APIRoute = async ({ request, url }) => {
     return echec('Le SIRET doit comporter 14 chiffres (9 pour un SIREN).', 400);
   }
 
-  const cle: string | undefined = process.env.EMAILIT_API_KEY;
-  if (!cle) {
-    console.error('EMAILIT_API_KEY absente : demande revendeur non transmise.');
-    return echec(
-      "Notre service d'envoi n'est pas encore activé.",
-      503
-    );
-  }
-  const expediteur =
-    process.env.EMAILIT_FROM ?? EXPEDITEUR_DEFAUT;
-
   const lignes: [string, string][] = [
     ['Boutique', donnees.boutique],
     ['Contact', donnees.contact],
@@ -164,34 +144,20 @@ export const POST: APIRoute = async ({ request, url }) => {
     )
     .join('')}</table>`;
 
-  try {
-    const res = await fetch('https://api.emailit.com/v2/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${cle}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: expediteur,
-        to: [EMAIL_REVENDEUR],
-        // `reply_to` = le professionnel : le marchand répond directement
-        // depuis sa boîte, sans recopier l'adresse.
-        reply_to: donnees.email,
-        subject: `Demande revendeur — ${donnees.boutique}`,
-        text: texte,
-        html,
-      }),
-    });
+  const envoi = await envoyerEmail({
+    to: EMAIL_REVENDEUR,
+    // `replyTo` = le professionnel : le marchand répond directement
+    // depuis sa boîte, sans recopier l'adresse.
+    replyTo: donnees.email,
+    subject: `Demande revendeur — ${donnees.boutique}`,
+    text: texte,
+    html,
+  });
 
-    if (!res.ok) {
-      // Le message brut d'Emailit peut détailler la configuration du compte :
-      // il reste dans les logs, il ne part pas dans la réponse.
-      console.error('Emailit:', res.status, await res.text());
-      return echec("L'envoi a échoué.", 502);
-    }
-  } catch (e) {
-    console.error('Emailit injoignable:', e);
-    return echec("L'envoi a échoué.", 502);
+  if (!envoi.ok) {
+    return envoi.raison === 'config'
+      ? echec("Notre service d'envoi n'est pas encore activé.", 503)
+      : echec("L'envoi a échoué.", 502);
   }
 
   return veutJson

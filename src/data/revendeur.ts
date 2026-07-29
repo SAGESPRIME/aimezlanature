@@ -153,12 +153,9 @@ export const CHAMPS = {
 } as const;
 
 /**
- * Champ piège anti-robot (« honeypot ») : invisible et vide pour un humain.
- * Un robot qui remplit automatiquement tous les champs le remplit aussi, ce qui
- * permet de rejeter l'envoi sans imposer de captcha — un captcha tiers
- * obligerait à relâcher la CSP `script-src 'self'` du site.
+ * Filtres anti-robot : définis une seule fois dans src/lib/antispam.ts et
+ * partagés avec le formulaire de dépôt d'avis. Ré-exportés ici pour que les
+ * fichiers du formulaire revendeur continuent d'importer depuis un seul
+ * endroit — les valeurs sont inchangées.
  */
-export const CHAMP_PIEGE = 'site_web';
-
-/** Horodatage d'ouverture du formulaire, utilisé pour rejeter les envois instantanés. */
-export const CHAMP_HORODATAGE = 'ouvert_a';
+export { CHAMP_PIEGE, CHAMP_HORODATAGE } from '../lib/antispam';
