@@ -2,8 +2,16 @@ import type { APIRoute } from 'astro';
 // Route serverless Vercel (prerender = false) : l'environnement est lu via
 // process.env — même accès que api/checkout.ts.
 import { verifierSignature } from '../../lib/stripe-signature';
-import { envoyerEmail } from '../../lib/email';
-import { sujetCommande, texteCommande, htmlCommande, type LigneCommande } from '../../data/email-commande';
+import { envoyerEmail, EMAIL_MARCHAND } from '../../lib/email';
+import {
+  sujetCommande,
+  texteCommande,
+  htmlCommande,
+  sujetMarchand,
+  texteMarchand,
+  htmlMarchand,
+  type LigneCommande,
+} from '../../data/email-commande';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -64,6 +72,32 @@ async function lireArticles(sessionId: string, cle: string): Promise<LigneComman
   }
 }
 
+/**
+ * Met l'adresse de livraison en forme, ligne par ligne.
+ *
+ * Stripe l'a déplacée de `shipping_details` vers
+ * `collected_information.shipping_details` dans les versions récentes de son
+ * API : on lit les deux, pour ne pas dépendre de la version configurée sur le
+ * compte ni casser le jour d'une mise à jour.
+ */
+function lireLivraison(session: any): { nom?: string; adresse?: string[] } {
+  const livraison = session?.collected_information?.shipping_details ?? session?.shipping_details;
+  const a = livraison?.address;
+  if (!a) return {};
+
+  const lignes = [
+    a.line1,
+    a.line2,
+    [a.postal_code, a.city].filter(Boolean).join(' '),
+    a.state,
+    a.country,
+  ]
+    .map((l: unknown) => (typeof l === 'string' ? l.trim() : ''))
+    .filter((l: string) => l.length > 0);
+
+  return { nom: livraison?.name ?? undefined, adresse: lignes.length > 0 ? lignes : undefined };
+}
+
 export const POST: APIRoute = async ({ request }) => {
   const secret: string | undefined = process.env.STRIPE_WEBHOOK_SECRET;
   const cleStripe: string | undefined = process.env.STRIPE_SECRET_KEY;
@@ -121,24 +155,55 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Prénom seul : « Bonjour Marie » est plus juste que « Bonjour Marie Dupont ».
-  const nomComplet: string | undefined = session?.customer_details?.name ?? undefined;
+  const nomFacturation: string | undefined = session?.customer_details?.name ?? undefined;
+  const livraison = lireLivraison(session);
+  const nomComplet = livraison.nom ?? nomFacturation;
   const prenom = nomComplet?.trim().split(/\s+/)[0];
 
   const commande = {
     lignes: articles,
     total: Number(session?.amount_total ?? 0),
     nom: prenom,
+    nomComplet,
+    email,
+    telephone: session?.customer_details?.phone ?? undefined,
+    adresse: livraison.adresse,
+    reference: String(session.id),
   };
 
-  const envoi = await envoyerEmail({
+  // ── 1. Le marchand, pour qu'il prépare le colis ────────────────────────
+  // Un échec ici n'interrompt PAS le traitement et ne renvoie pas d'erreur :
+  // sinon Stripe rejouerait et le client recevrait deux confirmations. La
+  // commande reste de toute façon visible dans le tableau de bord Stripe,
+  // et l'incident est tracé dans les logs.
+  const versMarchand = await envoyerEmail({
+    to: EMAIL_MARCHAND,
+    replyTo: email,
+    subject: sujetMarchand(commande),
+    text: texteMarchand(commande),
+    html: htmlMarchand(commande),
+  });
+  if (!versMarchand.ok) {
+    console.error(
+      'Notification marchand NON envoyée pour la session',
+      session.id,
+      '- raison:',
+      versMarchand.raison
+    );
+  }
+
+  // ── 2. Le client, en DERNIER ───────────────────────────────────────────
+  // Voir l'en-tête du fichier : c'est ce qui rend les rejeux de Stripe sûrs.
+  const versClient = await envoyerEmail({
     to: email,
     subject: sujetCommande(),
     text: texteCommande(commande),
     html: htmlCommande(commande),
   });
 
-  if (!envoi.ok) {
-    // 500 : Stripe rejouera, et l'email partira au prochain essai.
+  if (!versClient.ok) {
+    // 500 : Stripe rejouera, et l'email partira au prochain essai. Le marchand
+    // recevra alors un doublon de notification — gênant, jamais bloquant.
     return json({ error: "Envoi de la confirmation échoué." }, 500);
   }
 

@@ -15,8 +15,8 @@
  * la notification au marchand, et n'est écrit nulle part.
  */
 
-/** Adresse qui reçoit les avis à modérer. Même boîte que les demandes revendeur. */
-export const EMAIL_AVIS = 'contact@aimezlanature.fr';
+/** Adresse qui reçoit les avis à modérer — boîte unique du marchand. */
+export { EMAIL_MARCHAND as EMAIL_AVIS } from '../lib/email';
 
 /** Champs attendus par /api/avis. */
 export const CHAMPS_AVIS = {

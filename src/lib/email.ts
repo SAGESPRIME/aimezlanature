@@ -15,6 +15,13 @@
 /** Expéditeur. DOIT appartenir au domaine vérifié dans le workspace Emailit. */
 const EXPEDITEUR_DEFAUT = 'Aimez la Nature <notifications@aimezlanature.fr>';
 
+/**
+ * Boîte du marchand : demandes revendeur, avis à modérer, nouvelles commandes.
+ * Définie ici plutôt que dans chaque fichier de données — elle y figurait déjà
+ * en double, et une troisième copie arrivait avec les commandes.
+ */
+export const EMAIL_MARCHAND = 'contact@aimezlanature.fr';
+
 const ENDPOINT = 'https://api.emailit.com/v2/emails';
 
 export interface Email {
