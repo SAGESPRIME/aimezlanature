@@ -7,9 +7,9 @@ import {
   CHAMP_PIEGE,
   CHAMP_HORODATAGE,
   envoiTropRapide,
-  echapperHtml,
   emailPlausible,
 } from '../../lib/antispam';
+import { envoyerEmail, echapperHtml } from '../../lib/email';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -24,9 +24,6 @@ export const prerender = false;
  * JavaScript (redirection 303) autant qu'à un envoi `fetch` (JSON). Le
  * discriminant est l'en-tête `Accept` envoyé par public/js/avis.js.
  */
-
-/** Expéditeur. DOIT appartenir au domaine vérifié dans le workspace Emailit. */
-const EXPEDITEUR_DEFAUT = 'Aimez la Nature <notifications@aimezlanature.fr>';
 
 function lire(form: FormData, nom: string): string {
   const brut = form.get(nom);
@@ -189,13 +186,6 @@ export const POST: APIRoute = async ({ request, url }) => {
   }
 
   // ── Notification du marchand ───────────────────────────────────────────
-  const cleEmail: string | undefined = process.env.EMAILIT_API_KEY;
-  if (!cleEmail) {
-    console.error('EMAILIT_API_KEY absente : avis non transmis.');
-    return echec("Notre service d'envoi n'est pas encore activé.", 503);
-  }
-  const expediteur = process.env.EMAILIT_FROM ?? EXPEDITEUR_DEFAUT;
-
   const aujourdhui = new Date().toISOString().slice(0, 10);
 
   // Ligne prête à coller dans src/data/reviews.ts après relecture.
@@ -239,32 +229,20 @@ export const POST: APIRoute = async ({ request, url }) => {
     `<p>Pensez à mettre à jour <code>rating</code> et <code>reviewCount</code> du produit ` +
     `dans <code>products.ts</code>, ainsi que <code>totalReviews</code> dans <code>SITE</code>.</p>`;
 
-  try {
-    const res = await fetch('https://api.emailit.com/v2/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${cleEmail}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: expediteur,
-        to: [EMAIL_AVIS],
-        // `reply_to` = le client : le marchand peut lui répondre directement,
-        // par exemple pour un avis négatif à traiter avant publication.
-        reply_to: donnees.email,
-        subject: `Avis ${note}/5 à modérer — ${produit.shortName}`,
-        text: texte,
-        html,
-      }),
-    });
+  const envoi = await envoyerEmail({
+    to: EMAIL_AVIS,
+    // `replyTo` = le client : le marchand peut lui répondre directement,
+    // par exemple pour un avis négatif à traiter avant publication.
+    replyTo: donnees.email,
+    subject: `Avis ${note}/5 à modérer — ${produit.shortName}`,
+    text: texte,
+    html,
+  });
 
-    if (!res.ok) {
-      console.error('Emailit (avis):', res.status, await res.text());
-      return echec("L'envoi a échoué.", 502);
-    }
-  } catch (e) {
-    console.error('Emailit injoignable (avis):', e);
-    return echec("L'envoi a échoué.", 502);
+  if (!envoi.ok) {
+    return envoi.raison === 'config'
+      ? echec("Notre service d'envoi n'est pas encore activé.", 503)
+      : echec("L'envoi a échoué.", 502);
   }
 
   return succes();

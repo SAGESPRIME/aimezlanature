@@ -40,18 +40,6 @@ export function envoiTropRapide(horodatageBrut: string): boolean {
 }
 
 /**
- * Échappe le HTML d'une valeur venant d'un formulaire public, avant de
- * l'insérer dans l'email de notification envoyé au marchand.
- */
-export function echapperHtml(texte: string): string {
-  return texte
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-/**
  * Validation d'email volontairement permissive : elle écarte les saisies
  * manifestement fausses sans prétendre valider la RFC 5322. Pour le dépôt
  * d'avis, la vraie vérification est faite par Stripe de toute façon.
