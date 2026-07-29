@@ -29,8 +29,31 @@ export interface Commande {
   lignes: LigneCommande[];
   /** Montant total payé, en centimes. */
   total: number;
-  /** Prénom ou nom du client, quand Stripe l'a collecté. */
+  /** Prénom du client, quand Stripe l'a collecté. */
   nom?: string;
+  /** Champs présents uniquement pour la notification au marchand. */
+  nomComplet?: string;
+  email?: string;
+  telephone?: string;
+  /** Adresse de livraison, déjà mise en forme ligne par ligne. */
+  adresse?: string[];
+  /** Identifiant Stripe de la commande, pour la retrouver au tableau de bord. */
+  reference?: string;
+}
+
+/**
+ * Adresse de base des liens contenus dans les emails.
+ *
+ * ⚠️ TEMPORAIRE. `SITE.url` vaut `aimezlanature.fr`, qui sert encore le site
+ * WordPress : le lien « Voir tous les dosages » y renvoie donc un 404. Tant que
+ * le domaine n'est pas basculé, définir `EMAIL_SITE_URL` dans Vercel avec
+ * l'adresse du déploiement (https://aimezlanatureseo.vercel.app).
+ *
+ * À SUPPRIMER — la variable comme ce commentaire — le jour où aimezlanature.fr
+ * sert ce site : `SITE.url` redeviendra alors la bonne réponse.
+ */
+function baseLiens(): string {
+  return (process.env.EMAIL_SITE_URL ?? SITE.url).replace(/\/$/, '');
 }
 
 const VERT = '#166534';
@@ -83,7 +106,7 @@ export function texteCommande(commande: Commande): string {
     ...conseils.map((c) => `- ${c.usage} : ${c.nb}`),
     '',
     'Rincez les perles à l\'eau claire avant la première utilisation, puis laissez agir 30 minutes.',
-    `Tous les dosages : ${SITE.url}/comment-ca-marche/`,
+    `Tous les dosages : ${baseLiens()}/comment-ca-marche/`,
     '',
     `Une question ? Répondez simplement à cet email.`,
     '',
@@ -152,7 +175,7 @@ ${lignes}
 <p style="margin:0 0 14px 0;color:${GRIS};font-size:14px;line-height:1.6;">La règle de base : <strong style="color:${VERT};">15 perles par litre</strong> pour l'eau de boisson. Les usages les plus courants&nbsp;:</p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${listeConseils}</table>
 <p style="margin:14px 0 0 0;color:${GRIS};font-size:13px;line-height:1.6;">Rincez les perles à l'eau claire avant la première utilisation, puis laissez agir 30 minutes.</p>
-<p style="margin:10px 0 0 0;"><a href="${SITE.url}/comment-ca-marche/" style="color:${VERT};font-size:14px;font-weight:bold;text-decoration:underline;">Voir tous les dosages &rarr;</a></p>
+<p style="margin:10px 0 0 0;"><a href="${baseLiens()}/comment-ca-marche/" style="color:${VERT};font-size:14px;font-weight:bold;text-decoration:underline;">Voir tous les dosages &rarr;</a></p>
 </td></tr>
 </table>
 </td></tr>
@@ -160,6 +183,100 @@ ${lignes}
 <tr><td style="padding:24px 32px 32px 32px;font-family:Arial,Helvetica,sans-serif;">
 <p style="margin:0;color:${GRIS};font-size:14px;line-height:1.6;">Une question&nbsp;? Répondez simplement à cet email, nous vous lisons.</p>
 <p style="margin:16px 0 0 0;color:${ENCRE};font-size:14px;">Aimez la Nature</p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body></html>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Notification au marchand : « une commande est à préparer »
+//
+// Objectif différent de l'email client : ce n'est pas un remerciement, c'est un
+// bon de préparation. On veut voir en un coup d'œil QUOI mettre dans le colis
+// et OÙ l'envoyer, sans avoir à ouvrir le tableau de bord Stripe.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function sujetMarchand(commande: Commande): string {
+  const articles = commande.lignes.reduce((total, l) => total + l.quantite, 0);
+  return `Nouvelle commande — ${articles} article${articles > 1 ? 's' : ''}, ${euros(commande.total)}`;
+}
+
+export function texteMarchand(commande: Commande): string {
+  return [
+    'À PRÉPARER',
+    ...commande.lignes.map((l) => `- ${l.description} x${l.quantite}`),
+    '',
+    `Total payé : ${euros(commande.total)}`,
+    '',
+    'LIVRER À',
+    commande.nomComplet ?? '(nom non communiqué)',
+    ...(commande.adresse ?? ['(adresse non communiquée)']),
+    '',
+    'CLIENT',
+    `Email : ${commande.email ?? '—'}`,
+    `Téléphone : ${commande.telephone ?? '—'}`,
+    '',
+    `Référence Stripe : ${commande.reference ?? '—'}`,
+  ].join('\n');
+}
+
+export function htmlMarchand(commande: Commande): string {
+  const aPreparer = commande.lignes
+    .map(
+      (l) => `<tr>
+<td style="padding:8px 0;border-bottom:1px solid ${BORDURE};color:${ENCRE};font-size:16px;font-weight:bold;">
+${echapperHtml(l.description)}
+</td>
+<td style="padding:8px 0;border-bottom:1px solid ${BORDURE};color:${VERT};font-size:18px;font-weight:bold;text-align:right;white-space:nowrap;">
+&times;${l.quantite}
+</td>
+</tr>`
+    )
+    .join('');
+
+  const adresse = (commande.adresse ?? ['(adresse non communiquée)'])
+    .map((ligne) => echapperHtml(ligne))
+    .join('<br>');
+
+  return `<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${sujetMarchand(commande)}</title></head>
+<body style="margin:0;padding:0;background-color:${SABLE};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${SABLE};padding:24px 12px;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border:1px solid ${BORDURE};border-radius:16px;font-family:Arial,Helvetica,sans-serif;">
+
+<tr><td style="padding:28px 28px 0 28px;">
+<p style="margin:0 0 4px 0;color:${VERT};font-size:13px;letter-spacing:2px;text-transform:uppercase;">Nouvelle commande</p>
+<h1 style="margin:0;color:${ENCRE};font-size:24px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;">Un colis à préparer</h1>
+</td></tr>
+
+<tr><td style="padding:22px 28px 0 28px;">
+<p style="margin:0 0 8px 0;color:${GRIS};font-size:13px;text-transform:uppercase;letter-spacing:1px;">À mettre dans le colis</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${aPreparer}</table>
+<p style="margin:12px 0 0 0;color:${GRIS};font-size:14px;">Total payé&nbsp;: <strong style="color:${ENCRE};">${euros(commande.total)}</strong></p>
+</td></tr>
+
+<tr><td style="padding:22px 28px 0 28px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${SABLE};border-radius:12px;">
+<tr><td style="padding:18px;">
+<p style="margin:0 0 8px 0;color:${GRIS};font-size:13px;text-transform:uppercase;letter-spacing:1px;">Livrer à</p>
+<p style="margin:0;color:${ENCRE};font-size:15px;line-height:1.7;">
+<strong>${echapperHtml(commande.nomComplet ?? '(nom non communiqué)')}</strong><br>${adresse}
+</p>
+</td></tr>
+</table>
+</td></tr>
+
+<tr><td style="padding:22px 28px 28px 28px;">
+<p style="margin:0 0 8px 0;color:${GRIS};font-size:13px;text-transform:uppercase;letter-spacing:1px;">Contact client</p>
+<p style="margin:0;color:${GRIS};font-size:14px;line-height:1.7;">
+Email&nbsp;: <a href="mailto:${echapperHtml(commande.email ?? '')}" style="color:${VERT};">${echapperHtml(commande.email ?? '—')}</a><br>
+Téléphone&nbsp;: ${echapperHtml(commande.telephone ?? '—')}
+</p>
+<p style="margin:16px 0 0 0;color:#8A8378;font-size:12px;">Référence Stripe&nbsp;: ${echapperHtml(commande.reference ?? '—')}</p>
 </td></tr>
 
 </table>

@@ -135,10 +135,11 @@ export const volumesEnvisages = [
 
 /**
  * Adresse qui reçoit les demandes revendeur.
- * Sert à la fois d'destinataire côté serveur et de contact de secours affiché
+ * Sert à la fois de destinataire côté serveur et de contact de secours affiché
  * sur la page si l'envoi échoue — une demande ne doit jamais se perdre.
+ * Boîte unique du marchand, définie dans lib/email.ts.
  */
-export const EMAIL_REVENDEUR = 'contact@aimezlanature.fr';
+export { EMAIL_MARCHAND as EMAIL_REVENDEUR } from '../lib/email';
 
 /** Champs attendus par /api/revendeur — partagés entre le formulaire et le serveur. */
 export const CHAMPS = {
