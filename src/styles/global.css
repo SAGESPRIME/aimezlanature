@@ -1,12 +1,23 @@
 /* Polices auto-hébergées (woff2 servis depuis notre domaine, cache immuable).
    Inter 700 est chargée car `font-bold` est utilisé sur tout le site :
-   sans elle, le navigateur fabriquait un faux gras dégradé. */
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
-@import "@fontsource/playfair-display/600.css";
-@import "@fontsource/playfair-display/700.css";
+   sans elle, le navigateur fabriquait un faux gras dégradé.
+
+   Variantes `latin-*` et non `400.css` : les fichiers génériques déclarent aussi
+   le cyrillique, le grec, le vietnamien et leurs extensions — 36 @font-face et
+   540 Ko de woff2 déployés là où un site français n'en utilise que 6 (144 Ko).
+   Le navigateur ne téléchargeait pas les sous-ensembles inutiles (l'unicode-range
+   les filtre), mais ils partaient dans chaque déploiement pour rien.
+
+   Les 3 polices visibles au-dessus de la ligne de flottaison sont préchargées
+   dans BaseLayout.astro : sans cela, elles n'étaient découvertes qu'après le
+   parsing de ce fichier, et leur arrivée tardive décalait la mise en page
+   (CLS mesuré à 0,11 — au-dessus du seuil « bon » de 0,10). */
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/playfair-display/latin-600.css";
+@import "@fontsource/playfair-display/latin-700.css";
 
 @import "tailwindcss";
 

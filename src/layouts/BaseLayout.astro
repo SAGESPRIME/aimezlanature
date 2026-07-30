@@ -7,6 +7,28 @@ import Footer from '../components/Footer.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
 import logo from '../assets/logo.png';
 
+// Polices préchargées. Le suffixe `?url` demande à Vite l'URL finale du fichier
+// émis (avec son empreinte) : un chemin écrit en dur casserait au prochain build.
+//
+// Pourquoi précharger : ces woff2 ne sont déclarés que dans le CSS, donc le
+// navigateur ne les découvre qu'après avoir téléchargé ET parsé la feuille de
+// style. Le texte s'affiche d'abord dans la police de repli (system-ui, Georgia)
+// puis saute quand la vraie police arrive — c'est ce saut qui donnait un CLS de
+// 0,11, au-dessus du seuil « bon » de 0,10 (cause confirmée par une trace
+// Chrome DevTools qui nomme les 6 fichiers de police).
+//
+// Seules les 3 polices réellement visibles au-dessus de la ligne de flottaison
+// sont préchargées (~70 Ko) : Playfair 600 porte le H1 (le plus gros texte, donc
+// le plus gros décalage), Inter 400 le corps de texte, Inter 600 les boutons.
+// Inter 500 et 700 ne servent qu'à de petits éléments et restent découvertes via
+// le CSS : les précharger toutes (115 Ko) volerait de la bande passante à
+// l'image LCP, qui est déjà en fetchpriority="high".
+import fontPlayfair600 from '@fontsource/playfair-display/files/playfair-display-latin-600-normal.woff2?url';
+import fontInter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import fontInter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
+
+const policesAPrecharger = [fontPlayfair600, fontInter400, fontInter600];
+
 interface Props {
   title: string;
   description: string;
@@ -102,6 +124,16 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Préchargement des polices de la ligne de flottaison, placé le plus haut
+         possible pour que le navigateur lance les requêtes avant même d'avoir lu
+         le reste du <head>. `crossorigin` est OBLIGATOIRE sur un preload de
+         police, même en même origine : sans lui le navigateur télécharge le
+         fichier une seconde fois et le préchargement ne sert à rien. -->
+    {policesAPrecharger.map((href) => (
+      <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+    ))}
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />

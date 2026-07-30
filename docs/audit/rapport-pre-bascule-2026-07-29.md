@@ -56,7 +56,7 @@ aujourd'hui, seulement d'être exécutés au bon moment.
 
 | Catégorie | Point vérifié | Statut | Action recommandée | Priorité |
 |---|---|---|---|---|
-| Performance | CLS = **0,11** (seuil « bon » = 0,10) | À corriger | Cause racine mesurée : le **swap des 6 polices latin** (Inter 400/500/600/700 + Playfair 600/700) décale la mise en page à 396 ms. Aucun `<link rel="preload">` sur le site. Précharger les polices de la ligne de flottaison, ou migrer vers l'**API Fonts d'Astro** (disponible en 7.1.1, `fonts` dans la config) qui génère preloads + métriques de repli automatiquement. C'est le plus gros gain CWV pour l'effort. | P1 |
+| Performance | CLS = 0,11 → **0,00** | ✅ **Corrigé le 2026-07-30** | Cause racine mesurée : le **swap des 6 polices latin** décalait la mise en page à 396 ms. Corrigé par le préchargement des 3 polices de la ligne de flottaison — voir l'encadré. **Mesuré à 0,00** sur l'accueil (2 fois) et sur une fiche produit. | P1 |
 | Redirections | URLs **sans** slash final → 404 | ✅ **Corrigé le 2026-07-30** | `/qui-sommes-nous/` → 308 OK, mais `/qui-sommes-nous` → **404**. Corrigé par 50 règles jumelles explicites (chaque source existe désormais dans ses deux formes), et **surtout PAS** par `"trailingSlash": true` — voir l'encadré ci-dessous. | P1 |
 | Redirections | `/category/blog/` | ✅ **Corrigé le 2026-07-30** | 404 confirmée. Ajouter un 301 vers `/blog/`. | P1 |
 | Outillage | `check-redirects.mjs` donne un **faux vert** | ✅ **Corrigé le 2026-07-30** | Le script teste les jokers avec un chemin **sans slash final** (`sampleForWildcard`). Il annonce « 53/53 OK » alors que les 6 vraies URLs `/product-category/*/` sont en 404. Faire tester chaque règle dans ses **deux formes** (avec et sans slash final). | P1 |
@@ -101,7 +101,7 @@ sans une ligne de code ni un paquet de plus. À défaut, un compteur dans un Red
 |---|---|---|---|---|
 | SEO | Longueur de 3 balises | Mineur | `title` : `/a-propos/` 67 car., `/comment-ca-marche/` 70 car. (cible ≤ 65). `description` : `/a-propos/` 164 car. (cible ≤ 160). Risque : troncature en SERP. | P2 |
 | Performance | Pas d'AVIF | Mineur | 38 WebP émis, 0 AVIF. Ajouter `formats: ['avif','webp']` : ~20-30 % de poids image en moins. | P2 |
-| Performance | Sous-ensembles de polices inutiles | Mineur | 540 Ko de woff2 déployés dont **144 Ko seulement en latin** : ~400 Ko de cyrillique/grec/vietnamien jamais téléchargés (l'`unicode-range` les filtre) mais déployés. Importer `@fontsource/inter/latin-400.css` au lieu de `400.css`. | P2 |
+| Performance | Sous-ensembles de polices inutiles | ✅ **Corrigé le 2026-07-30** | 540 Ko de woff2 déployés dont **144 Ko seulement en latin** : ~400 Ko de cyrillique/grec/vietnamien jamais téléchargés (l'`unicode-range` les filtre) mais déployés. Importer `@fontsource/inter/latin-400.css` au lieu de `400.css`. | P2 |
 | SEO | Canonical de la page 404 | Mineur | `/404.html` déclare `canonical: https://aimezlanature.fr/404/`, une URL qui n'existe pas. Page en `noindex`, impact nul, mais incohérent. | P2 |
 | A11y | Contraste sur chiffres décoratifs | Mineur | Lighthouse A11y 96/100 : 3 gros chiffres décoratifs (`aria-hidden="true"`) en contraste faible. Invisibles des lecteurs d'écran, donc faux positif fonctionnel. | P2 |
 | Infra | Deux projets Vercel | Mineur | `aimezlanature` **et** `aimezlanatureseo` coexistent. Rattacher le domaine au mauvais projet ferait tomber le site. Supprimer/renommer le projet inutilisé pour lever l'ambiguïté. | P2 |
@@ -168,6 +168,46 @@ risque. Les 50 jumelles explicites donnent le même résultat sans jamais touche
 Contrôle automatisé de cette garantie : `scripts/` ne contient pas ce test, il a été joué en
 recette — aucune des 110 règles ne capture `/api/checkout`, `/api/stripe-webhook`, `/api/avis` ni
 `/api/revendeur`, dans l'une ou l'autre de leurs formes, et `trailingSlash` est absent du fichier.
+
+### CLS : 0,11 → 0,00, et pourquoi PAS l'API Fonts d'Astro
+
+L'API Fonts d'Astro (stable en 7.1.1) était la solution élégante : elle génère les preloads **et**
+des polices de repli à métriques ajustées. **Elle est inutilisable ici.** Son composant `Font.astro`
+émet `<style set:html={data.css}></style>`, donc du CSS **inline** — que la CSP du projet
+(`style-src 'self'`, sans `unsafe-inline`) bloque. Les `@font-face` ne s'appliqueraient jamais et le
+site perdrait ses polices. L'adopter imposerait de défaire la décision de sécurité documentée dans
+le playbook (`inlineStylesheets: 'never'`).
+
+Correctif retenu, compatible CSP :
+
+- **Préchargement de 3 polices** dans `BaseLayout.astro` (~70 Ko) : Playfair 600 (le H1, plus gros
+  texte donc plus gros décalage), Inter 400 (corps), Inter 600 (boutons). Les URL viennent d'imports
+  Vite `?url`, jamais de chemins en dur — l'empreinte du fichier change à chaque build.
+  Inter 500 et 700 ne sont **pas** préchargées : elles ne servent qu'à de petits éléments, et
+  précharger les 5 (115 Ko) volerait de la bande passante à l'image LCP.
+- **`crossorigin` sur chaque preload**, obligatoire même en même origine : sans lui le navigateur
+  télécharge le fichier une seconde fois et le préchargement ne sert à rien.
+- **Sous-ensembles `latin-*`** au lieu des fichiers complets : **36 → 6** fichiers woff2,
+  **540 Ko → 144 Ko** déployés (traite du même coup le point P2 « sous-ensembles inutiles »).
+
+| Mesure | Avant | Après |
+|---|---|---|
+| CLS accueil | 0,11 | **0,00** (2 mesures) |
+| CLS fiche produit | — | **0,00** (l'insight « CLSCulprits » disparaît de la trace) |
+| Fichiers woff2 déployés | 36 (540 Ko) | **6 (144 Ko)** |
+| `@font-face` dans le CSS | 36 | **6** |
+
+Contrôles de non-régression :
+
+- Les 3 URL préchargées correspondent à des fichiers réellement présents dans `dist/` (le projet
+  s'est déjà fait piéger par une URL d'asset en 404).
+- Les 6 polices sont `loaded` au runtime, et `document.fonts.check()` confirme que Playfair et Inter
+  sont **réellement utilisées** (pas de repli silencieux sur Georgia).
+- Passer en `latin` seul supprime le filet des sous-ensembles latin-ext / cyrillique / grec /
+  vietnamien. Scan du texte visible des 29 pages : les seuls caractères hors plage sont des symboles
+  et emoji (`→ ★ ✓ 🌿`…). Vérifié sur les **188 plages `unicode-range`** des fichiers complets :
+  **aucun n'était couvert avant** — ils étaient déjà rendus par une police système, leur rendu est
+  donc inchangé. Contrôle de cohérence du script : `é œ ® €` bien détectés comme couverts.
 
 ### Preuves de la correction
 
