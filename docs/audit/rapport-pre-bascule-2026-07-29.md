@@ -39,7 +39,7 @@ fait avant la bascule. En conséquence :
 |---|---|---|---|---|
 | Redirections | 6 URLs `/product-category/*/` | ✅ **Corrigé le 2026-07-30** | Le joker `/product-category/:path*` **ne matche pas le slash final** (prouvé : sans slash → 308, avec slash → 404). Or les 6 URLs du sitemap WP ont toutes un slash. Remplacer par `/product-category/(.*)`. | P0 |
 | Redirections | `/perles-de-ceramique-em/` | ✅ **Corrigé le 2026-07-30** | 404 confirmée. C'est la page en **correspondance exacte avec le mot-clé principal**. Ajouter un 301 vers `/perles-ceramique-em/`. | P0 |
-| Analytics | Google Ads `AW-17799798810` | **Bloquant** | Le WordPress charge `gtag/js?id=AW-17799798810` (+ Doubleclick). Le nouveau site n'a **aucun tracking**. Si des campagnes Ads tournent, les conversions cesseront d'être mesurées et l'optimisation des enchères se dégradera. Décider : réintégrer (⇒ assouplir la CSP + bandeau de consentement obligatoire) ou assumer l'arrêt. | P0 |
+| Analytics | Google Ads `AW-17799798810` | ✅ **Corrigé le 2026-07-30** | Le WordPress charge `gtag/js?id=AW-17799798810` (+ Doubleclick). Le nouveau site n'a **aucun tracking**. Si des campagnes Ads tournent, les conversions cesseront d'être mesurées et l'optimisation des enchères se dégradera. Décider : réintégrer (⇒ assouplir la CSP + bandeau de consentement obligatoire) ou assumer l'arrêt. | P0 |
 | Analytics | Balise de vérification Search Console | ✅ **Corrigé le 2026-07-30** | `<meta name="google-site-verification" content="UhQ55Ibs19Xue-Hi6BWyZzfUG9tOYktlkTzEVH2T1hg">` est présente sur le WordPress, **absente** du nouveau site. Si la propriété GSC est vérifiée par cette balise, l'accès sera perdu à la bascule. Ajouter la balise dans `BaseLayout.astro`, **ou** basculer la vérification en TXT DNS avant. | P0 |
 
 ### 🔵 Bascules d'environnement — pas des défauts, mais critiques si oubliées
@@ -61,6 +61,61 @@ aujourd'hui, seulement d'être exécutés au bon moment.
 | Redirections | `/category/blog/` | ✅ **Corrigé le 2026-07-30** | 404 confirmée. Ajouter un 301 vers `/blog/`. | P1 |
 | Outillage | `check-redirects.mjs` donne un **faux vert** | ✅ **Corrigé le 2026-07-30** | Le script teste les jokers avec un chemin **sans slash final** (`sampleForWildcard`). Il annonce « 53/53 OK » alors que les 6 vraies URLs `/product-category/*/` sont en 404. Faire tester chaque règle dans ses **deux formes** (avec et sans slash final). | P1 |
 | E-commerce | `/api/checkout` : pas de limite de débit | ✅ **Corrigé le 2026-07-30** | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Le risque réel est l'abus scripté (curl, bot) qui créerait des sessions Stripe en masse → coûts et limites d'API. Aucune donnée exposée. Limiteur applicatif ajouté (10 appels / 60 s par IP) — voir l'encadré. Le mur WAF reste à poser côté marchand. | P1 |
+
+### Google Ads réintégré derrière un bandeau maison — 2026-07-30
+
+Décision du marchand : garder Google Ads, avec un bandeau **écrit dans le projet** plutôt que
+Cookiebot (le WordPress utilise Cookiebot, un service tiers payant qui aurait imposé d'ouvrir la CSP
+à un **second** domaine et pose ses propres cookies).
+
+Relevé sur le WordPress : `AW-17799798810`, Consent Mode v2 **déjà en place**, tag posé par le
+plugin WooCommerce **Google Listings & Ads** (`groups: "GLA"`, `developer_id.dOGY3NW`). Ce plugin
+n'existant pas sous Astro, les événements sont recréés à la main.
+
+**La règle tenue :** aucune requête vers Google, aucun cookie Google, avant un clic explicite sur
+« Accepter ».
+
+| Conformité CNIL | Comment c'est tenu |
+|---|---|
+| Consentement préalable | gtag.js n'est chargé que par le clic « Accepter ». Sans JavaScript, rien ne se charge : fail-closed. |
+| Refus aussi facile que l'accord | Deux boutons, même écran, **mêmes classes à la couleur près** — tous deux pleins, texte blanc, bordure. Le motif « vert plein / gris clair » rend le refus moins saillant ; un commentaire dans le composant interdit d'« alléger » le bouton Refuser. |
+| Pas de consentement déduit | Aucune case pré-cochée. Échap ferme le bandeau **sans accepter** : fermer n'est pas consentir. |
+| Retrait aussi simple que l'octroi | « Gérer les cookies » en pied de page, sur les 29 pages, rouvre le bandeau. |
+| Le retrait fait **cesser** le traitement | Un refus repasse Consent Mode en `denied` **et efface les cookies `_gcl_*` / `_gac_*`** déjà posés. Trouvé au test : sans ça, `_gcl_au` survivait à un refus et le traçage continuait. |
+| Information | Section Cookies des mentions légales : tableau finalité / durée / destinataire, transfert hors UE mentionné. |
+| Durée | Choix mémorisé 6 mois, **refus comme acceptation** (ne pas harceler celui qui refuse, ne pas oublier vite celui qui accepte). |
+
+**Consent Mode v2 malgré tout.** Les défauts `denied` sont posés avant tout chargement. Cela paraît
+redondant puisqu'on ne charge rien sans accord, mais sans consent mode v2 les données Ads du
+visiteur qui **accepte** sont elles aussi dégradées. Le WordPress le faisait déjà : on ne régresse
+pas.
+
+**CSP.** Ouverte aux seuls domaines **documentés par Google**, pas devinés, plus `www.google.fr`
+pour le TLD français. `style-src 'self'` reste intact. Contrôle a posteriori : les 7 domaines
+réellement contactés après acceptation sont tous dans la liste, **zéro violation** en console.
+
+**Conversion d'achat.** `/api/checkout` renvoie le montant qu'il vient de calculer (frais de port
+compris), `cart.js` le mémorise avant la redirection Stripe, `commande.js` l'envoie depuis la page
+de confirmation avec `transaction_id` = session Stripe pour que Google **dédoublonne** un
+rechargement de page. L'étiquette de conversion reste **vide** dans `src/data/tracking.ts` : le tag
+de base tourne, l'achat n'est pas envoyé, rien ne casse. Une ligne à remplir le jour où le marchand
+la fournit (Google Ads → Objectifs → Conversions → « Configurer avec une balise »).
+
+**Vérifié sur le déploiement réel** (pas seulement en local, la CSP n'existant qu'en production) :
+
+| Contrôle | Résultat |
+|---|---|
+| Avant tout choix | bandeau affiché, **0 script Google**, 6 requêtes toutes locales |
+| Défauts Consent Mode | les 4 signaux en `denied`, `wait_for_update: 500` |
+| Après « Refuser » | 0 script Google, choix persistant au rechargement |
+| Après « Accepter » | gtag.js chargé, `gcs=G111` reçu par Google, cookie `_gcl_au` posé |
+| Violations CSP | **aucune**, les 7 domaines répondent 200/204 |
+| Retrait après acceptation | `_gcl_au` **effacé**, Consent Mode repassé en `denied` |
+| CLS **avec bandeau affiché** | **0,00** (`position: fixed`, le bandeau ne pousse pas le contenu) |
+| Mobile 390 px | aucun débordement, les deux boutons à l'écran |
+
+**Reste à faire côté marchand :** fournir l'étiquette de conversion, et résilier l'abonnement
+Cookiebot une fois le WordPress éteint (il ne sert plus à rien sur le nouveau site).
 
 ### Le rate-limiting a existé, puis a été perdu dans la migration
 
@@ -142,7 +197,7 @@ s'applique ; et le rate limiting WAF peut être réservé aux plans payants — 
 avait tué la version Cloudflare**. Si la commande est refusée, le limiteur applicatif reste en place
 et fait le travail de base : cette fois la protection ne dépend plus du plan.
 | Config | `EMAIL_SITE_URL` | À corriger | Variable temporaire pointant les liens des emails vers l'URL de déploiement (le domaine servant encore WordPress). **À supprimer de Vercel juste après la bascule**, sinon les emails continueront de pointer vers `*.vercel.app`. Le commentaire de `src/data/email-commande.ts:49` le rappelle. | P1 |
-| RGPD | Bandeau de consentement | OK **aujourd'hui** | Aucun cookie n'est posé : seul `localStorage` sert au panier (strictement nécessaire) et il n'y a **aucun script tiers**. Pas de bandeau requis en l'état. ⚠️ **Dès que Google Ads est réintégré, un bandeau conforme CNIL devient obligatoire** (consentement préalable, refus aussi facile que l'acceptation). Les deux sujets sont liés. | P1 |
+| RGPD | Bandeau de consentement | ✅ **Livré le 2026-07-30** | Aucun cookie n'est posé : seul `localStorage` sert au panier (strictement nécessaire) et il n'y a **aucun script tiers**. Pas de bandeau requis en l'état. ⚠️ **Dès que Google Ads est réintégré, un bandeau conforme CNIL devient obligatoire** (consentement préalable, refus aussi facile que l'acceptation). Les deux sujets sont liés. | P1 |
 | SEO | 11 URLs `/x/` à `/x-11/` | Accepté | Articles vides du WordPress, présents au sitemap WP, non couverts → 404. **Le 404 est ici la bonne réponse** : rediriger 11 pages poubelle vers l'accueil crée des « soft 404 » que Google pénalise. À laisser tomber, Google les désindexera. | P2 |
 
 ### 🟢 Mineurs — après la bascule
