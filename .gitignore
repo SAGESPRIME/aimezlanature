@@ -42,3 +42,4 @@ pnpm-debug.log*
 # Cloudflare, abandonné à la PR #5 (migration vers Vercel). Plus aucune mention
 # dans package.json ni astro.config.mjs — du cache mort.
 .wrangler/
+.env*

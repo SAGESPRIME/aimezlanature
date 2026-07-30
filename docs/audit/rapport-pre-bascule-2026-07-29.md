@@ -306,18 +306,22 @@ Deux propriétés qui changent tout par rapport au limiteur applicatif :
 qui appelle un tiers payant et qui n'a aucune autre barrière (`avis` et `revendeur` ont déjà piège +
 délai, et `avis` vérifie l'achat chez Stripe).
 
-#### Mode opératoire
+#### Mode opératoire — ✅ préparé le 2026-07-30, en attente de publication
 
-La CLI Vercel n'est pas installée sur cette machine, et **publier une règle de pare-feu est une
-modification d'infrastructure de production : c'est au marchand de la déclencher**, pas à moi.
+CLI installée (v58.4.0) et dossier rattaché au **bon** projet — point de vigilance réel : le nom du
+dossier (`aimezlanature`) correspond à l'AUTRE projet Vercel, d'où le `--project` explicite.
 
 ```bash
-npm i -g vercel          # la CLI n'est pas installée
-vercel link              # rattacher le dossier au projet aimezlanatureseo
+npm i -g vercel                                              # fait
+vercel link --yes --project aimezlanatureseo --scope saddikis-projects   # fait
 ```
 
+Le `vercel link` crée un `.env.local` contenant un jeton OIDC. Vérifié : il est à la racine (pas
+dans `public/`, cf. l'incident du 2026-07-29), le CLI a ajouté `.env*` au `.gitignore`, et le
+fichier est absent de `dist/client/` — il n'est donc pas publié.
+
 **Étape 1 — observer sans bloquer.** Jamais de règle qui bloque du premier coup : on regarde
-d'abord qui elle attraperait.
+d'abord qui elle attraperait. ✅ **Règle créée, à l'état de brouillon :**
 
 ```bash
 vercel firewall rules add "Limite paiement" \
@@ -327,16 +331,26 @@ vercel firewall rules add "Limite paiement" \
   --rate-limit-requests 30 \
   --rate-limit-keys ip \
   --rate-limit-action log --yes
+```
 
+Résultat : `rule_limite_paiement_sK41Kp`, *staged*. **Rien n'est actif.** Reste à jouer par le
+marchand, car publier une règle de pare-feu modifie l'infrastructure de production :
+
+```bash
 vercel firewall diff              # relire ce qui va partir
 vercel firewall publish --yes     # ← à jouer par le marchand
 ```
+
+⚠️ `vercel firewall overview` échoue sur ce projet (`IP Bypass is unavailable for this plan`) : c'est
+une limite du plan Hobby sur une AUTRE fonctionnalité, sans rapport avec les règles. Utiliser
+`vercel firewall rules list` et `vercel firewall rules inspect "<nom>"` à la place.
 
 Puis vérifier dans le tableau de bord (`Firewall` → trafic filtré sur la règle) que seul du trafic
 anormal correspond. Un réseau d'entreprise ou un opérateur mobile fait sortir plusieurs clients par
 la **même IP** : c'est le risque à écarter avant de bloquer.
 
-**Étape 2 — bloquer.** Une fois l'observation propre :
+**Étape 2 — bloquer.** Une fois l'observation propre, relue sur
+`https://vercel.com/saddikis-projects/aimezlanatureseo/firewall/traffic?filter=rule_limite_paiement_sK41Kp` :
 
 ```bash
 vercel firewall rules edit "Limite paiement" \
@@ -344,6 +358,9 @@ vercel firewall rules edit "Limite paiement" \
   --rate-limit-action rate_limit --yes
 vercel firewall publish --yes
 ```
+
+⚠️ `edit --condition` **remplace** toutes les conditions de la règle : il faut la redonner en
+entier, même inchangée, sinon la règle se met à porter sur tout le site.
 
 Trois précisions qui comptent :
 
