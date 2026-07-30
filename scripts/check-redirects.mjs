@@ -50,13 +50,69 @@ async function loadRules(file) {
 }
 
 /**
- * Une règle joker Vercel contient un paramètre (`:path*`). On la teste avec un
- * chemin d'exemple pour vérifier que le joker attrape bien tout ce qui est en
- * dessous. Ex. /product-category/:path* -> /product-category/exemple-test.
+ * Une règle joker Vercel contient un paramètre (`:path*`) ou un groupe (`(.*)`).
+ * On la teste avec un chemin d'exemple pour vérifier que le joker attrape bien
+ * tout ce qui est en dessous. Ex. /product-category/(.*) ->
+ * /product-category/exemple-test-redirection.
  * @param {string} source
  */
 function sampleForWildcard(source) {
-  return source.replace(/:[^/]+\*?/g, 'exemple-test-redirection');
+  return source
+    .replace(/\([^)]*\)/g, 'exemple-test-redirection')
+    .replace(/:[A-Za-z_][A-Za-z0-9_]*\*?/g, 'exemple-test-redirection');
+}
+
+/** Une source contient-elle un joker ? */
+function isWildcard(source) {
+  return source.includes('(') || source.includes(':');
+}
+
+/**
+ * Les DEUX formes à tester pour une règle : avec et sans slash final.
+ *
+ * Pourquoi les deux : le joker `:path*` de Vercel ne capture PAS le slash final.
+ * La règle `/product-category/:path*` répondait donc 308 sur
+ * `/product-category/x` mais 404 sur `/product-category/x/` — or les URLs du
+ * sitemap WordPress ont TOUTES un slash final. Le script ne testait que la
+ * forme sans slash et affichait « 53/53 OK » pendant que 6 URLs réellement
+ * indexées tombaient en 404. Ne jamais tester une seule forme.
+ *
+ * @param {string} source
+ * @returns {string[]}
+ */
+function variantsFor(source) {
+  const base = isWildcard(source) ? sampleForWildcard(source) : source;
+  const sansSlash = base.endsWith('/') ? base.slice(0, -1) : base;
+  const avecSlash = base.endsWith('/') ? base : base + '/';
+  // Cas limite : la source est « / » — une seule forme possible.
+  return sansSlash === '' ? [avecSlash] : [avecSlash, sansSlash];
+}
+
+/**
+ * Suit une chaîne de redirections à la main (au lieu de `redirect: 'follow'`)
+ * pour pouvoir compter les sauts et voir chaque étape.
+ *
+ * Nécessaire depuis l'ajout de `"trailingSlash": true` dans vercel.json : une
+ * URL sans slash final fait désormais 2 sauts (`/x` -> `/x/` -> cible) au lieu
+ * de tomber en 404. C'est voulu, mais il faut comparer la destination FINALE et
+ * non celle du premier saut.
+ *
+ * @param {string} startUrl
+ * @param {Record<string,string>} headers
+ */
+async function followChain(startUrl, headers) {
+  const MAX_SAUTS = 5;
+  const chain = [];
+  let current = startUrl;
+
+  for (let i = 0; i < MAX_SAUTS; i++) {
+    const res = await fetch(current, { redirect: 'manual', headers });
+    const location = res.headers.get('location');
+    chain.push({ url: current, status: res.status, location });
+    if (!location) return { chain, finalUrl: current, finalStatus: res.status };
+    current = new URL(location, current).href;
+  }
+  return { chain, finalUrl: current, finalStatus: null, tropDeSauts: true };
 }
 
 /** Chemin (pathname) d'une URL absolue ou relative, résolu contre BASE. */
@@ -76,48 +132,77 @@ function pathOf(urlOrPath) {
  * @param {{source: string, destination: string, code: number}} rule
  */
 async function checkRule(rule) {
-  const isWildcard = rule.source.endsWith('*');
-  const requestPath = isWildcard ? sampleForWildcard(rule.source) : rule.source;
-  const url = BASE + requestPath;
   const baseHost = new URL(BASE).host;
   const headers = { 'user-agent': 'redirect-check/1.0' };
+  const attendu = pathOf(rule.destination);
 
-  try {
-    const res = await fetch(url, { redirect: 'manual', headers });
+  // 301 et 308 sont deux redirections permanentes équivalentes (Vercel sert
+  // du 308, Cloudflare du 301) ; 302 et 307 sont les temporaires. On compare
+  // la CLASSE de redirection, pas le code exact, pour rester agnostique.
+  const attendus = rule.code === 301 ? [301, 308] : [302, 307];
 
-    const location = res.headers.get('location');
-    if (!location) {
-      return { ok: false, rule, requestPath, got: `statut ${res.status} sans en-tête Location` };
+  /** @param {string} requestPath */
+  const testerUneForme = async (requestPath) => {
+    try {
+      const { chain, finalUrl, finalStatus, tropDeSauts } = await followChain(
+        BASE + requestPath,
+        headers
+      );
+
+      if (tropDeSauts) {
+        return { ok: false, rule, requestPath, got: 'boucle de redirection (plus de 5 sauts)' };
+      }
+
+      const premier = chain[0];
+      if (!premier.location) {
+        return { ok: false, rule, requestPath, got: `statut ${premier.status} sans en-tête Location` };
+      }
+      if (!attendus.includes(premier.status)) {
+        return {
+          ok: false, rule, requestPath,
+          got: `statut ${premier.status} (attendu ${attendus.join(' ou ')}) (→ ${premier.location})`,
+        };
+      }
+
+      const cible = new URL(finalUrl);
+      if (cible.host !== baseHost) {
+        return { ok: false, rule, requestPath, got: `redirige vers un autre domaine : ${cible.host}` };
+      }
+      if (cible.pathname !== attendu) {
+        return {
+          ok: false, rule, requestPath,
+          got: `aboutit à ${cible.pathname} au lieu de ${attendu}`,
+        };
+      }
+      if (finalStatus !== 200) {
+        return {
+          ok: false, rule, requestPath,
+          got: `redirection correcte mais la cible ${cible.pathname} renvoie ${finalStatus}`,
+        };
+      }
+
+      // Nombre de sauts = nombre de réponses de redirection (hors la 200 finale).
+      const sauts = chain.length - 1;
+      const codes = chain.filter((c) => c.location).map((c) => c.status).join('→');
+      // 2 sauts est normal pour la forme sans slash final (trailingSlash: true) ;
+      // au-delà, la règle mérite d'être réécrite pour pointer directement.
+      const alerte = sauts > 2 ? `  ⚠️ ${sauts} sauts` : '';
+      return { ok: true, rule, requestPath, got: `${codes} → ${cible.pathname} (200)${alerte}` };
+    } catch (err) {
+      return {
+        ok: false, rule, requestPath,
+        got: `erreur réseau : ${err instanceof Error ? err.message : String(err)}`,
+      };
     }
+  };
 
-    // Résout Location (absolu ou relatif) contre le domaine testé.
-    const target = new URL(location, BASE + '/');
-
-    // 301 et 308 sont deux redirections permanentes équivalentes (Vercel sert
-    // du 308, Cloudflare du 301) ; 302 et 307 sont les temporaires. On compare
-    // la CLASSE de redirection, pas le code exact, pour rester agnostique.
-    const permanents = [301, 308];
-    const attendus = rule.code === 301 ? permanents : [302, 307];
-    if (!attendus.includes(res.status)) {
-      return { ok: false, rule, requestPath, got: `statut ${res.status} (attendu ${attendus.join(' ou ')}) (→ ${location})` };
-    }
-    if (target.host !== baseHost) {
-      return { ok: false, rule, requestPath, got: `redirige vers un autre domaine : ${target.host}` };
-    }
-    if (target.pathname !== pathOf(rule.destination)) {
-      return { ok: false, rule, requestPath, got: `redirige vers ${target.pathname} au lieu de ${pathOf(rule.destination)}` };
-    }
-
-    // La cible répond-elle réellement 200 ? On suit la chaîne de redirections.
-    const finalRes = await fetch(target, { redirect: 'follow', headers });
-    if (!finalRes.ok) {
-      return { ok: false, rule, requestPath, got: `redirection correcte mais la cible ${target.pathname} renvoie ${finalRes.status}` };
-    }
-
-    return { ok: true, rule, requestPath, got: `${res.status} → ${target.pathname} (${finalRes.status})` };
-  } catch (err) {
-    return { ok: false, rule, requestPath, got: `erreur réseau : ${err instanceof Error ? err.message : String(err)}` };
+  // Les deux formes (avec et sans slash final) sont testées : c'est ce contrôle
+  // qui manquait et qui laissait passer 6 URLs en 404.
+  const results = [];
+  for (const forme of variantsFor(rule.source)) {
+    results.push(await testerUneForme(forme));
   }
+  return results;
 }
 
 /** Exécute les tâches par lots pour limiter la charge sur le serveur. */
@@ -133,7 +218,11 @@ async function runPooled(items, worker, size) {
 async function main() {
   const rules = await loadRules(VERCEL_JSON);
 
-  console.log(`\nTest de ${rules.length} redirections sur ${BASE}\n`);
+  const nbFormes = rules.reduce((n, r) => n + variantsFor(r.source).length, 0);
+  console.log(
+    `\nTest de ${rules.length} redirections sur ${BASE}\n` +
+    `${nbFormes} requêtes : chaque règle est testée AVEC et SANS slash final.\n`
+  );
 
   // Tant que le basculement WordPress → Astro n'est pas fait, la prod sert
   // encore l'ancien site : les nouvelles pages y répondent 200 (et non 301),
@@ -147,7 +236,8 @@ async function main() {
     );
   }
 
-  const results = await runPooled(rules, checkRule, CONCURRENCY);
+  // checkRule renvoie un résultat PAR FORME testée : on aplatit.
+  const results = (await runPooled(rules, checkRule, CONCURRENCY)).flat();
 
   const failures = results.filter((r) => !r.ok);
   for (const r of results) {

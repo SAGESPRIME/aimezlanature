@@ -108,6 +108,18 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     {noindex && <meta name="robots" content="noindex,nofollow" />}
 
+    <!-- Vérification Google Search Console. Valeur relevée le 2026-07-29 dans le
+         HTML du WordPress encore en ligne sur aimezlanature.fr : si la propriété
+         GSC est vérifiée par cette balise, la retirer à la bascule ferait perdre
+         l'accès à la Search Console (et donc au suivi de la migration).
+         Ce jeton est public par nature, il n'y a rien à protéger ici.
+         NE PAS SUPPRIMER sans avoir d'abord confirmé qu'une vérification par
+         TXT DNS a pris le relais sur le domaine. -->
+    <meta
+      name="google-site-verification"
+      content="UhQ55Ibs19Xue-Hi6BWyZzfUG9tOYktlkTzEVH2T1hg"
+    />
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
