@@ -88,6 +88,45 @@
     });
   }
 
+  /**
+   * Retrait du consentement : on repasse Consent Mode en `denied` ET on efface
+   * les cookies Google déjà posés.
+   *
+   * Pourquoi l'effacement : sans lui, le visiteur qui avait accepté puis change
+   * d'avis garde un `_gcl_au` actif sur sa machine. Le traçage continuerait donc
+   * après un refus, ce qui vide le retrait de son sens — le retrait doit faire
+   * CESSER le traitement, pas seulement empêcher les suivants. Constaté au test
+   * sur le déploiement réel : après « Refuser », `_gcl_au` était toujours là.
+   *
+   * Portée honnête : on ne peut effacer que les cookies de NOTRE domaine, non
+   * `HttpOnly` (c'est le cas des `_gcl_*`, posés en JavaScript). Ceux déposés par
+   * Google sur ses propres domaines ne sont pas accessibles depuis ici ; le
+   * visiteur les supprime via son navigateur, ce que les mentions légales
+   * indiquent.
+   */
+  function revoquer() {
+    gtag('consent', 'update', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+    });
+
+    var hote = window.location.hostname;
+    var domaines = ['', '; domain=' + hote, '; domain=.' + hote];
+    var noms = document.cookie.split(';').map(function (c) {
+      return c.trim().split('=')[0];
+    });
+
+    noms.forEach(function (nom) {
+      // Cookies de mesure Google : `_gcl_*` (clics Ads) et `_gac_*` (campagnes).
+      if (!/^_gcl|^_gac/.test(nom)) return;
+      domaines.forEach(function (d) {
+        document.cookie = nom + '=; Max-Age=0; path=/' + d;
+      });
+    });
+  }
+
   /* ── Chargement de gtag.js, uniquement sur accord ────────────────────────── */
 
   var chargementLance = false;
@@ -141,6 +180,10 @@
     if (decision === 'accepte') {
       accorder();
       chargerGoogle();
+    } else {
+      // Couvre le retrait après une acceptation : on coupe la mesure et on
+      // efface les cookies déjà posés, au lieu de les laisser courir.
+      revoquer();
     }
     masquerBandeau();
   }
