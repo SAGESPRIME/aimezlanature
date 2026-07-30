@@ -60,7 +60,7 @@ aujourd'hui, seulement d'être exécutés au bon moment.
 | Redirections | URLs **sans** slash final → 404 | ✅ **Corrigé le 2026-07-30** | `/qui-sommes-nous/` → 308 OK, mais `/qui-sommes-nous` → **404**. Corrigé par 50 règles jumelles explicites (chaque source existe désormais dans ses deux formes), et **surtout PAS** par `"trailingSlash": true` — voir l'encadré ci-dessous. | P1 |
 | Redirections | `/category/blog/` | ✅ **Corrigé le 2026-07-30** | 404 confirmée. Ajouter un 301 vers `/blog/`. | P1 |
 | Outillage | `check-redirects.mjs` donne un **faux vert** | ✅ **Corrigé le 2026-07-30** | Le script teste les jokers avec un chemin **sans slash final** (`sampleForWildcard`). Il annonce « 53/53 OK » alors que les 6 vraies URLs `/product-category/*/` sont en 404. Faire tester chaque règle dans ses **deux formes** (avec et sans slash final). | P1 |
-| E-commerce | `/api/checkout` : pas de limite de débit | À corriger | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Le risque réel est l'abus scripté (curl, bot) qui créerait des sessions Stripe en masse → coûts et limites d'API. Aucune donnée exposée. **À réimplémenter pour Vercel** — voir l'encadré ci-dessous, l'ancien code est inutilisable. | P1 |
+| E-commerce | `/api/checkout` : pas de limite de débit | ✅ **Corrigé le 2026-07-30** | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Le risque réel est l'abus scripté (curl, bot) qui créerait des sessions Stripe en masse → coûts et limites d'API. Aucune donnée exposée. **À réimplémenter pour Vercel** — voir l'encadré ci-dessous, l'ancien code est inutilisable. | P1 |
 
 ### Le rate-limiting a existé, puis a été perdu dans la migration
 
@@ -88,9 +88,59 @@ git show dcccb08:src/lib/rateLimit.ts
 Il est utile comme référence pour la **logique** (fenêtre, clé de comptage, réponse 429), pas pour
 le **mécanisme**, qui était le limiteur natif de Cloudflare.
 
-Piste recommandée, cohérente avec la ligne du projet (zéro dépendance tierce, CSP stricte) : les
-**règles de rate limiting du pare-feu Vercel (WAF)**, qui se configurent au niveau de la plateforme
-sans une ligne de code ni un paquet de plus. À défaut, un compteur dans un Redis du Marketplace.
+### Réimplémenté le 2026-07-30 — `src/lib/rateLimit.ts`
+
+Portée réelle constatée : ce n'était pas « `/api/*` sans protection », mais **une seule route**.
+
+| Route | Avant | Après |
+|---|---|---|
+| `/api/checkout` | **aucune protection** | 10 appels / 60 s par IP |
+| `/api/avis` | piège + délai + achat Stripe vérifié | + 5 / 60 s |
+| `/api/revendeur` | piège + délai | + 5 / 60 s |
+| `/api/stripe-webhook` | signature HMAC + anti-rejeu | **inchangé, volontairement** |
+
+**Pourquoi le webhook est exclu.** Stripe ne suit pas les redirections et considère toute réponse
+non-2xx comme un échec de livraison : un 429 déclencherait des rejeux en boucle et casserait les
+emails de confirmation de commande. Même famille de piège que `trailingSlash`. Vérifié dans le
+bundle réellement déployé : `stripe-webhook_*.mjs` contient **0 référence** au limiteur, là où
+`checkout`, `avis` et `revendeur` importent bien `rateLimit_*.mjs`.
+
+Choix techniques : clé = IP via `x-forwarded-for`, non falsifiable car « Vercel overwrites this
+header and does not forward external IPs to prevent spoofing » (doc Vercel). **Fail-open** partout —
+IP illisible, bug, mémoire saturée laissent passer : la disponibilité de la vente primait déjà dans
+la version Cloudflare. Compteurs **cloisonnés par route**, pour qu'un flot sur le formulaire
+revendeur ne puisse pas empêcher un client de payer. Mémoire bornée à 5 000 clés, sinon la
+protection deviendrait elle-même le déni de service. Zéro dépendance ajoutée.
+
+**Limite honnête** : le compteur vit en mémoire, donc par instance. Fluid Compute réutilise les
+instances chaudes, ce qui freine bien un attaquant qui martèle depuis une IP — mais le compteur
+repart de zéro à froid et une attaque répartie passe à travers. **C'est un ralentisseur, pas un
+mur.**
+
+13 tests unitaires au vert, dont les deux qui comptent : cloisonnement des routes (revendeur saturé
+→ checkout toujours ouvert pour la même IP) et fail-open sans en-tête d'IP (50 appels, tous passés).
+
+### Le mur, lui, reste à poser (action du marchand)
+
+Une règle du pare-feu Vercel agit **avant** que la fonction ne démarre, donc sans consommer
+d'invocation. Je ne peux pas la créer : la CLI Vercel n'est pas installée ici et c'est une
+modification d'infrastructure de production. Commande à jouer, volontairement **limitée à
+`/api/checkout`** pour qu'elle ne puisse jamais toucher le webhook :
+
+```bash
+vercel firewall rules add "Limite paiement" \
+  --condition '{"type":"path","op":"pre","value":"/api/checkout"}' \
+  --action rate_limit \
+  --rate-limit-window 60 \
+  --rate-limit-requests 30 \
+  --rate-limit-keys ip \
+  --rate-limit-action deny --yes
+```
+
+Deux points de vigilance : la CLI crée la règle en **brouillon**, il faut la publier pour qu'elle
+s'applique ; et le rate limiting WAF peut être réservé aux plans payants — **c'est exactement ce qui
+avait tué la version Cloudflare**. Si la commande est refusée, le limiteur applicatif reste en place
+et fait le travail de base : cette fois la protection ne dépend plus du plan.
 | Config | `EMAIL_SITE_URL` | À corriger | Variable temporaire pointant les liens des emails vers l'URL de déploiement (le domaine servant encore WordPress). **À supprimer de Vercel juste après la bascule**, sinon les emails continueront de pointer vers `*.vercel.app`. Le commentaire de `src/data/email-commande.ts:49` le rappelle. | P1 |
 | RGPD | Bandeau de consentement | OK **aujourd'hui** | Aucun cookie n'est posé : seul `localStorage` sert au panier (strictement nécessaire) et il n'y a **aucun script tiers**. Pas de bandeau requis en l'état. ⚠️ **Dès que Google Ads est réintégré, un bandeau conforme CNIL devient obligatoire** (consentement préalable, refus aussi facile que l'acceptation). Les deux sujets sont liés. | P1 |
 | SEO | 11 URLs `/x/` à `/x-11/` | Accepté | Articles vides du WordPress, présents au sitemap WP, non couverts → 404. **Le 404 est ici la bonne réponse** : rediriger 11 pages poubelle vers l'accueil crée des « soft 404 » que Google pénalise. À laisser tomber, Google les désindexera. | P2 |

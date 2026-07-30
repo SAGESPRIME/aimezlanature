@@ -9,6 +9,7 @@ import {
 } from '../../data/revendeur';
 // `echapperHtml` importé sous le nom `echapper` : même fonction, désormais
 // partagée avec les autres routes, sans avoir à renommer chaque appel ici.
+import { verifierLimite, PLAFONDS } from '../../lib/rateLimit';
 import { envoyerEmail, echapperHtml as echapper } from '../../lib/email';
 
 // Route exécutée à la demande : le reste du site reste statique.
@@ -76,6 +77,15 @@ export const POST: APIRoute = async ({ request, url }) => {
           headers: { 'Content-Type': 'application/json' },
         })
       : pageErreur(message, status);
+
+  // Limite anti-abus, en plus du piège et du délai : cette route envoie un email
+  // au marchand. On passe par `echec()` et non par la réponse 429 générique de
+  // lib/rateLimit, pour qu'un visiteur SANS JavaScript reçoive la page d'erreur
+  // du site et non du JSON brut.
+  const limite = verifierLimite(request, 'revendeur', PLAFONDS.formulaire.max, PLAFONDS.formulaire.fenetreS);
+  if (!limite.autorise) {
+    return echec('Trop de tentatives. Merci de réessayer dans un instant.', 429);
+  }
 
   let form: FormData;
   try {

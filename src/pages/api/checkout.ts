@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro';
 // l'environnement (clés secrètes) est exposé via process.env.
 import { products, SITE } from '../../data/products';
 import { unitPriceFor } from '../../lib/pricing';
+import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimit';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -27,6 +28,12 @@ export const POST: APIRoute = async ({ request, url }) => {
       status,
       headers: { 'Content-Type': 'application/json' },
     });
+
+  // Limite anti-abus AVANT tout travail : cette route est appelable par
+  // n'importe qui (un POST JSON n'est pas couvert par le contrôle d'origine
+  // d'Astro) et chaque appel crée une session chez Stripe.
+  const limite = verifierLimite(request, 'checkout', PLAFONDS.checkout.max, PLAFONDS.checkout.fenetreS);
+  if (!limite.autorise) return reponseTropDAppels(limite.attendreS);
 
   const key: string | undefined = process.env.STRIPE_SECRET_KEY;
 
