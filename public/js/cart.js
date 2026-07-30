@@ -310,9 +310,21 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: items }),
     })
-      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      // Lire le corps en TEXTE puis tenter le JSON, jamais `r.json()` direct :
+      // notre route répond du JSON, mais une règle de rate limiting du pare-feu
+      // Vercel répond une page HTML. `r.json()` rejetterait alors, et le client
+      // verrait le message d'erreur brut de l'analyseur JSON (« Unexpected
+      // token '<' … ») au milieu d'une phrase française. Ici une réponse non
+      // JSON donne simplement `d = null`, traité plus bas comme une erreur.
+      .then(function (r) {
+        return r.text().then(function (t) {
+          var d = null;
+          try { d = t ? JSON.parse(t) : null; } catch (e) { /* page d'erreur de la plateforme */ }
+          return { ok: r.ok, status: r.status, d: d };
+        });
+      })
       .then(function (res) {
-        if (res.ok && res.d.url) {
+        if (res.ok && res.d && res.d.url) {
           // Mémorise le montant calculé par le serveur avant de partir chez
           // Stripe : la page de confirmation en a besoin pour valoriser la
           // conversion Google Ads, et le panier y sera déjà vidé.
@@ -325,7 +337,16 @@
           window.location.href = res.d.url;
           return;
         }
-        throw new Error(res.d && res.d.error ? res.d.error : 'Paiement indisponible');
+        // Ordre des messages : celui de notre route d'abord (le plus précis),
+        // puis un texte propre pour le 429 du pare-feu, qui n'a pas de corps
+        // JSON à nous offrir. Jamais de message technique au client.
+        throw new Error(
+          res.d && res.d.error
+            ? res.d.error
+            : res.status === 429
+              ? 'Trop de tentatives. Merci de réessayer dans un instant.'
+              : 'Paiement indisponible'
+        );
       })
       .catch(function (ex) {
         payer.disabled = false;

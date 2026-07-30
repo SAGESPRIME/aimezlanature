@@ -204,6 +204,45 @@ Relevé des deux exécutions du 2026-07-30 : en parallèle 27 puis 30 appels pas
 varie avec le nombre d'instances que Vercel démarre, ce qui illustre le défaut mieux qu'un chiffre
 fixe. En série, 10 passés / 20 bloqués aux deux essais.
 
+#### Vérifié au navigateur (Playwright) — et un défaut trouvé au passage
+
+Un script en ligne de commande dit ce que le serveur répond ; il ne dit pas ce que le **client
+voit**. Parcours joué dans un vrai navigateur sur la production :
+
+| Contrôle | Résultat |
+|---|---|
+| Bandeau de consentement | affiché, « Accepter » et « Refuser » tous deux en `<button>`, même niveau |
+| Après « Refuser » | **0 requête** vers `google*` / `doubleclick` / `gtag`, 0 violation CSP en console |
+| Fiche → Ajouter au panier → tiroir → Commander | redirection vers `checkout.stripe.com`, page titrée « Environnement de test NATURALIS VERT » |
+| Panier | 4 articles, remise −20 % appliquée, total 63,68 € cohérent entre tiroir et récapitulatif |
+| **Quota épuisé puis clic sur Commander** | message dans un `role="alert"` visible : « Trop de tentatives. Merci de réessayer dans un instant. **Vous pouvez aussi commander par email : commande@aimezlanature.fr** », panier conservé, bouton re-cliquable |
+
+La dégradation est donc bien construite : le client impatient n'est pas dans une impasse, il a une
+porte de sortie. Rien à corriger de ce côté.
+
+**Mais le test a révélé un défaut qui n'apparaîtra que le jour où la règle de pare-feu sera posée.**
+`public/js/cart.js` appelait `r.json()` **avant** de regarder le code HTTP. Notre route répond du
+JSON, donc tout allait bien — sauf que la règle de rate limiting du pare-feu répond une **page
+HTML**. `r.json()` rejette alors, et le `catch` affiche le message de l'analyseur JSON tel quel.
+Contre-épreuve jouée dans le navigateur sur une réponse `429 + text/html` :
+
+```
+AVANT : « Failed to execute 'json' on 'Response': Unexpected token '<', "<!DOCTYPE "...
+          is not valid JSON  Vous pouvez aussi commander par email : … »
+APRÈS : « Trop de tentatives. Merci de réessayer dans un instant.
+          Vous pouvez aussi commander par email : … »
+```
+
+Corrigé : le corps est lu en **texte** puis analysé dans un `try`, une réponse non JSON donnant
+simplement `null`, et le code 429 a son propre message français. Vérifié au navigateur sur le build
+réel, avec `fetch` remplacé pour rendre exactement la réponse du pare-feu — aucun jargon technique
+dans le texte affiché, bouton re-cliquable.
+
+**Conséquence de conception, à ne pas défaire.** Les deux plafonds doivent rester dans cet ordre :
+le limiteur applicatif à **10** (un humain qui s'impatiente clique en série, il reçoit donc notre
+message soigné avec l'adresse de secours) et le pare-feu à **30** (un attaquant tape en parallèle, il
+se fait couper à l'entrée). Inverser les seuils priverait les clients du bon message.
+
 #### ⚠️ Mesuré le 2026-07-30 : le limiteur ne résiste pas au parallélisme
 
 J'avais écrit ici « vérifié en production : 10 appels passent, le 11ᵉ renvoie 429 ». C'est exact,

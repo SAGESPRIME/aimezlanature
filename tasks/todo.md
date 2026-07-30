@@ -403,6 +403,17 @@ rafale empêcherait les vrais clients de payer pendant qu'elle dure.
       n'avaient jamais été versionnés (donc irrejouables). Rouge aujourd'hui = normal : c'est le
       critère d'acceptation de la règle de pare-feu. Refuse de tourner sur une boutique en mode live
       sans `--live`, pour ne pas épuiser le budget Stripe d'un site qui vend.
+- [x] **Parcours vérifié au navigateur (Playwright)** : bandeau OK, 0 requête Google après « Refuser »,
+      0 violation CSP, fiche → panier → Stripe (`Environnement de test NATURALIS VERT`), et quota
+      épuisé → message dans un `role="alert"` avec l'adresse de commande par email, panier conservé,
+      bouton re-cliquable. La dégradation est bien construite.
+- [x] **BUG corrigé, trouvé par ce test** : `cart.js` appelait `r.json()` avant de tester le code
+      HTTP. Sans effet aujourd'hui, mais la règle de pare-feu répond du **HTML** : le client aurait
+      lu « Unexpected token '<' … is not valid JSON » au milieu d'une phrase française.
+      Corps lu en texte + `JSON.parse` dans un `try` + message dédié au 429. Contre-épreuve jouée au
+      navigateur sur une réponse `429 + text/html` : avant/après documentés dans le rapport.
+      ⚠️ Ordre des seuils à NE PAS inverser : limiteur applicatif à 10 (l'humain clique en série et
+      reçoit le bon message), pare-feu à 30 (l'attaquant tape en parallèle et est coupé à l'entrée).
 - [ ] ⏳ **ACTION MARCHAND, avant la bascule** — poser la règle de pare-feu sur `/api/checkout` :
       `npm i -g vercel` puis `vercel link`, poser la règle en `--rate-limit-action log`,
       `vercel firewall publish --yes`, relire le trafic dans le tableau de bord, puis repasser en
