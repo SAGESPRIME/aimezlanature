@@ -75,9 +75,18 @@ Retracé le 2026-07-30, parce que ce rapport conseillait d'abord « finir la bra
 3. Sauf que la PR #5 a migré tout le projet **de Cloudflare vers Vercel**. Le binding `ratelimits`
    et `wrangler.jsonc` n'existent plus : ce code **ne pourra jamais être re-mergé tel quel**.
 4. Les branches `rate-limiting-a-verifier` et `security/rate-limiting-api` **n'existent plus sur
-   GitHub**. Seule une branche **locale** `security/rate-limiting-api` (`dcccb08`) conserve encore
-   le code — utile comme référence pour la logique, pas pour le mécanisme. **Ne pas la supprimer
-   avant d'avoir réimplémenté.**
+   GitHub**. Une branche locale `security/rate-limiting-api` pointe encore sur `dcccb08`.
+
+**Le code n'est pas en danger** : `dcccb08` ayant été mergé puis reverté, il fait partie de
+l'historique de master et ne sera donc jamais nettoyé par git. Le fichier reste lisible à tout
+moment, branche ou pas :
+
+```bash
+git show dcccb08:src/lib/rateLimit.ts
+```
+
+Il est utile comme référence pour la **logique** (fenêtre, clé de comptage, réponse 429), pas pour
+le **mécanisme**, qui était le limiteur natif de Cloudflare.
 
 Piste recommandée, cohérente avec la ligne du projet (zéro dépendance tierce, CSP stricte) : les
 **règles de rate limiting du pare-feu Vercel (WAF)**, qui se configurent au niveau de la plateforme
