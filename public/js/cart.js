@@ -312,7 +312,19 @@
     })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (res) {
-        if (res.ok && res.d.url) { window.location.href = res.d.url; return; }
+        if (res.ok && res.d.url) {
+          // Mémorise le montant calculé par le serveur avant de partir chez
+          // Stripe : la page de confirmation en a besoin pour valoriser la
+          // conversion Google Ads, et le panier y sera déjà vidé.
+          try {
+            localStorage.setItem(
+              'aln_derniere_commande_v1',
+              JSON.stringify({ montant: res.d.montant, devise: 'EUR' })
+            );
+          } catch (e) { /* mode privé : la conversion partira sans montant */ }
+          window.location.href = res.d.url;
+          return;
+        }
         throw new Error(res.d && res.d.error ? res.d.error : 'Paiement indisponible');
       })
       .catch(function (ex) {

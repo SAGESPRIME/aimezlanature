@@ -10,12 +10,19 @@
  * cette page ne prétend pas valider le paiement côté serveur.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { suiviAchatActif, cibleConversion } from '../data/tracking';
 
 const metaTitle = 'Merci pour votre commande | Aimez la Nature';
 const metaDescription = 'Votre commande de Perles de Céramique EM® est confirmée.';
+
+// Cible de la conversion Google Ads, ou chaîne vide tant que l'étiquette n'est
+// pas renseignée dans src/data/tracking.ts. Passée par un attribut de données
+// plutôt qu'écrite dans le JS : la valeur n'existe qu'à un seul endroit.
+const cibleAchat = suiviAchatActif() ? cibleConversion() : '';
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
+  <div data-suivi-achat data-cible={cibleAchat} hidden></div>
   <section class="bg-[#F5F0E8] px-4 py-20">
     <div class="max-w-2xl mx-auto text-center">
       <p class="text-5xl mb-6" aria-hidden="true">🌿</p>

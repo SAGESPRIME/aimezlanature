@@ -97,7 +97,20 @@ const colonnes = [
   <!-- Barre du bas -->
   <div class="border-t border-white/10">
     <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-xs text-[#C9D6C4]/60 sm:flex-row sm:items-center sm:justify-between">
-      <p>© {new Date().getFullYear()} Aimez la Nature — Tous droits réservés.</p>
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span>© {new Date().getFullYear()} Aimez la Nature — Tous droits réservés.</span>
+        <!-- Retrait du consentement. Un <button> et non un <a href="#"> : l'action
+             est un changement d'état, pas une navigation, et il ne doit rien faire
+             de visible quand JavaScript est absent (auquel cas aucun cookie de
+             mesure n'a pu être posé, donc il n'y a rien à retirer). -->
+        <button
+          type="button"
+          data-rouvrir-consentement
+          class="underline underline-offset-2 hover:text-[#F5F0E8] transition-colors"
+        >
+          Gérer les cookies
+        </button>
+      </p>
       <p class="flex items-center gap-2">
         <svg class="h-3.5 w-3.5 text-[#A8C4A0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 11h12v9H6zM9 11V8a3 3 0 1 1 6 0v3" />

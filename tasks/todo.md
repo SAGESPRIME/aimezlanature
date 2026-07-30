@@ -303,3 +303,45 @@ Commandes par an : 2020 200 · 2021 415 · 2022 367 · **2023 514** · 2024 141 
 - [ ] Monter en volume progressivement (100-200 d'abord) : domaine d'envoi neuf, adresses vieilles
       de 6 ans, risque de réputation sur un envoi massif d'un coup
 - [ ] Comprendre la chute 2024-2025 avant d'investir dans la relance
+
+---
+
+## Chantier 2026-07-30 — Google Ads + bandeau de consentement
+
+Décisions du marchand : bandeau MAISON (pas Cookiebot, contrairement au WordPress),
+et suivi pages vues + achat avec l'étiquette de conversion à remplir plus tard.
+
+Relevé sur le WordPress : `AW-17799798810`, Consent Mode v2 déjà en place (defaults
+`denied` sur UE+UK+CH), tag posé par le plugin WooCommerce Google Listings & Ads
+(`groups: "GLA"`, `developer_id.dOGY3NW`) — plugin inexistant sur Astro, les
+événements doivent donc être recréés à la main.
+
+### Ordre d'exécution
+- [ ] 1. `src/data/tracking.ts` — source unique : ID Ads, étiquette de conversion (vide),
+      clés de stockage, durée de validité du consentement
+- [ ] 2. `vercel.json` — ouvrir la CSP aux domaines Google **documentés** (liste
+      officielle developers.google.com/tag-platform/security/guides/csp, pas devinée)
+- [ ] 3. `public/js/consentement.js` — Consent Mode v2 en `denied` AVANT tout, lecture
+      du choix stocké, chargement de gtag.js UNIQUEMENT après acceptation, pilotage du
+      bandeau. Fichier externe : `script-src` interdit l'inline.
+- [ ] 4. `src/components/BandeauCookies.astro` — « Accepter » et « Refuser » au MÊME
+      niveau (exigence CNIL), `position: fixed` pour ne pas réintroduire de CLS
+- [ ] 5. `src/styles/global.css` — styles du bandeau (CSS externe, CSP)
+- [ ] 6. `BaseLayout.astro` — inclure le bandeau + le script
+- [ ] 7. `Footer.astro` — « Gérer les cookies » (retrait du consentement aussi facile
+      que son octroi — exigence CNIL)
+- [ ] 8. `api/checkout.ts` — renvoyer le montant autoritatif avec l'URL Stripe
+- [ ] 9. `public/js/cart.js` — mémoriser le montant avant la redirection Stripe
+- [ ] 10. `public/js/commande.js` — envoyer la conversion d'achat, avec `transaction_id`
+      = session Stripe pour que Google dédoublonne un rechargement de page
+- [ ] 11. `mentions-legales.astro` — section Cookies réécrite (finalité, durée, retrait)
+      ET **hébergeur Hostinger → Vercel** : mention obligatoire (LCEN) devenue fausse
+      avec la migration, avertissement déjà noté dans ce fichier le 2026-07-20
+
+### Vérifications exigées avant de dire que c'est fini
+- [ ] Aucune requête vers Google AVANT clic sur « Accepter » (onglet réseau)
+- [ ] Après « Refuser » : toujours aucune requête, et le choix survit à un rechargement
+- [ ] Après « Accepter » : gtag.js chargé, `consent update granted`, aucune violation CSP
+      dans la console
+- [ ] CLS toujours à 0,00 avec le bandeau affiché
+- [ ] Build OK, et le webhook Stripe toujours intact

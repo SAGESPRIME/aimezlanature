@@ -137,7 +137,11 @@ export const POST: APIRoute = async ({ request, url }) => {
       console.error('Stripe:', data?.error?.message);
       return json({ error: 'Le paiement est momentanément indisponible.' }, 502);
     }
-    return json({ url: data.url });
+    // `montant` sert UNIQUEMENT à valoriser la conversion Google Ads sur la page
+    // de confirmation. Il est renvoyé par le serveur, qui vient de le calculer,
+    // plutôt que recalculé côté navigateur : la valeur envoyée à Google est donc
+    // exactement celle facturée, frais de port compris.
+    return json({ url: data.url, montant: Number((subtotal + shipping).toFixed(2)) });
   } catch (e) {
     console.error('Stripe injoignable:', e);
     return json({ error: 'Le paiement est momentanément indisponible.' }, 502);

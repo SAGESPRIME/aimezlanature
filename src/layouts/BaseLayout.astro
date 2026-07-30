@@ -5,6 +5,7 @@ import { SITE, getProduct } from '../data/products';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
+import BandeauCookies from '../components/BandeauCookies.astro';
 import logo from '../assets/logo.png';
 
 // Polices préchargées. Le suffixe `?url` demande à Vite l'URL finale du fichier
@@ -306,7 +307,15 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
          (script-src 'self') : menu mobile + apparitions au défilement. -->
     <CartDrawer />
 
+    <!-- Bandeau de consentement. Placé après le contenu : il se superpose en
+         `position: fixed`, sa position dans le DOM n'affecte pas l'affichage,
+         et il ne s'interpose pas dans l'ordre de tabulation du contenu. -->
+    <BandeauCookies />
+
     <script src="/js/site.js" defer></script>
     <script src="/js/cart.js" defer></script>
+    <!-- Pilote le bandeau ET décide du chargement de Google Ads : aucun script
+         Google n'est demandé avant un clic explicite sur « Accepter ». -->
+    <script src="/js/consentement.js" defer></script>
   </body>
 </html>
