@@ -31,3 +31,14 @@ pnpm-debug.log*
 
 # Variables d'environnement locales (Vercel env pull écrit .env*.local)
 .env*.local
+
+# Skills tierces installées localement (impeccable, ui-ux-pro-max) : 4,8 Mo de
+# contenu téléchargé depuis GitHub, pas du code du projet — même logique que
+# node_modules/. C'est skills-lock.json, lui VERSIONNÉ, qui garde la trace des
+# versions installées et permet de les réinstaller à l'identique.
+.agents/
+
+# Restes de l'époque Cloudflare : `wrangler` est l'outil en ligne de commande de
+# Cloudflare, abandonné à la PR #5 (migration vers Vercel). Plus aucune mention
+# dans package.json ni astro.config.mjs — du cache mort.
+.wrangler/
