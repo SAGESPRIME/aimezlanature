@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check:redirects": "node scripts/check-redirects.mjs"
+    "check:redirects": "node scripts/check-redirects.mjs",
+    "check:ratelimit": "node scripts/check-rate-limit.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

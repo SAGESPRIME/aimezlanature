@@ -96,14 +96,12 @@ gratuits ; Resend en alternative ; ❌ MailChannels n'existe plus en gratuit sur
       Hostinger, accès utilisateur requis. C'est le vrai point bloquant, à anticiper.
 - [ ] Test bout en bout en mode test Stripe avant le passage en réel
 
-### ⚠️ DETTE ASSUMÉE — à lever avant toute mise en ligne
-`src/pages/commande-confirmee.astro` promet « un email de confirmation **avec le détail de
-votre commande** ». C'est FAUX tant que le webhook n'existe pas (le reçu Stripe ne contient
-ni adresse de livraison, ni délai, ni rétractation). Correction volontairement reportée : le
-texte final sera écrit UNE fois, avec le webhook, pour annoncer les deux emails
-(confirmation détaillée + reçu Stripe). Sans risque tant que ce build n'est pas en prod
-(la prod actuelle est l'ancien site Hostinger).
-**Si le site est déployé avant le webhook → reformuler ce texte AVANT le déploiement.**
+### ✅ DETTE LEVÉE (vérifié le 2026-07-30)
+`src/pages/commande-confirmee.astro` promettait « un email de confirmation avec le détail de
+votre commande » alors qu'aucun webhook n'existait — la promesse était fausse. Le webhook
+`api/stripe-webhook.ts` envoie désormais ce mail détaillé (commit `c21833d`), et le texte de
+la page annonce les deux envois : « un email de confirmation avec le détail de votre commande
+**et votre reçu** ». La promesse est donc tenue, plus rien à reformuler avant la bascule.
 
 ### À trancher avec le marchand avant la vente réelle
 - [ ] TVA : la SAS est-elle assujettie ? Aucune mention TTC/HT sur le site, aucun calcul de taxe côté Stripe
@@ -180,18 +178,22 @@ Page `/revendeurs/` pour les boutiques bio et vendeurs pro. Plan complet :
       contrastes mesurés 7,26 à 17,45:1 · piège hors écran et non focusable · 0 débordement
       horizontal · tous les fichiers ≤ 203 lignes
 
-### ⛔ Ne PAS publier cette page tant que :
-1. **Domaine vérifié chez Emailit** — Emailit refuse d'envoyer depuis un domaine non vérifié
-   (pas d'option « expéditeur validé par clic » comme Brevo). Il faut poser les enregistrements
-   SPF/DKIM dans les DNS de aimezlanature.fr, **hébergés chez Hostinger** → accès utilisateur.
-   Ce même réglage servira aux emails clients du niveau 1 : un seul travail pour les deux.
-2. `EMAILIT_API_KEY` (+ `EMAILIT_FROM` si l'expéditeur diffère de `notifications@aimezlanature.fr`)
-   dans les variables Cloudflare, et `.dev.vars` en local.
-3. **CGV pro** : les CGV du site sont B2C (rétractation 14 j) et ne doivent pas encadrer une
-   commande revendeur. La page annonce déjà que les conditions pro arrivent avec le devis.
-4. Droit de sous-distribuer à confirmer auprès du fournisseur EM (le site affirme déjà
-   « revendeur agréé EM, partenaire officiel »).
-- ⚠️ Jamais vérifié faute de clé : l'envoi réel d'un email par Emailit. À tester au premier essai.
+### Conditions de publication — levées le 2026-07-30, sauf une (état vérifié)
+La page **est publiée** : lien dans le pied de page, et présente au sitemap de production
+(24 URLs, contrôlé sur le déploiement réel `8b4b192`). Reprise des 4 conditions d'origine :
+
+1. ✅ **Domaine vérifié chez Emailit** — fait le 2026-07-29. Les enregistrements vivent sur le
+   sous-domaine `emailit.*`, donc sans toucher aux MX de la boîte mail existante.
+2. ✅ **`EMAILIT_API_KEY` en production** — prouvé indirectement mais solidement : les emails de
+   confirmation de commande partent réellement en production, et les trois routes
+   (`avis`, `revendeur`, `stripe-webhook`) passent par **le même** `src/lib/email.ts`.
+   ⚠️ Reste non éprouvé : l'envoi déclenché par CE formulaire précis (le gabarit, pas l'envoi).
+3. ✅ **CGV pro** — traité par construction, pas contourné : aucune commande pro ne peut passer en
+   ligne (formulaire → devis), et la FAQ de la page l'écrit noir sur blanc — « les CGV publiées sur
+   ce site encadrent les ventes aux particuliers et ne s'appliquent pas à une commande
+   professionnelle ». Les conditions dédiées arrivent avec le devis.
+4. ⏳ **Droit de sous-distribuer** — SEULE condition encore ouverte, à confirmer auprès du
+   fournisseur EM. Le site affirme déjà « revendeur agréé EM, partenaire officiel ».
 
 ## Reprise de la présentation interactive Manus (2026-07-23) — 3 ajouts FAITS
 Le marchand a fait analyser une présentation externe (aimez-nat-*.manus.space, 8 chapitres).
@@ -345,3 +347,79 @@ Relevé sur le WordPress : `AW-17799798810`, Consent Mode v2 déjà en place (de
       dans la console
 - [x] CLS toujours à 0,00 avec le bandeau affiché
 - [x] Build OK, et le webhook Stripe toujours intact
+
+---
+
+## Contrôle d'état du 2026-07-30 (fin de journée) — tout est en ligne
+
+Vérifié sur Vercel et sur le site réel, pas d'après les notes.
+
+- **Merges** : `master` = `origin/master` = `8b4b192`, **0 PR ouverte**. Le déploiement de
+  production `dpl_BJCyp…` porte ce même commit → le code déployé EST le code local.
+  Les 20 derniers déploiements sont tous `READY`.
+- **Redirections** : `node scripts/check-redirects.mjs https://aimezlanatureseo.vercel.app`
+  → **220/220 OK**. C'était l'étape J-3 n°2 du plan de bascule, la seule non vérifiable en
+  local. Elle est faite, sur le commit du jour.
+- **Consentement** : 3 scripts locaux seulement, **0 occurrence de `googletagmanager`** dans le
+  HTML servi → rien de Google avant acceptation. Balise Search Console présente
+  (`UhQ55Ibs…`, identique au WordPress). CSP en place, `style-src 'self'` intact.
+- **Contenu** : 8 pages clés en 200, sitemap 24 URLs (`/revendeurs/` dedans, 0 page de tunnel),
+  mentions légales annonçant bien **Vercel** comme hébergeur.
+- **Paiement** : `POST /api/checkout` → 200, session `cs_test_…`, `montant: 24,80 €`.
+  Tunnel fonctionnel, Stripe en test — volontaire.
+
+### 🔴 Le limiteur anti-abus ne tient pas face au parallélisme (mesuré le 2026-07-30)
+
+Rejouée avec 30 appels sur `/api/checkout`, même IP, même région, en ne changeant QUE la façon
+d'envoyer :
+
+| Façon d'envoyer | Sessions Stripe créées | Bloqués (429) |
+|---|---|---|
+| en série | 10 | **20** ✅ |
+| en parallèle | **27** | **0** ❌ |
+
+Le compteur vit en mémoire, donc par instance de fonction, et Vercel en démarre autant que la
+charge l'exige : ~3 instances × 10 = 27. **Plus l'attaque est forte, plus le plafond monte.**
+
+Le dégât réel n'est pas le coût mais **l'indisponibilité de la vente** : les 3 appels en échec
+étaient des 502 causés par `Stripe: Request rate limit exceeded`. Les limites Stripe se comptent
+**par compte** (25 req/s en test, 100 en réel, 25 par endpoint par défaut) — après la bascule, une
+rafale empêcherait les vrais clients de payer pendant qu'elle dure.
+
+- [x] Vérité rétablie dans `src/lib/rateLimit.ts` (l'en-tête affirmait qu'il fallait se répartir sur
+      plusieurs IP ou régions pour passer — faux, le parallélisme depuis une machine suffit)
+- [x] Rapport corrigé : ligne du tableau de synthèse en 🟠 « P0 avant bascule », encadré de mesure,
+      conclusion réécrite, étape J+30 périmée remplacée
+- [x] Vérifié dans la doc Vercel : **le rate limiting du pare-feu est inclus dès Hobby** (1 règle par
+      projet, clé IP, fenêtre 10 s-10 min, 1 M de requêtes incluses, trafic bloqué non facturé).
+      Le plan n'est PAS l'obstacle — c'est lui qui avait tué la version Cloudflare, j'avais transposé
+      la crainte sans la vérifier
+- [x] Écartés et documentés : SDK `@vercel/firewall` (consomme la même unique règle et laisse la
+      rafale atteindre notre code), Redis Upstash (dépendance inutile), BotID (exigerait d'ouvrir
+      la CSP `script-src 'self'`)
+- [x] `scripts/check-rate-limit.mjs` + `npm run check:ratelimit` — contrôle VERSIONNÉ qui rejoue les
+      deux rafales et sort en erreur si la parallèle n'est pas freinée. Il remplace les « 13 tests
+      unitaires » annoncés dans le rapport, qui avaient tourné dans un dossier temporaire et
+      n'avaient jamais été versionnés (donc irrejouables). Rouge aujourd'hui = normal : c'est le
+      critère d'acceptation de la règle de pare-feu. Refuse de tourner sur une boutique en mode live
+      sans `--live`, pour ne pas épuiser le budget Stripe d'un site qui vend.
+- [ ] ⏳ **ACTION MARCHAND, avant la bascule** — poser la règle de pare-feu sur `/api/checkout` :
+      `npm i -g vercel` puis `vercel link`, poser la règle en `--rate-limit-action log`,
+      `vercel firewall publish --yes`, relire le trafic dans le tableau de bord, puis repasser en
+      `rate_limit` (429) et republier. Commandes exactes dans la section « Le mur » du rapport.
+      ⚠️ La règle porte sur `/api/checkout` SEULEMENT : un 429 sur le webhook casserait les emails.
+
+### 🔵 `aimezlanatureseo.vercel.app` est PUBLIC — et c'est voulu
+Les trois autres adresses du projet (URL de déploiement, alias de branche, alias d'équipe)
+renvoient un **302** vers la connexion Vercel ; l'alias de production, lui, répond **200 sans
+authentification**. Le marchand l'a confirmé le 2026-07-30 : le site est déployé sur cette
+adresse de test pour éprouver les flux avant la bascule, et **doit rester accessible**.
+
+Ne PAS le signaler comme un défaut. Conséquences connues et assumées :
+- aucun `X-Robots-Tag: noindex` (Vercel n'en pose que sur les previews) et `robots.txt` en
+  `Allow: /` → l'adresse est crawlable. Le garde-fou est le `canonical`, qui pointe vers
+  `https://aimezlanature.fr/…` sur toutes les pages : Google consolide vers le vrai domaine.
+- le tunnel de paiement y est atteignable **en mode test**. Un inconnu qui tenterait d'y
+  commander ne serait pas débité. Risque accepté jusqu'à la bascule.
+- ⚠️ Le rapport d'audit affirmait « déploiement protégé par SSO » : vrai de l'URL de
+  déploiement testée alors, faux de l'alias de production. Corrigé dans le rapport.

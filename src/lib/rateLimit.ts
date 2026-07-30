@@ -12,18 +12,45 @@
  * de confirmation de commande. Sa protection est ailleurs — signature HMAC et
  * fenêtre anti-rejeu de 5 minutes (`lib/stripe-signature.ts`).
  *
- * ── PORTÉE RÉELLE DE CETTE PROTECTION, À LIRE AVANT D'Y COMPTER ──────────────
- * Le compteur vit en MÉMOIRE, donc par instance de fonction. Vercel Fluid
- * Compute réutilise les instances chaudes, si bien qu'un attaquant naïf qui
- * martèle depuis une IP retombe presque toujours sur la même instance et se
- * fait bien freiner. Mais ce n'est PAS une garantie dure : le compteur repart
- * de zéro à chaque démarrage à froid, et une attaque répartie sur plusieurs IP
- * ou plusieurs régions passe à travers.
+ * ── PORTÉE RÉELLE, MESURÉE LE 2026-07-30 — À LIRE AVANT D'Y COMPTER ──────────
+ * Le compteur vit en MÉMOIRE, donc par instance de fonction. Mesuré sur la
+ * production, 30 appels, même IP, même région (cdg1) :
  *
- * C'est un ralentisseur, pas un mur. Le mur, c'est une règle de rate limiting
- * du pare-feu Vercel (`vercel firewall rules add … --action rate_limit`), qui
- * agit avant même que la fonction ne démarre. Les deux se cumulent : garder
- * celle-ci comme filet indépendant du plan Vercel et de sa configuration.
+ *   en série     → 10 passent, 20 bloqués en 429.  La limite tient.
+ *   en parallèle → 27 passent,  0 bloqué.          La limite ne sert à RIEN.
+ *
+ * Vercel démarre autant d'instances que nécessaire pour absorber la charge, et
+ * chacune a son propre compteur qui repart de `max` : les 27 passages
+ * correspondent à ~3 instances × 10. D'où une propriété perverse — plus
+ * l'attaque est forte, plus il y a d'instances, donc plus le plafond effectif
+ * monte. La protection grandit avec l'attaquant.
+ *
+ * Il n'y a donc PAS besoin de se répartir sur plusieurs IP ni plusieurs régions
+ * pour passer : le parallélisme depuis une seule machine suffit. Ce fichier
+ * affirmait le contraire avant que ce soit mesuré.
+ *
+ * CE QU'UNE RAFALE CASSE VRAIMENT. Les limites d'API de Stripe sont comptées
+ * PAR COMPTE (25 req/s en test, 100 req/s en réel, 25 req/s par endpoint par
+ * défaut). Sur les 30 appels parallèles, 3 ont reçu « Stripe: Request rate limit
+ * exceeded » et sont ressortis en 502. Après la bascule, une rafale suffisante
+ * consommerait donc le budget Stripe du compte : les VRAIS clients ne
+ * pourraient plus payer pendant qu'elle dure. Le risque est la disponibilité de
+ * la vente, pas seulement le coût.
+ *
+ * Ce que ce limiteur arrête réellement : une boucle séquentielle. C'est tout.
+ * Il reste utile — zéro dépendance, indépendant du plan, et un appel bloqué ici
+ * ne consomme PAS de budget d'API Stripe — mais il ne peut pas être la seule
+ * protection.
+ *
+ * Le mur, c'est une règle de rate limiting du pare-feu Vercel : elle compte
+ * côté plateforme (par région, non par instance) et agit AVANT le démarrage de
+ * la fonction. Vérifié dans la doc : disponible dès le plan Hobby — 1 règle par
+ * projet, clé IP, fenêtre de 10 s à 10 min, 1 000 000 de requêtes incluses, et
+ * le trafic bloqué n'est pas facturé. Le plan n'est donc PAS l'obstacle qu'on
+ * croyait (c'est lui qui avait tué la version Cloudflare). Mode opératoire dans
+ * `docs/audit/rapport-pre-bascule-2026-07-29.md`, section « Le mur ».
+ * Les deux se cumulent : garder celui-ci comme filet, il survit à la
+ * suppression accidentelle de la règle de pare-feu.
  *
  * Version précédente : `dcccb08` s'appuyait sur le binding Cloudflare
  * `ratelimits`, reverté en `04dc9fd` faute de plan confirmé, puis rendu

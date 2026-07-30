@@ -13,9 +13,20 @@ L'URL de préproduction fournie (`...git-depot-avis-clients...`) correspond à l
 master : toutes les conclusions SEO/redirections de ce rapport s'appliquent donc bien à ce qui
 partira en production. Les 3 commits manquants ne touchent que les emails transactionnels.
 
-Le déploiement est protégé par SSO Vercel (`ssoProtection: all_except_custom_domains`). J'ai
-utilisé un jeton d'accès temporaire pour le tester. **Ce réglage est le bon** : le jour où
+Le projet est réglé sur `ssoProtection: all_except_custom_domains`, et j'ai utilisé un jeton
+d'accès temporaire pour tester l'URL de déploiement. **Ce réglage est le bon** : le jour où
 `aimezlanature.fr` est rattaché comme domaine personnalisé, il sera public et crawlable.
+
+> **Rectification du 2026-07-30.** J'ai d'abord écrit que « le déploiement est protégé par SSO ».
+> C'est vrai des trois adresses techniques du projet — URL de déploiement, alias de branche, alias
+> d'équipe renvoient tous un **302** vers la connexion Vercel — mais **faux de l'alias de
+> production** : `https://aimezlanatureseo.vercel.app/` répond **200 sans authentification**.
+> Mesuré, pas déduit. Le marchand a confirmé que c'est **volontaire** : c'est l'adresse sur
+> laquelle il éprouve les flux avant la bascule, elle doit rester accessible. Deux conséquences
+> assumées : l'adresse est crawlable (pas de `X-Robots-Tag: noindex`, `robots.txt` en `Allow: /`),
+> le garde-fou étant le `canonical` vers `aimezlanature.fr` présent sur toutes les pages ; et le
+> tunnel de paiement y est atteignable en mode test, donc sans débit possible. Ce n'est **pas** un
+> défaut à corriger, c'est un état de recette — voir la section « État volontaire de la recette ».
 
 ### État volontaire de la recette (précisé par le marchand)
 
@@ -24,6 +35,8 @@ fait avant la bascule. En conséquence :
 
 - **Stripe est en mode test à dessein**, et un déploiement a été promu en `production` uniquement
   pour éprouver les flux (paiement, webhook, emails) sur une cible stable.
+- **L'alias `aimezlanatureseo.vercel.app` est public à dessein** : c'est l'adresse de recette, elle
+  doit rester joignable sans connexion Vercel (confirmé par le marchand le 2026-07-30).
 - Ce ne sont donc **ni l'un ni l'autre des défauts** : ce sont des **étapes de la bascule**, pas des
   correctifs. Elles restent listées au plan du jour J parce que les oublier serait critique — un
   domaine rattaché alors que les clés sont encore en test donnerait un tunnel qui *paraît*
@@ -60,7 +73,7 @@ aujourd'hui, seulement d'être exécutés au bon moment.
 | Redirections | URLs **sans** slash final → 404 | ✅ **Corrigé le 2026-07-30** | `/qui-sommes-nous/` → 308 OK, mais `/qui-sommes-nous` → **404**. Corrigé par 50 règles jumelles explicites (chaque source existe désormais dans ses deux formes), et **surtout PAS** par `"trailingSlash": true` — voir l'encadré ci-dessous. | P1 |
 | Redirections | `/category/blog/` | ✅ **Corrigé le 2026-07-30** | 404 confirmée. Ajouter un 301 vers `/blog/`. | P1 |
 | Outillage | `check-redirects.mjs` donne un **faux vert** | ✅ **Corrigé le 2026-07-30** | Le script teste les jokers avec un chemin **sans slash final** (`sampleForWildcard`). Il annonce « 53/53 OK » alors que les 6 vraies URLs `/product-category/*/` sont en 404. Faire tester chaque règle dans ses **deux formes** (avec et sans slash final). | P1 |
-| E-commerce | `/api/checkout` : pas de limite de débit | ✅ **Corrigé le 2026-07-30** | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Le risque réel est l'abus scripté (curl, bot) qui créerait des sessions Stripe en masse → coûts et limites d'API. Aucune donnée exposée. Limiteur applicatif ajouté (10 appels / 60 s par IP) — voir l'encadré. Le mur WAF reste à poser côté marchand. | P1 |
+| E-commerce | `/api/checkout` : pas de limite de débit | 🟠 **Partiel — à finir AVANT la bascule** | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Aucune donnée exposée. Le risque est l'abus scripté. Limiteur applicatif ajouté (10 / 60 s par IP), mais **mesuré le 2026-07-30 : il ne bloque rien en parallèle** (27 appels sur 30 passent) et une rafale épuise le budget d'API **Stripe du compte**, donc empêche les vrais clients de payer. La correction réelle est la règle de pare-feu Vercel — **incluse dès Hobby**, contrairement à ce que ce rapport affirmait. Voir l'encadré « Le mur ». | **P0 avant bascule** |
 
 ### Google Ads réintégré derrière un bandeau maison — 2026-07-30
 
@@ -167,20 +180,105 @@ la version Cloudflare. Compteurs **cloisonnés par route**, pour qu'un flot sur 
 revendeur ne puisse pas empêcher un client de payer. Mémoire bornée à 5 000 clés, sinon la
 protection deviendrait elle-même le déni de service. Zéro dépendance ajoutée.
 
-**Limite honnête** : le compteur vit en mémoire, donc par instance. Fluid Compute réutilise les
-instances chaudes, ce qui freine bien un attaquant qui martèle depuis une IP — mais le compteur
-repart de zéro à froid et une attaque répartie passe à travers. **C'est un ralentisseur, pas un
-mur.**
+**Sur les « 13 tests unitaires au vert » annoncés ici le 2026-07-30 :** ils ont bien tourné, mais
+dans un dossier de travail temporaire et **n'ont jamais été versionnés** — vérifié,
+`git log --diff-filter=A -- "*test*"` ne renvoie rien. Personne ne peut donc les rejouer : une
+vérification non reproductible n'est pas une vérification, c'est un souvenir. Remplacés par un
+contrôle versionné, sur le modèle de `check-redirects.mjs` :
 
-13 tests unitaires au vert, dont les deux qui comptent : cloisonnement des routes (revendeur saturé
-→ checkout toujours ouvert pour la même IP) et fail-open sans en-tête d'IP (50 appels, tous passés).
+```bash
+npm run check:ratelimit https://aimezlanatureseo.vercel.app
+```
 
-### Le mur, lui, reste à poser (action du marchand)
+`scripts/check-rate-limit.mjs` envoie deux fois 30 appels sur `/api/checkout` — une fois en
+parallèle, une fois en série — et **sort en erreur si la rafale parallèle n'est pas freinée**. Il est
+donc rouge aujourd'hui, volontairement : c'est le **critère d'acceptation de la règle de pare-feu**.
+Le jour où elle est publiée, il doit passer au vert sans qu'on touche au script.
 
-Une règle du pare-feu Vercel agit **avant** que la fonction ne démarre, donc sans consommer
-d'invocation. Je ne peux pas la créer : la CLI Vercel n'est pas installée ici et c'est une
-modification d'infrastructure de production. Commande à jouer, volontairement **limitée à
-`/api/checkout`** pour qu'elle ne puisse jamais toucher le webhook :
+Deux garde-fous dans le script, parce qu'il crée de vraies sessions Stripe : il **refuse de tourner**
+si le site répond une session `cs_live_…` sans le drapeau `--live` explicite, et il lit le slug de
+produit dans `products.ts` au lieu de l'inventer (un slug inconnu renverrait 400 et testerait la
+validation, pas la limite de débit).
+
+Relevé des deux exécutions du 2026-07-30 : en parallèle 27 puis 30 appels passés sur 30 — le nombre
+varie avec le nombre d'instances que Vercel démarre, ce qui illustre le défaut mieux qu'un chiffre
+fixe. En série, 10 passés / 20 bloqués aux deux essais.
+
+#### ⚠️ Mesuré le 2026-07-30 : le limiteur ne résiste pas au parallélisme
+
+J'avais écrit ici « vérifié en production : 10 appels passent, le 11ᵉ renvoie 429 ». C'est exact,
+mais **j'avais testé le seul scénario que le limiteur sait traiter**. Rejoué avec 30 appels, même
+IP, même région, en faisant varier uniquement la façon de les envoyer :
+
+| Façon d'envoyer les 30 appels | Sessions Stripe créées | Bloqués (429) |
+|---|---|---|
+| **En série**, l'un après l'autre | 10 | **20** ✅ |
+| **En parallèle**, tous en même temps | **27** | **0** ❌ |
+
+Le compteur vit en mémoire, donc **par instance de fonction**. Vercel en démarre autant que
+nécessaire pour absorber la charge, et chacune repart de 10 : les 27 passages correspondent à
+~3 instances × 10. D'où une propriété perverse — **plus l'attaque est forte, plus il y a
+d'instances, donc plus le plafond effectif monte.** La protection grandit avec l'attaquant.
+
+Et il ne faut **pas** se répartir sur plusieurs IP ni plusieurs régions pour passer, contrairement
+à ce que ce rapport et le commentaire du fichier affirmaient : le parallélisme depuis une seule
+machine suffit.
+
+**Le dégât réel n'est pas le coût, c'est l'indisponibilité de la vente.** Les 3 appels qui n'ont pas
+abouti ne sont pas des 429 du limiteur mais des **502**, et les logs Vercel donnent la cause :
+`Stripe: Request rate limit exceeded`. Les limites d'API Stripe sont comptées **par compte** —
+25 req/s en test, 100 req/s en réel, 25 req/s par endpoint par défaut. Après la bascule, une rafale
+consommerait donc le budget Stripe du compte, et **les vrais clients recevraient « Le paiement est
+momentanément indisponible » pendant qu'elle dure**. Déclenchable depuis un ordinateur portable.
+
+Ce que le limiteur applicatif garde comme mérite : il arrête une boucle séquentielle, ne coûte
+aucune dépendance, ne dépend d'aucun plan, et un appel qu'il bloque **ne consomme pas** de budget
+Stripe. Il reste en place comme filet. Il ne peut simplement pas être la seule protection.
+
+Deux choses bien faites, confirmées au passage : le limiteur s'exécute **avant** l'appel à Stripe,
+et le message d'erreur brut de Stripe est journalisé côté serveur mais **jamais renvoyé au client**
+(`checkout.ts:135`) — il peut contenir des détails de configuration du compte.
+
+### Le mur : le plan N'EST PAS l'obstacle qu'on croyait (vérifié le 2026-07-30)
+
+Le rapport disait « le rate limiting WAF peut être réservé aux plans payants — c'est exactement ce
+qui avait tué la version Cloudflare ». **Faux, vérifié dans la documentation Vercel** : le rate
+limiting WAF est inclus **dès le plan Hobby**.
+
+| Ressource (doc Vercel, 2026-06-16) | Hobby |
+|---|---|
+| Clés de comptage | IP, empreinte JA4 |
+| Algorithme | fenêtre fixe |
+| Fenêtre | 10 s minimum, 10 min maximum |
+| **Nombre de règles de rate limit** | **1 par projet** (et 3 règles de pare-feu au total) |
+| Requêtes incluses | 1 000 000 autorisées |
+
+Deux propriétés qui changent tout par rapport au limiteur applicatif :
+
+1. **Le comptage est fait par la plateforme, par RÉGION** — plus par instance. La rafale parallèle
+   mesurée plus haut venait entièrement de `cdg1` : une règle WAF l'aurait donc arrêtée. Le défaut
+   résiduel existe (« traffic matching a given rate limit key in multiple regions can exceed the
+   limit ») mais il exige de répartir l'attaque géographiquement — un tout autre niveau d'effort.
+2. **Le trafic bloqué n'est pas facturé** : « You do not pay for requests or bandwidth for denies,
+   challenges, or rate-limits from WAF custom rules or managed rules. » La règle protège donc aussi
+   la facture, là où le limiteur applicatif consomme une invocation pour chaque appel qu'il refuse.
+
+**Une seule règle disponible sur Hobby** : elle doit donc aller sur `/api/checkout`, la seule route
+qui appelle un tiers payant et qui n'a aucune autre barrière (`avis` et `revendeur` ont déjà piège +
+délai, et `avis` vérifie l'achat chez Stripe).
+
+#### Mode opératoire
+
+La CLI Vercel n'est pas installée sur cette machine, et **publier une règle de pare-feu est une
+modification d'infrastructure de production : c'est au marchand de la déclencher**, pas à moi.
+
+```bash
+npm i -g vercel          # la CLI n'est pas installée
+vercel link              # rattacher le dossier au projet aimezlanatureseo
+```
+
+**Étape 1 — observer sans bloquer.** Jamais de règle qui bloque du premier coup : on regarde
+d'abord qui elle attraperait.
 
 ```bash
 vercel firewall rules add "Limite paiement" \
@@ -189,13 +287,50 @@ vercel firewall rules add "Limite paiement" \
   --rate-limit-window 60 \
   --rate-limit-requests 30 \
   --rate-limit-keys ip \
-  --rate-limit-action deny --yes
+  --rate-limit-action log --yes
+
+vercel firewall diff              # relire ce qui va partir
+vercel firewall publish --yes     # ← à jouer par le marchand
 ```
 
-Deux points de vigilance : la CLI crée la règle en **brouillon**, il faut la publier pour qu'elle
-s'applique ; et le rate limiting WAF peut être réservé aux plans payants — **c'est exactement ce qui
-avait tué la version Cloudflare**. Si la commande est refusée, le limiteur applicatif reste en place
-et fait le travail de base : cette fois la protection ne dépend plus du plan.
+Puis vérifier dans le tableau de bord (`Firewall` → trafic filtré sur la règle) que seul du trafic
+anormal correspond. Un réseau d'entreprise ou un opérateur mobile fait sortir plusieurs clients par
+la **même IP** : c'est le risque à écarter avant de bloquer.
+
+**Étape 2 — bloquer.** Une fois l'observation propre :
+
+```bash
+vercel firewall rules edit "Limite paiement" \
+  --condition '{"type":"path","op":"pre","value":"/api/checkout"}' \
+  --rate-limit-action rate_limit --yes
+vercel firewall publish --yes
+```
+
+Trois précisions qui comptent :
+
+- `--rate-limit-action rate_limit` renvoie **429**, `deny` renvoie 403. Le 429 est le bon code (il
+  dit « réessaie plus tard »), et c'est ce que la version précédente de ce rapport recommandait à
+  tort en `deny`.
+- La règle porte sur `/api/checkout` **uniquement**. Elle ne peut donc jamais toucher
+  `/api/stripe-webhook`, où un 429 casserait les emails de commande en boucle de rejeu.
+- `rules add` et `rules edit` ne font que **préparer un brouillon** : sans `publish`, rien ne
+  s'applique. `vercel firewall rules inspect "Limite paiement" --expand` permet de relire la règle
+  avant de publier.
+
+#### Ce qui a été écarté, et pourquoi
+
+- **Le SDK `@vercel/firewall`** (`checkRateLimit()` appelé depuis la route) corrigerait aussi le
+  défaut du compteur par instance, et garderait notre message JSON — plus joli que la page
+  d'erreur Vercel. Écarté malgré cela : il consomme **la même unique règle** disponible sur Hobby,
+  tout en payant une invocation de fonction pour chaque appel refusé, et en laissant la rafale
+  atteindre notre code. La règle de pare-feu bloque plus tôt, ce qui est exactement ce qu'on veut :
+  la rafale ne doit atteindre ni notre fonction, ni Stripe. À reconsidérer seulement si on a besoin
+  de compter sur autre chose que l'IP.
+- **Un compteur partagé externe** (Redis Upstash via la place de marché) : dépendance et service
+  tiers supplémentaires pour un résultat que le pare-feu donne sans rien installer.
+- **Vercel BotID** serait pourtant bien adapté — l'abuseur est un script, pas un humain. Écarté
+  parce qu'il charge un script depuis un domaine Vercel : il faudrait ouvrir la CSP `script-src
+  'self'`, la contrainte structurelle du projet (même motif que le refus de l'API Fonts d'Astro).
 | Config | `EMAIL_SITE_URL` | À corriger | Variable temporaire pointant les liens des emails vers l'URL de déploiement (le domaine servant encore WordPress). **À supprimer de Vercel juste après la bascule**, sinon les emails continueront de pointer vers `*.vercel.app`. Le commentaire de `src/data/email-commande.ts:49` le rappelle. | P1 |
 | RGPD | Bandeau de consentement | ✅ **Livré le 2026-07-30** | Aucun cookie n'est posé : seul `localStorage` sert au panier (strictement nécessaire) et il n'y a **aucun script tiers**. Pas de bandeau requis en l'état. ⚠️ **Dès que Google Ads est réintégré, un bandeau conforme CNIL devient obligatoire** (consentement préalable, refus aussi facile que l'acceptation). Les deux sujets sont liés. | P1 |
 | SEO | 11 URLs `/x/` à `/x-11/` | Accepté | Articles vides du WordPress, présents au sitemap WP, non couverts → 404. **Le 404 est ici la bonne réponse** : rediriger 11 pages poubelle vers l'accueil crée des « soft 404 » que Google pénalise. À laisser tomber, Google les désindexera. | P2 |
@@ -370,9 +505,10 @@ poids (20,2 Mo → 0,5 Mo) et la suppression des 5 tiers sont, eux, structurels.
 
 1. ✅ **Fait le 2026-07-30** — redirections corrigées (53 → 110 règles), balise GSC ajoutée,
    `check-redirects.mjs` réparé. **Reste à fusionner sur master : rien n'est en ligne avant.**
-2. **Rejouer `node scripts/check-redirects.mjs <url-du-preview>`** sur le déploiement de la branche
-   et exiger 220/220. C'est le contrôle qui confirme que Vercel applique bien `(.*)` comme
-   constaté — la seule partie non vérifiable en local.
+2. ✅ **Fait le 2026-07-30** — `node scripts/check-redirects.mjs https://aimezlanatureseo.vercel.app`
+   → **220/220 OK** sur le déploiement de production réel (commit `8b4b192`). C'est le contrôle qui
+   confirme que Vercel applique bien `(.*)` comme constaté — la seule partie non vérifiable en
+   local. À rejouer une dernière fois sur le domaine définitif au jour J (étape 14).
 3. **Préparer** (sans encore basculer, la recette a besoin du mode test) : récupérer la clé
    `sk_live_…`, créer le webhook Stripe en mode **live** vers `/api/stripe-webhook` et noter son
    `STRIPE_WEBHOOK_SECRET`. Vérifier au passage que `EMAILIT_API_KEY` et `EMAILIT_FROM` sont bien
@@ -391,61 +527,72 @@ poids (20,2 Mo → 0,5 Mo) et la suppression des 5 tiers sont, eux, structurels.
 9. **Faire un test de commande de bout en bout en mode test** (état actuel) : panier → Stripe →
    `/commande-confirmee/` → email client → email marchand. C'est la recette qui valide la chaîne
    avant qu'on y branche les vraies clés.
+10. 🔴 **Poser la règle de rate limiting du pare-feu sur `/api/checkout`** — déplacée ici depuis
+    J+30 le 2026-07-30, parce que le risque n'existe **qu'après** la bascule : une rafale parallèle
+    épuise le budget d'API Stripe du compte et empêche les vrais clients de payer. Le limiteur
+    applicatif ne suffit pas (mesuré : 27 appels sur 30 passent en parallèle). Le plan Hobby
+    l'autorise. Mode opératoire complet dans la section « Le mur » : installer la CLI, poser la
+    règle en `log`, relire le trafic, puis passer en `rate_limit`. **Chaque étape se termine par un
+    `vercel firewall publish --yes` joué par le marchand.**
 
 ### Jour J : bascule
 
-10. **Rattacher `aimezlanature.fr` + `www` au projet** `aimezlanatureseo`, puis **basculer Stripe en
+11. **Rattacher `aimezlanature.fr` + `www` au projet** `aimezlanatureseo`, puis **basculer Stripe en
     live** : `STRIPE_SECRET_KEY` = `sk_live_…` et `STRIPE_WEBHOOK_SECRET` = celui du webhook live,
     en environnement Production. **Redéployer** (une variable d'environnement ne prend effet qu'au
     déploiement suivant). Contrôle : un `POST /api/checkout` doit désormais renvoyer une session
     `cs_live_…` et non plus `cs_test_…`.
-11. Baisser le TTL DNS à 300 s **quelques heures avant**, puis pointer l'enregistrement A/CNAME
+12. Baisser le TTL DNS à 300 s **quelques heures avant**, puis pointer l'enregistrement A/CNAME
     vers Vercel. **Ne toucher à aucun enregistrement MX ni TXT.**
-12. Vérifier immédiatement : `https://aimezlanature.fr/` en 200, certificat HTTPS émis,
+13. Vérifier immédiatement : `https://aimezlanature.fr/` en 200, certificat HTTPS émis,
     **absence de `X-Robots-Tag: noindex`** (contrôle capital), `robots.txt` et
     `/sitemap-index.xml` accessibles publiquement.
-13. **Relancer `check-redirects.mjs` sur le domaine de production** et exiger 100 % de vert.
-14. Tester à la main les 6 URLs `/product-category/*/`, `/perles-de-ceramique-em/` et
+14. **Relancer `check-redirects.mjs` sur le domaine de production** et exiger 100 % de vert.
+15. Tester à la main les 6 URLs `/product-category/*/`, `/perles-de-ceramique-em/` et
     `/category/blog/` — celles qui étaient en 404.
-15. **Supprimer la variable `EMAIL_SITE_URL`** de Vercel et redéployer.
-16. **Passer une vraie commande en live** (petit montant, remboursé ensuite) sur le domaine
+16. **Supprimer la variable `EMAIL_SITE_URL`** de Vercel et redéployer.
+17. **Passer une vraie commande en live** (petit montant, remboursé ensuite) sur le domaine
     définitif : c'est le seul test qui prouve à la fois les clés live, le webhook live et le
     `success_url` (qui dépend de `url.origin` et change donc avec le domaine).
-17. Remettre le TTL DNS à sa valeur normale.
+18. Remettre le TTL DNS à sa valeur normale.
 
 ### J+1
 
-18. **Search Console** : soumettre `https://aimezlanature.fr/sitemap-index.xml`, puis retirer
+19. **Search Console** : soumettre `https://aimezlanature.fr/sitemap-index.xml`, puis retirer
     l'ancien `wp-sitemap.xml`.
-19. **Inspection d'URL** sur 8-10 URLs témoins : accueil, `/perles-ceramique-em/`, les 4 fiches
+20. **Inspection d'URL** sur 8-10 URLs témoins : accueil, `/perles-ceramique-em/`, les 4 fiches
     produit, 2 articles de blog. Demander l'indexation. Confirmer que Google voit bien le
     contenu rendu (les avis notamment).
-20. Vérifier le rapport **Couverture / Pages** : aucune « Bloquée par robots.txt », aucune
+21. Vérifier le rapport **Couverture / Pages** : aucune « Bloquée par robots.txt », aucune
     « Détectée mais non indexée » inattendue.
-21. Contrôler le **rapport Résultats enrichis** : `Produit`, `FAQ`, `Fil d'Ariane`, `Article`.
-22. Si Google Ads a été réintégré : vérifier qu'une conversion test remonte bien.
+22. Contrôler le **rapport Résultats enrichis** : `Produit`, `FAQ`, `Fil d'Ariane`, `Article`.
+23. Si Google Ads a été réintégré : vérifier qu'une conversion test remonte bien.
 
 ### J+7
 
-23. **Corriger le CLS** (préchargement des polices ou API Fonts d'Astro) et re-mesurer : viser
+24. **Corriger le CLS** (préchargement des polices ou API Fonts d'Astro) et re-mesurer : viser
     < 0,10. C'est le seul Core Web Vital hors seuil.
-24. Comparer impressions/clics à la référence pré-bascule. Une baisse de 10-20 % sur 2-3 semaines
+25. Comparer impressions/clics à la référence pré-bascule. Une baisse de 10-20 % sur 2-3 semaines
     est normale ; au-delà, chercher une cause (404, canonical, indexation).
-25. Passer en revue le **rapport 404 de Search Console** : toute URL entrante non prévue
+26. Passer en revue le **rapport 404 de Search Console** : toute URL entrante non prévue
     (backlinks externes anciens) doit recevoir sa règle 301.
-26. Vérifier les logs Vercel : aucune erreur 500 sur `/api/checkout`, `/api/stripe-webhook`,
+27. Vérifier les logs Vercel : aucune erreur 500 sur `/api/checkout`, `/api/stripe-webhook`,
     `/api/avis`, `/api/revendeur`.
-27. Raccourcir les 2 `title` et la `description` hors gabarit.
+28. Raccourcir les 2 `title` et la `description` hors gabarit.
 
 ### J+30
 
-28. Bilan de positionnement complet vs référence pré-bascule, requête par requête.
-29. Vérifier que les **11 URLs `/x-*/`** et les anciennes URLs WooCommerce sont sorties de l'index.
-30. Contrôler les **Core Web Vitals sur données de terrain** (CrUX) dans Search Console — les
+29. Bilan de positionnement complet vs référence pré-bascule, requête par requête.
+30. Vérifier que les **11 URLs `/x-*/`** et les anciennes URLs WooCommerce sont sorties de l'index.
+31. Contrôler les **Core Web Vitals sur données de terrain** (CrUX) dans Search Console — les
     premières données réelles arrivent vers J+28.
-31. Finir le **rate limiting** sur les routes API (branche `rate-limiting-a-verifier`).
-32. Optimisations restantes : AVIF, sous-ensembles de polices latin uniquement.
-33. Ne décommissionner l'hébergement WordPress **qu'après** ce bilan, et **conserver une
+32. **Relire le trafic de la règle de pare-feu** posée en J-1 (étape 10) : combien de 429 réels,
+    et sur quelles IP. Si zéro déclenchement en un mois, resserrer le plafond de 30 à 15 par
+    minute ; si des clients légitimes ont été bloqués, l'élargir. ⚠️ L'ancienne rédaction de cette
+    étape (« finir le rate limiting sur les routes API, branche `rate-limiting-a-verifier` ») était
+    doublement fausse : la branche n'existe plus, et le travail a été fait le 2026-07-30.
+33. Optimisations restantes : AVIF, sous-ensembles de polices latin uniquement.
+34. Ne décommissionner l'hébergement WordPress **qu'après** ce bilan, et **conserver une
     sauvegarde complète** (base + `wp-content`) : c'est le seul rollback possible.
 
 ---
@@ -456,20 +603,31 @@ Le travail SEO on-page est de très bonne qualité et **au-dessus** de l'ancien 
 axes mesurables : 100/100 en SEO Lighthouse contre 92, aucune balise manquante sur 29 pages,
 JSON-LD valide partout, zéro image sans `alt`, zéro lien cassé, 40× moins de poids par page.
 
-Les risques ne sont pas dans les pages. Après les corrections du 2026-07-30, il reste **une
-décision** et **deux manœuvres à ne pas rater** :
+Les risques ne sont pas dans les pages. Deux des trois points de cette conclusion ont été traités le
+2026-07-30 ; il reste **une manœuvre à ne pas rater** et **un mur à poser** :
 
-1. **Google Ads** (décision du marchand, en attente). Le WordPress charge `AW-17799798810`, le
-   nouveau site n'a aucun tracking. Réintégrer implique d'assouplir la CSP **et** d'ajouter un
-   bandeau de consentement CNIL : les deux vont ensemble, on ne peut pas faire l'un sans l'autre.
-2. **Le passage de Stripe en live au jour J.** Ce n'est pas un bug — le mode test est voulu pendant
+1. ✅ **Google Ads** — tranché et livré : réintégré derrière un bandeau de consentement maison, avec
+   les preuves relevées sur le déploiement réel. Reste l'étiquette de conversion à fournir.
+2. 🔴 **Le passage de Stripe en live au jour J.** Ce n'est pas un bug — le mode test est voulu pendant
    la recette — mais c'est le geste dont l'oubli coûterait le plus cher : le tunnel continuerait de
    s'ouvrir normalement sans qu'aucune commande ne soit encaissée.
-3. **Rejouer `check-redirects.mjs` sur un déploiement réel.** Les 110 règles sont validées contre
-   une reproduction de la sémantique Vercel, pas contre Vercel lui-même — c'est le seul contrôle
-   qui ne peut pas se faire en local.
+3. ✅ **`check-redirects.mjs` rejoué sur la production réelle** — **220/220 OK** sur le commit
+   `8b4b192`. C'était le seul contrôle impossible en local.
+4. 🔴 **La règle de rate limiting du pare-feu, à poser AVANT la bascule** (étape 10). Le limiteur
+   applicatif ne bloque rien face à une rafale parallèle — mesuré, 27 appels sur 30 passent — et une
+   rafale épuise le budget d'API Stripe **du compte**, ce qui empêche les vrais clients de payer.
+   Bonne nouvelle vérifiée au passage : le plan Hobby autorise cette règle, l'obstacle qui avait tué
+   la version Cloudflare n'existe pas ici.
 
-Ce que cet audit a appris de plus utile au projet : **un script de vérification au vert n'est pas
-une preuve.** `check-redirects.mjs` affichait « 53/53 OK » pendant que 6 URLs réellement indexées
-tombaient en 404, parce qu'il fabriquait ses cas de test au plus simple au lieu de les fabriquer à
-l'image des vraies données. Le script corrigé, rejoué sur l'ancienne panne, la détecte désormais.
+Ce que cet audit a appris de plus utile au projet : **un script — ou un test — au vert n'est pas une
+preuve.** Le même défaut s'est produit deux fois, sur deux sujets sans rapport, le même jour :
+
+- `check-redirects.mjs` affichait « 53/53 OK » pendant que 6 URLs réellement indexées tombaient en
+  404, parce qu'il fabriquait ses cas de test au plus simple au lieu de les fabriquer à l'image des
+  vraies données.
+- la vérification du limiteur annonçait « 10 passent, le 11ᵉ est bloqué » en testant une boucle
+  séquentielle — alors que **personne n'attaque en série**. Le scénario réaliste, 30 requêtes
+  parallèles, ne bloque rien du tout.
+
+Dans les deux cas le test était juste, mais posait la question facile. La règle qui en sort : **le
+cas de test doit ressembler à la réalité qu'on redoute, pas à celle qu'on sait traiter.**
