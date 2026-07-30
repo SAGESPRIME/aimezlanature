@@ -60,7 +60,28 @@ aujourd'hui, seulement d'être exécutés au bon moment.
 | Redirections | URLs **sans** slash final → 404 | ✅ **Corrigé le 2026-07-30** | `/qui-sommes-nous/` → 308 OK, mais `/qui-sommes-nous` → **404**. Corrigé par 50 règles jumelles explicites (chaque source existe désormais dans ses deux formes), et **surtout PAS** par `"trailingSlash": true` — voir l'encadré ci-dessous. | P1 |
 | Redirections | `/category/blog/` | ✅ **Corrigé le 2026-07-30** | 404 confirmée. Ajouter un 301 vers `/blog/`. | P1 |
 | Outillage | `check-redirects.mjs` donne un **faux vert** | ✅ **Corrigé le 2026-07-30** | Le script teste les jokers avec un chemin **sans slash final** (`sampleForWildcard`). Il annonce « 53/53 OK » alors que les 6 vraies URLs `/product-category/*/` sont en 404. Faire tester chaque règle dans ses **deux formes** (avec et sans slash final). | P1 |
-| E-commerce | `/api/checkout` : pas de limite de débit | À corriger | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Le risque réel est l'abus scripté (curl, bot) qui créerait des sessions Stripe en masse → coûts et limites d'API. Aucune donnée exposée. La branche `rate-limiting-a-verifier` existe déjà : la finir. | P1 |
+| E-commerce | `/api/checkout` : pas de limite de débit | À corriger | Un POST **JSON** sans en-tête `Origin` est accepté (200 + session Stripe créée) ; un POST sans `Content-Type` est bien rejeté en 403. Le contrôle d'origine d'Astro ne couvre que les types de formulaire, car un POST JSON cross-origin exige de toute façon un préflight CORS que le navigateur refuse : **ce n'est donc pas une faille CSRF exploitable depuis un navigateur**. Le risque réel est l'abus scripté (curl, bot) qui créerait des sessions Stripe en masse → coûts et limites d'API. Aucune donnée exposée. **À réimplémenter pour Vercel** — voir l'encadré ci-dessous, l'ancien code est inutilisable. | P1 |
+
+### Le rate-limiting a existé, puis a été perdu dans la migration
+
+Retracé le 2026-07-30, parce que ce rapport conseillait d'abord « finir la branche
+`rate-limiting-a-verifier` » — **ce conseil était faux sur deux points**.
+
+1. `dcccb08` avait ajouté `src/lib/rateLimit.ts` et l'avait branché sur `/api/checkout` et
+   `/api/revendeur`.
+2. `04dc9fd` l'a **reverté** : la protection reposait sur le binding Cloudflare `ratelimits`, qui
+   exige un plan Workers payant non confirmé à l'époque. Le revert visait à garder master
+   déployable, en attendant de re-merger « après vérif Cloudflare ».
+3. Sauf que la PR #5 a migré tout le projet **de Cloudflare vers Vercel**. Le binding `ratelimits`
+   et `wrangler.jsonc` n'existent plus : ce code **ne pourra jamais être re-mergé tel quel**.
+4. Les branches `rate-limiting-a-verifier` et `security/rate-limiting-api` **n'existent plus sur
+   GitHub**. Seule une branche **locale** `security/rate-limiting-api` (`dcccb08`) conserve encore
+   le code — utile comme référence pour la logique, pas pour le mécanisme. **Ne pas la supprimer
+   avant d'avoir réimplémenté.**
+
+Piste recommandée, cohérente avec la ligne du projet (zéro dépendance tierce, CSP stricte) : les
+**règles de rate limiting du pare-feu Vercel (WAF)**, qui se configurent au niveau de la plateforme
+sans une ligne de code ni un paquet de plus. À défaut, un compteur dans un Redis du Marketplace.
 | Config | `EMAIL_SITE_URL` | À corriger | Variable temporaire pointant les liens des emails vers l'URL de déploiement (le domaine servant encore WordPress). **À supprimer de Vercel juste après la bascule**, sinon les emails continueront de pointer vers `*.vercel.app`. Le commentaire de `src/data/email-commande.ts:49` le rappelle. | P1 |
 | RGPD | Bandeau de consentement | OK **aujourd'hui** | Aucun cookie n'est posé : seul `localStorage` sert au panier (strictement nécessaire) et il n'y a **aucun script tiers**. Pas de bandeau requis en l'état. ⚠️ **Dès que Google Ads est réintégré, un bandeau conforme CNIL devient obligatoire** (consentement préalable, refus aussi facile que l'acceptation). Les deux sujets sont liés. | P1 |
 | SEO | 11 URLs `/x/` à `/x-11/` | Accepté | Articles vides du WordPress, présents au sitemap WP, non couverts → 404. **Le 404 est ici la bonne réponse** : rediriger 11 pages poubelle vers l'accueil crée des « soft 404 » que Google pénalise. À laisser tomber, Google les désindexera. | P2 |
