@@ -19,6 +19,12 @@
  * dans `X-Forwarded-For` : elle doit être freinée de la même façon, sinon un
  * attaquant contournerait la limite en mentant sur son adresse.
  *
+ * ⚠️ Lancer depuis une machine qui sort par UNE seule IP (poste, CI). Derrière
+ * un proxy qui répartit les connexions simultanées sur plusieurs IP (ex.
+ * l'environnement cloud de Claude), les rafales parallèles semblent « non
+ * freinées » à tort — voir tasks/lessons.md (2026-11-23) pour la contre-épreuve
+ * sur une seule connexion.
+ *
  * ⚠️ Chaque appel autorisé crée une VRAIE session Stripe Checkout. Le script
  * refuse donc de tourner si le site répond en mode live, sauf `--live` explicite :
  * une rafale sur une boutique en production épuiserait le budget d'API Stripe du
