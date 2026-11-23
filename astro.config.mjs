@@ -18,7 +18,9 @@ const traceSourceContenu = {
   hooks: {
     /** @param {{ dir: URL }} options */
     'astro:build:done': ({ dir }) => {
-      const source = process.env.CONTENU_SOURCE || (process.env.SANITY_PROJECT_ID ? 'sanity' : 'seed');
+      const source =
+        (process.env.CONTENU_SOURCE || (process.env.SANITY_PROJECT_ID ? 'sanity' : 'seed')) +
+        (process.env.CONTENU_BROUILLONS === '1' ? '+brouillons' : '');
       writeFileSync(new URL('../source-contenu.txt', dir), source);
     },
   },

@@ -16,6 +16,7 @@
  *   - aucune image sans attribut alt ;
  *   - aucun lien interne cassé (la cible existe dans le build ou est une
  *     redirection déclarée) ;
+ *   - aucun mot collé à un lien (« àcontact@… ») ;
  * et pour le site : sitemap sans page noindex, toutes les pages indexables
  * présentes au sitemap, robots.txt qui déclare le sitemap.
  *
@@ -84,6 +85,17 @@ for (const [url, p] of Object.entries(pages)) {
     else if (!lien.endsWith('/') && pages[lien + '/']) err(`${url} : lien ${lien} sans slash final (redirection 301 inutile)`);
     else err(`${url} : lien interne cassé ${lien}`);
   }
+}
+
+// ── Mots collés à un lien ────────────────────────────────────────────────
+// Astro supprime l'espace de fin de ligne avant une balise : « écrivez-nous à »
+// suivi d'un <a> à la ligne donne « àcontact@… ». Défaut consigné deux fois
+// dans tasks/lessons.md et toujours revenu : il est donc vérifié ici, à chaque
+// build. Correctif : écrire {' '} en fin de ligne.
+for (const url of Object.keys(pages)) {
+  const fichier = url.endsWith('.html') ? join(RACINE, url) : join(RACINE, url, 'index.html');
+  const colles = readFileSync(fichier, 'utf8').match(/[A-Za-zÀ-ÿ,—:]{2,}<(a |em>|strong>)/g) ?? [];
+  for (const c of colles) err(`${url} : mot collé à la balise suivante « ${c} » (ajouter {' '})`);
 }
 
 // ── Sitemap et robots ────────────────────────────────────────────────────

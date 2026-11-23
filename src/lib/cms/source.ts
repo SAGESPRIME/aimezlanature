@@ -19,7 +19,13 @@
  *   - `sanity` : exige SANITY_PROJECT_ID, sinon le build ÉCHOUE (le Dockerfile
  *     de production l'impose : on ne met jamais en ligne un site construit
  *     sur des données de développement sans l'avoir demandé).
+ *
+ * Mode relecture (CONTENU_BROUILLONS=1, recette uniquement) : les brouillons
+ * remplacent les versions publiées, pour que le marchand relise une
+ * modification (ex. les articles réécrits) dans le vrai site avant de la
+ * publier. server.mjs refuse de servir un tel build en production.
  */
+export const avecBrouillons = (): boolean => process.env.CONTENU_BROUILLONS === '1';
 import { readFileSync } from 'node:fs';
 import { createClient } from '@sanity/client';
 import { parse, evaluate } from 'groq-js';
@@ -97,19 +103,30 @@ async function depuisSanity(): Promise<ContenuBrut> {
     apiVersion: '2025-02-19',
     // Pas de CDN : au build on veut l'état publié EXACT, pas une copie en cache.
     useCdn: false,
-    perspective: 'published',
+    perspective: avecBrouillons() ? 'drafts' : 'published',
     token: process.env.SANITY_READ_TOKEN,
   });
   return client.fetch<ContenuBrut>(REQUETE);
 }
 
-/** Évalue la requête sur un fichier NDJSON, brouillons exclus (comme « published »). */
-export async function depuisFichier(chemin: string): Promise<ContenuBrut> {
-  const documents = readFileSync(chemin, 'utf8')
+/**
+ * Évalue la requête sur un fichier NDJSON. Brouillons exclus (comme la
+ * perspective « published »), sauf en mode relecture où ils remplacent la
+ * version publiée du même document (comme la perspective « drafts »).
+ */
+export async function depuisFichier(chemin: string, brouillons = avecBrouillons()): Promise<ContenuBrut> {
+  const tous = readFileSync(chemin, 'utf8')
     .split('\n')
     .filter((l) => l.trim())
-    .map((l) => JSON.parse(l))
-    .filter((d) => !String(d._id).startsWith('drafts.'));
+    .map((l) => JSON.parse(l));
+  const publies = new Map(tous.filter((d) => !String(d._id).startsWith('drafts.')).map((d) => [d._id, d]));
+  if (brouillons) {
+    for (const d of tous.filter((d) => String(d._id).startsWith('drafts.'))) {
+      const id = String(d._id).slice('drafts.'.length);
+      publies.set(id, { ...d, _id: id });
+    }
+  }
+  const documents = [...publies.values()];
   const resultat = await evaluate(parse(REQUETE), { dataset: documents });
   return (await resultat.get()) as ContenuBrut;
 }
@@ -120,7 +137,7 @@ let enCours: Promise<ContenuBrut> | null = null;
 export function chargerContenu(): Promise<ContenuBrut> {
   if (!enCours) {
     const source = sourceContenu();
-    console.log(`[contenu] source : ${source}`);
+    console.log(`[contenu] source : ${source}${avecBrouillons() ? ' (BROUILLONS inclus — relecture)' : ''}`);
     enCours =
       source === 'sanity'
         ? depuisSanity()

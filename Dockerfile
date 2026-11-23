@@ -28,10 +28,13 @@ ARG SANITY_READ_TOKEN
 # retomber silencieusement sur le contenu de développement. Pour une recette
 # avant la création du projet Sanity : CONTENU_SOURCE=seed.
 ARG CONTENU_SOURCE=sanity
+# Recette uniquement : 1 = afficher les brouillons Sanity pour relecture.
+ARG CONTENU_BROUILLONS=0
 ENV SANITY_PROJECT_ID=$SANITY_PROJECT_ID \
     SANITY_DATASET=$SANITY_DATASET \
     SANITY_READ_TOKEN=$SANITY_READ_TOKEN \
-    CONTENU_SOURCE=$CONTENU_SOURCE
+    CONTENU_SOURCE=$CONTENU_SOURCE \
+    CONTENU_BROUILLONS=$CONTENU_BROUILLONS
 
 RUN npm run build
 
