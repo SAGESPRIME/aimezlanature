@@ -1,0 +1,19 @@
+---
+// Gras, italique et liens d'un texte riche. Un lien externe s'ouvre dans le
+// même onglet mais ne transmet ni l'origine ni de « jus SEO » non voulu.
+import type { MarkProps } from 'astro-portabletext/types';
+type Props = MarkProps<{ href?: string }>;
+const { node } = Astro.props;
+const href = node.markDef?.href ?? '';
+const externe = /^https?:\/\//.test(href);
+---
+
+{node.markType === 'strong' ? (
+  <strong class="text-[#1A1A16]"><slot /></strong>
+) : node.markType === 'em' ? (
+  <em><slot /></em>
+) : node.markType === 'link' && href ? (
+  <a href={href} class="text-[#166534] font-semibold hover:underline" rel={externe ? 'noopener' : undefined}><slot /></a>
+) : (
+  <slot />
+)}

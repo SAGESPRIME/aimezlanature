@@ -24,14 +24,14 @@ import { Image } from 'astro:assets';
 import type { Product } from '../data/products';
 import { SITE } from '../data/products';
 import { tierPrices, fmtPrice } from '../lib/pricing';
-import { getProductImage, getProductImageAlt } from '../lib/productImages';
+import { getProductPhoto } from '../lib/productImages';
 
 interface Props {
   product: Product;
 }
 const { product } = Astro.props;
 
-const photo = getProductImage(product.slug);
+const photo = getProductPhoto(product.slug);
 const tiers = tierPrices(product);
 const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
 ---
@@ -43,8 +43,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
   <div class="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3 sm:gap-4">
     {photo && (
       <Image
-        src={photo}
-        alt={getProductImageAlt(product.slug)}
+        {...photo}
         width={112}
         height={112}
         widths={[56, 112]}

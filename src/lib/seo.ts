@@ -86,13 +86,20 @@ export function buildFaqSchema(items: { question: string; answer: string }[]) {
   };
 }
 
-/** Schema.org Article pour les pages guide. */
+/** Schema.org Article pour les guides et les articles du blog. */
 export function buildArticleSchema(opts: {
   headline: string;
   description: string;
   path: string;
   datePublished: string;
   dateModified?: string;
+  /** URL (absolue ou racine) d'une image réellement émise dans le build. */
+  image?: string;
+  /**
+   * Auteur identifié (Sanity). Sans lui, l'article est signé par la marque :
+   * mieux vaut une organisation réelle qu'une personne inventée.
+   */
+  author?: { nom: string; role: string; liens?: string[] | null };
 }) {
   return {
     '@context': 'https://schema.org',
@@ -100,10 +107,18 @@ export function buildArticleSchema(opts: {
     headline: opts.headline,
     description: opts.description,
     inLanguage: 'fr-FR',
-    author: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+    author: opts.author
+      ? {
+          '@type': 'Person',
+          name: opts.author.nom,
+          jobTitle: opts.author.role,
+          ...(opts.author.liens?.length ? { sameAs: opts.author.liens } : {}),
+        }
+      : { '@type': 'Organization', name: SITE.name, url: SITE.url },
     publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
     datePublished: opts.datePublished,
     dateModified: opts.dateModified ?? opts.datePublished,
+    ...(opts.image ? { image: new URL(opts.image, SITE.url).href } : {}),
     mainEntityOfPage: `${SITE.url}${opts.path}`,
   };
 }

@@ -15,6 +15,8 @@
  * la consommation), et c'est exactement l'erreur déjà commise sur ce projet.
  */
 
+import { prixDEntree } from './products';
+
 export interface PalierRemise {
   /** Nom du palier, ex. « Boutique ». */
   nom: string;
@@ -42,7 +44,7 @@ export const argumentsRevente = [
   {
     titre: 'Un prix d’entrée accessible',
     texte:
-      "Le premier format est vendu 19,90 € au public. C'est un achat de test facile à conseiller en caisse, qui ne demande pas de réflexion au client.",
+      `Le premier format est vendu ${prixDEntree()} au public. C'est un achat de test facile à conseiller en caisse, qui ne demande pas de réflexion au client.`,
   },
   {
     titre: 'Un produit qui se raconte en deux phrases',

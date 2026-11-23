@@ -12,7 +12,10 @@
     "astro": "astro",
     "check:redirects": "node scripts/check-redirects.mjs",
     "check:ratelimit": "node scripts/check-rate-limit.mjs",
-    "check": "astro check"
+    "check": "astro check",
+    "check:headers": "node scripts/check-headers.mjs",
+    "check:parite": "node scripts/parite/comparer.mjs",
+    "start": "node server.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.14",

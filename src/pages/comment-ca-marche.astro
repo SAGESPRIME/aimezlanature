@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { faqPour } from '../data/faq';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
@@ -7,7 +8,7 @@ import AnswerBox from '../components/AnswerBox.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildFaqSchema } from '../lib/seo';
-import { getProductImage, getProductImageAlt } from '../lib/productImages';
+import { getProductPhoto } from '../lib/productImages';
 import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
 
 const PATH = '/comment-ca-marche/';
@@ -43,38 +44,8 @@ const etapes = [
   },
 ];
 
-const faqItems = [
-  {
-    question: 'Combien de perles de céramique par litre d\'eau ?',
-    answer:
-      `Comptez ${PERLES_PAR_LITRE} perles de céramique par litre d'eau de boisson. Concrètement : 15 perles pour une carafe de 1 L, 30 perles pour une carafe de 2 L, 75 perles pour une bonbonne de 5 L. Les appareils ont un dosage forfaitaire : 25 perles pour une bouilloire ou une cafetière, 40 pour un lave-vaisselle, 50 pour un lave-linge.`,
-  },
-  {
-    question: 'Comment utiliser les perles de céramique pour la première fois ?',
-    answer:
-      'Faites-les bouillir 10 minutes dans de l\'eau claire pour les activer, puis placez-les au fond de votre contenant rempli d\'eau du robinet et attendez 30 minutes avant de boire. Ensuite, aucune attente n\'est nécessaire.',
-  },
-  {
-    question: 'Comment nettoyer et régénérer les perles de céramique ?',
-    answer:
-      'Faites-les bouillir 10 à 15 minutes dans de l\'eau claire, sans savon, sans détergent et sans vinaigre. Répétez tous les 3 à 6 mois. Si un dépôt blanc apparaît (calcaire), l\'ébullition suffit à le faire disparaître.',
-  },
-  {
-    question: 'Quels sont les effets des perles de céramique sur l\'eau ?',
-    answer:
-      'Elles réduisent le goût et l\'odeur de chlore, limitent les dépôts de tartre sur les parois et les résistances, et adoucissent le goût de l\'eau. Elles n\'éliminent pas les bactéries ni les métaux lourds — voir notre article avis & science pour le détail de ce qui est prouvé.',
-  },
-  {
-    question: 'Combien de temps durent les perles de céramique ?',
-    answer:
-      'Plusieurs années avec une régénération régulière. Contrairement aux cartouches de carafe filtrante, il n\'y a rien à racheter chaque mois : c\'est un achat unique.',
-  },
-  {
-    question: 'Peut-on mettre les perles de céramique au lave-vaisselle ou dans la machine à laver ?',
-    answer:
-      'Oui. Comptez 40 perles dans un filet placé en permanence dans le panier à couverts du lave-vaisselle, et 50 perles dans un filet de lavage directement dans le tambour du lave-linge. Elles limitent le calcaire et permettent de réduire la dose de détergent, de lessive et d\'adoucissant.',
-  },
-];
+// Questions gérées dans Sanity (Studio → Questions fréquentes → page « comment-ca-marche »).
+const faqItems = faqPour('comment-ca-marche');
 
 const howToSchema = {
   '@context': 'https://schema.org',
@@ -112,8 +83,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
   <div class="bg-[#F5F0E8] px-4 pb-14">
     <div class="max-w-3xl mx-auto">
       <Image
-        src={getProductImage(photoSlug)!}
-        alt={getProductImageAlt(photoSlug)}
+        {...getProductPhoto(photoSlug)!}
         width={560}
         widths={[320, 560, 1120]}
         sizes="(max-width: 640px) 90vw, 560px"

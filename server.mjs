@@ -21,6 +21,7 @@
  *   HOST              interface d'écoute (0.0.0.0 par défaut, requis en conteneur)
  *   SITE_RECETTE=1    préproduction : noindex partout + robots.txt fermé
  *   SOURCE_COMMIT     commit déployé (fourni par Coolify), affiché par /api/sante
+ *   AUTORISER_SEED=1  dérogation : servir en production un build fait sans Sanity
  *   CLIENT_IP_HEADER  d'où lire l'IP réelle du client (voir plus bas) :
  *                     x-real-ip (défaut, Traefik), cf-connecting-ip (Cloudflare)
  *                     ou socket (aucun proxy : développement, CI)
@@ -58,6 +59,19 @@ if (!RECETTE) {
     console.error(
       `⛔ Démarrage refusé : information légale à compléter (${manque[1]}) dans les mentions légales.\n` +
         '   Voir src/data/hebergeur.ts. En préproduction, définir SITE_RECETTE=1.'
+    );
+    process.exit(1);
+  }
+}
+
+// Garde-fou : la production n'est jamais servie depuis le seed de développement
+// (contenu/seed.ndjson), sauf dérogation explicite AUTORISER_SEED=1.
+if (!RECETTE && process.env.AUTORISER_SEED !== '1') {
+  const source = readFileSync(join(ICI, 'dist', 'source-contenu.txt'), 'utf8').trim();
+  if (source !== 'sanity') {
+    console.error(
+      `⛔ Démarrage refusé : ce build a été fait avec le contenu « ${source} », pas avec Sanity.\n` +
+        '   Renseigner SANITY_PROJECT_ID / SANITY_READ_TOKEN (variables de build) et reconstruire.'
     );
     process.exit(1);
   }

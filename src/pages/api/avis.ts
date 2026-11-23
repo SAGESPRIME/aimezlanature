@@ -198,32 +198,25 @@ export const POST: APIRoute = async ({ request, url }) => {
   // ── Notification du marchand ───────────────────────────────────────────
   const aujourdhui = new Date().toISOString().slice(0, 10);
 
-  // Ligne prête à coller dans src/data/reviews.ts après relecture.
-  // `JSON.stringify` gère seul les apostrophes, guillemets et retours à la
-  // ligne : pas d'échappement à la main, donc pas de fichier cassé au collage.
-  const ligneReviews =
-    `    { author: ${JSON.stringify(donnees.auteur)}, ` +
-    `date: ${JSON.stringify(aujourdhui)}, ` +
-    `rating: ${note}, ` +
-    `title: ${donnees.titre ? JSON.stringify(donnees.titre) : 'null'}, ` +
-    `text: ${JSON.stringify(donnees.texte)} },`;
-
   const lignes: [string, string][] = [
     ['Produit', `${produit.name} (${produit.slug})`],
     ['Note', `${note}/5`],
     ['Titre', donnees.titre || '—'],
     ['Avis', donnees.texte],
     ['Nom affiché', donnees.auteur],
+    ['Date', aujourdhui],
     ['Email (NE PAS publier)', donnees.email],
     ['Achat', 'Vérifié via Stripe — commande payée trouvée pour cet email'],
   ];
 
-  const texte = [
-    ...lignes.map(([k, v]) => `${k} : ${v}`),
-    '',
-    `À coller dans src/data/reviews.ts, tableau '${produit.slug}' :`,
-    ligneReviews,
-  ].join('\n');
+  // Marche à suivre : l'avis se publie dans le Studio Sanity. La note moyenne
+  // et le nombre d'avis du produit se recalculent seuls à la reconstruction.
+  const consigne =
+    `Pour le publier : Studio Sanity → Avis clients → Créer, puis recopier ` +
+    `TEL QUEL produit, nom affiché, date, note, titre et texte (jamais l'email), ` +
+    `et cliquer « Publier ». La note du produit se met à jour automatiquement.`;
+
+  const texte = [...lignes.map(([k, v]) => `${k} : ${v}`), '', consigne].join('\n');
 
   const html =
     `<h2>Nouvel avis à modérer — ${echapperHtml(produit.name)}</h2>` +
@@ -233,11 +226,7 @@ export const POST: APIRoute = async ({ request, url }) => {
           `<tr><td valign="top"><strong>${echapperHtml(k)}</strong></td><td>${echapperHtml(v).replace(/\n/g, '<br>')}</td></tr>`
       )
       .join('')}</table>` +
-    `<p><strong>Si vous publiez cet avis</strong>, collez cette ligne dans ` +
-    `<code>src/data/reviews.ts</code>, tableau <code>${echapperHtml(produit.slug)}</code> :</p>` +
-    `<pre>${echapperHtml(ligneReviews)}</pre>` +
-    `<p>Pensez à mettre à jour <code>rating</code> et <code>reviewCount</code> du produit ` +
-    `dans <code>products.ts</code>, ainsi que <code>totalReviews</code> dans <code>SITE</code>.</p>`;
+    `<p><strong>Si vous publiez cet avis</strong> : ${echapperHtml(consigne)}</p>`;
 
   const envoi = await envoyerEmail({
     to: EMAIL_AVIS,

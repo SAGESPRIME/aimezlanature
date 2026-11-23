@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { faqPour } from '../data/faq';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
@@ -7,7 +8,7 @@ import AnswerBox from '../components/AnswerBox.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
-import { getProductImage, getProductImageAlt } from '../lib/productImages';
+import { getProductPhoto } from '../lib/productImages';
 import {
   PERLES_PAR_LITRE,
   categoriesLabels,
@@ -46,33 +47,8 @@ const introGroupes: Record<CategorieUsage, string> = {
 // NB : pas de question « Combien de perles par litre ? » ici — elle est déjà
 // dans le schema FAQPage de /comment-ca-marche/. La même question envoyée à
 // Google depuis deux pages crée une concurrence interne entre elles.
-const faqItems = [
-  {
-    question: 'Peut-on utiliser les perles de céramique dans le lave-linge ?',
-    answer:
-      'Oui. Placez 50 perles dans un filet de lavage, directement dans le tambour. Elles adoucissent l\'eau de lavage et permettent de réduire les quantités de lessive et d\'adoucissant, tout en protégeant l\'appareil du tartre.',
-  },
-  {
-    question: 'Les perles de céramique fonctionnent-elles dans un aquarium ?',
-    answer:
-      'Oui, comptez 40 à 80 perles au fond de l\'aquarium selon sa taille. Elles participent à l\'équilibre de l\'eau sans produit chimique.',
-  },
-  {
-    question: 'Peut-on mettre les perles dans la chasse d\'eau des toilettes ?',
-    answer:
-      'Oui : 20 perles placées en permanence dans le réservoir limitent la formation de tartre et réduisent la quantité de détergent nécessaire.',
-  },
-  {
-    question: 'Combien de perles pour une piscine ou un récupérateur d\'eau ?',
-    answer:
-      'Pour les très grands volumes, la règle est de 1 kg de perles pour 1 m³ d\'eau, soit 1 000 litres.',
-  },
-  {
-    question: 'Faut-il des perles différentes selon l\'usage ?',
-    answer:
-      'Non, ce sont les mêmes Perles de Céramique EM®. Seule la quantité change. Un même pack peut donc être réparti entre plusieurs usages — une carafe, une bouilloire et un lave-vaisselle par exemple.',
-  },
-];
+// Questions gérées dans Sanity (Studio → Questions fréquentes → page « utilisations »).
+const faqItems = faqPour('utilisations');
 
 const jsonLd = [
   buildArticleSchema({
@@ -110,8 +86,7 @@ const jsonLd = [
   <div class="bg-[#F5F0E8] px-4 pb-14">
     <div class="max-w-3xl mx-auto">
       <Image
-        src={getProductImage(photoSlug)!}
-        alt={getProductImageAlt(photoSlug)}
+        {...getProductPhoto(photoSlug)!}
         width={560}
         widths={[320, 560, 1120]}
         sizes="(max-width: 640px) 90vw, 560px"

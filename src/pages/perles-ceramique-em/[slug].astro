@@ -12,7 +12,7 @@ import AvisForm from '../../components/AvisForm.astro';
 import TrustStrip from '../../components/TrustStrip.astro';
 import { products, type Product } from '../../data/products';
 import { buildFaqSchema, buildProductSchema } from '../../lib/seo';
-import { getProductImage, getProductImageAlt } from '../../lib/productImages';
+import { getProductPhoto } from '../../lib/productImages';
 
 export function getStaticPaths() {
   return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
@@ -23,7 +23,7 @@ interface Props {
 }
 const { product: p } = Astro.props;
 
-const photo = getProductImage(p.slug);
+const photo = getProductPhoto(p.slug);
 // Image pour le schema Product et l'og:image : passer par getImage() garantit
 // qu'un fichier est réellement émis dans le build. Référencer `photo.src`
 // directement pointait vers un .jpg jamais généré (seuls les .webp du composant
@@ -31,7 +31,7 @@ const photo = getProductImage(p.slug);
 // Format jpg : requis par certains crawlers sociaux (WhatsApp, X) qui
 // n'affichent pas le WebP.
 const socialImage = photo
-  ? await getImage({ src: photo, width: 1080, height: 1080, format: 'jpg' })
+  ? await getImage({ ...photo, width: 1080, height: 1080, format: 'jpg' })
   : undefined;
 const others = products.filter((o) => o.slug !== p.slug && o.inStock).slice(0, 3);
 const paragraphs = p.description.split('\n\n');
@@ -50,8 +50,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
       <div class="relative rounded-3xl bg-white overflow-hidden aspect-square flex items-center justify-center">
         {photo ? (
           <Image
-            src={photo}
-            alt={getProductImageAlt(p.slug)}
+            {...photo}
             width={1080}
             height={1080}
             widths={[480, 800, 1080]}
@@ -72,7 +71,9 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
             <p class="text-xs tracking-widest uppercase opacity-40 mt-2">Photo {p.shortName}</p>
           </div>
         )}
-        <span class="absolute top-5 left-5 bg-[#166534] text-white text-xs font-bold px-3 py-1.5 rounded-full">-{p.discountPercent} %</span>
+        {p.priceOriginal && (
+          <span class="absolute top-5 left-5 bg-[#166534] text-white text-xs font-bold px-3 py-1.5 rounded-full">-{p.discountPercent} %</span>
+        )}
         {!p.inStock && (
           <span class="absolute top-5 right-5 bg-[#57534e] text-white text-xs font-semibold px-3 py-1.5 rounded-full">Rupture de stock</span>
         )}
@@ -93,7 +94,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 
         <div class="flex items-end gap-3 mb-6">
           <p class="font-display text-4xl font-bold text-[#166534]">{fmt(p.priceCurrent)} €</p>
-          <p class="text-lg text-[#6E5330] line-through mb-1">{fmt(p.priceOriginal)} €</p>
+          {p.priceOriginal && <p class="text-lg text-[#6E5330] line-through mb-1">{fmt(p.priceOriginal)} €</p>}
         </div>
 
         <ul class="flex flex-wrap gap-2 mb-7">
@@ -172,10 +173,9 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
             href={`/perles-ceramique-em/${o.slug}/`}
             class="group bg-white rounded-2xl border border-[#EDE8E0] overflow-hidden hover:border-[#C4B89A] transition-colors"
           >
-            {getProductImage(o.slug) && (
+            {getProductPhoto(o.slug) && (
               <Image
-                src={getProductImage(o.slug)!}
-                alt={getProductImageAlt(o.slug)}
+                {...getProductPhoto(o.slug)!}
                 width={560}
                 height={560}
                 widths={[280, 560]}

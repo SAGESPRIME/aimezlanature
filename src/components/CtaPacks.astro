@@ -1,6 +1,6 @@
 ---
 // Bandeau de conversion compact — réutilisé en bas des guides et pages info.
-import { products } from '../data/products';
+import { products, SITE } from '../data/products';
 const packs = products.filter((p) => p.inStock);
 ---
 
@@ -9,7 +9,7 @@ const packs = products.filter((p) => p.inStock);
     <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-3">Passer à l'action</p>
     <h2 id="cta-packs-titre" class="font-display text-3xl lg:text-4xl mb-3">Prêt à purifier votre eau ?</h2>
     <p class="text-[#B8CCB4] mb-10 max-w-xl mx-auto">
-      Perles de Céramique EM® authentiques, fabriquées au Japon. Livraison offerte dès 50 €,
+      Perles de Céramique EM® authentiques, fabriquées au Japon. Livraison offerte dès {SITE.freeShippingThreshold} €,
       garantie 30 jours, emballage sans plastique.
     </p>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">

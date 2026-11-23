@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { Image } from 'astro:assets';
 import { SITE, getProduct } from '../data/products';
 import { jsonPourScript } from '../lib/json-script';
+import { getCollection } from 'astro:content';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
@@ -75,20 +76,18 @@ const segmentLabels: Record<string, string> = {
   'contact': 'Contact',
   'mentions-legales': 'Mentions légales',
   'revendeurs': 'Devenir revendeur',
-  // Articles de blog
-  'perles-de-ceramique-une-solution-ecologique-et-economique': 'Solution écologique et économique',
-  'les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet': 'Alternative bio',
-  'leau-est-une-source-de-vie': 'L\'eau, source de vie',
-  'perles-de-ceramique-purifier-votre-eau-du-robinet': 'Purifier l\'eau du robinet',
-  'les-differents-usages-des-perles-de-ceramique': 'Les usages des perles',
-  'authenticite-des-perles-de-ceramique-em-et-leur-efficacite': 'Authenticité et efficacité',
-  'les-bienfaits-des-perles-de-ceramique': 'Les bienfaits des perles',
-  'perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien': 'Source de vie au quotidien',
+  // Les articles du blog fournissent leur propre libellé (champ « libellé
+  // court » dans Sanity) : voir libellesArticles ci-dessous.
 };
+
+const libellesArticles: Record<string, string> = Object.fromEntries(
+  (await getCollection('articles')).map((a) => [a.id, a.data.libelleCourt])
+);
 
 function segmentLabel(seg: string): string {
   return (
     segmentLabels[seg] ??
+    libellesArticles[seg] ??
     getProduct(seg)?.shortName ??
     seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
   );

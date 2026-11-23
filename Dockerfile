@@ -24,7 +24,10 @@ COPY . .
 ARG SANITY_PROJECT_ID
 ARG SANITY_DATASET=production
 ARG SANITY_READ_TOKEN
-ARG CONTENU_SOURCE
+# `sanity` par défaut : sans SANITY_PROJECT_ID, le build ÉCHOUE au lieu de
+# retomber silencieusement sur le contenu de développement. Pour une recette
+# avant la création du projet Sanity : CONTENU_SOURCE=seed.
+ARG CONTENU_SOURCE=sanity
 ENV SANITY_PROJECT_ID=$SANITY_PROJECT_ID \
     SANITY_DATASET=$SANITY_DATASET \
     SANITY_READ_TOKEN=$SANITY_READ_TOKEN \

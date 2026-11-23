@@ -5,13 +5,16 @@ import Icon from '../components/Icon.astro';
 import Faq from '../components/Faq.astro';
 import AmazonProof from '../components/AmazonProof.astro';
 import Irritants from '../components/Irritants.astro';
-import { SITE } from '../data/products';
+import { SITE, products, getProduct, prixDEntree } from '../data/products';
+import { fmtPrice } from '../lib/pricing';
+import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
-import { getProductImage, getProductImageAlt } from '../lib/productImages';
+import { getProductPhoto } from '../lib/productImages';
 import { buildFaqSchema } from '../lib/seo';
 
-// Visuel du hero : le Pack 100, notre best-seller (format famille, toutes utilisations).
-const heroPhoto = getProductImage('pack-100-perles');
+// Visuel du hero : la meilleure vente (case « Meilleure vente » du Studio).
+const vedette = products.find((p) => p.bestseller) ?? products[0];
+const heroPhoto = getProductPhoto(vedette.slug);
 
 const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Nature';
 const metaDescription =
@@ -109,35 +112,26 @@ const testimonials = [
 // données. Questions choisies pour les requêtes informationnelles à fort
 // volume ; réponses fidèles aux données réelles (dosage 15/L, régénération
 // par ébullition, honnêteté sur bactéries/métaux — cf. /perles-de-ceramique-avis).
-const homeFaqItems = [
-  {
-    question: 'Qu\'est-ce que les perles de céramique EM® ?',
-    answer:
-      'Ce sont des perles d\'argile naturelle fabriquées au Japon et enrichies en Micro-organismes Efficaces (EM®). Plongées dans l\'eau du robinet, elles réduisent le goût et l\'odeur de chlore, adoucissent l\'eau et limitent les dépôts de tartre, sans aucun produit chimique.',
-  },
-  {
-    question: 'Combien de perles de céramique faut-il utiliser ?',
-    answer:
-      'Comptez environ 15 perles par litre d\'eau de boisson : 15 pour une carafe d\'1 L, 30 pour une carafe de 2 L, 25 pour une bouilloire ou une cafetière, et 8 à 10 pour une gourde de 500 ml.',
-  },
-  {
-    question: 'Combien de temps durent les perles de céramique ?',
-    answer:
-      'Les perles ne s\'usent pas. Il suffit de les régénérer par ébullition 10 à 15 minutes tous les 3 à 6 mois, selon la dureté de votre eau et votre usage. Elles se conservent ainsi sur de nombreuses années.',
-  },
-  {
-    question: 'Les perles de céramique EM® sont-elles sans danger ?',
-    answer:
-      'Oui : fabriquées à partir d\'argile naturelle selon le procédé EM® japonais, elles ne libèrent aucun produit chimique dans l\'eau. Elles améliorent une eau déjà potable (goût, chlore, tartre) et ne remplacent pas un filtre certifié contre les bactéries ou les métaux lourds.',
-  },
-  {
-    question: 'Comment entretenir et régénérer les perles ?',
-    answer:
-      'Rincez-les à l\'eau claire, puis faites-les bouillir 10 à 15 minutes tous les 3 à 6 mois, sans savon ni vinaigre. Laissez-les sécher et replacez-les dans votre carafe, votre bouilloire ou votre gourde.',
-  },
-];
+// Questions gérées dans Sanity (Studio → Questions fréquentes → page « accueil »).
+const homeFaqItems = faqPour('accueil');
 
 const homeFaqSchema = buildFaqSchema(homeFaqItems);
+
+// Cartes « Choisissez votre format » : la mise en page est propre à ces quatre
+// produits, mais prix, prix barrés et notes viennent TOUJOURS des données
+// (Sanity). Ils étaient écrits en dur ici : un changement de prix dans le
+// Studio n'aurait pas atteint la page d'accueil.
+function carte(slug: string) {
+  const p = getProduct(slug);
+  if (!p) throw new Error(`Accueil : produit « ${slug} » introuvable dans le contenu`);
+  return p;
+}
+const p100 = carte('pack-100-perles');
+const p55 = carte('pack-55-perles');
+const pGourdePack = carte('pack-gourde-ceramique-em');
+const pGourde = carte('gourde-ecologique');
+const prix = (n: number) => `${fmtPrice(n)}€`;
+const note = (n: number) => n.toString().replace('.', ',');
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={[organizationSchema, websiteSchema, homeFaqSchema]}>
@@ -165,7 +159,7 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
       </p>
       <div class="flex flex-wrap gap-4 mb-10">
         <a href="/perles-ceramique-em/" class="inline-flex items-center gap-2 bg-[#166534] text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#0D4A25] transition-colors">
-          Purifier mon eau — dès 19,90 € <span aria-hidden="true">→</span>
+          Purifier mon eau — dès {prixDEntree()} <span aria-hidden="true">→</span>
         </a>
         <a href="/comment-ca-marche/" class="inline-flex items-center gap-2 border border-[#6E5330] text-[#6E5330] px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#6E5330] hover:text-white transition-colors">
           Comment ça marche ?
@@ -177,7 +171,7 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
           <span><strong class="text-[#1A1A16]">{SITE.globalRating.toString().replace('.', ',')}/5</strong> · {SITE.totalReviews} avis</span>
         </div>
         <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
-        <span>Livraison offerte dès 50€</span>
+        <span>Livraison offerte dès {SITE.freeShippingThreshold}€</span>
         <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
         <span>Garantie 30 jours</span>
       </div>
@@ -196,8 +190,7 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
         <div class="absolute inset-0 rounded-full bg-[#F5F0E8] overflow-hidden">
           {heroPhoto && (
             <Image
-              src={heroPhoto}
-              alt={getProductImageAlt('pack-100-perles')}
+              {...heroPhoto}
               width={920}
               height={920}
               widths={[200, 280, 460, 560, 920]}
@@ -228,7 +221,7 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
   <div class="bg-[#166534] text-white">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-center gap-6 lg:gap-10 text-sm font-medium">
       {([
-        { icon: 'truck', label: 'Livraison offerte dès 50€' },
+        { icon: 'truck', label: `Livraison offerte dès ${SITE.freeShippingThreshold}€` },
         { icon: 'refresh', label: 'Remboursement 30 jours' },
         { icon: 'leaf', label: 'Perles EM® authentiques' },
         { icon: 'droplet', label: 'Zéro plastique, zéro déchet' },
@@ -263,14 +256,14 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
         <a href="/perles-ceramique-em/pack-100-perles/" class="md:col-span-3 relative rounded-3xl overflow-hidden p-8 lg:p-10 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#D4E4D0]">
           <span class="absolute right-4 top-2 font-display text-[140px] font-bold leading-none select-none opacity-[0.08] text-[#166534]" aria-hidden="true">100</span>
           <div>
-            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">Bestseller · ★ 4,94/5 (51 avis)</span>
+            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">{p100.bestseller && 'Bestseller · '}{p100.rating && `★ ${note(p100.rating)}/5 (${p100.reviewCount} avis)`}</span>
             <h3 class="font-display text-3xl text-[#1A1A16] mb-2">Pack 100 Perles</h3>
-            <p class="text-[#57534e] text-sm max-w-xs">Carafe, bouilloire, lave-vaisselle, machine à laver… Le format famille, toutes les utilisations. Le choix de 51 clients satisfaits.</p>
+            <p class="text-[#57534e] text-sm max-w-xs">Carafe, bouilloire, lave-vaisselle, machine à laver… Le format famille, toutes les utilisations.{p100.reviewCount && ` Le choix de ${p100.reviewCount} clients satisfaits.`}</p>
           </div>
           <div class="flex items-end justify-between mt-6">
             <div>
-              <p class="text-xs text-[#6E5330] line-through">42,90€</p>
-              <p class="font-display text-3xl text-[#166534] font-bold">29,90€</p>
+              {p100.priceOriginal && <p class="text-xs text-[#6E5330] line-through">{prix(p100.priceOriginal)}</p>}
+              <p class="font-display text-3xl text-[#166534] font-bold">{prix(p100.priceCurrent)}</p>
             </div>
             <span class="bg-[#166534] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#0D4A25] transition-colors">Purifier mon eau →</span>
           </div>
@@ -280,13 +273,13 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
         <a href="/perles-ceramique-em/pack-55-perles/" class="md:col-span-2 relative rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#DDD8D0]">
           <span class="absolute right-3 top-1 font-display text-[100px] font-bold leading-none select-none opacity-[0.08] text-[#6E5330]" aria-hidden="true">55</span>
           <div>
-            <span class="inline-block bg-[#6E5330] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">★ 4,91/5 (45 avis)</span>
+            {p55.rating && <span class="inline-block bg-[#6E5330] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">★ {note(p55.rating)}/5 ({p55.reviewCount} avis)</span>}
             <h3 class="font-display text-2xl text-[#1A1A16] mb-2">Pack 55 Perles</h3>
             <p class="text-[#57534e] text-sm">Carafe, bouilloire, cafetière. Le format d'entrée idéal pour découvrir.</p>
           </div>
           <div>
-            <p class="text-xs text-[#6E5330] line-through">25,90€</p>
-            <p class="font-display text-2xl text-[#166534] font-bold">19,90€</p>
+            {p55.priceOriginal && <p class="text-xs text-[#6E5330] line-through">{prix(p55.priceOriginal)}</p>}
+            <p class="font-display text-2xl text-[#166534] font-bold">{prix(p55.priceCurrent)}</p>
           </div>
         </a>
 
@@ -300,8 +293,8 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
           </div>
           <div class="flex items-end justify-between">
             <div>
-              <p class="text-xs text-[#6E5330] line-through">72,80€</p>
-              <p class="font-display text-2xl text-[#166534] font-bold">59,90€</p>
+              {pGourdePack.priceOriginal && <p class="text-xs text-[#6E5330] line-through">{prix(pGourdePack.priceOriginal)}</p>}
+              <p class="font-display text-2xl text-[#166534] font-bold">{prix(pGourdePack.priceCurrent)}</p>
             </div>
             <span class="bg-[#166534] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#0D4A25] transition-colors">Purifier mon eau →</span>
           </div>
@@ -315,8 +308,8 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
             <p class="text-[#57534e] text-sm">500 ml en verre double paroi. Si vous avez déjà vos perles.</p>
           </div>
           <div>
-            <p class="text-xs text-[#6E5330] line-through">39,90€</p>
-            <p class="font-display text-2xl text-[#166534] font-bold">29,90€</p>
+            {pGourde.priceOriginal && <p class="text-xs text-[#6E5330] line-through">{prix(pGourde.priceOriginal)}</p>}
+            <p class="font-display text-2xl text-[#166534] font-bold">{prix(pGourde.priceCurrent)}</p>
           </div>
         </a>
 
@@ -455,7 +448,7 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="/perles-ceramique-em/" class="bg-[#A8C4A0] text-[#0D2818] px-8 py-3.5 rounded-full font-semibold hover:bg-white transition-colors">
-          Choisir mon pack — dès 19,90 €
+          Choisir mon pack — dès {prixDEntree()}
         </a>
         <a href="/a-propos/" class="border border-[#A8C4A0] text-[#A8C4A0] px-8 py-3.5 rounded-full font-semibold hover:bg-[#A8C4A0] hover:text-[#0D2818] transition-colors">
           Notre histoire →

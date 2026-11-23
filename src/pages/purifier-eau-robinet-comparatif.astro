@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { faqPour } from '../data/faq';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import AnswerBox from '../components/AnswerBox.astro';
@@ -57,33 +58,8 @@ const solutions = [
   },
 ];
 
-const faqItems = [
-  {
-    question: 'Quelle est la meilleure solution pour purifier l\'eau du robinet ?',
-    answer:
-      'Cela dépend de votre problème. Goût de chlore et tartre : perles de céramique ou charbon binchotan, les deux solutions les plus simples et les plus écologiques. Polluants avérés (nitrates, plomb, pesticides — cas rare en France) : osmoseur ou filtre à charbon actif certifié. La carafe filtrante est un entre-deux pratique mais coûteux à l\'année en cartouches.',
-  },
-  {
-    question: 'Quelle alternative à la carafe filtrante choisir ?',
-    answer:
-      'Les deux alternatives zéro déchet les plus crédibles sont les perles de céramique (achat unique 15-30 €, durent des années, agissent sur le goût et le tartre) et le charbon binchotan (10-15 €, à remplacer tous les 3-6 mois, adsorbe le chlore efficacement). Les deux suppriment l\'achat mensuel de cartouches plastique — environ 60 à 100 € d\'économie par an.',
-  },
-  {
-    question: 'Perles de céramique ou charbon actif : que choisir ?',
-    answer:
-      'Le charbon binchotan adsorbe davantage de chlore et certains composés organiques, mais doit être remplacé tous les 3 à 6 mois. Les perles de céramique durent des années avec une simple ébullition et agissent aussi sur le tartre. Les deux sont complémentaires : beaucoup de nos clients utilisent perles + binchotan dans la même carafe.',
-  },
-  {
-    question: 'L\'eau du robinet est-elle vraiment sûre en France ?',
-    answer:
-      'Oui : c\'est l\'un des aliments les plus contrôlés de France, avec des analyses régulières publiées par les Agences Régionales de Santé. Les solutions de cette page ne servent pas à la rendre potable — elle l\'est déjà — mais à améliorer son goût, limiter le tartre ou traiter des cas particuliers (vieilles canalisations au plomb, zones agricoles à nitrates).',
-  },
-  {
-    question: 'Un osmoseur est-il utile pour un particulier ?',
-    answer:
-      'Rarement. L\'osmose inverse retire quasiment tout — y compris les minéraux — au prix d\'un équipement coûteux, d\'une installation sous évier et d\'un rejet de 2 à 4 litres d\'eau par litre filtré. Il se justifie si une analyse révèle une contamination réelle (nitrates, pesticides), pas pour un simple problème de goût.',
-  },
-];
+// Questions gérées dans Sanity (Studio → Questions fréquentes → page « comparatif »).
+const faqItems = faqPour('comparatif');
 
 const jsonLd = [
   buildArticleSchema({
