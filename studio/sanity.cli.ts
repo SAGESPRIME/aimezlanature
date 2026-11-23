@@ -7,5 +7,5 @@ export default defineCliConfig({
   },
   // Le Studio est hébergé sur notre VPS (Coolify), pas sur sanity.studio.
   studioHost: undefined,
-  autoUpdates: false,
+  deployment: { autoUpdates: false },
 });

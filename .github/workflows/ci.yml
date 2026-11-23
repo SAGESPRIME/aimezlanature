@@ -43,9 +43,6 @@ jobs:
 
   studio:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: studio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,10 +50,23 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: studio/package-lock.json
+      # Le Studio est construit dans un dossier qui ne contient QUE ce que copie
+      # studio/Dockerfile (studio/ + contenu/regles.json). Construit en place,
+      # l'outil de build lisait le tsconfig de la racine (qui étend celui
+      # d'Astro, absent ici) : la CI testerait une situation qui n'existe pas
+      # en production.
+      - name: Préparer un dossier identique au contexte Docker
+        run: |
+          mkdir -p "$RUNNER_TEMP/studio-build/contenu"
+          cp -r studio "$RUNNER_TEMP/studio-build/"
+          cp contenu/regles.json "$RUNNER_TEMP/studio-build/contenu/"
       - run: npm ci
+        working-directory: ${{ runner.temp }}/studio-build/studio
       - name: Types des schémas
         run: npx tsc --noEmit -p .
+        working-directory: ${{ runner.temp }}/studio-build/studio
       - name: Build du Studio
         run: npx sanity build --yes
+        working-directory: ${{ runner.temp }}/studio-build/studio
         env:
           SANITY_STUDIO_PROJECT_ID: ci00test
