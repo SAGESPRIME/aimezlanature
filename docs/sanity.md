@@ -67,10 +67,19 @@ AI Assist) : rien ne disparaît à sa fin.
 3. API → CORS origins : ajouter `https://studio.aimezlanature.fr` (avec credentials) et
    `http://localhost:3333` pour l'édition locale. Rien d'autre.
 4. Importer le contenu actuel (141 documents + 8 brouillons d'articles) depuis un poste connecté :
+   Depuis le dossier `studio/` **du dépôt cloné** (le script lit `contenu/seed.ndjson` et les
+   photos de `src/assets/` à la racine du dépôt) :
    ```bash
    cd studio && npm ci && npx sanity login
    SANITY_STUDIO_PROJECT_ID=<id> npm run importer
    ```
+   Sous Windows (PowerShell), la variable se définit autrement :
+   ```powershell
+   cd studio; npm ci; npx sanity login
+   $env:SANITY_STUDIO_PROJECT_ID="<id>"; npm run importer
+   ```
+   `npm run importer -- --simulation` affiche ce qui serait envoyé sans rien envoyer. En cas
+   d'erreur npm `ECOMPROMISED` (cache npm abîmé) : `npm cache clean --force`, puis recommencer.
    Les photos produit sont téléversées au passage. L'import n'écrase jamais un document existant
    (sauf `--remplacer`).
 5. Renseigner `SANITY_PROJECT_ID` / `SANITY_READ_TOKEN` dans Coolify, puis configurer le webhook de
