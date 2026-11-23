@@ -78,7 +78,14 @@ AI Assist) : rien ne disparaît à sa fin.
    cd studio; npm ci; npx sanity login
    $env:SANITY_STUDIO_PROJECT_ID="<id>"; npm run importer
    ```
-   `npm run importer -- --simulation` affiche ce qui serait envoyé sans rien envoyer. En cas
+   `npm run importer -- --simulation` affiche ce qui serait envoyé sans rien envoyer.
+
+   **Sans `sanity login`** (serveur, CI, session cloud) : `scripts/migration-sanity/importer-api.mjs`
+   fait la même chose par l'API avec un jeton **Editor temporaire**, à révoquer juste après
+   (`SANITY_PROJECT_ID=… SANITY_WRITE_TOKEN=… node scripts/migration-sanity/importer-api.mjs`).
+   C'est ainsi que le projet `0lgh06ly` a été rempli le 2026-11-23 : 4 photos et 149 documents,
+   vérifiés ensuite par requêtes, et un build issu de Sanity identique, page par page, au build
+   issu du seed. En cas
    d'erreur npm `ECOMPROMISED` (cache npm abîmé) : `npm cache clean --force`, puis recommencer.
    Les photos produit sont téléversées au passage. L'import n'écrase jamais un document existant
    (sauf `--remplacer`).
