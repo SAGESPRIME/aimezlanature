@@ -9,7 +9,8 @@
  *
  * Deux sources, UNE seule requête GROQ :
  *   - `sanity` : le dataset publié (perspective « published », jamais les
- *     brouillons), avec un jeton en LECTURE SEULE ;
+ *     brouillons), avec un jeton en LECTURE SEULE (facultatif sur un dataset
+ *     public pour le publié, indispensable pour la relecture des brouillons) ;
  *   - `seed`   : contenu/seed.ndjson, interrogé en mémoire par groq-js avec
  *     exactement la même requête. Sert au développement et à la CI, et à la
  *     recette tant que le projet Sanity n'existe pas.

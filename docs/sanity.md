@@ -24,13 +24,46 @@ Studio ──publier──▶ Sanity ──webhook──▶ Coolify reconstruit 
 - Code : `src/content.config.ts` (schémas), `src/lib/cms/source.ts` (requête), façades
   `src/data/products.ts`, `reviews.ts`, `blogPosts.ts`, `faq.ts`.
 
+## Plan Sanity : le plan Free suffit
+
+Tout nouveau projet démarre par un **essai gratuit des fonctions du plan Growth**. À la fin de
+l'essai, le projet repasse **automatiquement et sans frais** sur le plan **Free** : Sanity ne
+facture rien sans passage volontaire au plan Growth. Le site est conçu pour ce plan Free :
+
+| Limite du plan Free | Besoin du site |
+|---|---|
+| 10 000 documents | ~150 (produits, avis, articles, FAQ, réglages) |
+| 2 datasets | 1 (`production`) |
+| 2 webhooks GROQ | 2 (reconstruction de la prod et de la recette) |
+| 20 utilisateurs | 1 à 2 |
+
+Le site n'interroge Sanity qu'au build : les visites et les paiements ne consomment aucun quota.
+
+Deux conséquences, appliquées dès la création pour ne pas subir la fin de l'essai :
+
+- **Dataset public** : les datasets privés sont une fonction payante (un dataset privé redevient
+  public à la fin de l'essai). Ce n'est pas un risque ici : le contenu publié est déjà visible sur
+  le site, aucune donnée personnelle n'est stockée (les avis n'ont pas d'email), et les
+  **brouillons ne sont jamais lisibles publiquement**, même sur un dataset public — il faut un
+  jeton pour les voir.
+- **Éditeurs administrateurs** : après l'essai, tout membre qui n'est pas administrateur devient
+  lecteur. Quiconque publie du contenu (marchand compris) doit donc avoir le rôle
+  **Administrator**. Rester peu nombreux : un administrateur peut aussi gérer les jetons et les
+  membres.
+
+Le Studio n'utilise aucune fonction réservée à l'essai (commentaires, brouillons planifiés,
+AI Assist) : rien ne disparaît à sa fin.
+
 ## Mise en place (une fois)
 
 1. [sanity.io/manage](https://www.sanity.io/manage) → créer le projet « Aimez la Nature », dataset
-   `production` en visibilité **privée**. Activer la double authentification.
+   `production` en visibilité **publique**. Activer la double authentification sur chaque compte
+   administrateur.
 2. API → Tokens : créer un jeton **Viewer** (lecture seule) → variable de build `SANITY_READ_TOKEN`
-   des applications site. **Aucun jeton d'écriture sur le serveur** : en cas de fuite, il permettrait
-   de modifier les prix.
+   des applications site. Sur un dataset public, il n'est pas indispensable pour lire le contenu
+   publié, mais il l'est pour le **mode relecture des brouillons** (`CONTENU_BROUILLONS=1`) : le
+   renseigner partout pour un comportement identique. **Aucun jeton d'écriture sur le serveur** :
+   en cas de fuite, il permettrait de modifier les prix.
 3. API → CORS origins : ajouter `https://studio.aimezlanature.fr` (avec credentials) et
    `http://localhost:3333` pour l'édition locale. Rien d'autre.
 4. Importer le contenu actuel (141 documents + 8 brouillons d'articles) depuis un poste connecté :

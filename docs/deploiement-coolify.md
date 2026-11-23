@@ -36,7 +36,7 @@ Le contenu (produits, prix, avis, articles, FAQ) vit dans Sanity : voir [`docs/s
 |---|---|
 | `SANITY_PROJECT_ID` | identifiant du projet Sanity |
 | `SANITY_DATASET` | `production` |
-| `SANITY_READ_TOKEN` | jeton Sanity **Viewer** (lecture seule) |
+| `SANITY_READ_TOKEN` | jeton Sanity **Viewer** (lecture seule ; requis pour la relecture des brouillons) |
 | `CONTENU_SOURCE` | `sanity` (défaut du Dockerfile ; sans projet Sanity, le build échoue — voulu) |
 
 ### Variables d'EXÉCUTION
