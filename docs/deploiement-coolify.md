@@ -98,16 +98,37 @@ Comme `site-prod`, avec :
 (le Studio lit `contenu/regles.json` à la racine) · **Port** : 8080.
 Variable de build : `SANITY_STUDIO_PROJECT_ID`. Domaine : `https://studio.aimezlanature.fr`.
 
-## 5. Publication Sanity → reconstruction du site
+## 5. Publication Sanity → reconstruction du site (relais signé)
 
-1. Coolify → Security → API Tokens : créer un jeton avec la seule permission **deploy**.
-2. Noter l'URL de déploiement de `site-prod` : `https://<coolify>/api/v1/deploy?uuid=<uuid-de-l-app>`.
-3. Sanity → API → Webhooks → Créer :
-   - URL : celle de l'étape 2 ; méthode **GET** ; en-tête `Authorization: Bearer <jeton Coolify>` ;
-   - déclencheurs : *create, update, delete* ; filtre : `_type in ["produit","avis","article","faq","reglages","auteur"]` ;
-   - « Trigger on drafts » **décoché** (seules les publications reconstruisent le site).
-4. Tester : modifier un prix dans le Studio, publier, vérifier sous 3 minutes la fiche, le panier et
-   le montant de la session Stripe.
+Une publication dans le Studio n'apparaît sur le site qu'après une reconstruction. Le chemin :
+
+```
+Studio ─publier─▶ Sanity ─webhook signé─▶ https://<site>/api/reconstruction
+                                            │ vérifie la signature (SANITY_WEBHOOK_SECRET)
+                                            │ regroupe : 45 s de calme, 3 min au plus
+                                            ▼
+                               API Coolify /deploy (COOLIFY_DEPLOY_TOKEN) → build 2-3 min
+```
+
+Le jeton Coolify reste sur notre serveur ; Sanity ne détient qu'un secret de signature, qui ne
+permet rien d'autre que de demander une reconstruction. Dix publications d'affilée = **un** build.
+
+Variables d'exécution de chaque application site (recette, puis prod au jour J) :
+
+| Variable | Valeur |
+|---|---|
+| `COOLIFY_API_URL` | `https://coolify.presencebusiness.com/api/v1` |
+| `COOLIFY_APP_UUID` | identifiant Coolify de l'application elle-même |
+| `COOLIFY_DEPLOY_TOKEN` | jeton Coolify (Keys & Tokens) avec la **seule** permission *deploy* |
+| `SANITY_WEBHOOK_SECRET` | secret aléatoire, identique à celui du webhook Sanity |
+
+Côté Sanity (API → Webhooks), un webhook par application site (le plan Free en permet 2) :
+URL `https://<site>/api/reconstruction`, méthode POST, dataset `production`, événements
+create/update/delete, filtre `_type in ["produit","avis","article","faq","reglages","auteur"]`,
+projection `{_id, _type}`, brouillons **non** inclus, secret = `SANITY_WEBHOOK_SECRET`.
+
+Code : `src/pages/api/reconstruction.ts` (signature, réponse 202 immédiate) et
+`src/lib/reconstruction.ts` (regroupement, appel Coolify, une nouvelle tentative en cas d'échec).
 
 ## 6. Sauvegardes
 

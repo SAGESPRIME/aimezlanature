@@ -16,6 +16,7 @@ commentaire à l'endroit du code concerné.
 | JSON dans `<script>` échappé (JSON-LD, catalogue) | `src/lib/json-script.ts` | — |
 | Texte du CMS échappé (panier, Portable Text) | `public/js/cart.js`, `src/components/texte/` | — |
 | Production jamais servie avec contenu de dev, brouillons ou mention légale vide | `server.mjs` (gardes au démarrage) | — |
+| Webhook Sanity → reconstruction : signature HMAC (`@sanity/webhook`) + messages de plus de 5 min refusés ; le jeton Coolify ne quitte pas le serveur | `src/pages/api/reconstruction.ts`, `src/lib/reconstruction.ts` | test local : 401 si signature absente, fausse, corps modifié ou message ancien |
 | Conteneur non-root, healthcheck | `Dockerfile`, `studio/Dockerfile` | CI |
 
 ## Règles à maintenir
