@@ -6,15 +6,15 @@
  * L'hébergeur légal est le FOURNISSEUR DU VPS (ex. OVHcloud, Hetzner,
  * Scaleway…), pas Coolify, qui n'est qu'un logiciel.
  *
- * ⚠️ À COMPLÉTER avec les coordonnées réelles du fournisseur. Tant que
- * `aCompleter` vaut true, la page affiche un marqueur et server.mjs REFUSE de
- * démarrer en production (la recette, elle, fonctionne) : publier une mention
- * légale fausse ou vide n'est pas une option.
+ * Fournisseur confirmé par le marchand le 2026-11-23 : Hetzner (VPS qui porte
+ * l'instance Coolify coolify.presencebusiness.com). Si le site change un jour
+ * de fournisseur, mettre `aCompleter: true` le temps de corriger : la page
+ * affiche alors un marqueur et server.mjs REFUSE de démarrer en production.
  */
 export const HEBERGEUR = {
-  aCompleter: true,
-  nom: 'À COMPLÉTER — fournisseur du VPS',
-  adresse: 'À COMPLÉTER — adresse postale du fournisseur',
-  telephone: 'À COMPLÉTER',
-  site: '',
+  aCompleter: false,
+  nom: 'Hetzner Online GmbH',
+  adresse: 'Industriestr. 25, 91710 Gunzenhausen, Allemagne',
+  telephone: '+49 9831 505-0',
+  site: 'https://www.hetzner.com',
 };
