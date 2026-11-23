@@ -39,8 +39,13 @@ marchand.
 1. [ ] **Utilisateur** : révoquer les jetons Sanity temporaires « import-claude » (Editor) et
        « webhook-claude » (Administrator) ; décocher « Build Variable » sur les secrets de
        `site-recette` (hygiène, aucune fuite constatée).
-2. [ ] **Utilisateur** : ajouter `STRIPE_SECRET_KEY` (test) dans `site-recette`, puis test de
-       commande de bout en bout (dont `async_payment_succeeded`).
+2. [~] Commande test sur la recette (2026-11-23) : panier → Stripe Checkout (cs_test) → carte 4242
+       → retour sur /commande-confirmee/ → webhook reçu et signature valide. ✅
+       ❌ Emails refusés par Emailit (403 `unverified_workspace_recipient`) : la clé posée dans
+       `site-recette` vient d'un espace Emailit NON vérifié (celui de la prod, vérifié le
+       2026-07-29, fonctionne). → **Utilisateur** : remettre la clé Emailit de la prod (Vercel)
+       dans `site-recette`, redémarrer, puis « Renvoyer » l'événement dans Stripe (mode test).
+       Reste aussi : `async_payment_succeeded`, et désactiver Adaptive Pricing (USD affiché).
 3. [ ] **Marchand** : relire les 8 articles (recette avec `CONTENU_BROUILLONS=1` + jeton de
        lecture) et les publier dans le Studio.
 4. [ ] **Marchand — décisions** :
