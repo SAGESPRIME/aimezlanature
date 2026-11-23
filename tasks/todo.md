@@ -46,6 +46,12 @@ marchand.
        2026-07-29, fonctionne). → **Utilisateur** : remettre la clé Emailit de la prod (Vercel)
        dans `site-recette`, redémarrer, puis « Renvoyer » l'événement dans Stripe (mode test).
        Reste aussi : `async_payment_succeeded`, et désactiver Adaptive Pricing (USD affiché).
+       Cause réelle (2026-11-23) : l'ESPACE Emailit n'est pas vérifié (pas la clé). Demande de
+       vérification à envoyer par l'utilisateur (Settings → Requests), déclarée Transactionnel +
+       Marketing (choix « A et B »). Avant TOUT envoi marketing à l'audience des 1 550 :
+       retirer les clients sans achat depuis le 2023-11 (CNIL : 3 ans), lien de désinscription,
+       mention dans la politique de confidentialité, et proposer l'opposition au moment de la
+       commande (art. L34-5 CPCE) — absent du tunnel actuel, à ajouter si on prospecte.
 3. [ ] **Marchand** : relire les 8 articles (recette avec `CONTENU_BROUILLONS=1` + jeton de
        lecture) et les publier dans le Studio.
 4. [ ] **Marchand — décisions** :
