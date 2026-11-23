@@ -18,7 +18,8 @@
  *
  * Variables d'environnement :
  *   PORT              port d'écoute (4321 par défaut)
- *   HOST              interface d'écoute (0.0.0.0 par défaut, requis en conteneur)
+ *   HOST              interface d'écoute. Par défaut « :: » (IPv4 ET IPv6), repli
+ *                     automatique sur 0.0.0.0 si le noyau n'a pas IPv6
  *   SITE_RECETTE=1    préproduction : noindex partout + robots.txt fermé
  *   SOURCE_COMMIT     commit déployé (fourni par Coolify), affiché par /api/sante
  *   AUTORISER_SEED=1  dérogation : servir en production un build fait sans Sanity
@@ -27,6 +28,7 @@
  *                     ou socket (aucun proxy : développement, CI)
  */
 import express from 'express';
+import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
@@ -37,7 +39,14 @@ const ICI = fileURLToPath(new URL('.', import.meta.url));
 const CLIENT = join(ICI, 'dist', 'client');
 const RECETTE = process.env.SITE_RECETTE === '1';
 const PORT = Number(process.env.PORT ?? 4321);
-const HOST = process.env.HOST ?? '0.0.0.0';
+/**
+ * Interface d'écoute. « :: » accepte IPv4 ET IPv6 : indispensable sur un
+ * Docker où IPv6 est activé, car `localhost` y désigne ::1. Le 2026-11-23, le
+ * premier déploiement Coolify a échoué ainsi : le serveur écoutait sur
+ * 0.0.0.0, le contrôle de santé interrogeait localhost (::1) → « Connection
+ * refused » dix fois, et Coolify est revenu en arrière.
+ */
+const HOST = process.env.HOST ?? '::';
 const SOURCE_IP = (process.env.CLIENT_IP_HEADER ?? 'x-real-ip').toLowerCase();
 
 /**
@@ -177,9 +186,30 @@ app.use((_req, res) => {
   res.sendFile(join(CLIENT, '404.html'));
 });
 
-const serveur = app.listen(PORT, HOST, () => {
-  console.log(`Aimez la Nature — à l'écoute sur http://${HOST}:${PORT}${RECETTE ? ' (RECETTE, noindex)' : ''}`);
-});
+/**
+ * Démarre l'écoute ; si IPv6 est absent du noyau, se replie sur IPv4.
+ * `node:http` plutôt que `app.listen` : avec Express 5, le rappel de
+ * `app.listen` est aussi appelé en cas d'ERREUR, ce qui faisait annoncer
+ * « à l'écoute » un serveur qui ne l'était pas.
+ */
+function ecouter(hote) {
+  const s = http.createServer(app);
+  s.once('error', (e) => {
+    const err = /** @type {NodeJS.ErrnoException} */ (e);
+    if (hote === '::' && (err.code === 'EAFNOSUPPORT' || err.code === 'EADDRNOTAVAIL')) {
+      console.warn('IPv6 indisponible, écoute en IPv4 seulement (0.0.0.0).');
+      serveur = ecouter('0.0.0.0');
+    } else {
+      throw e;
+    }
+  });
+  s.once('listening', () => {
+    console.log(`Aimez la Nature — à l'écoute sur le port ${PORT} (${hote})${RECETTE ? ' (RECETTE, noindex)' : ''}`);
+  });
+  s.listen(PORT, hote);
+  return s;
+}
+let serveur = ecouter(HOST);
 
 // Arrêt propre lors d'un redéploiement : Coolify envoie SIGTERM, on finit les
 // requêtes en cours (un paiement, un webhook Stripe) avant de quitter.

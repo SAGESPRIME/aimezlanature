@@ -45,7 +45,6 @@ RUN npm prune --omit=dev
 FROM node:22-alpine AS run
 WORKDIR /app
 ENV NODE_ENV=production \
-    HOST=0.0.0.0 \
     PORT=4321
 
 # Seuls les fichiers nécessaires à l'exécution : ni sources, ni .git, ni jeton
