@@ -9,6 +9,7 @@ import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimi
 export const prerender = false;
 
 const MAX_QTY = 20;
+const PAYS_LIVRAISON = ['FR'] as const;
 
 /**
  * Crée une session Stripe Checkout et renvoie son URL.
@@ -87,10 +88,12 @@ export const POST: APIRoute = async ({ request, url }) => {
   form.set('success_url', `${url.origin}/commande-confirmee/?session_id={CHECKOUT_SESSION_ID}`);
   form.set('cancel_url', `${url.origin}/panier/`);
   form.set('billing_address_collection', 'required');
-  form.set('shipping_address_collection[allowed_countries][0]', 'FR');
-  form.set('shipping_address_collection[allowed_countries][1]', 'BE');
-  form.set('shipping_address_collection[allowed_countries][2]', 'LU');
-  form.set('shipping_address_collection[allowed_countries][3]', 'CH');
+  // Pays de livraison = ceux que couvrent les CGV (article 4 : France
+  // métropolitaine). Le tunnel acceptait aussi BE, LU et CH alors que les CGV
+  // ne prévoient ni ces livraisons ni leurs frais (douane pour la Suisse) :
+  // une commande aurait été passée hors de tout cadre contractuel. Pour
+  // ouvrir un pays, l'ajouter ici ET dans les CGV, avec ses frais réels.
+  PAYS_LIVRAISON.forEach((pays, i) => form.set(`shipping_address_collection[allowed_countries][${i}]`, pays));
   form.set('phone_number_collection[enabled]', 'true');
 
   // Récapitulatif lisible des articles, ex. « Pack 100 Perles ×2, Gourde ×1 ».

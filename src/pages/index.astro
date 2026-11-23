@@ -10,7 +10,7 @@ import { fmtPrice } from '../lib/pricing';
 import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
 import { getProductPhoto } from '../lib/productImages';
-import { buildFaqSchema } from '../lib/seo';
+import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
 // Visuel du hero : la meilleure vente (case « Meilleure vente » du Studio).
 const vedette = products.find((p) => p.bestseller) ?? products[0];
@@ -20,38 +20,8 @@ const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Natu
 const metaDescription =
   `Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. ${SITE.totalReviews} avis vérifiés, livraison offerte dès ${SITE.freeShippingThreshold}€, garantie 30 jours. Zéro plastique.`;
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-  logo: `${SITE.url}/logo.png`,
-  foundingDate: String(SITE.foundingYear),
-  // Canal de vente officiel de la marque : permet à Google de rattacher la
-  // fiche Amazon (816 avis) à cette entité plutôt que de la voir comme un
-  // revendeur tiers sans lien.
-  sameAs: [SITE.amazon.url],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    telephone: '+33-1-84-80-15-22',
-    email: 'contact@aimezlanature.fr',
-    availableLanguage: 'French',
-  },
-};
-
-const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE.name,
-  url: SITE.url,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: `${SITE.url}/perles-ceramique-em/?q={search_term_string}` },
-    'query-input': 'required name=search_term_string',
-  },
-};
+const organizationSchema = buildOrganizationSchema();
+const websiteSchema = buildWebSiteSchema();
 
 // Pas de schema Product « catalogue » avec note agrégée ici : Google exige
 // qu'un aggregateRating porte sur un produit précis — agréger les avis de

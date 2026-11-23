@@ -3,7 +3,9 @@ import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 /**
  * Trace, dans le build, la source du contenu (sanity ou seed). server.mjs la
@@ -18,6 +20,32 @@ const traceSourceContenu = {
     'astro:build:done': ({ dir }) => {
       const source = process.env.CONTENU_SOURCE || (process.env.SANITY_PROJECT_ID ? 'sanity' : 'seed');
       writeFileSync(new URL('../source-contenu.txt', dir), source);
+    },
+  },
+};
+
+/**
+ * Ajoute <lastmod> au sitemap pour les pages qui déclarent une date de
+ * modification (og:updated_time : fiches produit, articles). Google n'utilise
+ * lastmod que s'il est fiable : on ne l'émet donc QUE pour les pages dont la
+ * date vient réellement du contenu, jamais « date du build » pour tout le site.
+ */
+const lastmodSitemap = {
+  name: 'lastmod-sitemap',
+  hooks: {
+    /** @param {{ dir: URL }} options */
+    'astro:build:done': ({ dir }) => {
+      const racine = fileURLToPath(dir);
+      const fichier = join(racine, 'sitemap-0.xml');
+      if (!existsSync(fichier)) return;
+      const xml = readFileSync(fichier, 'utf8').replace(/<url><loc>([^<]+)<\/loc>/g, (bloc, loc) => {
+        const chemin = new URL(loc).pathname;
+        const html = join(racine, chemin, 'index.html');
+        if (!existsSync(html)) return bloc;
+        const date = readFileSync(html, 'utf8').match(/property="og:updated_time" content="([^"]+)"/)?.[1];
+        return date ? `${bloc}<lastmod>${date}</lastmod>` : bloc;
+      });
+      writeFileSync(fichier, xml);
     },
   },
 };
@@ -54,6 +82,7 @@ export default defineConfig({
         !page.includes('/avis/merci') &&
         !page.includes('/panier'),
     }),
+    lastmodSitemap,
   ],
   i18n: {
     defaultLocale: 'fr',

@@ -41,7 +41,16 @@ const notifyMail = `mailto:commande@aimezlanature.fr?subject=${encodeURIComponen
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
 ---
 
-<BaseLayout title={p.metaTitle} description={p.metaDescription} jsonLd={jsonLd} ogImage={socialImage?.src}>
+<BaseLayout
+  title={p.metaTitle}
+  description={p.metaDescription}
+  jsonLd={jsonLd}
+  ogImage={socialImage?.src}
+  ogImageAlt={p.image.alt}
+  ogImageLargeur={socialImage ? 1080 : undefined}
+  ogImageHauteur={socialImage ? 1080 : undefined}
+  modifieLe={p.updatedAt}
+>
   <!-- FICHE PRODUIT -->
   <section class="px-4 py-10 bg-[#F5F0E8]">
     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">

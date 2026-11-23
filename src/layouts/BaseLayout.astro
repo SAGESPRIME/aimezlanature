@@ -40,6 +40,15 @@ interface Props {
   noindex?: boolean;
   ogImage?: string;
   ogImageAlt?: string;
+  /** Dimensions réelles de l'image de partage (par défaut celles de /og-default.jpg). */
+  ogImageLargeur?: number;
+  ogImageHauteur?: number;
+  /**
+   * Date ISO de la dernière modification SIGNIFICATIVE du contenu (prix,
+   * stock, texte d'article). Émise en og:updated_time et reprise comme
+   * <lastmod> dans le sitemap (astro.config.mjs).
+   */
+  modifieLe?: string;
 }
 
 const {
@@ -50,6 +59,9 @@ const {
   noindex = false,
   ogImage = '/og-default.jpg',
   ogImageAlt = 'Aimez la Nature — Perles de Céramique EM® authentiques du Japon pour purifier l\'eau du robinet',
+  ogImageLargeur = 1200,
+  ogImageHauteur = 630,
+  modifieLe,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.url).href;
@@ -167,8 +179,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
          hasard et les lecteurs d'écran n'ont aucune description. L'image par
          défaut (/og-default.jpg) fait 1200×630, le ratio 1.91:1 attendu. -->
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={String(ogImageLargeur)} />
+    <meta property="og:image:height" content={String(ogImageHauteur)} />
+    {modifieLe && <meta property="og:updated_time" content={modifieLe} />}
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content="fr_FR" />
 

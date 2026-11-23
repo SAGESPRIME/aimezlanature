@@ -1,9 +1,52 @@
+# Aimez la Nature — robots.txt
+#
+# Tout le site est ouvert à l'indexation. Les pages de tunnel (/panier/,
+# /commande-confirmee/, /avis/merci/, /revendeurs/merci/) portent une balise
+# noindex et sont exclues du sitemap : inutile de les bloquer ici (un blocage
+# robots.txt empêcherait justement Google de lire leur noindex).
+#
+# Moteurs de recherche et assistants IA : autorisés EXPLICITEMENT, pour que
+# le site puisse être cité dans les réponses de ChatGPT, Perplexity, Claude,
+# Gemini et Copilot. Résumé dédié aux IA : /llms.txt
+#
+# ⚠️ En préproduction (SITE_RECETTE=1), server.mjs remplace ce fichier par un
+# « Disallow: / ».
+
 User-agent: *
 Allow: /
 
-# Les pages de tunnel (/panier/, /commande-confirmee/, /revendeurs/merci/)
-# portent déjà une balise noindex et sont exclues du sitemap : pas besoin de
-# les bloquer ici. L'ancien « Disallow: /succes » visait une page qui n'a
-# jamais existé sous ce nom (la confirmation Stripe est /commande-confirmee/).
+# Recherche et citation dans les assistants IA
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Entraînement des modèles : autorisé (choix modifiable par le marchand —
+# remplacer « Allow » par « Disallow » pour s'y opposer, sans effet sur la
+# recherche classique ni sur la citation ci-dessus).
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
 
 Sitemap: https://aimezlanature.fr/sitemap-index.xml

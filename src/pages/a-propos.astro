@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
+import { buildOrganizationSchema } from '../lib/seo';
 
 // Histoire réelle de la fondatrice, reprise de la page « Qui sommes-nous ? »
 // d'aimezlanature.fr (relevée le 2026-07-20). Les allégations santé du texte
@@ -30,9 +31,9 @@ const etapes = [
   },
 ];
 
-const metaTitle = 'Notre mission : une eau meilleure, sans plastique | Aimez la Nature';
+const metaTitle = 'À propos : une eau meilleure, sans plastique | Aimez la Nature';
 const metaDescription =
-  'Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, un emballage zéro plastique et une ligne honnête sur ce que les perles font — et ne font pas.';
+  'Perles de Céramique EM® japonaises authentiques, emballage zéro plastique, et une ligne honnête sur ce que les perles font — et ne font pas.';
 
 const engagements = [
   {
@@ -59,17 +60,7 @@ const aboutSchema = {
   name: metaTitle,
   description: metaDescription,
   url: `${SITE.url}/a-propos/`,
-  mainEntity: {
-    '@type': 'Organization',
-    name: SITE.name,
-    url: SITE.url,
-    description: SITE.description,
-    // Création de la marque en 2019 (source : le marchand). À ne pas confondre
-    // avec le dépôt INPI n° 4664991, publié le 31/07/2020 — c'est la date
-    // d'enregistrement de la marque, pas celle du début d'activité.
-    foundingDate: String(SITE.foundingYear),
-    sameAs: [SITE.amazon.url],
-  },
+  mainEntity: buildOrganizationSchema(),
 };
 ---
 
