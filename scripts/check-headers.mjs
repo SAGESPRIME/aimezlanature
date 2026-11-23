@@ -59,21 +59,28 @@ verifier(
   sansSlash.status === 301 && (sansSlash.headers.get('location') ?? '').endsWith('/faq/'),
   `/faq → 301 vers /faq/ (${sansSlash.status} ${sansSlash.headers.get('location')})`
 );
-// `fetch` ignore un en-tête Host forcé : requête bas niveau pour simuler www.
-const www = await new Promise((resoudre, rejeter) => {
-  const u = new URL(BASE + '/faq/');
-  const hoteNu = u.hostname.replace(/^www\./, '');
-  (u.protocol === 'https:' ? https : http)
-    .get(u, { headers: { host: `www.${hoteNu}` }, servername: u.hostname }, (r) => {
-      r.resume();
-      resoudre({ status: r.statusCode, location: r.headers.location, hoteNu });
-    })
-    .on('error', rejeter);
-});
-verifier(
-  www.status === 301 && /^https:\/\/[^/]+\/faq\/$/.test(www.location ?? '') && !String(www.location).includes('//www.'),
-  `www → domaine nu en 301 (${www.status} ${www.location})`
-);
+// www → domaine nu : seulement hors recette. Sur la recette, aucun domaine
+// « www.recette… » n'est déclaré dans Coolify : le proxy Traefik répond 503
+// avant même d'atteindre server.mjs, ce qui ne dit rien du site.
+if (RECETTE) {
+  console.log('ℹ️  www → domaine nu : non testé en recette (aucun domaine www déclaré)');
+} else {
+  // `fetch` ignore un en-tête Host forcé : requête bas niveau pour simuler www.
+  const www = await new Promise((resoudre, rejeter) => {
+    const u = new URL(BASE + '/faq/');
+    const hoteNu = u.hostname.replace(/^www\./, '');
+    (u.protocol === 'https:' ? https : http)
+      .get(u, { headers: { host: `www.${hoteNu}` }, servername: u.hostname }, (r) => {
+        r.resume();
+        resoudre({ status: r.statusCode, location: r.headers.location, hoteNu });
+      })
+      .on('error', rejeter);
+  });
+  verifier(
+    www.status === 301 && /^https:\/\/[^/]+\/faq\/$/.test(www.location ?? '') && !String(www.location).includes('//www.'),
+    `www → domaine nu en 301 (${www.status} ${www.location})`
+  );
+}
 
 // 3. Cache.
 verifier(
