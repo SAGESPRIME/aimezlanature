@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { HEBERGEUR } from '../data/hebergeur';
 
 const metaTitle = 'Mentions légales | Aimez la Nature';
 const metaDescription =
@@ -45,13 +46,13 @@ const metaDescription =
 
       <div>
         <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Hébergement</h2>
-        <!-- Hébergeur mis à jour le 2026-07-30 : le site quitte Hostinger pour
-             Vercel. C'est une mention obligatoire (article 6 III de la LCEN),
-             laisser l'ancien hébergeur serait une information fausse. -->
-        <p>
-          Le site est hébergé par Vercel Inc., 440 N Barranca Ave #4133, Covina,
-          CA 91723, États-Unis —
-          <a href="https://vercel.com/contact" class="text-[#166534] font-semibold hover:underline" rel="nofollow">vercel.com/contact</a>.
+        {/* Mention obligatoire (article 6 III de la LCEN). Source unique :
+            src/data/hebergeur.ts. Le marqueur data-a-completer bloque le
+            démarrage du serveur en production tant qu'il est présent. */}
+        <p data-a-completer={HEBERGEUR.aCompleter ? 'hebergeur' : undefined}>
+          Le site est hébergé par {HEBERGEUR.nom}, {HEBERGEUR.adresse}
+          {HEBERGEUR.telephone && <> — {HEBERGEUR.telephone}</>}
+          {HEBERGEUR.site && <> — <a href={HEBERGEUR.site} class="text-[#166534] font-semibold hover:underline" rel="nofollow">{HEBERGEUR.site.replace(/^https?:\/\//, '')}</a></>}.
         </p>
       </div>
 

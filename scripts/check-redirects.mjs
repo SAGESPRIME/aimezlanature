@@ -1,30 +1,27 @@
 #!/usr/bin/env node
 // @ts-check
 /**
- * Vérifie, sur le site en ligne, que chaque redirection de vercel.json
- * renvoie bien le bon code (301 par défaut) vers la bonne page.
+ * Vérifie, sur le site en ligne, que chaque redirection de
+ * src/data/redirections.json renvoie bien un 301 vers la bonne page.
  *
  * Pourquoi : au basculement WordPress → Astro, une seule redirection cassée =
  * une 404 sur une URL déjà indexée par Google. Ce script rejoue toutes les
  * règles du fichier pour prouver qu'elles fonctionnent réellement en prod.
  *
- * Il LIT vercel.json (tableau `redirects`) : aucune liste à maintenir en
- * double. Ajoutez une règle au fichier, elle est testée automatiquement.
+ * Il LIT src/data/redirections.json, la liste même qu'applique server.mjs :
+ * aucune liste à maintenir en double. Ajoutez une règle au fichier, elle est
+ * testée automatiquement.
  *
  * Usage :
  *   node scripts/check-redirects.mjs                       (teste https://aimezlanature.fr)
- *   node scripts/check-redirects.mjs https://preview.url   (teste une preview)
+ *   node scripts/check-redirects.mjs https://recette.aimezlanature.fr
+ *   node scripts/check-redirects.mjs http://127.0.0.1:4321  (serveur local / CI)
  *   BASE_URL=https://aimezlanature.fr node scripts/check-redirects.mjs
  *
  * Code de sortie 0 si tout passe, 1 s'il reste au moins un échec (utilisable en CI).
  */
 
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const VERCEL_JSON = join(__dirname, '..', 'vercel.json');
+import { chargerRegles, estJoker } from '../src/data/redirections.mjs';
 
 // Cible : argument de ligne de commande, sinon variable d'env, sinon la prod.
 const PROD = 'https://aimezlanature.fr';
@@ -35,22 +32,15 @@ const BASE = (process.argv[2] || process.env.BASE_URL || PROD).replace(/\/$/, ''
 const CONCURRENCY = 8;
 
 /**
- * Charge les règles de redirection depuis vercel.json (tableau `redirects`).
- * @param {string} file chemin du vercel.json
- * @returns {Promise<{source: string, destination: string, code: number}[]>}
+ * Règles à tester. Toutes les redirections du site sont permanentes (301).
+ * @returns {{source: string, destination: string, code: number}[]}
  */
-async function loadRules(file) {
-  const config = JSON.parse(await readFile(file, 'utf8'));
-  return (config.redirects ?? []).map((r) => ({
-    source: r.source,
-    destination: r.destination,
-    // `permanent: true` = 301 (défaut) ; `permanent: false` = 302.
-    code: r.permanent === false ? 302 : 301,
-  }));
+function loadRules() {
+  return chargerRegles().map((r) => ({ ...r, code: 301 }));
 }
 
 /**
- * Une règle joker Vercel contient un paramètre (`:path*`) ou un groupe (`(.*)`).
+ * Une règle joker se termine par le groupe `(.*)`.
  * On la teste avec un chemin d'exemple pour vérifier que le joker attrape bien
  * tout ce qui est en dessous. Ex. /product-category/(.*) ->
  * /product-category/exemple-test-redirection.
@@ -62,10 +52,8 @@ function sampleForWildcard(source) {
     .replace(/:[A-Za-z_][A-Za-z0-9_]*\*?/g, 'exemple-test-redirection');
 }
 
-/** Une source contient-elle un joker ? */
-function isWildcard(source) {
-  return source.includes('(') || source.includes(':');
-}
+/** Une source contient-elle un joker ? @param {string} source */
+const isWildcard = (source) => estJoker(source);
 
 /**
  * Les DEUX formes à tester pour une règle : avec et sans slash final.
@@ -92,8 +80,7 @@ function variantsFor(source) {
  * Suit une chaîne de redirections à la main (au lieu de `redirect: 'follow'`)
  * pour pouvoir compter les sauts et voir chaque étape.
  *
- * Nécessaire depuis l'ajout de `"trailingSlash": true` dans vercel.json : une
- * URL sans slash final fait désormais 2 sauts (`/x` -> `/x/` -> cible) au lieu
+ * Une URL sans slash final peut faire 2 sauts (`/x` -> `/x/` -> cible) au lieu
  * de tomber en 404. C'est voulu, mais il faut comparer la destination FINALE et
  * non celle du premier saut.
  *
@@ -136,8 +123,8 @@ async function checkRule(rule) {
   const headers = { 'user-agent': 'redirect-check/1.0' };
   const attendu = pathOf(rule.destination);
 
-  // 301 et 308 sont deux redirections permanentes équivalentes (Vercel sert
-  // du 308, Cloudflare du 301) ; 302 et 307 sont les temporaires. On compare
+  // 301 et 308 sont deux redirections permanentes équivalentes (notre serveur
+  // sert du 301, Vercel servait du 308) ; 302 et 307 sont les temporaires. On compare
   // la CLASSE de redirection, pas le code exact, pour rester agnostique.
   const attendus = rule.code === 301 ? [301, 308] : [302, 307];
 
@@ -184,7 +171,7 @@ async function checkRule(rule) {
       // Nombre de sauts = nombre de réponses de redirection (hors la 200 finale).
       const sauts = chain.length - 1;
       const codes = chain.filter((c) => c.location).map((c) => c.status).join('→');
-      // 2 sauts est normal pour la forme sans slash final (trailingSlash: true) ;
+      // 2 sauts est normal pour la forme sans slash final (/x -> /x/ -> cible) ;
       // au-delà, la règle mérite d'être réécrite pour pointer directement.
       const alerte = sauts > 2 ? `  ⚠️ ${sauts} sauts` : '';
       return { ok: true, rule, requestPath, got: `${codes} → ${cible.pathname} (200)${alerte}` };
@@ -216,7 +203,7 @@ async function runPooled(items, worker, size) {
 }
 
 async function main() {
-  const rules = await loadRules(VERCEL_JSON);
+  const rules = loadRules();
 
   const nbFormes = rules.reduce((n, r) => n + variantsFor(r.source).length, 0);
   console.log(
@@ -232,7 +219,7 @@ async function main() {
     console.log(
       'ℹ️  Cible = production par défaut. Avant le basculement, des échecs sont\n' +
       '   attendus (l\'ancien site répond 200). Pour tester la nouvelle version,\n' +
-      '   passez l\'URL de preview : node scripts/check-redirects.mjs https://preview.url\n'
+      '   passez l\'URL de recette : node scripts/check-redirects.mjs https://recette.aimezlanature.fr\n'
     );
   }
 

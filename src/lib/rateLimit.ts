@@ -12,50 +12,25 @@
  * de confirmation de commande. Sa protection est ailleurs — signature HMAC et
  * fenêtre anti-rejeu de 5 minutes (`lib/stripe-signature.ts`).
  *
- * ── PORTÉE RÉELLE, MESURÉE LE 2026-07-30 — À LIRE AVANT D'Y COMPTER ──────────
- * Le compteur vit en MÉMOIRE, donc par instance de fonction. Mesuré sur la
- * production, 30 appels, même IP, même région (cdg1) :
+ * ── PORTÉE RÉELLE SUR LE VPS (depuis la migration Vercel → Coolify) ──────────
+ * Le compteur vit en MÉMOIRE. Sur Vercel, chaque instance de fonction avait son
+ * propre compteur : mesuré le 2026-07-30, 30 appels PARALLÈLES depuis une seule
+ * IP passaient à 27 (≈ 3 instances × 10), la limite ne servait à rien.
  *
- *   en série     → 10 passent, 20 bloqués en 429.  La limite tient.
- *   en parallèle → 27 passent,  0 bloqué.          La limite ne sert à RIEN.
+ * Sur le VPS, le site tourne dans UN SEUL processus Node (server.mjs) : un seul
+ * compteur voit tous les appels, la rafale parallèle est donc bien plafonnée.
+ * C'est le critère de `npm run check:ratelimit`, qui doit passer au vert sur la
+ * recette. ⚠️ Cette garantie tombe si l'on lance plusieurs répliques du
+ * conteneur : garder 1 réplique, ou passer à un compteur partagé.
  *
- * Vercel démarre autant d'instances que nécessaire pour absorber la charge, et
- * chacune a son propre compteur qui repart de `max` : les 27 passages
- * correspondent à ~3 instances × 10. D'où une propriété perverse — plus
- * l'attaque est forte, plus il y a d'instances, donc plus le plafond effectif
- * monte. La protection grandit avec l'attaquant.
+ * Seconde barrière, devant l'application : le middleware `ratelimit` de Traefik
+ * (labels Coolify, voir docs/deploiement-coolify.md). Un appel bloqué à l'une
+ * ou l'autre ne consomme PAS de budget d'API Stripe.
  *
- * Il n'y a donc PAS besoin de se répartir sur plusieurs IP ni plusieurs régions
- * pour passer : le parallélisme depuis une seule machine suffit. Ce fichier
- * affirmait le contraire avant que ce soit mesuré.
- *
- * CE QU'UNE RAFALE CASSE VRAIMENT. Les limites d'API de Stripe sont comptées
- * PAR COMPTE (25 req/s en test, 100 req/s en réel, 25 req/s par endpoint par
- * défaut). Sur les 30 appels parallèles, 3 ont reçu « Stripe: Request rate limit
- * exceeded » et sont ressortis en 502. Après la bascule, une rafale suffisante
- * consommerait donc le budget Stripe du compte : les VRAIS clients ne
- * pourraient plus payer pendant qu'elle dure. Le risque est la disponibilité de
- * la vente, pas seulement le coût.
- *
- * Ce que ce limiteur arrête réellement : une boucle séquentielle. C'est tout.
- * Il reste utile — zéro dépendance, indépendant du plan, et un appel bloqué ici
- * ne consomme PAS de budget d'API Stripe — mais il ne peut pas être la seule
- * protection.
- *
- * Le mur, c'est une règle de rate limiting du pare-feu Vercel : elle compte
- * côté plateforme (par région, non par instance) et agit AVANT le démarrage de
- * la fonction. Vérifié dans la doc : disponible dès le plan Hobby — 1 règle par
- * projet, clé IP, fenêtre de 10 s à 10 min, 1 000 000 de requêtes incluses, et
- * le trafic bloqué n'est pas facturé. Le plan n'est donc PAS l'obstacle qu'on
- * croyait (c'est lui qui avait tué la version Cloudflare). Mode opératoire dans
- * `docs/audit/rapport-pre-bascule-2026-07-29.md`, section « Le mur ».
- * Les deux se cumulent : garder celui-ci comme filet, il survit à la
- * suppression accidentelle de la règle de pare-feu.
- *
- * Version précédente : `dcccb08` s'appuyait sur le binding Cloudflare
- * `ratelimits`, reverté en `04dc9fd` faute de plan confirmé, puis rendu
- * inutilisable par la migration vers Vercel. La logique (clé = IP, fail-open si
- * indisponible) est reprise ici ; seul le mécanisme change.
+ * POURQUOI C'EST IMPORTANT. Les limites d'API de Stripe sont comptées PAR
+ * COMPTE (25 req/s en test, 100 req/s en réel). Une rafale non freinée
+ * consommerait ce budget : les VRAIS clients ne pourraient plus payer pendant
+ * qu'elle dure. Le risque est la disponibilité de la vente, pas le coût.
  */
 
 /** Fenêtre glissante simple : compteur + instant de réinitialisation. */
@@ -84,19 +59,22 @@ function nettoyer(maintenant: number): void {
 }
 
 /**
- * IP de l'appelant. Sur Vercel, `x-forwarded-for` est réécrit par la plateforme
- * et les valeurs fournies par le client ne sont PAS transmises (documenté :
- * « Vercel overwrites this header and does not forward external IPs to prevent
- * spoofing »). La clé n'est donc pas falsifiable par l'appelant.
+ * IP de l'appelant, telle que décidée par `server.mjs` et transmise dans
+ * l'en-tête interne `x-aln-client-ip`.
  *
- * Une IP absente renvoie `null` : l'appelant n'est pas identifiable, on ne peut
- * pas compter, on laisse passer (cf. fail-open).
+ * Toute la logique de confiance (quel proxy croire, Traefik ou Cloudflare) vit
+ * dans server.mjs, réglée par la variable CLIENT_IP_HEADER, et le serveur
+ * efface cet en-tête s'il arrive du client. ⚠️ NE PAS revenir à la première
+ * entrée de `x-forwarded-for` : sur un VPS, c'est le client qui l'écrit, et un
+ * attaquant n'aurait qu'à changer de valeur à chaque appel pour échapper à la
+ * limite. Contrôle : `npm run check:ratelimit` (rafale à IP falsifiées).
+ *
+ * Une IP absente renvoie `null` : l'appelant n'est pas identifiable, on ne
+ * peut pas compter, on laisse passer (fail-open).
  */
 function ipDe(request: Request): string | null {
-  const brut = request.headers.get('x-forwarded-for');
-  if (!brut) return null;
-  const premiere = brut.split(',')[0]?.trim();
-  return premiere && premiere.length > 0 ? premiere : null;
+  const ip = request.headers.get('x-aln-client-ip')?.trim();
+  return ip && ip.length > 0 ? ip : null;
 }
 
 export interface Verdict {

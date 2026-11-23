@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-// Route serverless Vercel (prerender = false) : l'environnement est lu via
-// process.env — même accès que api/checkout.ts et api/revendeur.ts.
+// Route à la demande (prerender = false), servie par server.mjs : les secrets
+// sont lus dans process.env (variables d'environnement Coolify).
 import { CHAMPS_AVIS, LIMITES_AVIS, TEXTE_MINIMUM, EMAIL_AVIS } from '../../data/avis';
 import { products } from '../../data/products';
 import {

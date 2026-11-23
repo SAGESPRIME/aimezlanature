@@ -1,0 +1,16 @@
+# Ne jamais envoyer au build Docker : secrets, historique, artefacts locaux.
+.git
+.env
+.env.*
+node_modules
+dist
+.astro
+.vercel
+studio/node_modules
+studio/dist
+*.png
+!public/**/*.png
+!src/**/*.png
+docs
+tasks
+scripts/parite/reference.json

@@ -46,8 +46,8 @@ export interface Commande {
  *
  * ⚠️ TEMPORAIRE. `SITE.url` vaut `aimezlanature.fr`, qui sert encore le site
  * WordPress : le lien « Voir tous les dosages » y renvoie donc un 404. Tant que
- * le domaine n'est pas basculé, définir `EMAIL_SITE_URL` dans Vercel avec
- * l'adresse du déploiement (https://aimezlanatureseo.vercel.app).
+ * le domaine n'est pas basculé, définir `EMAIL_SITE_URL` dans Coolify (app de
+ * recette) avec l'adresse de recette (https://recette.aimezlanature.fr).
  *
  * À SUPPRIMER — la variable comme ce commentaire — le jour où aimezlanature.fr
  * sert ce site : `SITE.url` redeviendra alors la bonne réponse.

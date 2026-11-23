@@ -323,8 +323,8 @@
       body: JSON.stringify({ items: items }),
     })
       // Lire le corps en TEXTE puis tenter le JSON, jamais `r.json()` direct :
-      // notre route répond du JSON, mais une règle de rate limiting du pare-feu
-      // Vercel répond une page HTML. `r.json()` rejetterait alors, et le client
+      // notre route répond du JSON, mais un proxy (limite de débit Traefik, page
+      // d'erreur 502 d'un redémarrage) peut répondre du texte ou du HTML. `r.json()` rejetterait alors, et le client
       // verrait le message d'erreur brut de l'analyseur JSON (« Unexpected
       // token '<' … ») au milieu d'une phrase française. Ici une réponse non
       // JSON donne simplement `d = null`, traité plus bas comme une erreur.

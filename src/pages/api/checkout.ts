@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-// Cette route tourne comme fonction serverless Vercel (prerender = false) :
-// l'environnement (clés secrètes) est exposé via process.env.
+// Route à la demande (prerender = false), servie par server.mjs : les secrets
+// sont lus dans process.env (variables d'environnement Coolify).
 import { products, SITE } from '../../data/products';
 import { unitPriceFor } from '../../lib/pricing';
 import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimit';
@@ -18,7 +18,7 @@ const MAX_QTY = 20;
  * recalculés ici. Un panier modifié dans la console ne peut donc pas changer
  * le montant débité — ne jamais accepter de prix venant du client.
  *
- * La clé secrète est lue dans l'environnement Vercel (STRIPE_SECRET_KEY)
+ * La clé secrète est lue dans l'environnement (STRIPE_SECRET_KEY, Coolify)
  * et n'apparaît jamais dans le code ni dans le HTML envoyé au navigateur.
  */
 export const POST: APIRoute = async ({ request, url }) => {
