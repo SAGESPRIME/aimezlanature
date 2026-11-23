@@ -2,89 +2,52 @@
 
 ---
 
-# ⏸️ REPRENDRE ICI — règle de pare-feu en brouillon (arrêt le 2026-07-30)
+# ⏸️ REPRENDRE ICI — migration Coolify + Sanity livrée dans le code (2026-11-23)
 
-**Une règle est préparée sur Vercel mais PAS publiée. Elle n'existe nulle part dans ce dépôt :
-c'est un brouillon côté Vercel, invisible d'un `git status`.** Sans cette note, la prochaine
-session la referait de zéro — ou pire, croirait la protection en place.
+Branche `claude/busy-albattani-hdkhlq`. Tout ce qui suit est **fait et vérifié dans le dépôt** ;
+ce qui reste demande un accès que le code n'a pas (VPS, Sanity, DNS, Stripe) ou une décision du
+marchand.
 
-### État exact au moment de l'arrêt
+### Fait (vérifié)
+- Astro 7.4.13, 0 vulnérabilité npm ; `astro check` 0 erreur ; CI GitHub Actions.
+- Vercel → **Coolify** : `server.mjs` + `Dockerfile` (non-root, healthcheck). Contre le conteneur :
+  redirections 220/220, en-têtes conformes, **`check:ratelimit` au vert** (rafale parallèle ET IP
+  falsifiées bloquées — impossible sur Vercel). La règle de pare-feu Vercel en brouillon est sans objet.
+- **Sanity** : Studio (`studio/`), contenu extrait dans `contenu/seed.ndjson` (4 produits, 96 avis,
+  8 articles, 32 FAQ). Parité SEO 29/29 pages. Paiement : prix figés au build, zéro appel Sanity.
+- SEO/GEO : graphe JSON-LD (Organization @id, Product avec livraison/retours), `llms.txt` généré,
+  robots IA explicites, `lastmod`, `check:seo` 24/24.
+- 8 articles réécrits en **brouillons** (sources, réponse courte, FAQ) — à relire et publier.
+- Corrigés au passage : CGV « commande par email » périmée, livraison BE/LU/CH hors CGV, prix de
+  l'accueil en dur, risque d'étouffement présenté comme impossible, 16 mots collés à un lien.
 
-| Élément | État |
-|---|---|
-| CLI Vercel | **installée** (v58.4.0), connecté comme `sagesprime` |
-| Dossier rattaché | ✅ `aimezlanatureseo` (`prj_AxqIcUMlk1i3lbacS9qAghFdumaY`) — **pas** l'autre projet `aimezlanature`, dont le nom ressemble à celui du dossier |
-| Règle | **staged (brouillon)**, `rule_limite_paiement_sK41Kp` |
-| Protection réelle aujourd'hui | ❌ **aucune** au-delà du limiteur applicatif, qui ne bloque pas le parallélisme |
+### Reste à faire — dans l'ordre
+1. [ ] **Hébergeur du VPS** dans `src/data/hebergeur.ts` (mention légale obligatoire) — la prod
+       refuse de démarrer tant qu'il est « À COMPLÉTER ».
+2. [ ] **Créer le projet Sanity** et importer le seed — `docs/sanity.md`.
+3. [ ] **Créer les 3 apps Coolify** (prod, recette, studio) + webhook Sanity → Coolify —
+       `docs/deploiement-coolify.md`.
+4. [ ] Sur la recette : `check:redirects`, `check:headers --recette`, `check:ratelimit` au vert ;
+       commande test de bout en bout (dont `stripe trigger checkout.session.async_payment_succeeded`).
+5. [ ] **Marchand** : relire les 8 articles (recette avec `CONTENU_BROUILLONS=1`) et publier.
+6. [ ] **Marchand — décisions** :
+   - prix barrés (Omnibus) : justifier ou vider le champ « Prix barré » dans le Studio ;
+   - TVA / mention TTC ;
+   - auteur des articles (créer la fiche « Auteur » dans le Studio, E-E-A-T) ;
+   - livraison hors France : rouvrir BE/LU/CH ? (code `PAYS_LIVRAISON` + CGV) ;
+   - étiquette de conversion Google Ads (`src/data/tracking.ts`) ;
+   - droit de sous-distribuer (fournisseur EM), grille revendeur.
+7. [ ] **Jour J** : Stripe live, DNS, contrôles — `docs/deploiement-coolify.md` section 9.
+8. [ ] J+1 : Search Console + Bing Webmaster Tools (sitemap). J+30 : supprimer les projets Vercel,
+       décommissionner WordPress.
 
-La règle en attente :
-
-```
-Nom        : Limite paiement
-ID         : rule_limite_paiement_sK41Kp
-Condition  : le chemin commence par /api/checkout
-Comptage   : 30 requêtes / 60 s, par adresse IP
-Si dépassé : log   ← n'empêche RIEN, se contente d'enregistrer
-```
-
-Deux garanties de cette forme : la condition ne touche **que** `/api/checkout`, donc elle ne peut
-pas atteindre `/api/stripe-webhook` où un blocage casserait les emails de commande en boucle de
-rejeu ; et l'action `log` ne peut refuser personne, même mal réglée.
-
-### Étape 1 — publier (action du marchand)
-
-```bash
-vercel firewall publish --yes
-```
-
-Rien n'est actif tant que cette commande n'a pas tourné. `vercel firewall diff` montre ce qui
-partira, `vercel firewall discard --yes` abandonne le brouillon.
-
-### Étape 2 — observer avant de bloquer
-
-```bash
-npm run check:ratelimit https://aimezlanatureseo.vercel.app
-```
-
-La rafale de 30 appels parallèles doit apparaître dans le journal de la règle **sans être bloquée**
-(action `log`). Puis relire le trafic réel :
-
-https://vercel.com/saddikis-projects/aimezlanatureseo/firewall/traffic?filter=rule_limite_paiement_sK41Kp
-
-Ce qu'on cherche : **une IP légitime dépasse-t-elle 30 paiements par minute ?** Normalement jamais.
-Le risque à écarter est un réseau d'entreprise ou un opérateur mobile qui fait sortir plusieurs
-clients par la même adresse.
-
-### Étape 3 — bloquer pour de vrai
-
-```bash
-vercel firewall rules edit "Limite paiement" \
-  --condition '{"type":"path","op":"pre","value":"/api/checkout"}' \
-  --rate-limit-action rate_limit --yes
-vercel firewall publish --yes
-```
-
-⚠️ `edit --condition` **remplace** toutes les conditions : il faut donc la redonner en entier, même
-inchangée. `rate_limit` renvoie un **429** (et non `deny`/403) : c'est le code que `cart.js` sait
-afficher proprement depuis le correctif `5375a98`.
-
-### Le critère qui prouve que c'est fini
-
-```bash
-npm run check:ratelimit https://aimezlanatureseo.vercel.app
-```
-
-Il sort **en erreur aujourd'hui**, volontairement. Il doit passer **au vert** après l'étape 3 —
-c'est la preuve que le trou est bouché, pas une affirmation.
-
-### Pourquoi tout ce travail (résumé d'une ligne)
-
-Le limiteur applicatif laisse passer **30 appels sur 30** envoyés en parallèle, et une telle rafale
-épuise le budget d'API **Stripe du compte** : les vrais clients ne peuvent alors plus payer. Détail
-mesuré et sources plus bas dans ce fichier, et dans `docs/audit/rapport-pre-bascule-2026-07-29.md`,
-section « Le mur ».
+### Avant toute campagne email (base WooCommerce de 1 550 clients)
+Prospection sans consentement possible seulement **3 ans après le dernier achat** (recommandation
+CNIL) : exclure les clients sans achat depuis novembre 2023, soit l'essentiel de la base.
 
 ---
+
+# Historique
 
 ## État actuel (2026-07-20)
 - [x] Page d'accueil codée (`src/pages/index.astro`)

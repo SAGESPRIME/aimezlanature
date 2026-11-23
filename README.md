@@ -1,43 +1,30 @@
-# Astro Starter Kit: Minimal
+# Aimez la Nature — site e-commerce
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Boutique de Perles de Céramique EM® : [aimezlanature.fr](https://aimezlanature.fr).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- **Astro 7**, site statique + 4 routes serveur (`/api/checkout`, `/api/stripe-webhook`,
+  `/api/avis`, `/api/revendeur`), servi par `server.mjs` (Express) dans un conteneur Docker.
+- **Hébergement** : VPS administré avec **Coolify** → [`docs/deploiement-coolify.md`](docs/deploiement-coolify.md)
+- **Contenu** (produits, prix, avis, articles, FAQ) : **Sanity**, Studio dans `studio/` → [`docs/sanity.md`](docs/sanity.md)
+- **Paiement** : Stripe Checkout, prix toujours recalculés côté serveur.
 
-## 🚀 Project Structure
+## Commandes
 
-Inside of your Astro project, you'll see the following folders and files:
+| Commande | Rôle |
+|---|---|
+| `npm ci` | installer |
+| `npm run dev` | développement (contenu : `contenu/seed.ndjson` sans Sanity) |
+| `npm run build` | construire `dist/` |
+| `npm start` | servir le build comme en production (`SITE_RECETTE=1 CLIENT_IP_HEADER=socket` en local) |
+| `npm run check` | types (astro check) |
+| `npm run check:seo` | audit SEO du build : titles, h1, canonical, JSON-LD, liens, sitemap, espaces |
+| `npm run check:redirects -- <url>` | les 120 redirections des anciennes URLs |
+| `npm run check:headers -- <url> [--recette]` | en-têtes de sécurité et de cache |
+| `npm run check:ratelimit -- <url>` | limite anti-abus (rafale parallèle + IP falsifiées) |
+| `npm run check:parite` | compare le build à la photo SEO d'avant Sanity |
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Où trouver quoi
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `tasks/todo.md` — ce qui reste à faire, en tête de fichier ; `tasks/lessons.md` — pièges déjà rencontrés.
+- `SECURITY-NOTES.md`, `SEO-NOTES.md`, `COPY-NOTES.md`, `DESIGN-NOTES.md` — règles par domaine.
+- `docs/audit/` — rapports d'audit datés.
