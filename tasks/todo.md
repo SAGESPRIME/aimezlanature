@@ -2,7 +2,7 @@
 
 ---
 
-# ⏸️ REPRENDRE ICI — migration Coolify + Sanity livrée dans le code (2026-11-23)
+# ⏸️ REPRENDRE ICI — recette en ligne sur Coolify, contenu dans Sanity (2026-11-23)
 
 Branche `claude/busy-albattani-hdkhlq`. Tout ce qui suit est **fait et vérifié dans le dépôt** ;
 ce qui reste demande un accès que le code n'a pas (VPS, Sanity, DNS, Stripe) ou une décision du
@@ -21,25 +21,43 @@ marchand.
 - Corrigés au passage : CGV « commande par email » périmée, livraison BE/LU/CH hors CGV, prix de
   l'accueil en dur, risque d'étouffement présenté comme impossible, 16 mots collés à un lien.
 
+### En ligne sur Coolify (coolify.presencebusiness.com, projet « aimezlanature ») — vérifié le 2026-11-23
+- **Recette** https://recette.aimezlanature.fr — `site-recette` (uuid `u13rjlpi0n6gxebymfi6wo5d`),
+  branche de la PR, contenu **issu de Sanity**. En-têtes conformes, noindex, redirections OK,
+  limite anti-abus validée derrière Traefik (une seule connexion : 10 passent / 20 bloqués ; IP
+  falsifiées 10/10 bloquées).
+- **Studio** https://studio.aimezlanature.fr — `studio` (uuid `gdhm4dyqjcp1jdfrlnrm0n2p`).
+- **Prod** `site-prod` (uuid `c720xskr2qygomdkr1mt9zmx`) : créée, sans domaine, jamais déployée.
+- **Sanity** projet `0lgh06ly`, dataset `production` (public) : 141 documents + 8 brouillons
+  d'articles ; build depuis Sanity identique au build depuis le seed (29/29 pages, 0 écart).
+- **Reconstruction automatique** : publication Studio → webhook Sanity « Reconstruire la recette »
+  (`VpljlJmEMahJRC0O`) → relais signé `/api/reconstruction` → Coolify. Test réel : 2 événements
+  (202, 202) → **1** déploiement 45 s après le dernier.
+- Hébergeur légal renseigné : Hetzner.
+
 ### Reste à faire — dans l'ordre
-1. [ ] **Hébergeur du VPS** dans `src/data/hebergeur.ts` (mention légale obligatoire) — la prod
-       refuse de démarrer tant qu'il est « À COMPLÉTER ».
-2. [ ] **Créer le projet Sanity** et importer le seed — `docs/sanity.md`.
-3. [ ] **Créer les 3 apps Coolify** (prod, recette, studio) + webhook Sanity → Coolify —
-       `docs/deploiement-coolify.md`.
-4. [ ] Sur la recette : `check:redirects`, `check:headers --recette`, `check:ratelimit` au vert ;
-       commande test de bout en bout (dont `stripe trigger checkout.session.async_payment_succeeded`).
-5. [ ] **Marchand** : relire les 8 articles (recette avec `CONTENU_BROUILLONS=1`) et publier.
-6. [ ] **Marchand — décisions** :
+1. [ ] **Utilisateur** : révoquer les jetons Sanity temporaires « import-claude » (Editor) et
+       « webhook-claude » (Administrator) ; décocher « Build Variable » sur les secrets de
+       `site-recette` (hygiène, aucune fuite constatée).
+2. [ ] **Utilisateur** : ajouter `STRIPE_SECRET_KEY` (test) dans `site-recette`, puis test de
+       commande de bout en bout (dont `async_payment_succeeded`).
+3. [ ] **Marchand** : relire les 8 articles (recette avec `CONTENU_BROUILLONS=1` + jeton de
+       lecture) et les publier dans le Studio.
+4. [ ] **Marchand — décisions** :
    - prix barrés (Omnibus) : justifier ou vider le champ « Prix barré » dans le Studio ;
    - TVA / mention TTC ;
-   - auteur des articles (créer la fiche « Auteur » dans le Studio, E-E-A-T) ;
+   - auteur des articles (fiche « Auteur » dans le Studio, E-E-A-T) ;
    - livraison hors France : rouvrir BE/LU/CH ? (code `PAYS_LIVRAISON` + CGV) ;
    - étiquette de conversion Google Ads (`src/data/tracking.ts`) ;
    - droit de sous-distribuer (fournisseur EM), grille revendeur.
-7. [ ] **Jour J** : Stripe live, DNS, contrôles — `docs/deploiement-coolify.md` section 9.
-8. [ ] J+1 : Search Console + Bing Webmaster Tools (sitemap). J+30 : supprimer les projets Vercel,
+5. [ ] Fusionner la PR (après avoir coupé le déploiement Git de Vercel), puis repasser
+       `site-recette` et `studio` sur `master`.
+6. [ ] **Jour J** (`docs/deploiement-coolify.md` §9) : Stripe live, domaines sur `site-prod`,
+       variables du relais pour la prod + 2e webhook Sanity (le dernier du plan Free), DNS.
+7. [ ] J+1 : Search Console + Bing Webmaster Tools (sitemap). J+30 : supprimer les projets Vercel,
        décommissionner WordPress.
+8. [ ] Optionnel : seconde barrière Traefik sur `/api/checkout` (labels à ajouter dans l'interface
+       Coolify, l'API ne les expose pas) — la limite applicative est déjà validée.
 
 ### Avant toute campagne email (base WooCommerce de 1 550 clients)
 Prospection sans consentement possible seulement **3 ans après le dernier achat** (recommandation
