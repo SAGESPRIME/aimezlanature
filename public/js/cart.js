@@ -18,6 +18,16 @@
   var $ = function (id) { return document.getElementById(id); };
   var fmt = function (n) { return n.toFixed(2).replace('.', ',') + ' €'; };
   var round2 = function (n) { return Math.round(n * 100) / 100; };
+  /**
+   * Échappe un texte avant de l'insérer dans du HTML construit à la main.
+   * Les noms de produit viennent du CMS : un nom contenant `<` ou `"` ne doit
+   * jamais pouvoir fermer une balise ou un attribut.
+   */
+  var echapper = function (v) {
+    return String(v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
 
   function catalogue() {
     var el = $('catalogue');
@@ -167,16 +177,18 @@
   /* ── Rendu ───────────────────────────────────────────────── */
 
   function ligneHTML(l) {
+    var nom = echapper(l.product.shortName);
+    var slug = echapper(l.product.slug);
     return '<li class="flex gap-3 py-4 border-b border-[#EDE8E0]">' +
       '<div class="flex-1">' +
-        '<p class="font-semibold text-[#1A1A16]">' + l.product.shortName + '</p>' +
+        '<p class="font-semibold text-[#1A1A16]">' + nom + '</p>' +
         (l.discount > 0
           ? '<p class="text-xs text-[#166534] font-semibold">Remise −' + l.discount + ' % appliquée</p>'
           : '') +
         '<div class="mt-2 inline-flex items-center border border-[#D4C9B8] rounded-full overflow-hidden bg-white">' +
-          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + l.product.slug + '" data-qty="' + (l.qty - 1) + '" aria-label="Retirer un ' + l.product.shortName + '">−</button>' +
+          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + slug + '" data-qty="' + (l.qty - 1) + '" aria-label="Retirer un ' + nom + '">−</button>' +
           '<span class="px-3 text-sm font-semibold">' + l.qty + '</span>' +
-          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + l.product.slug + '" data-qty="' + (l.qty + 1) + '" aria-label="Ajouter un ' + l.product.shortName + '">+</button>' +
+          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + slug + '" data-qty="' + (l.qty + 1) + '" aria-label="Ajouter un ' + nom + '">+</button>' +
         '</div>' +
       '</div>' +
       '<div class="text-right">' +
@@ -184,7 +196,7 @@
           ? '<p class="text-xs text-[#6E5330]"><s>' + fmt(l.plein) + '</s></p>'
           : '') +
         '<p class="font-bold text-[#1A1A16]">' + fmt(l.total) + '</p>' +
-        '<button type="button" class="mt-1 text-xs text-[#6E5330] underline" data-slug="' + l.product.slug + '" data-qty="0">Retirer</button>' +
+        '<button type="button" class="mt-1 text-xs text-[#6E5330] underline" data-slug="' + slug + '" data-qty="0">Retirer</button>' +
       '</div>' +
     '</li>';
   }

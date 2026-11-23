@@ -1,0 +1,1696 @@
+{
+  "/": {
+    "title": "Perles Céramique EM® — Purifiez votre eau | Aimez la Nature",
+    "description": "Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. 96 avis vérifiés, livraison offerte dès 50€, garantie 30 jours. Zéro plastique.",
+    "canonical": "https://aimezlanature.fr/",
+    "robots": null,
+    "h1": [
+      "L'eau du robinet, purifiée naturellement."
+    ],
+    "titres": [
+      "h2 Le problème n’est pas l’eau",
+      "h3 Le goût et l’odeur",
+      "h3 Les packs à porter",
+      "h3 Le plastique jetable",
+      "h3 Les dépôts visibles",
+      "h2 Choisissez votre format",
+      "h3 Pack 100 Perles",
+      "h3 Pack 55 Perles",
+      "h3 Pack Gourde + 100 Perles",
+      "h3 Gourde Écologique",
+      "h2 Comment ça marche ?",
+      "h3 Placez les perles dans votre eau",
+      "h3 L'eau s'améliore naturellement",
+      "h3 Régénérez par simple ébullition",
+      "h2 96 clients satisfaits",
+      "h2 Tout savoir sur les perles de céramique",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Tout savoir avant de vous lancer",
+      "h2 Purifiez votre eau naturellement, et jetez moins de plastique",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "ContactPoint",
+      "EntryPoint",
+      "FAQPage",
+      "Organization",
+      "Question",
+      "SearchAction",
+      "WebSite"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 844,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      }
+    ]
+  },
+  "/404.html": {
+    "title": "Page introuvable | Aimez la Nature",
+    "description": "Cette page n'existe pas ou plus. Retrouvez nos packs de Perles de Céramique EM® et nos guides pratiques.",
+    "canonical": "https://aimezlanature.fr/404/",
+    "robots": "noindex,nofollow",
+    "h1": [
+      "Cette page s'est évaporée"
+    ],
+    "titres": [
+      "h2 Ou consultez un guide",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 100,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/a-propos/": {
+    "title": "Notre mission : une eau meilleure, sans plastique | Aimez la Nature",
+    "description": "Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, un emballage zéro plastique et une ligne honnête sur ce que les perles font — et ne font pas.",
+    "canonical": "https://aimezlanature.fr/a-propos/",
+    "robots": null,
+    "h1": [
+      "Une eau meilleure, sans plastique"
+    ],
+    "titres": [
+      "h2 D'où vient Aimez la Nature",
+      "h3 Le déclic",
+      "h3 Le virage naturel",
+      "h3 La rencontre avec les perles",
+      "h3 Naissance d'Aimez la Nature",
+      "h2 Pourquoi les perles de céramique ?",
+      "h2 Nos quatre engagements",
+      "h3 Des perles EM® authentiques",
+      "h3 Zéro plastique, du produit au colis",
+      "h3 De l'honnêteté avant tout",
+      "h3 Un service client qui répond",
+      "h2 Moins de plastique, une eau meilleure",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "AboutPage",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 564,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/avis/merci/": {
+    "title": "Avis envoyé | Aimez la Nature",
+    "description": "Votre avis a bien été transmis et sera publié après relecture.",
+    "canonical": "https://aimezlanature.fr/avis/merci/",
+    "robots": "noindex,nofollow",
+    "h1": [
+      "Merci pour votre avis"
+    ],
+    "titres": [
+      "h2 Ce que nous faisons de votre avis",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 101,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/": {
+    "title": "Blog Perles de Céramique EM | Aimez la Nature",
+    "description": "Articles et guides sur les perles de céramique EM, la purification naturelle de l'eau et les micro-organismes efficaces. Conseils, comparatifs et astuces.",
+    "canonical": "https://aimezlanature.fr/blog/",
+    "robots": null,
+    "h1": [
+      "Blog — Perles de Céramique EM et Purification de l'Eau"
+    ],
+    "titres": [
+      "h2 Tous les articles",
+      "h3 Perles EM : Solution Ecologique et Eco",
+      "h3 Perles EM : Alternative Bio Purification",
+      "h3 L'Eau, Source de Vie : Bien S'Hydrater",
+      "h3 Purifier l'Eau du Robinet avec les EM",
+      "h3 Les Usages des Perles de Céramique EM",
+      "h3 Authenticité et Efficacité des Perles EM",
+      "h3 Bienfaits des Perles de Céramique EM",
+      "h3 Perles EM : Source de Vie au Quotidien",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "CollectionPage",
+      "ItemList",
+      "ListItem",
+      "WebSite"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/blog/authenticite-des-perles-de-ceramique-em-et-leur-efficacite",
+      "/blog/leau-est-une-source-de-vie",
+      "/blog/les-bienfaits-des-perles-de-ceramique",
+      "/blog/les-differents-usages-des-perles-de-ceramique",
+      "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet",
+      "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien",
+      "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet",
+      "/blog/perles-de-ceramique-une-solution-ecologique-et-economique",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 287,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/authenticite-des-perles-de-ceramique-em-et-leur-efficacite/": {
+    "title": "Authenticité et Efficacité des Perles EM | Aimez la Nature",
+    "description": "Comment vérifier l'authenticité des perles de céramique EM ? Découvrez les tests d'efficacité, l'origine japonaise et les critères de choix.",
+    "canonical": "https://aimezlanature.fr/blog/authenticite-des-perles-de-ceramique-em-et-leur-efficacite/",
+    "robots": null,
+    "h1": [
+      "Authenticité et Efficacité des Perles EM"
+    ],
+    "titres": [
+      "h2 L'origine des micro-organismes EM",
+      "h2 Pourquoi l'authenticité est essentielle",
+      "h2 Comment vérifier l'authenticité des perles de céramique EM",
+      "h2 La fabrication au Japon : un savoir-faire unique",
+      "h2 L'efficacité prouvée des perles authentiques",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1144,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/leau-est-une-source-de-vie/": {
+    "title": "L'Eau, Source de Vie : Bien S'Hydrater | Aimez la Nature",
+    "description": "L'eau est essentielle à la vie. Découvrez pourquoi une bonne hydratation est cruciale et comment les perles EM améliorent la qualité de votre eau.",
+    "canonical": "https://aimezlanature.fr/blog/leau-est-une-source-de-vie/",
+    "robots": null,
+    "h1": [
+      "L'Eau, Source de Vie : Bien S'Hydrater"
+    ],
+    "titres": [
+      "h2 L'eau, source de vie",
+      "h2 Les conséquences de la déshydratation",
+      "h2 Les bienfaits d'une bonne hydratation",
+      "h2 Pourquoi la qualité de l'eau compte autant que la quantité",
+      "h2 Purifier votre eau pour une hydratation optimale",
+      "h2 Les erreurs courantes d'hydratation",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1322,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/les-bienfaits-des-perles-de-ceramique/": {
+    "title": "Bienfaits des Perles de Céramique EM | Aimez la Nature",
+    "description": "Découvrez tous les bienfaits des perles de céramique EM : eau plus douce, économies, écologie, protection des appareils et conservation des aliments.",
+    "canonical": "https://aimezlanature.fr/blog/les-bienfaits-des-perles-de-ceramique/",
+    "robots": null,
+    "h1": [
+      "Bienfaits des Perles de Céramique EM"
+    ],
+    "titres": [
+      "h2 Retrouvez le goût de l'eau",
+      "h2 Protégez votre santé",
+      "h2 Protégez vos appareils électroménagers",
+      "h2 Conservez vos aliments plus longtemps",
+      "h2 Un linge plus doux et une vaisselle brillante",
+      "h2 Écologique et économique : le calcul parlant",
+      "h2 Comment maximiser les bienfaits au quotidien",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1159,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/les-differents-usages-des-perles-de-ceramique/": {
+    "title": "Les Usages des Perles de Céramique EM | Aimez la Nature",
+    "description": "Découvrez tous les usages des perles de céramique EM : carafe, bouilloire, lave-linge, réfrigérateur, piscine et bien plus. Guide pratique complet.",
+    "canonical": "https://aimezlanature.fr/blog/les-differents-usages-des-perles-de-ceramique/",
+    "robots": null,
+    "h1": [
+      "Les Usages des Perles de Céramique EM"
+    ],
+    "titres": [
+      "h2 Carafe d'eau -- L'usage principal",
+      "h2 En cuisine -- Bouilloire et cafetière",
+      "h2 Réfrigérateur -- Conservation des aliments",
+      "h2 Lave-linge -- Linge plus doux",
+      "h2 Lave-vaisselle -- Vaisselle plus brillante",
+      "h2 Autres usages moins connus",
+      "h2 Comment organiser vos perles entre les différents usages",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1254,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/": {
+    "title": "Perles EM : Alternative Bio Purification | Aimez la Nature",
+    "description": "Les perles de céramique EM constituent une alternative 100% bio pour purifier l'eau du robinet. Découvrez le procédé et les actions purifiantes.",
+    "canonical": "https://aimezlanature.fr/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/",
+    "robots": null,
+    "h1": [
+      "Perles EM : Alternative Bio Purification"
+    ],
+    "titres": [
+      "h2 Une alternative 100 % naturelle",
+      "h2 Le procédé de fabrication",
+      "h2 Les 3 actions des perles de céramique EM",
+      "h2 Comparaison avec les carafes filtrantes",
+      "h2 Usages et durabilité",
+      "h2 Le choix d'un mode de vie plus sain",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1208,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/": {
+    "title": "Perles EM : Source de Vie au Quotidien | Aimez la Nature",
+    "description": "Les perles de céramique EM améliorent la qualité de votre eau du robinet. Découvrez comment ces perles japonaises transforment votre hydratation.",
+    "canonical": "https://aimezlanature.fr/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/",
+    "robots": null,
+    "h1": [
+      "Perles EM : Source de Vie au Quotidien"
+    ],
+    "titres": [
+      "h2 L'eau du robinet en France : un constat",
+      "h2 La découverte du Professeur Teruo Higa",
+      "h2 Une utilisation simple au quotidien",
+      "h2 Les bienfaits concrets pour votre santé",
+      "h2 Un geste pour la planète",
+      "h2 Comment bien démarrer avec les perles EM",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1093,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/": {
+    "title": "Purifier l'Eau du Robinet avec les EM | Aimez la Nature",
+    "description": "Comment purifier l'eau du robinet avec les perles de céramique EM ? Découvrez les actions purifiante, probiotique et antioxydante de ces perles.",
+    "canonical": "https://aimezlanature.fr/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/",
+    "robots": null,
+    "h1": [
+      "Purifier l'Eau du Robinet avec les EM"
+    ],
+    "titres": [
+      "h2 Pourquoi purifier l'eau du robinet ?",
+      "h2 Les 3 actions des perles de céramique EM",
+      "h2 Les résultats concrets que vous pouvez attendre",
+      "h2 Les usages quotidiens",
+      "h2 Purification naturelle vs autres méthodes",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1209,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/blog/perles-de-ceramique-une-solution-ecologique-et-economique/": {
+    "title": "Perles EM : Solution Ecologique et Eco | Aimez la Nature",
+    "description": "Les perles de céramique EM sont écologiques et économiques. Fini les bouteilles en plastique, économisez dès aujourd'hui sur votre eau de boisson.",
+    "canonical": "https://aimezlanature.fr/blog/perles-de-ceramique-une-solution-ecologique-et-economique/",
+    "robots": null,
+    "h1": [
+      "Perles EM : Solution Ecologique et Eco"
+    ],
+    "titres": [
+      "h2 Un constat alarmant sur le plastique",
+      "h2 L'impact du plastique sur l'océan",
+      "h2 Les perles de céramique : une solution concrète",
+      "h2 Le calcul économique détaillé",
+      "h2 L'impact écologique concret de votre choix",
+      "h2 L'eau du robinet en France",
+      "h2 Comment faire le passage aux perles EM",
+      "h2 FAQ rapide",
+      "h2 À lire aussi",
+      "h3 Combien de perles de céramique par litre d’eau ?",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1320,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/cgv/": {
+    "title": "Conditions Générales de Vente | Aimez la Nature",
+    "description": "Conditions Générales de Vente d'Aimez la Nature : commande, prix, livraison, droit de rétractation et garanties applicables à vos achats.",
+    "canonical": "https://aimezlanature.fr/cgv/",
+    "robots": null,
+    "h1": [
+      "Conditions Générales de Vente"
+    ],
+    "titres": [
+      "h2 1. Champ d'application",
+      "h2 2. Produits et prix",
+      "h2 3. Commande et paiement",
+      "h2 4. Livraison",
+      "h2 5. Droit de rétractation",
+      "h2 6. Garantie « satisfait ou remboursé » 30 jours",
+      "h2 7. Garanties légales",
+      "h2 8. Réclamations et contact",
+      "h2 9. Droit applicable et juridiction",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 408,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/commande-confirmee/": {
+    "title": "Merci pour votre commande | Aimez la Nature",
+    "description": "Votre commande de Perles de Céramique EM® est confirmée.",
+    "canonical": "https://aimezlanature.fr/commande-confirmee/",
+    "robots": "noindex,nofollow",
+    "h1": [
+      "Merci pour votre commande"
+    ],
+    "titres": [
+      "h2 Et maintenant ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 60,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/comment-ca-marche/": {
+    "title": "Combien de perles de céramique par litre d'eau ? | Aimez la Nature",
+    "description": "Comptez 15 perles de céramique par litre d'eau. Dosage, première utilisation, entretien et régénération par ébullition : le guide complet des perles EM®.",
+    "canonical": "https://aimezlanature.fr/comment-ca-marche/",
+    "robots": null,
+    "h1": [
+      "Comment utiliser les perles de céramique ? Le guide complet"
+    ],
+    "titres": [
+      "h2 Réponse courte",
+      "h2 Les 3 étapes essentielles",
+      "h3 Activez les perles (première utilisation)",
+      "h3 Laissez-les agir au quotidien",
+      "h3 Régénérez tous les 3 à 6 mois",
+      "h2 Combien de perles par litre d'eau ?",
+      "h2 Ce que les perles font — et ne font pas",
+      "h2 Vos questions sur l'utilisation",
+      "h2 À lire aussi",
+      "h3 Les 16 utilisations des perles de céramique EM",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h3 Perles EM : Solution Ecologique et Eco",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "BreadcrumbList",
+      "FAQPage",
+      "HowTo",
+      "HowToStep",
+      "ListItem",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/blog/les-bienfaits-des-perles-de-ceramique/",
+      "/blog/perles-de-ceramique-une-solution-ecologique-et-economique",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 782,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      }
+    ]
+  },
+  "/contact/": {
+    "title": "Contact | Aimez la Nature",
+    "description": "Contactez Aimez la Nature par email ou téléphone pour toute question sur nos Perles de Céramique EM® ou votre commande. Réponse sous 24 h.",
+    "canonical": "https://aimezlanature.fr/contact/",
+    "robots": null,
+    "h1": [
+      "Une question ? Écrivez-nous"
+    ],
+    "titres": [
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 86,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/faq/": {
+    "title": "FAQ — Livraison, paiement, garantie | Aimez la Nature",
+    "description": "Livraison, paiement, garantie 30 jours, retours : toutes les réponses à vos questions sur les commandes Aimez la Nature.",
+    "canonical": "https://aimezlanature.fr/faq/",
+    "robots": null,
+    "h1": [
+      "Questions fréquentes"
+    ],
+    "titres": [
+      "h2 Vos questions",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "BreadcrumbList",
+      "FAQPage",
+      "ListItem",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 251,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/mentions-legales/": {
+    "title": "Mentions légales | Aimez la Nature",
+    "description": "Mentions légales du site Aimez la Nature : éditeur, hébergement, propriété intellectuelle et protection des données personnelles.",
+    "canonical": "https://aimezlanature.fr/mentions-legales/",
+    "robots": null,
+    "h1": [
+      "Mentions légales"
+    ],
+    "titres": [
+      "h2 Éditeur du site",
+      "h2 Responsable de publication",
+      "h2 Hébergement",
+      "h2 Propriété intellectuelle",
+      "h2 Données personnelles",
+      "h2 Cookies",
+      "h2 Droit applicable et juridiction",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 387,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/panier/": {
+    "title": "Votre panier | Aimez la Nature",
+    "description": "Récapitulatif de votre commande de Perles de Céramique EM® : quantités, remises et frais de livraison avant paiement sécurisé.",
+    "canonical": "https://aimezlanature.fr/panier/",
+    "robots": "noindex,nofollow",
+    "h1": [
+      "Votre panier"
+    ],
+    "titres": [
+      "h2 Récapitulatif",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 53,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/perles-ceramique-em/": {
+    "title": "Perles de Céramique EM® : Purifier l'Eau | Aimez la Nature",
+    "description": "Perles de céramique EM® japonaises : moins de chlore et de tartre, meilleur goût de l'eau. Packs 55 et 100 perles dès 19,90 €. Livraison offerte dès 50 €.",
+    "canonical": "https://aimezlanature.fr/perles-ceramique-em/",
+    "robots": null,
+    "h1": [
+      "Perles de céramique EM® : purifiez l'eau du robinet naturellement"
+    ],
+    "titres": [
+      "h2 Nos packs de perles EM®",
+      "h3 Perles de Céramique EM® Pack 100",
+      "h3 Perles de Céramique EM® Pack 55",
+      "h3 Pack Gourde + 100 Perles de Céramique EM®",
+      "h3 Gourde Écologique avec Perles de Céramique EM®",
+      "h2 Quel pack pour quel usage ?",
+      "h2 Avant d'acheter, informez-vous",
+      "h2 Questions fréquentes sur les perles de céramique",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "BreadcrumbList",
+      "FAQPage",
+      "ItemList",
+      "ListItem",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/blog/les-bienfaits-des-perles-de-ceramique/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 497,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Pack Gourde : boîte de 100 Perles de Céramique EM® et gourde écologique 500 ml en verre remplie de perles"
+      },
+      {
+        "alt": "Gourde Écologique 500 ml en verre double paroi avec son compartiment à Perles de Céramique EM® et son coffret"
+      }
+    ]
+  },
+  "/perles-ceramique-em/gourde-ecologique/": {
+    "title": "Gourde Écologique 500 ml avec Perles de Céramique EM® — 29,90€",
+    "description": "Gourde filtrante 500 ml en verre double paroi avec Perles de Céramique EM®. Zéro plastique au contact de l'eau, perles régénérables. Livraison offerte dès 50 €.",
+    "canonical": "https://aimezlanature.fr/perles-ceramique-em/gourde-ecologique/",
+    "robots": null,
+    "h1": [
+      "Gourde Écologique avec Perles de Céramique EM®"
+    ],
+    "titres": [
+      "h2 Nos engagements",
+      "h2 La même eau du robinet, transformée.",
+      "h2 Description",
+      "h2 Questions sur le Gourde Écologique",
+      "h2 Les autres packs",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "Brand",
+      "BreadcrumbList",
+      "DefinedRegion",
+      "FAQPage",
+      "ListItem",
+      "Offer",
+      "OfferShippingDetails",
+      "Product",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/guide-perles-de-ceramique-em.pdf",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 697,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Gourde Écologique 500 ml en verre double paroi avec son compartiment à Perles de Céramique EM® et son coffret"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Gourde Écologique 500 ml en verre double paroi avec son compartiment à Perles de Céramique EM® et son coffret"
+      }
+    ]
+  },
+  "/perles-ceramique-em/pack-100-perles/": {
+    "title": "Perles Céramique EM® Pack 100 — 29,90€ | Aimez la Nature",
+    "description": "100 Perles de Céramique EM® japonaises, note 4,94/5. Lave-vaisselle, machine à laver, bonbonne. Meilleur rapport qualité/prix. Livraison offerte dès 50€.",
+    "canonical": "https://aimezlanature.fr/perles-ceramique-em/pack-100-perles/",
+    "robots": null,
+    "h1": [
+      "Perles de Céramique EM® Pack 100"
+    ],
+    "titres": [
+      "h2 Nos engagements",
+      "h2 La même eau du robinet, transformée.",
+      "h2 Description",
+      "h2 Ce qu'en disent nos clients",
+      "h2 Questions sur le Pack 100 Perles",
+      "h2 Les autres packs",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "AggregateRating",
+      "Answer",
+      "Brand",
+      "BreadcrumbList",
+      "DefinedRegion",
+      "FAQPage",
+      "ListItem",
+      "Offer",
+      "OfferShippingDetails",
+      "Person",
+      "Product",
+      "Question",
+      "Rating",
+      "Review"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/guide-perles-de-ceramique-em.pdf",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 2898,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Gourde Écologique 500 ml en verre double paroi avec son compartiment à Perles de Céramique EM® et son coffret"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      }
+    ]
+  },
+  "/perles-ceramique-em/pack-55-perles/": {
+    "title": "Perles de Céramique EM® Pack 55 — 19,90 € | Aimez la Nature",
+    "description": "55 Perles de Céramique EM® japonaises : note 4,91/5. Idéal carafe 2L, bouilloire, cafetière. Purifie l'eau naturellement. Livraison offerte dès 50€.",
+    "canonical": "https://aimezlanature.fr/perles-ceramique-em/pack-55-perles/",
+    "robots": null,
+    "h1": [
+      "Perles de Céramique EM® Pack 55"
+    ],
+    "titres": [
+      "h2 Nos engagements",
+      "h2 La même eau du robinet, transformée.",
+      "h2 Description",
+      "h2 Ce qu'en disent nos clients",
+      "h2 Questions sur le Pack 55 Perles",
+      "h2 Les autres packs",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "AggregateRating",
+      "Answer",
+      "Brand",
+      "BreadcrumbList",
+      "DefinedRegion",
+      "FAQPage",
+      "ListItem",
+      "Offer",
+      "OfferShippingDetails",
+      "Person",
+      "Product",
+      "Question",
+      "Rating",
+      "Review"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/guide-perles-de-ceramique-em.pdf",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1955,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Gourde Écologique 500 ml en verre double paroi avec son compartiment à Perles de Céramique EM® et son coffret"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      }
+    ]
+  },
+  "/perles-ceramique-em/pack-gourde-ceramique-em/": {
+    "title": "Pack Gourde + 100 Perles EM® — 59,90 € | Aimez la Nature",
+    "description": "Gourde écologique 500 ml en verre + 100 Perles de Céramique EM® japonaises. Eau pure en déplacement, zéro plastique. Livraison offerte dès 50 €.",
+    "canonical": "https://aimezlanature.fr/perles-ceramique-em/pack-gourde-ceramique-em/",
+    "robots": null,
+    "h1": [
+      "Pack Gourde + 100 Perles de Céramique EM®"
+    ],
+    "titres": [
+      "h2 Nos engagements",
+      "h2 La même eau du robinet, transformée.",
+      "h2 Description",
+      "h2 Questions sur le Pack Gourde",
+      "h2 Les autres packs",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "Brand",
+      "BreadcrumbList",
+      "DefinedRegion",
+      "FAQPage",
+      "ListItem",
+      "Offer",
+      "OfferShippingDetails",
+      "Product",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 565,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack Gourde : boîte de 100 Perles de Céramique EM® et gourde écologique 500 ml en verre remplie de perles"
+      },
+      {
+        "alt": "Pack 55 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      },
+      {
+        "alt": "Gourde Écologique 500 ml en verre double paroi avec son compartiment à Perles de Céramique EM® et son coffret"
+      }
+    ]
+  },
+  "/purifier-eau-robinet-comparatif/": {
+    "title": "Purifier l'eau du robinet : le comparatif | Aimez la Nature",
+    "description": "Comparatif honnête : perles de céramique, charbon binchotan, carafe filtrante ou osmoseur ? Prix, durée de vie, déchets et efficacité de chaque solution.",
+    "canonical": "https://aimezlanature.fr/purifier-eau-robinet-comparatif/",
+    "robots": null,
+    "h1": [
+      "Purifier l'eau du robinet : perles, charbon, carafe filtrante ou osmoseur ?"
+    ],
+    "titres": [
+      "h2 Réponse courte",
+      "h2 Le match en un tableau",
+      "h2 Chaque solution en détail",
+      "h3 Perles de céramique EM® — le confort zéro déchet",
+      "h3 Charbon actif binchotan — l'adsorbant naturel",
+      "h3 Carafe filtrante — pratique mais chère à l'année",
+      "h3 Osmoseur — l'artillerie lourde, pour les vrais problèmes",
+      "h2 En résumé : quelle solution pour vous ?",
+      "h2 Vos questions sur la purification de l'eau",
+      "h2 À lire aussi",
+      "h3 Perles EM : Solution Ecologique et Eco",
+      "h3 Perles EM : Alternative Bio Purification",
+      "h3 L'Eau, Source de Vie : Bien S'Hydrater",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "Article",
+      "BreadcrumbList",
+      "FAQPage",
+      "ListItem",
+      "Organization",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/blog/leau-est-une-source-de-vie",
+      "/blog/les-bienfaits-des-perles-de-ceramique/",
+      "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet",
+      "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/",
+      "/blog/perles-de-ceramique-une-solution-ecologique-et-economique",
+      "/blog/perles-de-ceramique-une-solution-ecologique-et-economique/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 1021,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/revendeurs/": {
+    "title": "Devenir revendeur — Perles de Céramique EM® | Aimez la Nature",
+    "description": "Boutiques bio, épiceries vrac, praticiens : revendez les Perles de Céramique EM® japonaises. Remise progressive selon le volume, devis sous 24 h.",
+    "canonical": "https://aimezlanature.fr/revendeurs/",
+    "robots": null,
+    "h1": [
+      "Revendez les Perles de Céramique EM® dans votre boutique"
+    ],
+    "titres": [
+      "h2 Un produit qui se vend sans forcer",
+      "h3 Un produit déjà validé par ses utilisateurs",
+      "h3 Un prix d’entrée accessible",
+      "h3 Un produit qui se raconte en deux phrases",
+      "h3 Une origine vérifiable",
+      "h2 Une remise qui progresse avec votre volume",
+      "h2 Comment ça se passe",
+      "h3 Vous décrivez votre activité",
+      "h3 Nous vérifions votre SIRET",
+      "h3 Vous recevez votre devis",
+      "h3 Nous expédions votre commande",
+      "h2 Questions des professionnels",
+      "h2 Recevoir la grille revendeur",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "BreadcrumbList",
+      "FAQPage",
+      "ListItem",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 629,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/revendeurs/merci/": {
+    "title": "Demande envoyée | Aimez la Nature",
+    "description": "Votre demande de partenariat revendeur a bien été transmise.",
+    "canonical": "https://aimezlanature.fr/revendeurs/merci/",
+    "robots": "noindex,nofollow",
+    "h1": [
+      "Demande bien reçue"
+    ],
+    "titres": [
+      "h2 Et maintenant ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "BreadcrumbList",
+      "ListItem"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 56,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      }
+    ]
+  },
+  "/utilisations/": {
+    "title": "Les 16 utilisations des perles de céramique EM® | Aimez la Nature",
+    "description": "Carafe, bouilloire, lave-vaisselle, réfrigérateur, baignoire, arrosage, aquarium : les 16 usages des perles de céramique EM® avec le dosage de chacun.",
+    "canonical": "https://aimezlanature.fr/utilisations/",
+    "robots": null,
+    "h1": [
+      "Les 16 utilisations des perles de céramique EM®"
+    ],
+    "titres": [
+      "h2 Réponse courte",
+      "h2 Pour boire",
+      "h3 Gourde 500 ml",
+      "h3 Carafe ou fontaine 1 L",
+      "h3 Carafe ou fontaine 2 L",
+      "h3 Bonbonne 5 L",
+      "h2 Électroménager",
+      "h3 Bouilloire",
+      "h3 Cafetière ou machine à thé",
+      "h3 Lave-vaisselle",
+      "h3 Lave-linge",
+      "h2 Dans la maison",
+      "h3 Réfrigérateur ou corbeille à fruits",
+      "h3 Lavage des fruits et légumes",
+      "h3 Baignoire",
+      "h3 Toilettes (chasse d'eau)",
+      "h2 Jardin, fleurs et animaux",
+      "h3 Arrosage des plantes et du potager",
+      "h3 Vase et fleurs coupées",
+      "h3 Aquarium",
+      "h3 Piscine ou récupérateur d'eau",
+      "h2 Le guide complet, à garder sous la main",
+      "h2 Un seul entretien, quel que soit l'usage",
+      "h2 Vos questions sur les utilisations",
+      "h2 À lire aussi",
+      "h3 Perles, charbon, carafe filtrante ou osmoseur ?",
+      "h3 Perles EM : Solution Ecologique et Eco",
+      "h3 Perles EM : Alternative Bio Purification",
+      "h2 Prêt à purifier votre eau ?",
+      "h2 Panier",
+      "h2 Mesurer l'efficacité de nos publicités"
+    ],
+    "jsonLd": [
+      "Answer",
+      "Article",
+      "BreadcrumbList",
+      "FAQPage",
+      "ListItem",
+      "Organization",
+      "Question"
+    ],
+    "jsonLdValide": true,
+    "liensInternes": [
+      "/",
+      "/a-propos/",
+      "/blog/",
+      "/blog/les-bienfaits-des-perles-de-ceramique/",
+      "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet",
+      "/blog/perles-de-ceramique-une-solution-ecologique-et-economique",
+      "/cgv/",
+      "/comment-ca-marche/",
+      "/contact/",
+      "/faq/",
+      "/mentions-legales/",
+      "/panier/",
+      "/perles-ceramique-em/",
+      "/perles-ceramique-em/gourde-ecologique/",
+      "/perles-ceramique-em/pack-100-perles/",
+      "/perles-ceramique-em/pack-55-perles/",
+      "/perles-ceramique-em/pack-gourde-ceramique-em/",
+      "/purifier-eau-robinet-comparatif/",
+      "/revendeurs/",
+      "/utilisations/"
+    ],
+    "mots": 930,
+    "images": [
+      {
+        "alt": "Aimez la Nature"
+      },
+      {
+        "alt": "Pack 100 Perles de Céramique EM® : tubes en carton biodégradable, sachet en coton BIO et perles de céramique"
+      }
+    ]
+  }
+}

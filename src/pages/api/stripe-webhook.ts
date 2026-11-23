@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro';
 // process.env — même accès que api/checkout.ts.
 import { verifierSignature } from '../../lib/stripe-signature';
 import { envoyerEmail, EMAIL_MARCHAND } from '../../lib/email';
+import { reserver, marquerFait, liberer } from '../../lib/evenements-traites';
 import {
   sujetCommande,
   texteCommande,
@@ -33,8 +34,25 @@ export const prerender = false;
  * parti), soit il a réussi et Stripe ne rejoue pas.
  */
 
-/** Événement traité. Les autres sont acquittés sans rien faire. */
-const EVENEMENT_ATTENDU = 'checkout.session.completed';
+/**
+ * Événements qui signifient « l'argent est arrivé ».
+ *
+ * - `checkout.session.completed` : paiement immédiat (carte, Apple Pay…).
+ * - `checkout.session.async_payment_succeeded` : paiement DIFFÉRÉ confirmé
+ *   plus tard (prélèvement SEPA, virement…). Sans lui, une commande payée par
+ *   un moyen différé n'aurait déclenché AUCUN email, ni au client ni au
+ *   marchand : la session arrive d'abord `completed` mais `unpaid`, puis cet
+ *   événement arrive quand l'argent est encaissé.
+ *
+ * Les autres événements sont acquittés sans rien faire.
+ */
+const EVENEMENTS_PAYES = new Set([
+  'checkout.session.completed',
+  'checkout.session.async_payment_succeeded',
+]);
+
+/** Paiement différé finalement refusé : rien à expédier, on le trace. */
+const EVENEMENT_ECHEC_DIFFERE = 'checkout.session.async_payment_failed';
 
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -130,16 +148,42 @@ export const POST: APIRoute = async ({ request }) => {
   // Tout autre événement est acquitté sans traitement : renvoyer une erreur
   // ferait rejouer Stripe indéfiniment pour rien, et il finirait par
   // désactiver l'endpoint.
-  if (evenement?.type !== EVENEMENT_ATTENDU) {
+  if (evenement?.type === EVENEMENT_ECHEC_DIFFERE) {
+    console.warn('Paiement différé refusé pour la session', evenement?.data?.object?.id);
+    return json({ recu: true, ignore: 'paiement différé refusé' });
+  }
+  if (!EVENEMENTS_PAYES.has(evenement?.type)) {
     return json({ recu: true, ignore: evenement?.type ?? 'inconnu' });
   }
 
   const session = evenement?.data?.object;
 
-  // Une session peut être « complète » sans être payée (paiement différé).
+  // Une session peut être « complète » sans être payée (paiement différé) :
+  // l'email partira alors à la réception de `async_payment_succeeded`.
   if (session?.payment_status !== 'paid') {
     return json({ recu: true, ignore: 'paiement non abouti' });
   }
+
+  // Anti-doublon : Stripe peut livrer deux fois le même événement.
+  const idEvenement = String(evenement?.id ?? '');
+  if (idEvenement && !reserver(idEvenement)) {
+    return json({ recu: true, ignore: 'déjà traité' });
+  }
+  try {
+    const reponse = await traiterCommande(session, cleStripe);
+    if (idEvenement) {
+      if (reponse.ok) marquerFait(idEvenement);
+      else liberer(idEvenement);
+    }
+    return reponse;
+  } catch (e) {
+    if (idEvenement) liberer(idEvenement);
+    throw e;
+  }
+};
+
+/** Envoie les emails d'une commande payée. Renvoie la réponse à faire à Stripe. */
+async function traiterCommande(session: any, cleStripe: string): Promise<Response> {
 
   const email: string | undefined = session?.customer_details?.email;
   if (!email) {
@@ -209,4 +253,4 @@ export const POST: APIRoute = async ({ request }) => {
 
   console.log('Confirmation de commande envoyée pour la session', session.id);
   return json({ recu: true });
-};
+}

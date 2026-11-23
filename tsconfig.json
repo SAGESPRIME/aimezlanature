@@ -5,6 +5,9 @@
     "**/*"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "scripts",
+    "studio",
+    "server.mjs"
   ]
 }

@@ -8,7 +8,6 @@ import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimi
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
 
-const SHIPPING_FEE = 4.9;
 const MAX_QTY = 20;
 
 /**
@@ -80,7 +79,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     });
   }
 
-  const shipping = subtotal >= SITE.freeShippingThreshold ? 0 : SHIPPING_FEE;
+  const shipping = subtotal >= SITE.freeShippingThreshold ? 0 : SITE.shippingFee;
 
   const form = new URLSearchParams();
   form.set('mode', 'payment');

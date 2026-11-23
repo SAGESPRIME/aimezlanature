@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { Image } from 'astro:assets';
 import { SITE, getProduct } from '../data/products';
+import { jsonPourScript } from '../lib/json-script';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
@@ -137,7 +138,10 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    {/* Pas de canonical sur une page noindex : les deux signaux se contredisent
+        (« ne m'indexe pas » / « indexe cette URL »), et la 404 déclarait une
+        URL /404/ qui n'existe pas. */}
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
 
     {noindex && <meta name="robots" content="noindex,nofollow" />}
 
@@ -185,7 +189,7 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     <!-- JSON-LD Structured Data (SSR only) -->
     {allSchemas.map((schema) => (
-      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      <script type="application/ld+json" set:html={jsonPourScript(schema)} />
     ))}
   </head>
   <body class="bg-stone-50 text-stone-800 font-sans antialiased overflow-x-hidden">

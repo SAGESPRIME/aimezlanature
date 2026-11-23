@@ -17,6 +17,7 @@
  */
 import { products, SITE } from '../data/products';
 import { TIERS } from '../lib/pricing';
+import { jsonPourScript } from '../lib/json-script';
 import PaymentMethods from './PaymentMethods.astro';
 
 const catalogue = {
@@ -25,11 +26,11 @@ const catalogue = {
     .map((p) => ({ slug: p.slug, shortName: p.shortName, priceCurrent: p.priceCurrent })),
   tiers: TIERS.map((t) => ({ qty: t.qty, discountPercent: t.discountPercent })),
   freeShippingThreshold: SITE.freeShippingThreshold,
-  shippingFee: 4.9,
+  shippingFee: SITE.shippingFee,
 };
 ---
 
-<script type="application/json" id="catalogue" set:html={JSON.stringify(catalogue)} />
+<script type="application/json" id="catalogue" set:html={jsonPourScript(catalogue)} />
 
 <!-- Fond assombri -->
 <div

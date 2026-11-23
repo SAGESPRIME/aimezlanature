@@ -242,6 +242,12 @@ export const SITE = {
   // marchand). Il avait été inventé lors d'une session précédente et a été
   // retiré de tout le site le 2026-07-20.
   freeShippingThreshold: 50,
+  /**
+   * Frais de port sous le seuil de gratuité, en euros. Source UNIQUE : lue par
+   * le tunnel Stripe (api/checkout.ts) et par le panier (CartDrawer). Ils
+   * étaient auparavant écrits en dur à deux endroits.
+   */
+  shippingFee: 4.9,
 
   /** Année de création de la marque, communiquée par le marchand. */
   foundingYear: 2019,
