@@ -10,14 +10,11 @@
  * fabriqué. Les hovers de liens et l'apparition au défilement sont en CSS pur
  * (classes `lien-pied` / `[data-reveal]`), compatibles CSP `style-src 'self'`.
  */
-import { SITE } from '../data/products';
+import { SITE, products } from '../data/products';
 
-const produits = [
-  { href: '/perles-ceramique-em/pack-55-perles/', label: 'Pack 55 Perles' },
-  { href: '/perles-ceramique-em/pack-100-perles/', label: 'Pack 100 Perles' },
-  { href: '/perles-ceramique-em/pack-gourde-ceramique-em/', label: 'Pack Gourde' },
-  { href: '/perles-ceramique-em/gourde-ecologique/', label: 'Gourde Écologique' },
-];
+// Noms courts saisis dans le Studio (jamais recopiés ici : un renommage
+// dans le Studio doit se voir partout).
+const produits = products.map((p) => ({ href: `/perles-ceramique-em/${p.slug}/`, label: p.shortName }));
 const guides = [
   { href: '/comment-ca-marche/', label: 'Comment ça marche' },
   { href: '/utilisations/', label: '16 utilisations des perles' },

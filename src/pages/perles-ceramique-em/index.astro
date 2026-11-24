@@ -2,7 +2,7 @@
 import { faqPour } from '../../data/faq';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Faq from '../../components/Faq.astro';
-import { products, SITE, prixDEntree } from '../../data/products';
+import { products, SITE, prixDEntree, getProduct } from '../../data/products';
 import { buildFaqSchema, buildItemListSchema } from '../../lib/seo';
 import CarteProduit from '../../components/CarteProduit.astro';
 import { PERLES_PAR_LITRE } from '../../data/dosages';
@@ -25,10 +25,10 @@ const jsonLd = [buildItemListSchema(displayProducts), buildFaqSchema(faqItems)];
 // Les packs se choisissent par cumul d'usages, pas par contenant unique :
 // à 15 perles/litre, une carafe de 2 L n'en demande que 30.
 const usageGuide = [
-  { usage: 'Une carafe + la bouilloire ou la cafetière', pack: 'Pack 55', slug: 'pack-55-perles', perles: '55 perles' },
-  { usage: 'Plusieurs usages : carafe, lave-vaisselle, machine à laver', pack: 'Pack 100', slug: 'pack-100-perles', perles: '100 perles' },
-  { usage: 'Eau pure en déplacement', pack: 'Pack Gourde', slug: 'pack-gourde-ceramique-em', perles: 'Gourde + 100 perles' },
-  { usage: 'Vous avez déjà des perles', pack: 'Gourde Écologique', slug: 'gourde-ecologique', perles: 'Gourde 500 ml seule' },
+  { usage: 'Une carafe + la bouilloire ou la cafetière', pack: getProduct('pack-55-perles')?.shortName ?? '', slug: 'pack-55-perles', perles: '55 perles' },
+  { usage: 'Plusieurs usages : carafe, lave-vaisselle, machine à laver', pack: getProduct('pack-100-perles')?.shortName ?? '', slug: 'pack-100-perles', perles: '100 perles' },
+  { usage: 'Eau pure en déplacement', pack: getProduct('pack-gourde-ceramique-em')?.shortName ?? '', slug: 'pack-gourde-ceramique-em', perles: 'Gourde + 100 perles' },
+  { usage: 'Vous avez déjà des perles', pack: getProduct('gourde-ecologique')?.shortName ?? '', slug: 'gourde-ecologique', perles: 'Gourde 500 ml seule' },
 ];
 ---
 

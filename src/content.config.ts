@@ -75,7 +75,7 @@ const produits = defineCollection({
   schema: z
     .object({
       nom: z.string().min(3),
-      nomCourt: z.string().min(3).max(40),
+      nomCourt: z.string().min(3).max(60),
       sku: z.string().min(1),
       ordre: z.number().int(),
       prix: montant,

@@ -27,7 +27,7 @@ export const produit = defineType({
       description: 'Utilisé dans le panier, le fil d’Ariane et le reçu Stripe. Ex. « Pack 55 Perles ».',
       type: 'string',
       group: 'fiche',
-      validation: (r) => r.required().max(40),
+      validation: (r) => r.required().max(60),
     }),
     defineField({
       name: 'slug',
