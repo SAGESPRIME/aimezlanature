@@ -327,6 +327,8 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     <BandeauCookies />
 
     <script src="/js/site.js" defer></script>
+    <!-- Calcul de livraison au poids : avant cart.js qui l'utilise. -->
+    <script src="/js/livraison.js" defer></script>
     <script src="/js/cart.js" defer></script>
     <!-- Pilote le bandeau ET décide du chargement de Google Ads : aucun script
          Google n'est demandé avant un clic explicite sur « Accepter ». -->

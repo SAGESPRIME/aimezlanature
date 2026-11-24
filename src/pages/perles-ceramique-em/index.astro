@@ -10,7 +10,7 @@ import EnTetePage from '../../components/EnTetePage.astro';
 
 const metaTitle = 'Perles de Céramique EM® : Purifier l\'Eau | Aimez la Nature';
 const metaDescription =
-  `Perles de céramique EM® japonaises : moins de chlore et de tartre, meilleur goût de l'eau. Dès ${prixDEntree()}, livraison offerte dès ${SITE.seuilLivraisonTexte} €.`;
+  `Perles de céramique EM® japonaises : moins de chlore et de tartre, meilleur goût de l'eau. Dès ${prixDEntree()}, livraison offerte avec ${SITE.livraisonOfferteAvec}.`;
 
 // Questions issues des « Autres questions posées » de Google (recherche DataForSEO)
 // Questions gérées dans Sanity (Studio → Questions fréquentes → page « collection »).
@@ -44,7 +44,7 @@ const usageGuide = [
       <p class="text-sm">
         <span class="etoiles" aria-hidden="true">★</span>
         <strong class="text-encre">{SITE.globalRating.toString().replace('.', ',')}/5</strong>, {SITE.totalReviews} avis vérifiés.
-        Livraison offerte dès {SITE.seuilLivraisonTexte} €. Garantie 30 jours.
+        Livraison offerte avec {SITE.livraisonOfferteAvec}. Garantie 30 jours.
       </p>
   </EnTetePage>
 

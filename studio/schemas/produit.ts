@@ -82,6 +82,24 @@ export const produit = defineType({
       initialValue: true,
     }),
     defineField({
+      name: 'poids',
+      title: 'Poids du colis (g)',
+      description:
+        "Poids emballage compris, en grammes. Sert à calculer les frais de livraison (forfait jusqu'au seuil de poids des Réglages, puis tarif Colissimo).",
+      type: 'number',
+      group: 'vente',
+      validation: (r) => r.required().integer().min(1).max(30000),
+    }),
+    defineField({
+      name: 'livraisonOfferte',
+      title: 'Ouvre la livraison offerte',
+      description:
+        "Coché : un panier qui contient ce produit est livré gratuitement, tant que le colis ne dépasse pas le seuil de poids des Réglages (500 g). Au-delà, le tarif Colissimo s'applique.",
+      type: 'boolean',
+      group: 'vente',
+      initialValue: false,
+    }),
+    defineField({
       name: 'bestseller',
       title: 'Meilleure vente',
       description: 'Un seul produit à la fois.',

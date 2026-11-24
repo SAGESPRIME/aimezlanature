@@ -22,18 +22,47 @@ export const reglages = defineType({
   fields: [
     defineField({
       name: 'fraisDePort',
-      title: 'Frais de port (€)',
-      description: 'Appliqués sous le seuil de livraison offerte. Utilisés tels quels par le paiement Stripe.',
+      title: 'Livraison des petits colis (€)',
+      description:
+        "Forfait payé par le client pour un colis jusqu'au seuil de poids ci-dessous, sauf si le panier contient un produit « Ouvre la livraison offerte ». Utilisé tel quel par le paiement Stripe.",
       type: 'number',
       group: 'commerce',
       validation: (r) => r.required().min(0).max(50).precision(2),
     }),
     defineField({
-      name: 'seuilLivraisonOfferte',
-      title: 'Livraison offerte à partir de (€)',
+      name: 'poidsMaxForfait',
+      title: 'Seuil de poids du forfait (g)',
+      description: 'Jusqu’à ce poids : forfait ou livraison offerte. Au-delà : tarif Colissimo de la grille, selon le poids total.',
       type: 'number',
       group: 'commerce',
-      validation: (r) => r.required().min(0).max(regles.prixMax).precision(2),
+      initialValue: 500,
+      validation: (r) => r.required().integer().min(1).max(30000),
+    }),
+    defineField({
+      name: 'grilleColissimo',
+      title: 'Tarif Colissimo au-delà du seuil',
+      description: 'Une ligne par tranche : « jusqu’à X g → Y € ». Le site prend la première tranche qui contient le poids du colis.',
+      type: 'array',
+      group: 'commerce',
+      of: [
+        {
+          type: 'object',
+          name: 'tranche',
+          fields: [
+            defineField({ name: 'poidsMax', title: 'Jusqu’à (g)', type: 'number', validation: (r) => r.required().integer().min(1).max(30000) }),
+            defineField({ name: 'prix', title: 'Prix (€)', type: 'number', validation: (r) => r.required().min(0).max(regles.prixMax).precision(2) }),
+          ],
+          preview: {
+            select: { poidsMax: 'poidsMax', prix: 'prix' },
+            prepare: ({ poidsMax, prix }) => ({ title: `Jusqu’à ${poidsMax ?? '?'} g → ${prix ?? '?'} €` }),
+          },
+        },
+      ],
+      validation: (r) =>
+        r.required().min(1).custom((tranches) => {
+          const p = ((tranches ?? []) as { poidsMax?: number }[]).map((t) => t.poidsMax ?? 0);
+          return p.every((v, i) => i === 0 || v > p[i - 1]) ? true : 'Classer les tranches par poids croissant, sans doublon.';
+        }),
     }),
     defineField({
       name: 'noteGlobale',

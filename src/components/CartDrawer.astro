@@ -23,10 +23,24 @@ import PaymentMethods from './PaymentMethods.astro';
 const catalogue = {
   products: products
     .filter((p) => p.inStock)
-    .map((p) => ({ slug: p.slug, shortName: p.shortName, priceCurrent: p.priceCurrent })),
+    .map((p) => ({
+      slug: p.slug,
+      shortName: p.shortName,
+      priceCurrent: p.priceCurrent,
+      poids: p.poids,
+      offerte: p.livraisonOfferte,
+    })),
   tiers: TIERS.map((t) => ({ qty: t.qty, discountPercent: t.discountPercent })),
-  freeShippingThreshold: SITE.freeShippingThreshold,
-  shippingFee: SITE.shippingFee,
+  // Règles de livraison au poids (Studio) : appliquées par public/js/livraison.js,
+  // identique au calcul du paiement (src/data/livraison.mjs).
+  livraison: SITE.livraison,
+  // Relance « ajoutez X : livraison offerte » : le plus léger des produits qui
+  // ouvrent la gratuité (le seul qui puisse tenir sous le seuil de poids).
+  relanceOfferte:
+    products
+      .filter((p) => p.inStock && p.livraisonOfferte)
+      .sort((a, b) => a.poids - b.poids)
+      .map((p) => ({ shortName: p.shortName, poids: p.poids }))[0] ?? null,
 };
 ---
 

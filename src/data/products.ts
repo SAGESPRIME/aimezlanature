@@ -34,6 +34,10 @@ export interface Product {
   /** Nombre de perles fournies. Absent quand le produit n'est pas vendu au nombre de perles. */
   quantity?: number;
   includesBottle: boolean;
+  /** Poids du colis, emballage compris (g) — frais de livraison (src/data/livraison.mjs). */
+  poids: number;
+  /** Un panier qui contient ce produit est livré gratuitement (sous le seuil de poids). */
+  livraisonOfferte: boolean;
   /**
    * Note et nombre d'avis, CALCULÉS à partir des avis publiés dans Sanity.
    * Absents tant qu'un produit n'a reçu aucun avis : pas d'étoiles affichées,
@@ -77,6 +81,8 @@ export const products: Product[] = (await getCollection('produits'))
     inStock: p.enStock,
     ...(p.nombrePerles ? { quantity: p.nombrePerles } : {}),
     includesBottle: Boolean(p.avecGourde),
+    poids: p.poids,
+    livraisonOfferte: Boolean(p.livraisonOfferte),
     ...noteDe(id),
     bestseller: Boolean(p.bestseller),
     description: p.description,
@@ -103,6 +109,11 @@ export function getProduct(slug: string): Product | undefined {
 
 const reglages = (await getEntry('reglages', 'reglages'))!.data;
 
+/** « a », « a et b », « a, b et c ». */
+function enFrancais(liste: string[]): string {
+  return liste.length < 2 ? (liste[0] ?? '') : `${liste.slice(0, -1).join(', ')} et ${liste.at(-1)}`;
+}
+
 export const SITE = {
   name: reglages.nom,
   url: reglages.url.replace(/\/$/, ''),
@@ -111,22 +122,27 @@ export const SITE = {
   totalReviews: avisPublies.length,
   /** Note globale affichée — réglage du Studio, à garder fidèle aux avis réels. */
   globalRating: reglages.noteGlobale,
-  /** Seuil de livraison offerte (nombre) : pour les CALCULS uniquement. */
-  freeShippingThreshold: reglages.seuilLivraisonOfferte,
   /**
-   * Le même seuil, au format français, pour l'AFFICHAGE (« 50 », « 29,90 »).
-   * Insérer le nombre brut dans un texte donnait « 29.9 € » dès que le seuil
-   * n'était plus un entier (constaté au test du CMS, 2026-11-24).
-   * tests/seuil-livraison.test.mjs empêche de réintroduire le nombre brut.
+   * Règles de livraison au poids (Réglages du Studio) : forfait des petits
+   * colis, seuil de poids du forfait, grille Colissimo au-delà. Source UNIQUE
+   * du calcul serveur (api/checkout.ts, via src/data/livraison.mjs) et du
+   * panier (CartDrawer → public/js/livraison.js).
    */
-  seuilLivraisonTexte: Number.isInteger(reglages.seuilLivraisonOfferte)
-    ? String(reglages.seuilLivraisonOfferte)
-    : reglages.seuilLivraisonOfferte.toFixed(2).replace('.', ','),
-  /**
-   * Frais de port sous le seuil de gratuité, en euros. Source UNIQUE : lue par
-   * le tunnel Stripe (api/checkout.ts) et par le panier (CartDrawer).
-   */
+  livraison: {
+    forfait: reglages.fraisDePort,
+    poidsMaxForfait: reglages.poidsMaxForfait,
+    grille: reglages.grilleColissimo,
+  },
+  /** Forfait des petits colis, en euros (alias lisible de livraison.forfait). */
   shippingFee: reglages.fraisDePort,
+  /**
+   * Produits qui ouvrent la livraison offerte, en toutes lettres pour les
+   * textes : « le Pack 100 Perles et le Pack Gourde ». Calculé depuis les
+   * cases du Studio, jamais écrit en dur.
+   */
+  livraisonOfferteAvec: enFrancais(
+    products.filter((p) => p.livraisonOfferte && p.inStock).map((p) => `le ${p.shortName}`)
+  ),
   /** Année de création de la marque. */
   foundingYear: reglages.anneeCreation,
   /** Profils officiels de la marque (schema sameAs). */

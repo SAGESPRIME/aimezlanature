@@ -1,5 +1,6 @@
 import { SITE, type Product } from '../data/products';
 import { reviewsFor } from '../data/reviews';
+import { fraisLivraison } from '../data/livraison.mjs';
 
 /**
  * Identité de la marque, référencée par `@id` dans tout le graphe : Google et
@@ -71,15 +72,16 @@ export function buildWebSiteSchema() {
  * (articles 4, 5 et 6). Toute modification des CGV doit se refléter ici :
  * Google affiche ces informations dans les résultats produits.
  */
-function livraisonEtRetour(prix: number) {
+function livraisonEtRetour(p: Product) {
+  const livraison = fraisLivraison([{ poids: p.poids, qty: 1, offerte: p.livraisonOfferte }], SITE.livraison);
   return {
     shippingDetails: {
       '@type': 'OfferShippingDetails',
       shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'FR' },
-      // Pour un article seul : offert au-dessus du seuil, sinon frais fixes.
+      // Pour un article seul, avec la règle au poids du paiement.
       shippingRate: {
         '@type': 'MonetaryAmount',
-        value: prix >= SITE.freeShippingThreshold ? 0 : SITE.shippingFee,
+        value: livraison.frais ?? SITE.shippingFee,
         currency: 'EUR',
       },
       // CGV art. 4 : « livrées sous 2 à 5 jours ouvrés à compter de la
@@ -131,7 +133,7 @@ export function buildProductSchema(p: Product, imageUrl?: string) {
       itemCondition: 'https://schema.org/NewCondition',
       url: `${SITE.url}/perles-ceramique-em/${p.slug}/`,
       seller: organisationRef(),
-      ...livraisonEtRetour(p.priceCurrent),
+      ...livraisonEtRetour(p),
     },
     // Omis tant que le produit n'a aucun avis : publier une note inventée
     // violerait les règles Google sur les avis et tromperait l'acheteur.

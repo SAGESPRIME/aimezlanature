@@ -2,10 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
 import EnTetePage from '../components/EnTetePage.astro';
+import { fmtPrice } from '../lib/pricing';
 
 const metaTitle = 'Conditions Générales de Vente | Aimez la Nature';
 const metaDescription =
   "Conditions Générales de Vente d'Aimez la Nature : commande, prix, livraison, droit de rétractation et garanties applicables à vos achats.";
+/** 500 → « 500 g », 2000 → « 2 kg ». */
+const poidsTexte = (g: number) => (g >= 1000 && g % 1000 === 0 ? `${g / 1000} kg` : `${g} g`);
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription}>
@@ -50,10 +53,35 @@ const metaDescription =
         <h2 class="font-display text-2xl text-foret mb-3">4. Livraison</h2>
         <p>
           Les commandes sont livrées en France métropolitaine sous 2 à 5 jours ouvrés à compter de
-          la confirmation du paiement. La livraison est offerte dès {SITE.seuilLivraisonTexte} €
-          d'achat ; en dessous de ce montant, les frais de port sont indiqués avant validation de
-          la commande.
+          la confirmation du paiement. Les frais de livraison dépendent du poids du colis,
+          emballage compris, et sont indiqués avant validation de la commande :
         </p>
+        <ul class="list-disc pl-5 mt-3 space-y-1">
+          <li>
+            colis jusqu'à {poidsTexte(SITE.livraison.poidsMaxForfait)} : livraison offerte si la commande
+            comprend {SITE.livraisonOfferteAvec}, sinon {fmtPrice(SITE.shippingFee)} € ;
+          </li>
+          <li>au-delà de {poidsTexte(SITE.livraison.poidsMaxForfait)} : tarif Colissimo à domicile selon le poids total.</li>
+        </ul>
+        <table class="mt-4 text-sm border border-ligne">
+          <caption class="sr-only">Tarif Colissimo à domicile selon le poids du colis</caption>
+          <thead>
+            <tr class="bg-anis-pale text-encre">
+              <th scope="col" class="px-4 py-2 text-left font-semibold">Poids du colis</th>
+              <th scope="col" class="px-4 py-2 text-right font-semibold">Livraison</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SITE.livraison.grille
+              .filter((t) => t.poidsMax > SITE.livraison.poidsMaxForfait)
+              .map((t) => (
+                <tr class="border-t border-ligne">
+                  <td class="px-4 py-2">jusqu'à {poidsTexte(t.poidsMax)}</td>
+                  <td class="px-4 py-2 text-right tabular-nums">{fmtPrice(t.prix)} €</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
 
       <div>

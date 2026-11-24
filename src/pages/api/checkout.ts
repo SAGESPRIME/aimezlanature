@@ -6,6 +6,7 @@ import { unitPriceFor } from '../../lib/pricing';
 import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimit';
 import { MARQUE_SESSION } from '../../lib/marque-stripe';
 import { origineSite } from '../../lib/origine';
+import { fraisLivraison } from '../../data/livraison.mjs';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -67,6 +68,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const lines: { name: string; short: string; unitAmount: number; qty: number }[] = [];
+  const colis: { poids: number; qty: number; offerte: boolean }[] = [];
   let subtotal = 0;
 
   for (const item of items) {
@@ -90,9 +92,16 @@ export const POST: APIRoute = async ({ request }) => {
       unitAmount: Math.round(unit * 100),
       qty,
     });
+    colis.push({ poids: product.poids, qty, offerte: product.livraisonOfferte });
   }
 
-  const shipping = subtotal >= SITE.freeShippingThreshold ? 0 : SITE.shippingFee;
+  // Livraison au poids (règle du Studio, src/data/livraison.mjs) — même calcul
+  // que le panier, mais c'est CELUI-CI qui fixe le montant débité.
+  const livraison = fraisLivraison(colis, SITE.livraison);
+  if (livraison.frais === null) {
+    return json({ error: 'Colis trop lourd pour un envoi en ligne : contactez-nous pour cette commande.' }, 400);
+  }
+  const shipping = livraison.frais;
 
   const form = new URLSearchParams();
   form.set('mode', 'payment');
@@ -136,7 +145,7 @@ export const POST: APIRoute = async ({ request }) => {
   form.set('shipping_options[0][shipping_rate_data][fixed_amount][currency]', 'eur');
   form.set(
     'shipping_options[0][shipping_rate_data][display_name]',
-    shipping === 0 ? 'Livraison offerte (2-5 jours)' : 'Livraison standard (2-5 jours)'
+    shipping === 0 ? 'Livraison offerte (2-5 jours)' : livraison.poids > SITE.livraison.poidsMaxForfait ? 'Colissimo à domicile (2-5 jours)' : 'Livraison standard (2-5 jours)'
   );
 
   try {

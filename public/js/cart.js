@@ -95,7 +95,11 @@
       lines.push({ product: p, qty: i.qty, unit: unit, plein: plein, total: remise, discount: d });
     });
 
-    var port = net === 0 || net >= cat.freeShippingThreshold ? 0 : cat.shippingFee;
+    // Livraison au poids : même règle que le paiement (public/js/livraison.js ↔
+    // src/data/livraison.mjs, vérifiées identiques par tests/livraison.test.mjs).
+    var colis = lines.map(function (l) { return { poids: l.product.poids, qty: l.qty, offerte: l.product.offerte }; });
+    var livraison = window.alnFraisLivraison(colis, cat.livraison);
+    var port = livraison.frais === null ? 0 : livraison.frais;
     return {
       lines: lines,
       brut: brut,
@@ -103,6 +107,8 @@
       maxRemise: maxRemise,
       net: net,
       port: port,
+      poids: livraison.poids,
+      tropLourd: livraison.frais === null,
       total: round2(net + port),
       qtyTotale: qtyTotale,
     };
@@ -228,7 +234,7 @@
       show('tiroir-ligne-remise', t.remise > 0);
       set('tiroir-remise-label', 'Remise −' + t.maxRemise + ' %');
       set('tiroir-remise', '−' + fmt(t.remise));
-      set('tiroir-port', t.port === 0 ? 'Offerte' : fmt(t.port));
+      set('tiroir-port', t.tropLourd ? 'Sur demande' : t.port === 0 ? 'Offerte' : fmt(t.port));
       set('tiroir-total', fmt(t.total));
 
       // Relance : d'abord vers le palier suivant, sinon vers le port offert.
@@ -240,8 +246,10 @@
         if (suivant) {
           msg = 'Ajoutez encore ' + suivant.missing + ' produit' + (suivant.missing > 1 ? 's' : '') +
                 ' pour passer à −' + suivant.discountPercent + ' %.';
-        } else if (t.port > 0) {
-          msg = 'Plus que ' + fmt(round2(cat.freeShippingThreshold - t.net)) + ' pour la livraison offerte.';
+        } else if (t.tropLourd) {
+          msg = 'Colis trop lourd pour un envoi en ligne : contactez-nous pour cette commande.';
+        } else if (t.port > 0 && cat.relanceOfferte && t.poids + cat.relanceOfferte.poids <= cat.livraison.poidsMaxForfait) {
+          msg = 'Ajoutez un ' + cat.relanceOfferte.shortName + ' : la livraison devient offerte.';
         }
         relance.textContent = msg;
         relance.hidden = msg === '' || items.length === 0;
@@ -257,7 +265,7 @@
       set('resume-sous-total', fmt(t.brut));
       show('resume-ligne-remise', t.remise > 0);
       set('resume-remise', '−' + fmt(t.remise));
-      set('resume-port', t.port === 0 ? 'Offerte' : fmt(t.port));
+      set('resume-port', t.tropLourd ? 'Sur demande' : t.port === 0 ? 'Offerte' : fmt(t.port));
       set('resume-total', fmt(t.total));
     }
   }

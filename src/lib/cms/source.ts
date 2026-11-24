@@ -65,13 +65,14 @@ const PHOTO = `{
  */
 export const REQUETE = `{
   "reglages": *[_id == "reglages"][0]{
-    nom, url, description, fraisDePort, seuilLivraisonOfferte, noteGlobale,
+    nom, url, description, fraisDePort, poidsMaxForfait,
+    "grilleColissimo": grilleColissimo[]{poidsMax, prix}, noteGlobale,
     anneeCreation, profils, amazon{note, nbCommentaires, url}, _updatedAt,
     "photos": photos{${photosSite.emplacements.map((e) => `"${e.cle}": ${e.cle}${PHOTO}`).join(', ')}}
   },
   "produits": *[_type == "produit" && defined(slug.current)] | order(ordre asc){
     "id": slug.current, nom, nomCourt, sku, ordre, prix, prixBarre, enStock,
-    bestseller, nombrePerles, avecGourde, "image": image${IMAGE},
+    bestseller, nombrePerles, avecGourde, poids, livraisonOfferte, "image": image${IMAGE},
     description, usages, "questions": questions[]{question, reponse},
     metaTitle, metaDescription, _updatedAt
   },

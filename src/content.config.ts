@@ -84,6 +84,9 @@ const produits = defineCollection({
       bestseller: z.boolean().nullish(),
       nombrePerles: z.number().int().positive().nullish(),
       avecGourde: z.boolean().nullish(),
+      /** Poids du colis, emballage compris (g) : frais de livraison (src/data/livraison.mjs). */
+      poids: z.number().int().min(1).max(30000),
+      livraisonOfferte: z.boolean().nullish(),
       image,
       description: z.string().min(200),
       usages: z.array(z.string().min(2)).min(1),
@@ -174,7 +177,11 @@ const reglages = defineCollection({
     url: urlHttps,
     description: z.string(),
     fraisDePort: z.number().min(0).max(50),
-    seuilLivraisonOfferte: z.number().min(0).max(regles.prixMax),
+    poidsMaxForfait: z.number().int().min(1).max(30000),
+    grilleColissimo: z
+      .array(z.object({ poidsMax: z.number().int().min(1).max(30000), prix: z.number().min(0).max(regles.prixMax) }))
+      .min(1)
+      .refine((g) => g.every((t, i) => i === 0 || t.poidsMax > g[i - 1].poidsMax), 'tranches Colissimo non classées par poids croissant'),
     noteGlobale: z.number().min(regles.noteMin).max(regles.noteMax),
     anneeCreation: z.number().int(),
     profils: z.array(urlHttps).nullish(),
