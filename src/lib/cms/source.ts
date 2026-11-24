@@ -55,6 +55,7 @@ const PHOTO = `{
   alt,
   credit,
   "hotspot": hotspot{x, y},
+  "crop": crop{top, bottom, left, right},
   "url": asset->url,
   "largeur": asset->metadata.dimensions.width,
   "hauteur": asset->metadata.dimensions.height

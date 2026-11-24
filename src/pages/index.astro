@@ -8,7 +8,7 @@ import { SITE, getProduct, prixDEntree } from '../data/products';
 import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
 import CarteProduit from '../components/CarteProduit.astro';
-import { photoSite, cadrage } from '../data/photosSite';
+import { photoSite, cadrage, formatPhoto } from '../data/photosSite';
 import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
 
@@ -107,6 +107,9 @@ const moments = [
   { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoSite('mission'), cadre: cadrage('mission') },
 ];
 const photoHero = photoSite('accueil');
+// Cadre du hero à la forme de la photo (après recadrage du Studio) : une photo
+// portrait n'est plus rognée dans un carré, et inversement.
+const cadreHero = { portrait: 'lg:aspect-[4/5]', carre: 'lg:aspect-square', paysage: 'lg:aspect-[4/3]' }[formatPhoto('accueil')];
 const photoModeEmploi = photoSite('modeEmploi');
 const note = (n: number) => n.toString().replace('.', ',');
 ---
@@ -159,7 +162,7 @@ const note = (n: number) => n.toString().replace('.', ',');
         </div>
       </dl>
     </div>
-    <div class="order-first lg:order-none -mx-4 sm:mx-0 aspect-[4/3] lg:aspect-square lg:self-center overflow-hidden arche-hero entree-photo">
+    <div class={`order-first lg:order-none -mx-4 sm:mx-0 aspect-[4/3] ${cadreHero} lg:self-center overflow-hidden arche-hero entree-photo`}>
       <Image
         {...photoHero}
         widths={[480, 720, 960, 1200]}

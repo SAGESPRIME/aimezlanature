@@ -67,6 +67,10 @@ const photoSite = z
     hauteur: z.number().int().positive().nullish(),
     /** Point d'intérêt réglé dans le Studio (0 → 1). */
     hotspot: z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }).nullish(),
+    /** Recadrage réglé dans le Studio (fractions retirées de chaque bord). */
+    crop: z
+      .object({ top: z.number().min(0).max(1), bottom: z.number().min(0).max(1), left: z.number().min(0).max(1), right: z.number().min(0).max(1) })
+      .nullish(),
   })
   .nullish();
 

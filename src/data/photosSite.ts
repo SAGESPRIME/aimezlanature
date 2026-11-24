@@ -63,6 +63,7 @@ interface PhotoSaisie {
   largeur?: number | null;
   hauteur?: number | null;
   hotspot?: { x: number; y: number } | null;
+  crop?: { top: number; bottom: number; left: number; right: number } | null;
 }
 
 /** Photo saisie dans le Studio, seulement si elle a un fichier ET un texte alternatif. */
@@ -71,11 +72,39 @@ function saisie(cle: Emplacement): (PhotoSaisie & { url: string; alt: string }) 
   return p?.url && p.alt ? (p as PhotoSaisie & { url: string; alt: string }) : undefined;
 }
 
+/** Zone recadrée en pixels (x, y, largeur, hauteur), ou null sans recadrage. */
+function rect(p: PhotoSaisie | undefined): { x: number; y: number; l: number; h: number } | null {
+  const c = p?.crop;
+  if (!c || !p?.largeur || !p.hauteur) return null;
+  if (c.top + c.bottom + c.left + c.right < 0.001) return null;
+  const x = Math.round(c.left * p.largeur);
+  const y = Math.round(c.top * p.hauteur);
+  const l = Math.round((1 - c.left - c.right) * p.largeur);
+  const h = Math.round((1 - c.top - c.bottom) * p.hauteur);
+  return l > 10 && h > 10 ? { x, y, l, h } : null;
+}
+
+/** Forme de la photo affichée (après recadrage) : pour choisir le cadre. */
+export function formatPhoto(cle: Emplacement): 'portrait' | 'carre' | 'paysage' {
+  const p = saisie(cle);
+  const r = rect(p);
+  const l = r?.l ?? p?.largeur ?? SECOURS[cle].src.width;
+  const h = r?.h ?? p?.hauteur ?? SECOURS[cle].src.height;
+  const ratio = l / h;
+  return ratio < 0.85 ? 'portrait' : ratio > 1.18 ? 'paysage' : 'carre';
+}
+
 /** Ce qu'il faut passer à <Image> pour un emplacement. */
 export function photoSite(
   cle: Emplacement
 ): SourceImage | { src: string; width: number; height: number; alt: string } {
   const p = saisie(cle);
+  // Recadrage du Studio : l'API d'images de Sanity découpe la zone (« rect »,
+  // en pixels) ; Astro télécharge puis optimise cette zone seulement.
+  const r = rect(p);
+  if (p && r) {
+    return { src: `${p.url}?rect=${r.x},${r.y},${r.l},${r.h}`, width: r.l, height: r.h, alt: p.alt.trim() };
+  }
   // Dimensions fournies par Sanity : Astro n'a pas à télécharger l'image une
   // fois de plus juste pour les mesurer.
   if (p?.largeur && p.hauteur) return { src: p.url, width: p.largeur, height: p.hauteur, alt: p.alt.trim() };
@@ -91,10 +120,16 @@ export function photoSite(
  * global.css. Sans point d'intérêt : centré.
  */
 export function cadrage(cle: Emplacement): string {
-  const h = saisie(cle)?.hotspot;
+  const p = saisie(cle);
+  const h = p?.hotspot;
   if (!h) return 'focal';
+  // Le point d'intérêt est exprimé sur l'image ENTIÈRE ; on le ramène à la
+  // zone recadrée quand il y en a une.
+  const c = p?.crop ?? { top: 0, bottom: 0, left: 0, right: 0 };
+  const x = (h.x - c.left) / Math.max(0.01, 1 - c.left - c.right);
+  const y = (h.y - c.top) / Math.max(0.01, 1 - c.top - c.bottom);
   const pas = (v: number) => Math.min(100, Math.max(0, Math.round(v * 10) * 10));
-  return `focal fpx-${pas(h.x)} fpy-${pas(h.y)}`;
+  return `focal fpx-${pas(x)} fpy-${pas(y)}`;
 }
 
 /**
