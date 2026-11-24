@@ -15,5 +15,6 @@ import { SITE } from '../data/products';
  * l'ancien nom `EMAIL_SITE_URL`) = https://recette.aimezlanature.fr.
  */
 export function origineSite(): string {
-  return (process.env.SITE_URL ?? process.env.EMAIL_SITE_URL ?? SITE.url).replace(/\/$/, '');
+  // `||` et non `??` : une variable définie mais VIDE ne doit pas l'emporter.
+  return (process.env.SITE_URL || process.env.EMAIL_SITE_URL || SITE.url).replace(/\/$/, '');
 }

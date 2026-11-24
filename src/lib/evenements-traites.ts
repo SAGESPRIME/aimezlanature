@@ -49,6 +49,11 @@ export function reserver(id: string, maintenant = Date.now()): boolean {
   return true;
 }
 
+/** Un premier traitement de cet événement est-il en cours ? */
+export function enCours(id: string): boolean {
+  return memoire.get(id)?.etat === 'en-cours';
+}
+
 /** Le traitement a réussi : l'événement ne sera plus jamais retraité. */
 export function marquerFait(id: string, maintenant = Date.now()): void {
   memoire.set(id, { etat: 'fait', depuis: maintenant });

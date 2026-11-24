@@ -55,7 +55,8 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Requête invalide.' }, 400);
   }
 
-  const items = Array.isArray(body.items) ? body.items : [];
+  // `null` ou une valeur simple sont du JSON valide : ne pas planter dessus (500).
+  const items = body && typeof body === 'object' && Array.isArray(body.items) ? body.items : [];
   if (items.length === 0) return json({ error: 'Votre panier est vide.' }, 400);
   // Le panier du site envoie une ligne par produit. Des lignes en double ou en
   // nombre déraisonnable ne viennent pas de lui : elles contourneraient le
@@ -140,6 +141,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      signal: AbortSignal.timeout(15_000),
       method: 'POST',
       headers: {
         Authorization: `Bearer ${key}`,

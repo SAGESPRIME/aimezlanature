@@ -36,7 +36,9 @@ const urlHttps = z.url({ protocol: /^https$/ });
 /** Lien d'un texte riche : https, mailto ou chemin interne (« /… », pas « //… »). */
 const lienTexte = z
   .string()
-  .refine((h) => /^(https:\/\/|mailto:|\/(?!\/)|#)/i.test(h.trim()), {
+  // Pas d'espace ni de caractère de contrôle, et « / » suivi d'autre chose que
+  // « / » ou « \\ » : les navigateurs lisent « /\\hote » comme « //hote ».
+  .refine((h) => !/[\s\x00-\x1f\x7f]/.test(h) && /^(https:\/\/|mailto:|\/(?![\/\\])|#)/i.test(h), {
     message: 'Lien refusé : seuls https://, mailto: et les chemins internes sont autorisés.',
   });
 

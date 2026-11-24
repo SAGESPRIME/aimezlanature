@@ -3,7 +3,7 @@ import type { APIRoute } from 'astro';
 // sont lus dans process.env (variables d'environnement Coolify).
 import { verifierSignature } from '../../lib/stripe-signature';
 import { envoyerEmail, EMAIL_MARCHAND } from '../../lib/email';
-import { reserver, marquerFait, liberer, etapeFaite, noterEtape } from '../../lib/evenements-traites';
+import { reserver, marquerFait, liberer, enCours, etapeFaite, noterEtape } from '../../lib/evenements-traites';
 import { MARQUE_SESSION } from '../../lib/marque-stripe';
 import {
   sujetCommande,
@@ -72,7 +72,7 @@ async function lireArticles(sessionId: string, cle: string): Promise<LigneComman
   try {
     const res = await fetch(
       `https://api.stripe.com/v1/checkout/sessions/${sessionId}/line_items?limit=100`,
-      { headers: { Authorization: `Bearer ${cle}` } }
+      { headers: { Authorization: `Bearer ${cle}` }, signal: AbortSignal.timeout(10_000) }
     );
     if (!res.ok) {
       console.error('Stripe (articles):', res.status, await res.text());
@@ -194,6 +194,11 @@ export const POST: APIRoute = async ({ request }) => {
   // Anti-doublon : Stripe peut livrer deux fois le même événement.
   const idEvenement = String(evenement?.id ?? '');
   if (idEvenement && !reserver(idEvenement)) {
+    // Encore EN COURS (Stripe a relancé avant notre réponse) : surtout pas de
+    // 200, sinon Stripe tiendrait l'événement pour livré alors que le premier
+    // essai peut encore échouer — et la confirmation serait perdue. 409 :
+    // Stripe réessaiera plus tard (ré-audit du 2026-11-24).
+    if (enCours(idEvenement)) return json({ error: 'Traitement en cours.' }, 409);
     return json({ recu: true, ignore: 'déjà traité' });
   }
   try {

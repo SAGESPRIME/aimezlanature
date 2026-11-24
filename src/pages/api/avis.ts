@@ -88,6 +88,7 @@ async function achatConfirme(email: string, nomProduit: string, cle: string): Pr
   try {
     const res = await fetch(`https://api.stripe.com/v1/checkout/sessions?${params}`, {
       headers: { Authorization: `Bearer ${cle}` },
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!res.ok) {
@@ -253,7 +254,14 @@ export const POST: APIRoute = async ({ request }) => {
       .join('')}</table>` +
     `<p><strong>Si vous publiez cet avis</strong> : ${echapperHtml(consigne)}</p>`;
 
-  const envoi = await envoyerEmail({
+  // Envoi EN ARRIÈRE-PLAN, et même réponse quoi qu'il arrive. Attendre l'envoi
+  // puis répondre 502/503 en cas d'échec ne pouvait se produire que pour un
+  // email ayant acheté le produit : pendant une panne d'Emailit, un inconnu
+  // savait donc qui est client — et le temps de réponse le trahissait aussi
+  // (ré-audit du 2026-11-24). Le serveur est un processus Node durable : la
+  // promesse aboutit après la réponse. En cas d'échec, l'avis reste dans le
+  // journal (sans l'email du client) pour être recopié à la main.
+  void envoyerEmail({
     to: EMAIL_AVIS,
     // `replyTo` = le client : le marchand peut lui répondre directement,
     // par exemple pour un avis négatif à traiter avant publication.
@@ -261,13 +269,16 @@ export const POST: APIRoute = async ({ request }) => {
     subject: `Avis ${note}/5 à modérer — ${produit.shortName}`,
     text: texte,
     html,
-  });
-
-  if (!envoi.ok) {
-    return envoi.raison === 'config'
-      ? echec("Notre service d'envoi n'est pas encore activé.", 503)
-      : echec("L'envoi a échoué.", 502);
-  }
+  })
+    .then((envoi) => {
+      if (!envoi.ok) {
+        console.error(
+          `Avis vérifié NON transmis au marchand (${envoi.raison}) — à recopier :`,
+          JSON.stringify({ produit: produit.slug, note, titre: donnees.titre, texte: donnees.texte, auteur: donnees.auteur, date: aujourdhui })
+        );
+      }
+    })
+    .catch((e) => console.error('Avis : échec inattendu de la notification marchand', e));
 
   return succes();
 };

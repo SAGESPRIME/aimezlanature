@@ -225,7 +225,9 @@ if (IDENTIFIANTS_RECETTE) {
 // ── 2. www → domaine nu ──────────────────────────────────────────────────
 // Cible FIXE : jamais l'en-tête Host renvoyé tel quel (audit du 2026-11-24).
 app.use((req, res, next) => {
-  if ((req.headers.host ?? '').toLowerCase() === `www.${DOMAINE}`) {
+  // `originalUrl` doit commencer par « / » : une cible de requête en forme
+  // absolue (rare, jamais envoyée par un navigateur) ne s'accole pas au domaine.
+  if ((req.headers.host ?? '').toLowerCase() === `www.${DOMAINE}` && req.originalUrl.startsWith('/')) {
     return res.redirect(301, `https://${DOMAINE}${req.originalUrl}`);
   }
   next();
@@ -261,7 +263,11 @@ app.use(
       // changent jamais, on peut les garder un an. Tout le reste (HTML, /js/*,
       // PDF…) garde le même nom d'un déploiement à l'autre : le navigateur doit
       // revalider à chaque fois, sinon il servirait une version périmée.
-      if (chemin.includes(`${join('dist', 'client', '_astro')}`)) {
+      if (IDENTIFIANTS_RECETTE) {
+        // Recette avec brouillons : rien de ce qui est servi derrière le mot de
+        // passe ne doit finir dans un cache partagé.
+        res.setHeader('Cache-Control', 'private, no-store');
+      } else if (chemin.includes(`${join('dist', 'client', '_astro')}`)) {
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       } else {
         res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
