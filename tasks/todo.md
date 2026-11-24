@@ -265,6 +265,8 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
 - [x] Fiche `commandes.<session>` créée par le webhook à chaque paiement ; listes À expédier /
       Expédiées / Annulées / Revendeurs ; « Expédiée » + n° Colissimo → email de suivi
       (tâche des 5 min, `/api/taches`). Tests `tests/commandes.test.mjs`.
+- [x] Validé en recette le 24/11 : vraie commande test → fiche « À expédier » créée par le
+      webhook → « Expédiée » + n° → email de suivi reçu. Fiches de test supprimées (0).
 - [ ] Les commandes payées AVANT cette version (test du 24/11) ne sont pas reprises : Stripe.
 - [ ] Avant d'arrêter WordPress : exporter les commandes WooCommerce (CSV).
 
