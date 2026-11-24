@@ -7,7 +7,7 @@
 
 FROM node:22-alpine AS build
 WORKDIR /app
-COPY contenu/regles.json ./contenu/regles.json
+COPY contenu/regles.json contenu/photos-site.json ./contenu/
 COPY studio/package.json studio/package-lock.json ./studio/
 RUN cd studio && npm ci
 COPY studio ./studio
