@@ -70,11 +70,15 @@ for (const [t, urls] of titres) if (urls.length > 1) err(`title en double « ${t
 for (const [d, urls] of descriptions) if (urls.length > 1) err(`description en double : ${urls.join(', ')} — « ${d} »`);
 
 // ── Liens internes ───────────────────────────────────────────────────────
+// Pages rendues à la demande (prerender = false, noindex) : absentes du build
+// statique mais bien servies par le serveur.
+const A_LA_DEMANDE = new Set(['/pro/', '/pro/connexion/']);
 const existe = (/** @type {string} */ chemin) => {
   const sansQuery = chemin.split('?')[0];
   if (pages[sansQuery]) return true;
   if (existsSync(join(RACINE, sansQuery)) && /\.[a-z0-9]+$/i.test(sansQuery)) return true;
   if (sansQuery.startsWith('/api/')) return true;
+  if (A_LA_DEMANDE.has(sansQuery)) return true;
   return false;
 };
 for (const [url, p] of Object.entries(pages)) {
