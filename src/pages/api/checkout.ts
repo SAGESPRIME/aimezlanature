@@ -5,6 +5,7 @@ import { products, SITE } from '../../data/products';
 import { unitPriceFor } from '../../lib/pricing';
 import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimit';
 import { MARQUE_SESSION } from '../../lib/marque-stripe';
+import { origineSite } from '../../lib/origine';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -25,7 +26,7 @@ const PAYS_LIVRAISON = ['FR'] as const;
  * La clé secrète est lue dans l'environnement (STRIPE_SECRET_KEY, Coolify)
  * et n'apparaît jamais dans le code ni dans le HTML envoyé au navigateur.
  */
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request }) => {
   const json = (data: unknown, status = 200) =>
     new Response(JSON.stringify(data), {
       status,
@@ -97,8 +98,11 @@ export const POST: APIRoute = async ({ request, url }) => {
   // Marque relue par /api/stripe-webhook : « cette session vient du site ».
   form.set('metadata[source]', MARQUE_SESSION);
   form.set('locale', 'fr');
-  form.set('success_url', `${url.origin}/commande-confirmee/?session_id={CHECKOUT_SESSION_ID}`);
-  form.set('cancel_url', `${url.origin}/panier/`);
+  // Adresse de retour tirée de la configuration, jamais de la requête : voir
+  // src/lib/origine.ts (url.origin valait http://localhost:4321).
+  const origine = origineSite();
+  form.set('success_url', `${origine}/commande-confirmee/?session_id={CHECKOUT_SESSION_ID}`);
+  form.set('cancel_url', `${origine}/panier/`);
   form.set('billing_address_collection', 'required');
   // Pays de livraison = ceux que couvrent les CGV (article 4 : France
   // métropolitaine). Le tunnel acceptait aussi BE, LU et CH alors que les CGV

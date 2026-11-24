@@ -67,7 +67,7 @@ function pageErreur(message: string, status: number): Response {
   });
 }
 
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request }) => {
   const veutJson = (request.headers.get('accept') ?? '').includes('application/json');
 
   const echec = (message: string, status: number) =>
@@ -101,7 +101,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       ? new Response(JSON.stringify({ ok: true }), {
           headers: { 'Content-Type': 'application/json' },
         })
-      : Response.redirect(new URL('/revendeurs/merci/', url.origin), 303);
+      : new Response(null, { status: 303, headers: { Location: '/revendeurs/merci/' } });
   }
 
   // Délai de remplissage. Absent = navigateur sans JavaScript : on laisse passer,
@@ -175,5 +175,5 @@ export const POST: APIRoute = async ({ request, url }) => {
     ? new Response(JSON.stringify({ ok: true }), {
         headers: { 'Content-Type': 'application/json' },
       })
-    : Response.redirect(new URL('/revendeurs/merci/', url.origin), 303);
+    : new Response(null, { status: 303, headers: { Location: '/revendeurs/merci/' } });
 };

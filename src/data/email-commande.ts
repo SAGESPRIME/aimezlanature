@@ -16,6 +16,7 @@
 import { dosages } from './dosages';
 import { SITE } from './products';
 import { echapperHtml } from '../lib/email';
+import { origineSite } from '../lib/origine';
 
 /** Un article de la commande, tel que renvoyé par Stripe. */
 export interface LigneCommande {
@@ -42,18 +43,12 @@ export interface Commande {
 }
 
 /**
- * Adresse de base des liens contenus dans les emails.
- *
- * ⚠️ TEMPORAIRE. `SITE.url` vaut `aimezlanature.fr`, qui sert encore le site
- * WordPress : le lien « Voir tous les dosages » y renvoie donc un 404. Tant que
- * le domaine n'est pas basculé, définir `EMAIL_SITE_URL` dans Coolify (app de
- * recette) avec l'adresse de recette (https://recette.aimezlanature.fr).
- *
- * À SUPPRIMER — la variable comme ce commentaire — le jour où aimezlanature.fr
- * sert ce site : `SITE.url` redeviendra alors la bonne réponse.
+ * Adresse de base des liens contenus dans les emails : l'adresse publique du
+ * site (src/lib/origine.ts) — la recette sur la recette, aimezlanature.fr en
+ * production.
  */
 function baseLiens(): string {
-  return (process.env.EMAIL_SITE_URL ?? SITE.url).replace(/\/$/, '');
+  return origineSite();
 }
 
 const VERT = '#166534';

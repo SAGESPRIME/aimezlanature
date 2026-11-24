@@ -88,7 +88,9 @@ Comme `site-prod`, avec :
 - domaine `https://recette.aimezlanature.fr` ;
 - `SITE_RECETTE=1` (exécution) → `X-Robots-Tag: noindex` partout et `robots.txt` fermé ;
 - clés Stripe **test**, webhook Stripe **test** vers `https://recette.aimezlanature.fr/api/stripe-webhook` ;
-- `EMAIL_SITE_URL=https://recette.aimezlanature.fr` (liens des emails) ;
+- `SITE_URL=https://recette.aimezlanature.fr` (ou l'ancien nom `EMAIL_SITE_URL`) : adresse publique
+  du site, utilisée pour le retour après paiement Stripe et les liens des emails. En production,
+  ne rien mettre : `SITE.url` (réglages Sanity) s'applique ;
 - `CONTENU_BROUILLONS=1` (build) quand on veut **relire les brouillons** Sanity avant publication.
   Il faut alors aussi `RECETTE_UTILISATEUR` et `RECETTE_MOT_DE_PASSE` (exécution, 12 caractères
   minimum) : le site demande ces identifiants (HTTP Basic) sur toutes les pages, sinon il refuse

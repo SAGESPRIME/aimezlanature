@@ -39,3 +39,14 @@
 [2026-11-23] | Ma contre-épreuve du contrôle « mot collé » répondait 0 défaut : j'avais fait `git stash` pour revenir à l'ancien code… ce qui retirait AUSSI le contrôle que je voulais éprouver | Une contre-épreuve doit modifier la DONNÉE testée (injecter le défaut dans `dist/`), jamais l'outil de test. Et un « 0 défaut » en contre-épreuve est suspect par principe : il faut voir le contrôle échouer au moins une fois
 [2026-11-23] | Le test « www → domaine nu » de check-headers échouait alors que curl prouvait le 301 : `fetch` de Node ignore un en-tête `Host` forcé | Pour simuler un autre nom d'hôte, utiliser `node:http`/`node:https` (`headers: { host }`), pas `fetch`
 [2026-11-23] | Contre la recette Coolify, `check:ratelimit` sortait en échec (0 blocage en parallèle, IP falsifiées « passantes ») alors que la limite marchait : depuis l'environnement cloud de Claude, le proxy de sortie répartit les connexions SIMULTANÉES sur plusieurs IP, donc le serveur voyait des clients différents | Avant de conclure qu'une limite par IP est cassée, vérifier que le test sort par UNE seule IP : rejouer sur une seule connexion (curl HTTP/2 multiplexé, ou requêtes enchaînées sur une connexion keep-alive, `num_connects` à l'appui). Mesuré ainsi le 2026-11-23 : 10 passent / 20 bloqués en parallèle, et 10/10 requêtes à IP falsifiées bloquées. Depuis un poste normal (une seule IP), le script reste valable
+
+## 2026-11-24 — Ne pas écarter une piste d'audit sur la foi d'un test mal relu
+Un chasseur de l'audit a signalé que `url.origin` valait `http://localhost:4321` (Astro sans
+`security.allowedDomains`), donc que Stripe renverrait le client vers localhost après paiement.
+J'ai écarté la piste en citant une commande test « revenue sur la recette ». Faux : le test ne
+l'avait pas prouvé (le motif attendu n'avait pas été vérifié sur l'URL réelle). Le test suivant,
+qui journalisait chaque navigation, a montré `http://localhost:4321/commande-confirmee/…`.
+- Règle : pour contredire une piste, une observation qui ENREGISTRE la valeur (URL, en-tête,
+  log), pas un test dont on déduit la valeur.
+- Règle : aucune URL absolue construite depuis la requête (`url.origin`) ; utiliser
+  `src/lib/origine.ts`.

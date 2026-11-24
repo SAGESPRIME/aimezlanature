@@ -114,7 +114,7 @@ async function achatConfirme(email: string, nomProduit: string, cle: string): Pr
   }
 }
 
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request }) => {
   const veutJson = (request.headers.get('accept') ?? '').includes('application/json');
 
   const succes = () =>
@@ -122,7 +122,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       ? new Response(JSON.stringify({ ok: true }), {
           headers: { 'Content-Type': 'application/json' },
         })
-      : Response.redirect(new URL('/avis/merci/', url.origin), 303);
+      : new Response(null, { status: 303, headers: { Location: '/avis/merci/' } });
 
   const echec = (message: string, status: number) =>
     veutJson
