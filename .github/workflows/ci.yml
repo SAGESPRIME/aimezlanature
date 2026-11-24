@@ -26,6 +26,8 @@ jobs:
       - run: npm ci
       - name: Dépendances sans faille haute ou critique
         run: npm audit --omit=dev --audit-level=high
+      - name: Tests unitaires (IP de confiance, limiteur)
+        run: npm test
       - name: Types
         run: npm run check
       - name: Build

@@ -8,6 +8,15 @@ Branche `claude/busy-albattani-hdkhlq`. Tout ce qui suit est **fait et vérifié
 ce qui reste demande un accès que le code n'a pas (VPS, Sanity, DNS, Stripe) ou une décision du
 marchand.
 
+### Audit de sécurité du 2026-11-24 (skill Cloudflare `security-audit`, profil quick)
+Code source seulement (pas de bac à sable) : 0 faille confirmée, 6 pistes à valider, **toutes
+corrigées** dans la PR — corps de requête 256 Kio max, IP de confiance vérifiée (pair privé),
+limiteur IPv6 /64 + éviction, mot de passe obligatoire sur une recette avec brouillons, avis à
+réponse uniforme + produit vérifié, notification marchand non répétée. Détail : `SECURITY-NOTES.md`.
+- [ ] Prouver sur la recette : `check:ratelimit` (X-Real-IP falsifié), 413, port 4321 non publié.
+- [ ] Ré-audit ciblé (run-2) sur le diff.
+- [ ] Un mois après le jour J : refuser les sessions Stripe sans `metadata.source`.
+
 ### Fait (vérifié)
 - Astro 7.4.13, 0 vulnérabilité npm ; `astro check` 0 erreur ; CI GitHub Actions.
 - Vercel → **Coolify** : `server.mjs` + `Dockerfile` (non-root, healthcheck). Contre le conteneur :

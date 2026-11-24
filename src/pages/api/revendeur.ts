@@ -159,7 +159,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     // `replyTo` = le professionnel : le marchand répond directement
     // depuis sa boîte, sans recopier l'adresse.
     replyTo: donnees.email,
-    subject: `Demande revendeur — ${donnees.boutique}`,
+    // Jamais de retour à la ligne dans un sujet d'email.
+    subject: `Demande revendeur — ${donnees.boutique.replace(/[\r\n\t]+/g, ' ')}`,
     text: texte,
     html,
   });

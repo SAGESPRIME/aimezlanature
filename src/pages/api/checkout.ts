@@ -4,11 +4,14 @@ import type { APIRoute } from 'astro';
 import { products, SITE } from '../../data/products';
 import { unitPriceFor } from '../../lib/pricing';
 import { verifierLimite, reponseTropDAppels, PLAFONDS } from '../../lib/rateLimit';
+import { MARQUE_SESSION } from '../../lib/marque-stripe';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
 
 const MAX_QTY = 20;
+/** Lignes de panier au plus (le catalogue en compte moins ; Stripe plafonne à 100). */
+const MAX_LIGNES = 20;
 const PAYS_LIVRAISON = ['FR'] as const;
 
 /**
@@ -53,6 +56,13 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   const items = Array.isArray(body.items) ? body.items : [];
   if (items.length === 0) return json({ error: 'Votre panier est vide.' }, 400);
+  // Le panier du site envoie une ligne par produit. Des lignes en double ou en
+  // nombre déraisonnable ne viennent pas de lui : elles contourneraient le
+  // plafond de quantité par produit (audit du 2026-11-24).
+  if (items.length > MAX_LIGNES) return json({ error: 'Panier trop volumineux.' }, 400);
+  if (new Set(items.map((i) => i?.slug)).size !== items.length) {
+    return json({ error: 'Panier invalide.' }, 400);
+  }
 
   const lines: { name: string; short: string; unitAmount: number; qty: number }[] = [];
   let subtotal = 0;
@@ -84,6 +94,8 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   const form = new URLSearchParams();
   form.set('mode', 'payment');
+  // Marque relue par /api/stripe-webhook : « cette session vient du site ».
+  form.set('metadata[source]', MARQUE_SESSION);
   form.set('locale', 'fr');
   form.set('success_url', `${url.origin}/commande-confirmee/?session_id={CHECKOUT_SESSION_ID}`);
   form.set('cancel_url', `${url.origin}/panier/`);

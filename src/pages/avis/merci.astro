@@ -14,7 +14,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { EMAIL_AVIS } from '../../data/avis';
 
 const metaTitle = 'Avis envoyé | Aimez la Nature';
-const metaDescription = 'Votre avis a bien été transmis et sera publié après relecture.';
+const metaDescription = 'Votre avis a bien été reçu ; il sera publié après vérification de la commande et relecture.';
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
@@ -23,8 +23,13 @@ const metaDescription = 'Votre avis a bien été transmis et sera publié après
       <p class="mb-6 text-5xl" aria-hidden="true">🌿</p>
       <h1 class="font-display mb-5 text-4xl text-[#1A1A16] lg:text-5xl">Merci pour votre avis</h1>
       <p class="mb-8 text-lg leading-relaxed text-[#57534e]">
-        Votre commande a bien été vérifiée. Votre avis est maintenant en relecture et sera
-        publié sur la fiche produit sous quelques jours.
+        Si l'adresse email correspond à une commande de ce produit, votre avis est maintenant
+        en relecture et sera publié sur la fiche produit sous quelques jours.
+      </p>
+      <p class="mb-8 text-sm leading-relaxed text-[#57534e]">
+        Commande passée avec une autre adresse, ou en dehors du site ? Écrivez-nous à
+        <a href={`mailto:${EMAIL_AVIS}?subject=Mon%20avis`} class="font-semibold text-[#166534] underline">{EMAIL_AVIS}</a> :
+        nous vérifierons et publierons votre avis de la même façon.
       </p>
 
       <div class="mb-8 rounded-2xl border border-[#D4C9B8] bg-white p-6 text-left">
@@ -39,7 +44,7 @@ const metaDescription = 'Votre avis a bien été transmis et sera publié après
             personnelle serait retirée.
           </li>
           <li>
-            Votre email reste chez nous. Il a servi à vérifier votre commande, il n'apparaîtra
+            Votre email reste chez nous. Il sert à vérifier votre commande, il n'apparaîtra
             jamais sur le site.
           </li>
         </ul>

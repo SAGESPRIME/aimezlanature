@@ -33,6 +33,8 @@
  * qu'elle dure. Le risque est la disponibilité de la vente, pas le coût.
  */
 
+import { cleDeLimite } from '../data/ip-client.mjs';
+
 /** Fenêtre glissante simple : compteur + instant de réinitialisation. */
 interface Compteur {
   nb: number;
@@ -48,14 +50,26 @@ const compteurs = new Map<string, Compteur>();
  */
 const MAX_CLES = 5000;
 
-/** Retire les entrées expirées, et vide tout si le plafond est atteint. */
+/**
+ * Retire les entrées expirées ; si le plafond est encore dépassé, évince les
+ * plus ANCIENNES (une Map garde l'ordre d'insertion).
+ *
+ * Avant l'audit du 2026-11-24, on vidait TOUT au-delà du plafond : il suffisait
+ * de créer 5 001 clés pour remettre à zéro la limite de tout le monde, y
+ * compris celle d'un appelant déjà bloqué. L'éviction ne touche que les
+ * compteurs les plus vieux, et on libère 10 % d'un coup pour ne pas refaire ce
+ * travail à chaque appel.
+ */
 function nettoyer(maintenant: number): void {
   for (const [cle, c] of compteurs) {
     if (c.reinitialiseA <= maintenant) compteurs.delete(cle);
   }
-  // Toujours au-dessus du plafond après nettoyage : on repart de zéro plutôt
-  // que de grossir indéfiniment. Fail-open assumé, cf. en-tête du fichier.
-  if (compteurs.size > MAX_CLES) compteurs.clear();
+  if (compteurs.size <= MAX_CLES) return;
+  let aRetirer = compteurs.size - Math.floor(MAX_CLES * 0.9);
+  for (const cle of compteurs.keys()) {
+    if (aRetirer-- <= 0) break;
+    compteurs.delete(cle);
+  }
 }
 
 /**
@@ -69,12 +83,15 @@ function nettoyer(maintenant: number): void {
  * attaquant n'aurait qu'à changer de valeur à chaque appel pour échapper à la
  * limite. Contrôle : `npm run check:ratelimit` (rafale à IP falsifiées).
  *
- * Une IP absente renvoie `null` : l'appelant n'est pas identifiable, on ne
- * peut pas compter, on laisse passer (fail-open).
+ * Clé de comptage : l'IPv4 telle quelle, l'IPv6 réduite à son /64 (voir
+ * src/data/ip-client.mjs). Une IP ABSENTE — ce qui n'arrive plus derrière
+ * server.mjs, qui retombe sur l'adresse de la connexion — est comptée dans un
+ * compteur commun « inconnue » : avant l'audit du 2026-11-24, elle laissait
+ * tout passer, sans limite.
  */
-function ipDe(request: Request): string | null {
+function cleAppelant(request: Request): string {
   const ip = request.headers.get('x-aln-client-ip')?.trim();
-  return ip && ip.length > 0 ? ip : null;
+  return ip ? cleDeLimite(ip) : 'inconnue';
 }
 
 export interface Verdict {
@@ -101,13 +118,10 @@ export function verifierLimite(
   fenetreS: number
 ): Verdict {
   try {
-    const ip = ipDe(request);
-    if (!ip) return { autorise: true, attendreS: 0 };
-
     const maintenant = Date.now();
     nettoyer(maintenant);
 
-    const cle = `${nom}:${ip}`;
+    const cle = `${nom}:${cleAppelant(request)}`;
     const actuel = compteurs.get(cle);
 
     if (!actuel || actuel.reinitialiseA <= maintenant) {

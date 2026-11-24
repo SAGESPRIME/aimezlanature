@@ -33,8 +33,14 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Reconstruction non configurée.' }, 503);
   }
 
-  // Corps BRUT : la signature porte sur ces octets exacts.
-  const corps = await request.text();
+  // Corps BRUT : la signature porte sur ces octets exacts. La lecture échoue
+  // au-delà de `bodySizeLimit` (astro.config.mjs).
+  let corps: string;
+  try {
+    corps = await request.text();
+  } catch {
+    return json({ error: 'Requête trop volumineuse.' }, 413);
+  }
   const signature = request.headers.get(SIGNATURE_HEADER_NAME) ?? '';
   const horodatage = Number(signature.match(/^t=(\d+)/)?.[1]);
 

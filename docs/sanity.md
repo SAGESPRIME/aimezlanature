@@ -107,8 +107,10 @@ AI Assist) : rien ne disparaît à sa fin.
 
 Les articles réécrits sont des **brouillons** : la version en ligne ne change pas tant qu'ils ne
 sont pas publiés. Pour les voir dans le vrai site, construire la recette avec
-`CONTENU_BROUILLONS=1`, relire sur `recette.aimezlanature.fr`, puis publier dans le Studio chaque
-article validé. La production refuse un build fait avec les brouillons.
+`CONTENU_BROUILLONS=1` **et** les identifiants `RECETTE_UTILISATEUR` / `RECETTE_MOT_DE_PASSE`
+(la recette demande alors un mot de passe sur toutes ses pages), relire sur
+`recette.aimezlanature.fr`, puis publier dans le Studio chaque article validé. La production
+refuse un build fait avec les brouillons, sans dérogation possible.
 
 Ce qui a changé dans ces brouillons, et pourquoi :
 [`scripts/migration-sanity/brouillons-articles.mjs`](../scripts/migration-sanity/brouillons-articles.mjs)

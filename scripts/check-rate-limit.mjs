@@ -16,8 +16,12 @@
  * Depuis la migration sur le VPS (un seul processus Node), le limiteur
  * applicatif voit toute la rafale : ce script doit passer au VERT sur la recette
  * Coolify. Il rejoue aussi une rafale où chaque appel annonce une IP différente
- * dans `X-Forwarded-For` : elle doit être freinée de la même façon, sinon un
- * attaquant contournerait la limite en mentant sur son adresse.
+ * dans `X-Forwarded-For`, `X-Real-IP` ET `CF-Connecting-IP` : elle doit être
+ * freinée de la même façon, sinon un attaquant contournerait la limite en
+ * mentant sur son adresse. `X-Real-IP` est l'en-tête que le serveur CROIT
+ * derrière Traefik : jusqu'à l'audit du 2026-11-24, le script ne falsifiait
+ * que `X-Forwarded-For`, et n'aurait pas vu un proxy qui laisse passer la
+ * valeur envoyée par le client.
  *
  * ⚠️ Lancer depuis une machine qui sort par UNE seule IP (poste, CI). Derrière
  * un proxy qui répartit les connexions simultanées sur plusieurs IP (ex.
@@ -73,14 +77,18 @@ async function corpsDEssai() {
 /**
  * Un appel à /api/checkout.
  * @param {string} corps
- * @param {string} [ipMensongere] valeur de X-Forwarded-For à annoncer
+ * @param {string} [ipMensongere] IP à annoncer dans tous les en-têtes d'IP usuels
  * @returns {Promise<{code: number, live: boolean, retryAfter: string}>}
  */
 async function appel(corps, ipMensongere = '') {
   try {
     /** @type {Record<string, string>} */
     const entetes = { 'Content-Type': 'application/json', Origin: BASE };
-    if (ipMensongere) entetes['X-Forwarded-For'] = ipMensongere;
+    if (ipMensongere) {
+      entetes['X-Forwarded-For'] = ipMensongere;
+      entetes['X-Real-IP'] = ipMensongere;
+      entetes['CF-Connecting-IP'] = ipMensongere;
+    }
     const res = await fetch(BASE + CHEMIN, {
       method: 'POST',
       headers: entetes,
@@ -148,7 +156,7 @@ await new Promise((r) => setTimeout(r, 65_000));
 const falsifiees = await Promise.all(
   Array.from({ length: N }, (_, i) => appel(corps, `203.0.113.${i + 1}`))
 );
-const rF = resume(`RAFALE PARALLÈLE, X-Forwarded-For falsifié à chaque appel`, falsifiees);
+const rF = resume(`RAFALE PARALLÈLE, X-Forwarded-For / X-Real-IP / CF-Connecting-IP falsifiés`, falsifiees);
 
 console.log(`\n═══ VERDICT ═══`);
 console.log(`  parallèle          : ${rP.passes} passés / ${rP.bloques} bloqués`);

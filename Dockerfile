@@ -53,7 +53,7 @@ COPY --from=build --chown=node:node /app/package.json ./
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/server.mjs ./
-COPY --from=build --chown=node:node /app/src/data/securite.mjs /app/src/data/redirections.mjs /app/src/data/redirections.json ./src/data/
+COPY --from=build --chown=node:node /app/src/data/securite.mjs /app/src/data/redirections.mjs /app/src/data/ip-client.mjs /app/src/data/redirections.json ./src/data/
 
 # Jamais root dans le conteneur.
 USER node

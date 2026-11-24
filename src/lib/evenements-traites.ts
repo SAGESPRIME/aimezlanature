@@ -58,3 +58,28 @@ export function marquerFait(id: string, maintenant = Date.now()): void {
 export function liberer(id: string): void {
   memoire.delete(id);
 }
+
+/**
+ * Étapes déjà accomplies pour une commande, qui SURVIVENT à `liberer()`.
+ *
+ * Pourquoi : quand l'email au client échoue, l'événement est libéré et Stripe
+ * le rejoue — mais la notification au marchand, elle, était déjà partie. Sans
+ * cette mémoire, le marchand la recevait à CHAQUE rejeu, pendant jusqu'à trois
+ * jours (observé le 2026-11-23 sur la recette, relevé par l'audit du
+ * 2026-11-24). Même durée et même plafond que les événements.
+ */
+const etapes = new Map<string, number>();
+
+export function etapeFaite(cle: string, maintenant = Date.now()): boolean {
+  const depuis = etapes.get(cle);
+  return depuis !== undefined && maintenant - depuis <= DUREE_MS;
+}
+
+export function noterEtape(cle: string, maintenant = Date.now()): void {
+  etapes.set(cle, maintenant);
+  while (etapes.size > MAX_ENTREES) {
+    const plusAncienne = etapes.keys().next().value;
+    if (plusAncienne === undefined) break;
+    etapes.delete(plusAncienne);
+  }
+}

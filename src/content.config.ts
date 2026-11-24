@@ -25,10 +25,25 @@ const metaTitle = z.string().min(10).max(regles.metaTitleMax);
 const metaDescription = z.string().min(regles.metaDescriptionMin).max(regles.metaDescriptionMax);
 
 /** Image : URL Sanity (avec dimensions) OU fichier local du seed. Alt obligatoire. */
+/**
+ * Adresses rendues en lien sur le site : HTTPS uniquement. Le Studio impose
+ * déjà cette règle, mais une écriture directe par l'API Sanity la contourne :
+ * on la revérifie au build, qui échoue plutôt que de publier un lien
+ * `javascript:` (audit du 2026-11-24 ; la CSP reste la seconde barrière).
+ */
+const urlHttps = z.url({ protocol: /^https$/ });
+
+/** Lien d'un texte riche : https, mailto ou chemin interne (« /… », pas « //… »). */
+const lienTexte = z
+  .string()
+  .refine((h) => /^(https:\/\/|mailto:|\/(?!\/)|#)/i.test(h.trim()), {
+    message: 'Lien refusé : seuls https://, mailto: et les chemins internes sont autorisés.',
+  });
+
 const image = z
   .object({
     alt: z.string().min(5),
-    url: z.url().nullish(),
+    url: urlHttps.nullish(),
     largeur: z.number().int().positive().nullish(),
     hauteur: z.number().int().positive().nullish(),
     fichier: z.string().nullish(),
@@ -84,7 +99,7 @@ const blocTexte = z
     style: z.enum(['normal', 'h3']).optional(),
     listItem: z.enum(['bullet', 'number']).optional(),
     level: z.number().optional(),
-    markDefs: z.array(z.object({ _key: z.string(), _type: z.string(), href: z.string().optional() })).optional(),
+    markDefs: z.array(z.object({ _key: z.string(), _type: z.string(), href: lienTexte.optional() })).optional(),
     children: z.array(z.object({ _type: z.string(), text: z.string().optional(), marks: z.array(z.string()).optional() })).optional(),
   });
 
@@ -92,7 +107,7 @@ const auteur = z.object({
   nom: z.string(),
   role: z.string(),
   bio: z.string(),
-  liens: z.array(z.url()).nullish(),
+  liens: z.array(urlHttps).nullish(),
   photo: image.nullish(),
 });
 
@@ -111,7 +126,7 @@ const articles = defineCollection({
     reponseCourte: z.string().max(regles.reponseCourteMax).nullish(),
     sections: z.array(z.object({ titre: z.string().min(3), contenu: z.array(blocTexte).min(1) })).min(1),
     faq: z.array(questionReponse).nullish(),
-    sources: z.array(z.object({ titre: z.string(), editeur: z.string(), url: z.url() })).nullish(),
+    sources: z.array(z.object({ titre: z.string(), editeur: z.string(), url: urlHttps })).nullish(),
     auteur: auteur.nullish(),
     image: image.nullish(),
     metaTitle,
@@ -138,14 +153,14 @@ const reglages = defineCollection({
   },
   schema: z.object({
     nom: z.string(),
-    url: z.url(),
+    url: urlHttps,
     description: z.string(),
     fraisDePort: z.number().min(0).max(50),
     seuilLivraisonOfferte: z.number().min(0).max(regles.prixMax),
     noteGlobale: z.number().min(regles.noteMin).max(regles.noteMax),
     anneeCreation: z.number().int(),
-    profils: z.array(z.url()).nullish(),
-    amazon: z.object({ note: z.number().min(1).max(5), nbCommentaires: z.number().int().min(0), url: z.url() }),
+    profils: z.array(urlHttps).nullish(),
+    amazon: z.object({ note: z.number().min(1).max(5), nbCommentaires: z.number().int().min(0), url: urlHttps }),
   }),
 });
 

@@ -62,7 +62,12 @@ export default defineConfig({
   // /api/avis, /api/revendeur, /api/stripe-webhook) ; server.mjs s'occupe du
   // reste (fichiers statiques, redirections, en-têtes de sécurité).
   // Les images sont optimisées au build par sharp.
-  adapter: node({ mode: 'middleware' }),
+  // bodySizeLimit : 256 Kio au lieu de 1 Gio par défaut. Les corps légitimes font
+  // quelques Kio ; un corps énorme était lu en mémoire avant même la
+  // vérification de signature des webhooks (audit du 2026-11-24). server.mjs
+  // refuse déjà en 413 tout Content-Length supérieur ; cette limite couvre les
+  // envois sans longueur annoncée.
+  adapter: node({ mode: 'middleware', bodySizeLimit: 256 * 1024 }),
   build: {
     // CSS toujours en fichier externe (jamais inliné dans un <style>) :
     // condition nécessaire à la CSP stricte `style-src 'self'` (src/data/securite.mjs).

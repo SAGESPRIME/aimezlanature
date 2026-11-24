@@ -89,7 +89,11 @@ Comme `site-prod`, avec :
 - `SITE_RECETTE=1` (exécution) → `X-Robots-Tag: noindex` partout et `robots.txt` fermé ;
 - clés Stripe **test**, webhook Stripe **test** vers `https://recette.aimezlanature.fr/api/stripe-webhook` ;
 - `EMAIL_SITE_URL=https://recette.aimezlanature.fr` (liens des emails) ;
-- `CONTENU_BROUILLONS=1` (build) quand on veut **relire les brouillons** Sanity avant publication ;
+- `CONTENU_BROUILLONS=1` (build) quand on veut **relire les brouillons** Sanity avant publication.
+  Il faut alors aussi `RECETTE_UTILISATEUR` et `RECETTE_MOT_DE_PASSE` (exécution, 12 caractères
+  minimum) : le site demande ces identifiants (HTTP Basic) sur toutes les pages, sinon il refuse
+  de démarrer. `noindex` empêche l'indexation, pas la lecture : sans mot de passe, n'importe qui
+  lirait les brouillons ;
 - `CONTENU_SOURCE=seed` (build) tant que le projet Sanity n'existe pas encore.
 
 ## 4. Application `studio`
@@ -151,8 +155,10 @@ npm run check:headers -- https://recette.aimezlanature.fr --recette
 npm run check:ratelimit -- https://recette.aimezlanature.fr
 ```
 
-Les trois doivent passer au vert. `check:ratelimit` rejoue aussi une rafale à **IP falsifiées** :
-elle prouve que Traefik pose bien `X-Real-IP` et ne laisse pas passer un `X-Forwarded-For` inventé.
+Les trois doivent passer au vert. `check:ratelimit` rejoue aussi une rafale à **IP falsifiées**
+(`X-Forwarded-For`, `X-Real-IP` et `CF-Connecting-IP` inventés à chaque appel) : elle prouve que
+Traefik pose lui-même `X-Real-IP`. Le serveur ne croit d'ailleurs cet en-tête que si la connexion
+vient du réseau Docker (adresse privée) : ne **jamais** publier le port 4321 sur l'hôte.
 
 ## 9. Jour J
 

@@ -26,14 +26,20 @@
  *   CLIENT_IP_HEADER  d'où lire l'IP réelle du client (voir plus bas) :
  *                     x-real-ip (défaut, Traefik), cf-connecting-ip (Cloudflare)
  *                     ou socket (aucun proxy : développement, CI)
+ *   RECETTE_UTILISATEUR / RECETTE_MOT_DE_PASSE
+ *                     identifiants exigés (HTTP Basic) quand le build contient
+ *                     des BROUILLONS Sanity (CONTENU_BROUILLONS=1) ; sans eux,
+ *                     un tel build refuse de démarrer
  */
 import express from 'express';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { ENTETES_SECURITE } from './src/data/securite.mjs';
 import { chargerRegles, creerResolveur } from './src/data/redirections.mjs';
+import { ipClient } from './src/data/ip-client.mjs';
 
 const ICI = fileURLToPath(new URL('.', import.meta.url));
 const CLIENT = join(ICI, 'dist', 'client');
@@ -55,6 +61,19 @@ const SOURCE_IP = (process.env.CLIENT_IP_HEADER ?? 'x-real-ip').toLowerCase();
  */
 export const ENTETE_IP_CLIENT = 'x-aln-client-ip';
 
+/**
+ * Taille maximale d'un corps de requête sur les routes /api/*. Les vrais corps
+ * font quelques Kio (événement Stripe, webhook Sanity, formulaires) ; sans
+ * plafond, l'adaptateur Astro acceptait 1 Gio, lu EN MÉMOIRE avant même la
+ * vérification de signature des webhooks (audit du 2026-11-24). Même valeur
+ * que `bodySizeLimit` dans astro.config.mjs, qui couvre les envois sans
+ * Content-Length (chunked).
+ */
+const CORPS_MAX = 256 * 1024;
+
+/** Domaine canonique : seule cible de la redirection www. */
+const DOMAINE = 'aimezlanature.fr';
+
 // Le handler Astro est construit au build (adaptateur @astrojs/node, mode
 // « middleware ») : il ne sert que les routes à la demande.
 const { handler: astro } = await import('./dist/server/entry.mjs');
@@ -73,18 +92,54 @@ if (!RECETTE) {
   }
 }
 
+// Origine du contenu de ce build, écrite par astro.config.mjs :
+// « sanity », « seed », suivie de « +brouillons » si CONTENU_BROUILLONS=1.
+let SOURCE_CONTENU = 'inconnue';
+try {
+  SOURCE_CONTENU = readFileSync(join(ICI, 'dist', 'source-contenu.txt'), 'utf8').trim();
+} catch {
+  // Fichier absent : build trop ancien. Les gardes ci-dessous refusent la prod.
+}
+const BROUILLONS = SOURCE_CONTENU.includes('+brouillons');
+
+// Garde-fou : des brouillons ne sont JAMAIS servis en production — sans
+// dérogation possible, AUTORISER_SEED compris (avant l'audit du 2026-11-24,
+// cette variable désactivait aussi ce refus).
+if (!RECETTE && BROUILLONS) {
+  console.error(
+    '⛔ Démarrage refusé : ce build contient des BROUILLONS Sanity (CONTENU_BROUILLONS=1).\n' +
+      '   Réservé à la recette (SITE_RECETTE=1). Reconstruire sans CONTENU_BROUILLONS.'
+  );
+  process.exit(1);
+}
+
 // Garde-fou : la production n'est jamais servie depuis le seed de développement
 // (contenu/seed.ndjson), sauf dérogation explicite AUTORISER_SEED=1.
-if (!RECETTE && process.env.AUTORISER_SEED !== '1') {
-  const source = readFileSync(join(ICI, 'dist', 'source-contenu.txt'), 'utf8').trim();
-  if (source !== 'sanity') {
-    console.error(
-      `⛔ Démarrage refusé : ce build a été fait avec le contenu « ${source} », pas avec Sanity.\n` +
-        '   Renseigner SANITY_PROJECT_ID / SANITY_READ_TOKEN (variables de build) et reconstruire.'
-    );
-    process.exit(1);
-  }
+if (!RECETTE && process.env.AUTORISER_SEED !== '1' && SOURCE_CONTENU !== 'sanity') {
+  console.error(
+    `⛔ Démarrage refusé : ce build a été fait avec le contenu « ${SOURCE_CONTENU} », pas avec Sanity.\n` +
+      '   Renseigner SANITY_PROJECT_ID / SANITY_READ_TOKEN (variables de build) et reconstruire.'
+  );
+  process.exit(1);
 }
+
+// Garde-fou : une recette qui montre des brouillons est protégée par un mot de
+// passe. « noindex » empêche seulement l'indexation, pas la lecture : sans
+// cela, n'importe quel visiteur lirait les contenus non publiés (audit du
+// 2026-11-24). Pas d'identifiants → pas de démarrage.
+const IDENTIFIANTS_RECETTE = BROUILLONS
+  ? { u: process.env.RECETTE_UTILISATEUR ?? '', m: process.env.RECETTE_MOT_DE_PASSE ?? '' }
+  : null;
+if (IDENTIFIANTS_RECETTE && (!IDENTIFIANTS_RECETTE.u || IDENTIFIANTS_RECETTE.m.length < 12)) {
+  console.error(
+    '⛔ Démarrage refusé : build avec brouillons, mais RECETTE_UTILISATEUR / RECETTE_MOT_DE_PASSE\n' +
+      '   (12 caractères minimum) ne sont pas définis. Les brouillons ne sont jamais servis sans mot de passe.'
+  );
+  process.exit(1);
+}
+
+/** Empreinte de longueur fixe, pour comparer en temps constant. */
+const empreinte = (/** @type {string} */ t) => createHash('sha256').update(t).digest();
 
 const resoudreRedirection = creerResolveur(chargerRegles());
 const app = express();
@@ -113,12 +168,34 @@ app.use((_req, res, next) => {
 // ⚠️ On ne lit JAMAIS la première entrée de `x-forwarded-for` : derrière
 // Traefik, c'est le client qui l'écrit. Sur Vercel c'était sûr (la plateforme
 // réécrit l'en-tête), sur un VPS ça ne l'est plus.
+//
+// L'en-tête choisi (CLIENT_IP_HEADER) n'est cru que si la connexion vient d'une
+// adresse PRIVÉE — Traefik, dans le réseau Docker. Une connexion qui arrive
+// d'Internet sans passer par le proxy est comptée sous sa propre adresse :
+// elle ne peut plus choisir son IP (src/data/ip-client.mjs, audit 2026-11-24).
+let pairPublicSignale = false;
 app.use((req, _res, next) => {
   delete req.headers[ENTETE_IP_CLIENT];
-  const brut = SOURCE_IP === 'socket' ? req.socket.remoteAddress : req.headers[SOURCE_IP];
-  // Si un proxy y concatène plusieurs adresses, la DERNIÈRE est celle qu'il a vue.
-  const ip = String(Array.isArray(brut) ? brut.at(-1) : brut ?? '').split(',').pop()?.trim();
+  const pair = req.socket.remoteAddress;
+  const ip = ipClient({ source: SOURCE_IP, enTete: req.headers[SOURCE_IP], pair });
   if (ip) req.headers[ENTETE_IP_CLIENT] = ip;
+  if (!pairPublicSignale && SOURCE_IP !== 'socket' && ip === pair && req.headers[SOURCE_IP]) {
+    // Une seule fois : utile pour repérer un port publié qui contourne Traefik.
+    pairPublicSignale = true;
+    console.warn(`⚠️ Requête reçue sans passer par le proxy (pair ${pair}) : ${SOURCE_IP} ignoré.`);
+  }
+  next();
+});
+
+// ── Corps de requête bornés ──────────────────────────────────────────────
+// Refus immédiat (413) d'un corps annoncé trop gros, AVANT toute lecture. Les
+// envois sans Content-Length sont coupés par l'adaptateur (bodySizeLimit).
+app.use((req, res, next) => {
+  const annonce = Number(req.headers['content-length'] ?? 0);
+  if (req.path.startsWith('/api/') && annonce > CORPS_MAX) {
+    res.setHeader('Connection', 'close');
+    return res.status(413).json({ error: 'Requête trop volumineuse.' });
+  }
   next();
 });
 
@@ -128,11 +205,28 @@ app.get('/api/sante', (_req, res) => {
   res.json({ ok: true, commit: process.env.SOURCE_COMMIT ?? null });
 });
 
+// ── Recette avec brouillons : mot de passe ───────────────────────────────
+// Exemptés : la santé (contrôle Coolify) et les deux webhooks, qui ont leur
+// propre signature et ne livrent aucun contenu.
+if (IDENTIFIANTS_RECETTE) {
+  const attendu = empreinte(`${IDENTIFIANTS_RECETTE.u}:${IDENTIFIANTS_RECETTE.m}`);
+  const LIBRES = new Set(['/api/stripe-webhook', '/api/reconstruction']);
+  app.use((req, res, next) => {
+    if (LIBRES.has(req.path)) return next();
+    const [type, valeur] = (req.headers.authorization ?? '').split(' ');
+    const recu = type === 'Basic' && valeur ? Buffer.from(valeur, 'base64').toString('utf8') : '';
+    if (recu && timingSafeEqual(empreinte(recu), attendu)) return next();
+    res.setHeader('WWW-Authenticate', 'Basic realm="Recette Aimez la Nature", charset="UTF-8"');
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(401).type('text/plain').send('Recette protégée : identifiants requis.');
+  });
+}
+
 // ── 2. www → domaine nu ──────────────────────────────────────────────────
+// Cible FIXE : jamais l'en-tête Host renvoyé tel quel (audit du 2026-11-24).
 app.use((req, res, next) => {
-  const hote = req.headers.host ?? '';
-  if (hote.startsWith('www.')) {
-    return res.redirect(301, `https://${hote.slice(4)}${req.originalUrl}`);
+  if ((req.headers.host ?? '').toLowerCase() === `www.${DOMAINE}`) {
+    return res.redirect(301, `https://${DOMAINE}${req.originalUrl}`);
   }
   next();
 });
