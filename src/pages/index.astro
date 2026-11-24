@@ -7,6 +7,7 @@ import Irritants from '../components/Irritants.astro';
 import { SITE, getProduct, prixDEntree } from '../data/products';
 import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
+import { conditionsPro } from '../data/revendeur';
 import CarteProduit from '../components/CarteProduit.astro';
 import { photoSite, cadrage, formatPhoto } from '../data/photosSite';
 import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
@@ -318,6 +319,38 @@ const note = (n: number) => n.toString().replace('.', ',');
           </article>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       REVENDEURS — magasins bio et vendeurs professionnels
+       (conditions lues dans src/data/revendeur.ts, jamais recopiées)
+  ══════════════════════════════════ -->
+  <section class="py-20 lg:py-28 px-4 sm:px-6 bg-nuit text-anis-pale" aria-labelledby="revendeurs-titre">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-start">
+      <div>
+        <p class="text-sm text-anis mb-4">Magasins bio et vendeurs professionnels</p>
+        <h2 id="revendeurs-titre" class="font-display text-4xl lg:text-5xl leading-[1.08] text-anis-pale mb-6 text-balance">
+          Devenez revendeur de notre marque
+        </h2>
+        <p class="text-brume text-lg leading-relaxed max-w-[52ch] mb-8">
+          Boutiques bio, épiceries vrac, praticiens, revendeurs en ligne : remplissez le formulaire
+          de candidature. Une fois votre activité vérifiée, vous recevez votre accès et commandez
+          au tarif professionnel.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="/revendeurs/#demande-titre" class="bouton bouton-anis">Remplir le formulaire de candidature</a>
+          <a href="/pro/connexion/" class="bouton bouton-contour-clair">Déjà validé : mon espace</a>
+        </div>
+      </div>
+      <ul class="list-none m-0 p-0 border-t border-anis/25">
+        {conditionsPro.map((c) => (
+          <li class="border-b border-anis/25 py-6">
+            <p class="font-display text-2xl text-anis-pale mb-1">{c.titre}</p>
+            <p class="text-brume leading-relaxed">{c.texte}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
