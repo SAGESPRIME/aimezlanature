@@ -197,23 +197,50 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
+  void traiterAvis({ donnees, produit, note }, cleStripe).catch((e) =>
+    console.error('Avis : échec inattendu du traitement en arrière-plan', e)
+  );
+  return succes();
+};
+
+/** Données d'un avis validé, pour la vérification en arrière-plan. */
+interface AvisValide {
+  donnees: { titre: string; texte: string; auteur: string; email: string };
+  produit: { name: string; slug: string; shortName: string };
+  note: number;
+}
+
+/**
+ * Vérifie l'achat chez Stripe, puis notifie le marchand — APRÈS la réponse
+ * au visiteur.
+ *
+ * ⚠️ POURQUOI EN ARRIÈRE-PLAN. Tout ce qui dépend de l'email saisi doit
+ * rester invisible pour celui qui envoie le formulaire, sinon n'importe qui
+ * peut savoir si une personne est cliente :
+ *   - audit du 2026-11-24 : un 403 « aucune commande payée pour cet email » ;
+ *   - ré-audit, même jour : un 502/503 quand l'email marchand échouait (cas
+ *     réservé aux clients), puis le TEMPS de réponse, qui incluait la
+ *     recherche Stripe (plus lente quand l'email a des commandes).
+ * La réponse part donc dès que le formulaire est valide, toujours la même.
+ * Le serveur est un processus Node durable : ce travail aboutit après la
+ * réponse. Tout échec laisse l'avis au journal (sans l'email du client),
+ * pour être recopié à la main.
+ */
+async function traiterAvis({ donnees, produit, note }: AvisValide, cleStripe: string): Promise<void> {
+  const aRecopier = () =>
+    JSON.stringify({ produit: produit.slug, note, titre: donnees.titre, texte: donnees.texte, auteur: donnees.auteur });
   const verifie = await achatConfirme(donnees.email, produit.name, cleStripe);
   if (verifie === null) {
-    // Panne de Stripe : ne dépend pas de l'email saisi, ne révèle donc rien.
-    return echec(
-      "Nous n'avons pas pu vérifier votre commande pour le moment. Réessayez dans quelques minutes.",
-      503
-    );
+    // Stripe indisponible : l'avis n'est pas perdu, il reste au journal.
+    console.error('Avis NON vérifié (Stripe indisponible) — à traiter à la main :', aRecopier());
+    return;
   }
-  // ⚠️ MÊME RÉPONSE que l'achat soit vérifié ou non. Avant l'audit du
-  // 2026-11-24, un 403 « aucune commande payée pour cet email » permettait à
-  // n'importe qui de savoir si une personne était cliente. Un avis non vérifié
-  // n'est simplement pas transmis ; la page de remerciement invite le client
-  // qui s'est trompé d'adresse à écrire au marchand. Le journal ne garde pas
-  // l'email (donnée personnelle).
+  // Un avis non vérifié n'est simplement pas transmis ; la page de
+  // remerciement invite le client qui s'est trompé d'adresse à écrire au
+  // marchand. Le journal ne garde pas l'email (donnée personnelle).
   if (verifie !== 'produit') {
     console.log(`Avis non transmis (${verifie}) pour le produit ${produit.slug}.`);
-    return succes();
+    return;
   }
 
   // ── Notification du marchand ───────────────────────────────────────────
@@ -254,14 +281,7 @@ export const POST: APIRoute = async ({ request }) => {
       .join('')}</table>` +
     `<p><strong>Si vous publiez cet avis</strong> : ${echapperHtml(consigne)}</p>`;
 
-  // Envoi EN ARRIÈRE-PLAN, et même réponse quoi qu'il arrive. Attendre l'envoi
-  // puis répondre 502/503 en cas d'échec ne pouvait se produire que pour un
-  // email ayant acheté le produit : pendant une panne d'Emailit, un inconnu
-  // savait donc qui est client — et le temps de réponse le trahissait aussi
-  // (ré-audit du 2026-11-24). Le serveur est un processus Node durable : la
-  // promesse aboutit après la réponse. En cas d'échec, l'avis reste dans le
-  // journal (sans l'email du client) pour être recopié à la main.
-  void envoyerEmail({
+  const envoi = await envoyerEmail({
     to: EMAIL_AVIS,
     // `replyTo` = le client : le marchand peut lui répondre directement,
     // par exemple pour un avis négatif à traiter avant publication.
@@ -269,16 +289,8 @@ export const POST: APIRoute = async ({ request }) => {
     subject: `Avis ${note}/5 à modérer — ${produit.shortName}`,
     text: texte,
     html,
-  })
-    .then((envoi) => {
-      if (!envoi.ok) {
-        console.error(
-          `Avis vérifié NON transmis au marchand (${envoi.raison}) — à recopier :`,
-          JSON.stringify({ produit: produit.slug, note, titre: donnees.titre, texte: donnees.texte, auteur: donnees.auteur, date: aujourdhui })
-        );
-      }
-    })
-    .catch((e) => console.error('Avis : échec inattendu de la notification marchand', e));
-
-  return succes();
-};
+  });
+  if (!envoi.ok) {
+    console.error(`Avis vérifié NON transmis au marchand (${envoi.raison}) — à recopier :`, aRecopier());
+  }
+}
