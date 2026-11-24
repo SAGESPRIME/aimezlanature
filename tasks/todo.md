@@ -13,8 +13,18 @@ Code source seulement (pas de bac à sable) : 0 faille confirmée, 6 pistes à v
 corrigées** dans la PR — corps de requête 256 Kio max, IP de confiance vérifiée (pair privé),
 limiteur IPv6 /64 + éviction, mot de passe obligatoire sur une recette avec brouillons, avis à
 réponse uniforme + produit vérifié, notification marchand non répétée. Détail : `SECURITY-NOTES.md`.
-- [ ] Prouver sur la recette : `check:ratelimit` (X-Real-IP falsifié), 413, port 4321 non publié.
-- [ ] Ré-audit ciblé (run-2) sur le diff.
+- [x] Prouvé sur la recette (2026-11-24) : rafale à X-Real-IP/XFF/CF-Connecting-IP falsifiés →
+      10 passent / 20 en 429 ; 300 Kio → 413 (avec et sans longueur) ; port 4321 non publié ;
+      retour Stripe sur la recette (et non plus localhost) ; avis : même réponse client/inconnu.
+- [x] Emailit : espace vérifié → commande test complète, confirmation client envoyée (2026-11-24).
+- [x] `SITE_RECETTE` était désactivée dans Coolify (ni runtime ni build) : recette indexable
+      quelques heures ; rétablie en runtime, `noindex` vérifié.
+- [x] `RECETTE_UTILISATEUR` / `RECETTE_MOT_DE_PASSE` posés sur site-recette (mot de passe visible
+      dans Coolify) — requis pour le build de relecture des brouillons.
+- [ ] Anciens navigateurs sans `Sec-Fetch-Site` (Safari < 16.4) : 403 sur les formulaires avis /
+      revendeur, car `url.origin` vaut localhost. Correctif : `security.allowedDomains` (domaines
+      prod + recette) dans astro.config.mjs — à tester sur la recette avant la prod.
+- [x] Ré-audit ciblé (run-2) — voir son rapport.
 - [ ] Un mois après le jour J : refuser les sessions Stripe sans `metadata.source`.
 
 ### Fait (vérifié)
