@@ -14,7 +14,7 @@ import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../
 
 const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Nature';
 const metaDescription =
-  `Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. ${SITE.totalReviews} avis vérifiés, livraison offerte dès ${SITE.freeShippingThreshold}€, garantie 30 jours. Zéro plastique.`;
+  `Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. ${SITE.totalReviews} avis vérifiés, livraison offerte dès ${SITE.seuilLivraisonTexte} €, garantie 30 jours. Zéro plastique.`;
 
 const organizationSchema = buildOrganizationSchema();
 const websiteSchema = buildWebSiteSchema();
@@ -150,7 +150,7 @@ const note = (n: number) => n.toString().replace('.', ',');
         <div>
           <dt class="sr-only">Livraison</dt>
           <dd class="font-display text-2xl sm:text-3xl text-encre leading-none">Offerte</dd>
-          <dd class="text-xs sm:text-sm text-gris mt-2">livraison dès {SITE.freeShippingThreshold} €</dd>
+          <dd class="text-xs sm:text-sm text-gris mt-2">livraison dès {SITE.seuilLivraisonTexte} €</dd>
         </div>
         <div>
           <dt class="sr-only">Garantie</dt>

@@ -77,8 +77,8 @@ export function photoSite(
   const p = saisie(cle);
   // Dimensions fournies par Sanity : Astro n'a pas à télécharger l'image une
   // fois de plus juste pour les mesurer.
-  if (p?.largeur && p.hauteur) return { src: p.url, width: p.largeur, height: p.hauteur, alt: p.alt };
-  if (p) return { src: p.url, inferSize: true, alt: p.alt };
+  if (p?.largeur && p.hauteur) return { src: p.url, width: p.largeur, height: p.hauteur, alt: p.alt.trim() };
+  if (p) return { src: p.url, inferSize: true, alt: p.alt.trim() };
   const s = SECOURS[cle];
   return { src: s.src, alt: s.alt };
 }

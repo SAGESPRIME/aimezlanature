@@ -66,7 +66,7 @@ export const GET: APIRoute = () => {
     `- Marque française créée en ${SITE.foundingYear}, éditée par SAS Naturalis Vert (Les Lilas, France). Marque déposée INPI n° 4664991.`,
     `- Avis collectés sur le site : ${SITE.totalReviews} avis vérifiés (achat confirmé), note globale ${note(SITE.globalRating)}/5.`,
     `- Également vendue sur Amazon.fr : ${SITE.amazon.reviewCount} commentaires, ${note(SITE.amazon.rating)}/5 (avis Amazon, distincts des avis du site).`,
-    `- Livraison en France métropolitaine, offerte dès ${SITE.freeShippingThreshold} € (sinon ${euros(SITE.shippingFee)}), sous 2 à 5 jours ouvrés.`,
+    `- Livraison en France métropolitaine, offerte dès ${SITE.seuilLivraisonTexte} € (sinon ${euros(SITE.shippingFee)}), sous 2 à 5 jours ouvrés.`,
     '- Garantie satisfait ou remboursé 30 jours, en plus du droit de rétractation légal de 14 jours.',
     '- Emballage sans plastique : tube biodégradable et sachet en coton BIO.',
     '',

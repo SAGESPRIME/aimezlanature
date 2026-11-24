@@ -111,7 +111,17 @@ export const SITE = {
   totalReviews: avisPublies.length,
   /** Note globale affichée — réglage du Studio, à garder fidèle aux avis réels. */
   globalRating: reglages.noteGlobale,
+  /** Seuil de livraison offerte (nombre) : pour les CALCULS uniquement. */
   freeShippingThreshold: reglages.seuilLivraisonOfferte,
+  /**
+   * Le même seuil, au format français, pour l'AFFICHAGE (« 50 », « 29,90 »).
+   * Insérer le nombre brut dans un texte donnait « 29.9 € » dès que le seuil
+   * n'était plus un entier (constaté au test du CMS, 2026-11-24).
+   * tests/seuil-livraison.test.mjs empêche de réintroduire le nombre brut.
+   */
+  seuilLivraisonTexte: Number.isInteger(reglages.seuilLivraisonOfferte)
+    ? String(reglages.seuilLivraisonOfferte)
+    : reglages.seuilLivraisonOfferte.toFixed(2).replace('.', ','),
   /**
    * Frais de port sous le seuil de gratuité, en euros. Source UNIQUE : lue par
    * le tunnel Stripe (api/checkout.ts) et par le panier (CartDrawer).
