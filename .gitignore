@@ -32,11 +32,13 @@ pnpm-debug.log*
 # Variables d'environnement locales (Vercel env pull écrit .env*.local)
 .env*.local
 
-# Skills tierces installées localement (impeccable, ui-ux-pro-max) : 4,8 Mo de
+# Skills tierces installées localement (ui-ux-pro-max, frontend-design, taste-skill,
+# impeccable, skills d'Emil Kowalski) : ~46 Mo de
 # contenu téléchargé depuis GitHub, pas du code du projet — même logique que
 # node_modules/. C'est skills-lock.json, lui VERSIONNÉ, qui garde la trace des
 # versions installées et permet de les réinstaller à l'identique.
 .agents/
+.claude/skills/
 
 # Restes de l'époque Cloudflare : `wrangler` est l'outil en ligne de commande de
 # Cloudflare, abandonné à la PR #5 (migration vers Vercel). Plus aucune mention
