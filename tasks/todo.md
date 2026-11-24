@@ -21,9 +21,9 @@ réponse uniforme + produit vérifié, notification marchand non répétée. Dé
       quelques heures ; rétablie en runtime, `noindex` vérifié.
 - [x] `RECETTE_UTILISATEUR` / `RECETTE_MOT_DE_PASSE` posés sur site-recette (mot de passe visible
       dans Coolify) — requis pour le build de relecture des brouillons.
-- [ ] Anciens navigateurs sans `Sec-Fetch-Site` (Safari < 16.4) : 403 sur les formulaires avis /
-      revendeur, car `url.origin` vaut localhost. Correctif : `security.allowedDomains` (domaines
-      prod + recette) dans astro.config.mjs — à tester sur la recette avant la prod.
+- [x] Anciens navigateurs sans `Sec-Fetch-Site` (Safari < 16.4) : 403 sur les formulaires avis /
+      revendeur (`url.origin` valait localhost). Corrigé par `security.allowedDomains` (prod +
+      recette) dans astro.config.mjs, vérifié sur la recette (2026-11-24).
 - [x] Ré-audit ciblé (run-2) — voir son rapport.
 - [ ] Un mois après le jour J : refuser les sessions Stripe sans `metadata.source`.
 

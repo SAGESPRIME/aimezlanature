@@ -35,7 +35,10 @@ commentaire à l'endroit du code concerné.
 - **Aucun jeton d'écriture Sanity sur le serveur** : seul un jeton Viewer sert au build.
 - `/api/stripe-webhook` n'est **jamais** limité en débit (un 429 casserait les emails de commande).
 - Tout appel à un service tiers (Stripe, Emailit) a un délai maximum (`AbortSignal.timeout`).
-- Aucune URL absolue construite depuis la requête (`url.origin` vaut localhost) : `src/lib/origine.ts`.
+- Aucune URL absolue construite depuis la requête : `src/lib/origine.ts`. `security.allowedDomains`
+  (`astro.config.mjs`) liste les domaines dont l'en-tête Host est cru — il sert au contrôle
+  anti-CSRF des formulaires (anciens navigateurs sans `Sec-Fetch-Site`) ; tout nouveau domaine
+  du site doit y être ajouté.
 - **Aucun port du conteneur publié sur l'hôte** : tout passe par Traefik. Un accès direct serait
   compté sous sa propre IP (l'en-tête n'est plus cru), mais contournerait Traefik.
 - Avec `CLIENT_IP_HEADER=cf-connecting-ip`, n'autoriser que les plages Cloudflare sur 80/443 :

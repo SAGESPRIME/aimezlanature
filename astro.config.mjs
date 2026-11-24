@@ -68,6 +68,21 @@ export default defineConfig({
   // refuse déjà en 413 tout Content-Length supérieur ; cette limite couvre les
   // envois sans longueur annoncée.
   adapter: node({ mode: 'middleware', bodySizeLimit: 256 * 1024 }),
+  security: {
+    // Domaines dont l'en-tête Host (et le X-Forwarded-Proto posé par Traefik)
+    // est cru pour l'origine de la requête. Sans cette liste, Astro prenait
+    // « http://localhost:4321 » : son contrôle anti-CSRF des formulaires
+    // comparait alors l'Origin du navigateur à localhost et répondait 403 à
+    // tout navigateur qui n'envoie pas Sec-Fetch-Site (Safari < 16.4…),
+    // constaté le 2026-11-24 sur /api/avis et /api/revendeur.
+    // Tout autre hôte (127.0.0.1 en CI, hôte inventé) retombe sur localhost.
+    // ⚠️ Ajouter ici tout nouveau domaine qui sert le site. Et ne JAMAIS
+    // fabriquer d'URL absolue avec url.origin : voir src/lib/origine.ts.
+    allowedDomains: [
+      { hostname: 'aimezlanature.fr', protocol: 'https' },
+      { hostname: 'recette.aimezlanature.fr', protocol: 'https' },
+    ],
+  },
   build: {
     // CSS toujours en fichier externe (jamais inliné dans un <style>) :
     // condition nécessaire à la CSP stricte `style-src 'self'` (src/data/securite.mjs).
