@@ -282,7 +282,9 @@ app.use(astro);
 
 // ── 6. 404 ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {
-  res.status(404).setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+  // Recette avec brouillons : la page 404 est construite avec le contenu des
+  // brouillons (menu, panier…) — jamais dans un cache partagé.
+  res.status(404).setHeader('Cache-Control', IDENTIFIANTS_RECETTE ? 'private, no-store' : 'public, max-age=0, must-revalidate');
   res.sendFile(join(CLIENT, '404.html'));
 });
 
