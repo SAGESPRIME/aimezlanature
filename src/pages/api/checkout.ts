@@ -108,6 +108,12 @@ export const POST: APIRoute = async ({ request }) => {
   // Marque relue par /api/stripe-webhook : « cette session vient du site ».
   form.set('metadata[source]', MARQUE_SESSION);
   form.set('locale', 'fr');
+  // Prix TOUJOURS en euros (CGV et frais de livraison en euros). Sans ce
+  // paramètre, l'« Adaptive Pricing » de Stripe convertissait le panier dans la
+  // devise du visiteur étranger (constaté en test : dollars US). Désactivé ici,
+  // session par session : rien à régler dans le tableau de bord, et impossible
+  // de l'oublier au passage en clés réelles.
+  form.set('adaptive_pricing[enabled]', 'false');
   // Adresse de retour tirée de la configuration, jamais de la requête : voir
   // src/lib/origine.ts (url.origin valait http://localhost:4321).
   const origine = origineSite();
