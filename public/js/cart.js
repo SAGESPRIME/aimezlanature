@@ -179,24 +179,24 @@
   function ligneHTML(l) {
     var nom = echapper(l.product.shortName);
     var slug = echapper(l.product.slug);
-    return '<li class="flex gap-3 py-4 border-b border-[#EDE8E0]">' +
+    return '<li class="flex gap-3 py-4 border-b border-ligne">' +
       '<div class="flex-1">' +
-        '<p class="font-semibold text-[#1A1A16]">' + nom + '</p>' +
+        '<p class="font-semibold text-encre">' + nom + '</p>' +
         (l.discount > 0
-          ? '<p class="text-xs text-[#166534] font-semibold">Remise −' + l.discount + ' % appliquée</p>'
+          ? '<p class="text-xs text-foret font-semibold">Remise −' + l.discount + ' % appliquée</p>'
           : '') +
-        '<div class="mt-2 inline-flex items-center border border-[#D4C9B8] rounded-full overflow-hidden bg-white">' +
-          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + slug + '" data-qty="' + (l.qty - 1) + '" aria-label="Retirer un ' + nom + '">−</button>' +
+        '<div class="mt-2 inline-flex items-center border border-pierre rounded-full overflow-hidden bg-white">' +
+          '<button type="button" class="px-3 py-1 hover:bg-anis-pale" data-slug="' + slug + '" data-qty="' + (l.qty - 1) + '" aria-label="Retirer un ' + nom + '">−</button>' +
           '<span class="px-3 text-sm font-semibold">' + l.qty + '</span>' +
-          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + slug + '" data-qty="' + (l.qty + 1) + '" aria-label="Ajouter un ' + nom + '">+</button>' +
+          '<button type="button" class="px-3 py-1 hover:bg-anis-pale" data-slug="' + slug + '" data-qty="' + (l.qty + 1) + '" aria-label="Ajouter un ' + nom + '">+</button>' +
         '</div>' +
       '</div>' +
       '<div class="text-right">' +
         (l.discount > 0
-          ? '<p class="text-xs text-[#6E5330]"><s>' + fmt(l.plein) + '</s></p>'
+          ? '<p class="text-xs text-olive"><s>' + fmt(l.plein) + '</s></p>'
           : '') +
-        '<p class="font-bold text-[#1A1A16]">' + fmt(l.total) + '</p>' +
-        '<button type="button" class="mt-1 text-xs text-[#6E5330] underline" data-slug="' + slug + '" data-qty="0">Retirer</button>' +
+        '<p class="font-bold text-encre">' + fmt(l.total) + '</p>' +
+        '<button type="button" class="mt-1 text-xs text-olive underline" data-slug="' + slug + '" data-qty="0">Retirer</button>' +
       '</div>' +
     '</li>';
   }

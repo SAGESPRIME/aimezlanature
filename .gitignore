@@ -45,3 +45,4 @@ pnpm-debug.log*
 # dans package.json ni astro.config.mjs — du cache mort.
 .wrangler/
 .env*
+.taste-skill/

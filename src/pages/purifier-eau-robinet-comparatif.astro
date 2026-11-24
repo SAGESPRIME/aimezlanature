@@ -74,13 +74,13 @@ const jsonLd = [
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+  <section class="bg-anis-pale px-4 pt-12 pb-14">
     <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-4">Comparatif · Sans langue de bois</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+      <p class="text-sm text-olive mb-4">Comparatif · Sans langue de bois</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
         Purifier l'eau du robinet : perles, charbon, carafe filtrante ou osmoseur ?
       </h1>
-      <p class="text-[#57534e] text-lg leading-relaxed">
+      <p class="text-gris text-lg leading-relaxed">
         Nous vendons des perles de céramique — et pourtant ce comparatif vous dira quand{' '}
         <em>ne pas</em> en acheter. Chaque solution a son terrain de jeu : voici lequel,
         chiffres à l'appui.
@@ -91,21 +91,21 @@ const jsonLd = [
 
   <AnswerBox>
     Si votre eau est potable et que seul le goût vous gêne :{' '}
-    <strong class="text-[#1A1A16]">perles de céramique</strong> ou{' '}
-    <strong class="text-[#1A1A16]">charbon binchotan</strong> suffisent, sans cartouche à
+    <strong class="text-encre">perles de céramique</strong> ou{' '}
+    <strong class="text-encre">charbon binchotan</strong> suffisent, sans cartouche à
     racheter. Si une analyse révèle nitrates, plomb ou pesticides, il faut une{' '}
-    <strong class="text-[#1A1A16]">filtration certifiée</strong> : charbon actif sur robinet
+    <strong class="text-encre">filtration certifiée</strong> : charbon actif sur robinet
     ou osmoseur. Aucune perle ne remplace une filtration certifiée.
   </AnswerBox>
 
   <!-- TABLEAU COMPARATIF -->
   <section class="py-14 px-4 bg-white" aria-labelledby="tableau-titre">
     <div class="max-w-5xl mx-auto">
-      <h2 id="tableau-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Le match en un tableau</h2>
-      <div class="overflow-x-auto rounded-2xl border border-[#D4C9B8]">
+      <h2 id="tableau-titre" class="font-display text-3xl text-foret mb-8">Le match en un tableau</h2>
+      <div class="overflow-x-auto rounded-2xl border border-pierre">
         <table class="w-full text-sm text-left min-w-[720px]">
           <thead>
-            <tr class="bg-[#0D2818] text-white">
+            <tr class="bg-nuit text-white">
               <th scope="col" class="px-4 py-3.5 font-semibold">Solution</th>
               <th scope="col" class="px-4 py-3.5 font-semibold">Prix</th>
               <th scope="col" class="px-4 py-3.5 font-semibold">Durée de vie</th>
@@ -116,84 +116,84 @@ const jsonLd = [
           </thead>
           <tbody>
             {solutions.map((s, i) => (
-              <tr class={i % 2 ? 'bg-[#FDFBF7]' : 'bg-white'}>
-                <td class="px-4 py-3.5 font-semibold text-[#1A1A16]">{s.nom}</td>
-                <td class="px-4 py-3.5 text-[#57534e]">{s.prix}</td>
-                <td class="px-4 py-3.5 text-[#57534e]">{s.duree}</td>
-                <td class="px-4 py-3.5 text-[#57534e]">{s.cout}</td>
-                <td class="px-4 py-3.5 text-[#57534e]">{s.dechets}</td>
-                <td class="px-4 py-3.5 text-[#57534e]">{s.traite}</td>
+              <tr class={i % 2 ? 'bg-coquille' : 'bg-white'}>
+                <td class="px-4 py-3.5 font-semibold text-encre">{s.nom}</td>
+                <td class="px-4 py-3.5 text-gris">{s.prix}</td>
+                <td class="px-4 py-3.5 text-gris">{s.duree}</td>
+                <td class="px-4 py-3.5 text-gris">{s.cout}</td>
+                <td class="px-4 py-3.5 text-gris">{s.dechets}</td>
+                <td class="px-4 py-3.5 text-gris">{s.traite}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p class="text-sm text-[#57534e] mt-4">
+      <p class="text-sm text-gris mt-4">
         Coûts estimés pour un foyer de 2-3 personnes, prix constatés en France en 2026.
       </p>
     </div>
   </section>
 
   <!-- DETAIL PAR SOLUTION -->
-  <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="detail-titre">
+  <section class="py-14 px-4 bg-anis-pale" aria-labelledby="detail-titre">
     <div class="max-w-3xl mx-auto space-y-10">
-      <h2 id="detail-titre" class="font-display text-3xl text-[#1A1A16]">Chaque solution en détail</h2>
+      <h2 id="detail-titre" class="font-display text-3xl text-foret">Chaque solution en détail</h2>
 
       <div>
-        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Perles de céramique EM® — le confort zéro déchet</h3>
-        <p class="text-[#57534e] leading-relaxed mb-3">
+        <h3 class="font-display text-2xl text-encre mb-3">Perles de céramique EM® — le confort zéro déchet</h3>
+        <p class="text-gris leading-relaxed mb-3">
           Des perles d'argile japonaise à déposer une fois pour toutes dans la carafe, la bouilloire
           ou le lave-vaisselle. Elles adoucissent le goût, réduisent la sensation de chlore et
           limitent le tartre. Achat unique, régénération par simple{' '}
-          <a href="/comment-ca-marche/" class="text-[#166534] font-semibold hover:underline">ébullition tous les 3-6 mois</a>.
+          <a href="/comment-ca-marche/" class="text-foret font-semibold hover:underline">ébullition tous les 3-6 mois</a>.
         </p>
-        <p class="text-sm text-[#57534e]">
-          <strong class="text-[#166534]">Pour :</strong> goût, tartre, budget, zéro déchet ·
+        <p class="text-sm text-gris">
+          <strong class="text-foret">Pour :</strong> goût, tartre, budget, zéro déchet ·
           <strong class="text-[#9B3B3B]">Contre :</strong> aucune action sur bactéries, nitrates, métaux lourds —{' '}
-          <a href="/blog/les-bienfaits-des-perles-de-ceramique/" class="text-[#166534] font-semibold hover:underline">on vous le dit clairement ici</a>.
+          <a href="/blog/les-bienfaits-des-perles-de-ceramique/" class="text-foret font-semibold hover:underline">on vous le dit clairement ici</a>.
         </p>
       </div>
 
       <div>
-        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Charbon actif binchotan — l'adsorbant naturel</h3>
-        <p class="text-[#57534e] leading-relaxed mb-3">
+        <h3 class="font-display text-2xl text-encre mb-3">Charbon actif binchotan — l'adsorbant naturel</h3>
+        <p class="text-gris leading-relaxed mb-3">
           Un bâton de charbon de chêne ubame japonais qui adsorbe le chlore et certains composés
           organiques. Efficace sur le goût, esthétique dans une carafe, compostable en fin de vie.
           Son point faible : il sature — comptez un remplacement tous les 3 à 6 mois.
         </p>
-        <p class="text-sm text-[#57534e]">
-          <strong class="text-[#166534]">Pour :</strong> chlore, goût, naturel ·
+        <p class="text-sm text-gris">
+          <strong class="text-foret">Pour :</strong> chlore, goût, naturel ·
           <strong class="text-[#9B3B3B]">Contre :</strong> rachat récurrent, fragile, inefficace sur le tartre.
-          Le duel détaillé : <a href="/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/" class="text-[#166534] font-semibold hover:underline">perles ou binchotan ?</a>
+          Le duel détaillé : <a href="/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/" class="text-foret font-semibold hover:underline">perles ou binchotan ?</a>
         </p>
       </div>
 
       <div>
-        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Carafe filtrante — pratique mais chère à l'année</h3>
-        <p class="text-[#57534e] leading-relaxed mb-3">
+        <h3 class="font-display text-2xl text-encre mb-3">Carafe filtrante — pratique mais chère à l'année</h3>
+        <p class="text-gris leading-relaxed mb-3">
           La solution la plus répandue. Les cartouches (charbon actif + résine échangeuse d'ions)
           réduisent chlore, tartre et partiellement le plomb. Mais à ~5-8 € la cartouche mensuelle,
           le coût réel atteint 60 à 100 € par an, avec douze cartouches plastique jetées. Mal
           entretenue (cartouche périmée, carafe tiède), elle peut même dégrader la qualité de l'eau.
         </p>
-        <p class="text-sm text-[#57534e]">
-          <strong class="text-[#166534]">Pour :</strong> simplicité, disponibilité partout ·
+        <p class="text-sm text-gris">
+          <strong class="text-foret">Pour :</strong> simplicité, disponibilité partout ·
           <strong class="text-[#9B3B3B]">Contre :</strong> abonnement de fait, déchets plastique, entretien strict.
-          Pour en sortir : <a href="/blog/perles-de-ceramique-une-solution-ecologique-et-economique/" class="text-[#166534] font-semibold hover:underline">nos 3 alternatives sans cartouche</a>.
+          Pour en sortir : <a href="/blog/perles-de-ceramique-une-solution-ecologique-et-economique/" class="text-foret font-semibold hover:underline">nos 3 alternatives sans cartouche</a>.
         </p>
       </div>
 
       <div>
-        <h3 class="font-display text-2xl text-[#1A1A16] mb-3">Osmoseur — l'artillerie lourde, pour les vrais problèmes</h3>
-        <p class="text-[#57534e] leading-relaxed mb-3">
+        <h3 class="font-display text-2xl text-encre mb-3">Osmoseur — l'artillerie lourde, pour les vrais problèmes</h3>
+        <p class="text-gris leading-relaxed mb-3">
           L'osmose inverse pousse l'eau à travers une membrane qui retient quasiment tout :
           nitrates, pesticides, métaux lourds, médicaments… et aussi les minéraux. C'est la seule
           solution de cette page qui traite une eau réellement contaminée. En contrepartie :
           150 à 600 € d'équipement, une installation sous évier, et 2 à 4 litres d'eau rejetés
           par litre produit.
         </p>
-        <p class="text-sm text-[#57534e]">
-          <strong class="text-[#166534]">Pour :</strong> contamination avérée (analyse à l'appui) ·
+        <p class="text-sm text-gris">
+          <strong class="text-foret">Pour :</strong> contamination avérée (analyse à l'appui) ·
           <strong class="text-[#9B3B3B]">Contre :</strong> prix, gaspillage d'eau, eau déminéralisée au goût plat.
         </p>
       </div>
@@ -203,24 +203,24 @@ const jsonLd = [
   <!-- QUEL PROFIL, QUELLE SOLUTION -->
   <section class="py-14 px-4 bg-white" aria-labelledby="profil-titre">
     <div class="max-w-3xl mx-auto">
-      <h2 id="profil-titre" class="font-display text-3xl text-[#1A1A16] mb-8">En résumé : quelle solution pour vous ?</h2>
+      <h2 id="profil-titre" class="font-display text-3xl text-foret mb-8">En résumé : quelle solution pour vous ?</h2>
       <div class="space-y-4">
-        <div class="rounded-2xl border border-[#D4E4D0] bg-[#F4F9F2] p-6">
-          <p class="font-semibold text-[#166534] mb-1">« L'eau a un goût de chlore, ma bouilloire s'entartre »</p>
-          <p class="text-sm text-[#57534e]">
+        <div class="rounded-2xl border border-anis-clair bg-anis-pale p-6">
+          <p class="font-semibold text-foret mb-1">« L'eau a un goût de chlore, ma bouilloire s'entartre »</p>
+          <p class="text-sm text-gris">
             → Perles de céramique (achat unique) ou binchotan (si le goût est votre seul critère).
-            Voir <a href="/perles-ceramique-em/" class="text-[#166534] font-semibold hover:underline">nos packs de perles EM®</a>.
+            Voir <a href="/perles-ceramique-em/" class="text-foret font-semibold hover:underline">nos packs de perles EM®</a>.
           </p>
         </div>
-        <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
-          <p class="font-semibold text-[#6E5330] mb-1">« Je veux remplacer ma carafe filtrante sans racheter de cartouches »</p>
-          <p class="text-sm text-[#57534e]">
+        <div class="rounded-2xl border border-ligne bg-coquille p-6">
+          <p class="font-semibold text-olive mb-1">« Je veux remplacer ma carafe filtrante sans racheter de cartouches »</p>
+          <p class="text-sm text-gris">
             → Perles dans votre carafe actuelle : mêmes gestes, zéro rachat, zéro déchet.
           </p>
         </div>
-        <div class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
-          <p class="font-semibold text-[#6E5330] mb-1">« Mon analyse d'eau révèle nitrates, plomb ou pesticides »</p>
-          <p class="text-sm text-[#57534e]">
+        <div class="rounded-2xl border border-ligne bg-coquille p-6">
+          <p class="font-semibold text-olive mb-1">« Mon analyse d'eau révèle nitrates, plomb ou pesticides »</p>
+          <p class="text-sm text-gris">
             → Osmoseur ou filtre charbon actif certifié NSF. Les perles ne traitent pas ces polluants —
             aucun produit « miracle » ne le fait.
           </p>

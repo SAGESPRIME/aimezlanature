@@ -26,17 +26,17 @@ import {
 } from '../data/revendeur';
 
 const champClass =
-  'w-full rounded-xl border border-[#D4C9B8] bg-white px-4 py-3 text-sm text-[#1A1A16] placeholder:text-[#8A8378] focus:border-[#166534] focus:outline-none focus:ring-2 focus:ring-[#166534]/30';
-const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
+  'w-full rounded-xl border border-pierre bg-white px-4 py-3 text-sm text-encre placeholder:text-gris focus:border-foret focus:outline-none focus:ring-2 focus:ring-foret';
+const labelClass = 'mb-1.5 block text-sm font-semibold text-encre';
 ---
 
-<section class="bg-[#F5F0E8] px-4 py-16" aria-labelledby="demande-titre">
+<section class="bg-anis-pale px-4 py-16" aria-labelledby="demande-titre">
   <div class="mx-auto max-w-2xl">
-    <p class="mb-3 text-xs uppercase tracking-[0.3em] text-[#6E5330]">Demande</p>
-    <h2 id="demande-titre" class="font-display mb-4 text-3xl text-[#1A1A16] lg:text-4xl">
+    <p class="mb-3 text-sm text-olive">Demande</p>
+    <h2 id="demande-titre" class="font-display mb-4 text-3xl text-foret lg:text-4xl">
       Recevoir la grille revendeur
     </h2>
-    <p class="mb-8 leading-relaxed text-[#57534e]">
+    <p class="mb-8 leading-relaxed text-gris">
       Décrivez-nous votre activité : nous revenons vers vous sous 24 h ouvrées avec vos
       conditions et vos tarifs. Sans engagement.
     </p>
@@ -45,13 +45,13 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
       method="post"
       action="/api/revendeur"
       data-formulaire-revendeur
-      class="space-y-5 rounded-2xl border border-[#D4C9B8] bg-white p-6 sm:p-8"
+      class="space-y-5 rounded-2xl border border-pierre bg-white p-6 sm:p-8"
       novalidate={false}
     >
       <div class="grid gap-5 sm:grid-cols-2">
         <div class="sm:col-span-2">
           <label class={labelClass} for="f-boutique">
-            {CHAMPS.boutique.label} <span class="text-[#166534]">*</span>
+            {CHAMPS.boutique.label} <span class="text-foret">*</span>
           </label>
           <input
             id="f-boutique"
@@ -66,7 +66,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
         <div>
           <label class={labelClass} for="f-contact">
-            {CHAMPS.contact.label} <span class="text-[#166534]">*</span>
+            {CHAMPS.contact.label} <span class="text-foret">*</span>
           </label>
           <input
             id="f-contact"
@@ -81,7 +81,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
         <div>
           <label class={labelClass} for="f-email">
-            {CHAMPS.email.label} <span class="text-[#166534]">*</span>
+            {CHAMPS.email.label} <span class="text-foret">*</span>
           </label>
           <input
             id="f-email"
@@ -108,7 +108,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
         <div>
           <label class={labelClass} for="f-siret">
-            {CHAMPS.siret.label} <span class="text-[#166534]">*</span>
+            {CHAMPS.siret.label} <span class="text-foret">*</span>
           </label>
           <input
             id="f-siret"
@@ -124,7 +124,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
         <div>
           <label class={labelClass} for="f-activite">
-            {CHAMPS.activite.label} <span class="text-[#166534]">*</span>
+            {CHAMPS.activite.label} <span class="text-foret">*</span>
           </label>
           <select id="f-activite" name={CHAMPS.activite.name} required class={champClass}>
             <option value="">Choisir…</option>
@@ -165,7 +165,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
       <button
         type="submit"
-        class="w-full rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25] focus:outline-none focus:ring-2 focus:ring-[#166534]/40 focus:ring-offset-2"
+        class="w-full rounded-full bg-foret px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-foret-fonce focus:outline-none focus:ring-2 focus:ring-foret focus:ring-offset-2"
       >
         Envoyer ma demande
       </button>
@@ -180,12 +180,12 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
       >
       </p>
 
-      <p class="text-xs leading-relaxed text-[#57534e]">
+      <p class="text-xs leading-relaxed text-gris">
         Les informations transmises servent uniquement à traiter votre demande de partenariat.
         Elles sont envoyées à {EMAIL_REVENDEUR}, ne sont ni revendues ni transmises à un tiers,
         et sont conservées trois ans après notre dernier échange. Vous pouvez demander leur
         accès ou leur suppression à cette même adresse — voir nos{' '}
-        <a href="/mentions-legales/" class="font-semibold text-[#166534] underline">mentions légales</a>.
+        <a href="/mentions-legales/" class="font-semibold text-foret underline">mentions légales</a>.
       </p>
     </form>
   </div>

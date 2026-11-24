@@ -43,19 +43,19 @@ const paths: Record<string, string> = {
 };
 ---
 
-<section class="border-y border-[#EDE8E0] bg-white px-4 py-8" aria-labelledby="reassurance-titre">
+<section class="border-y border-ligne bg-white px-4 py-8" aria-labelledby="reassurance-titre">
   <h2 id="reassurance-titre" class="sr-only">Nos engagements</h2>
   <ul class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4 list-none p-0">
     {promesses.map((p) => (
       <li class="flex items-start gap-3">
-        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F4F9F2]" aria-hidden="true">
-          <svg class="h-5 w-5 text-[#166534]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-anis-pale" aria-hidden="true">
+          <svg class="h-5 w-5 text-foret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d={paths[p.icone]} />
           </svg>
         </span>
         <span>
-          <span class="block font-semibold text-[#1A1A16]">{p.titre}</span>
-          <span class="block text-sm leading-relaxed text-[#57534e]">{p.texte}</span>
+          <span class="block font-semibold text-encre">{p.titre}</span>
+          <span class="block text-sm leading-relaxed text-gris">{p.texte}</span>
         </span>
       </li>
     ))}

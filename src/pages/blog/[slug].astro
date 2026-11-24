@@ -56,7 +56,7 @@ const jsonLd = [
 // Fonds alternés : blanc / crème. La réponse courte, quand elle existe, prend
 // le premier fond blanc et décale l'alternance des sections.
 const decalage = a.reponseCourte ? 1 : 0;
-const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-[#FDFBF7]');
+const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-coquille');
 ---
 
 <BaseLayout
@@ -68,13 +68,13 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-[#FDFBF
   modifieLe={a.dateMiseAJour ?? a.datePublication}
 >
   <!-- HERO -->
-  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
+  <section class="bg-anis-pale px-4 pt-12 pb-14">
     <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-4">{a.categorie}</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
+      <p class="text-sm text-olive mb-4">{a.categorie}</p>
+      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
         {a.titre}
       </h1>
-      <p class="text-[#57534e] text-lg leading-relaxed">
+      <p class="text-gris text-lg leading-relaxed">
         {a.chapo}
       </p>
       <PageDate date={a.datePublication} class="mt-5" />
@@ -82,8 +82,8 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-[#FDFBF
         <PageDate date={a.dateMiseAJour} label="Mis à jour le" class="mt-1" />
       )}
       {a.auteur && (
-        <p class="text-sm text-[#57534e] mt-1">
-          Par <strong class="text-[#1A1A16]">{a.auteur.nom}</strong>, {a.auteur.role}
+        <p class="text-sm text-gris mt-1">
+          Par <strong class="text-encre">{a.auteur.nom}</strong>, {a.auteur.role}
         </p>
       )}
     </div>
@@ -94,7 +94,7 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-[#FDFBF
   {a.sections.map((section, i) => (
     <section class={`py-12 px-4 ${fond(i)}`} aria-labelledby={`sec-${i}`}>
       <div class="max-w-3xl mx-auto">
-        <h2 id={`sec-${i}`} class="font-display text-3xl text-[#1A1A16] mb-5">{section.titre}</h2>
+        <h2 id={`sec-${i}`} class="font-display text-3xl text-foret mb-5">{section.titre}</h2>
         <TexteRiche value={section.contenu} />
       </div>
     </section>
@@ -105,11 +105,11 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-[#FDFBF
   {sources.length > 0 && (
     <section class="py-12 px-4 bg-white" aria-labelledby="sources">
       <div class="max-w-3xl mx-auto">
-        <h2 id="sources" class="font-display text-2xl text-[#1A1A16] mb-4">Sources</h2>
-        <ol class="list-decimal pl-5 space-y-2 text-sm text-[#57534e] leading-relaxed">
+        <h2 id="sources" class="font-display text-2xl text-foret mb-4">Sources</h2>
+        <ol class="list-decimal pl-5 space-y-2 text-sm text-gris leading-relaxed">
           {sources.map((s) => (
             <li>
-              <a href={s.url} class="text-[#166534] font-semibold hover:underline" rel="noopener">{s.titre}</a>
+              <a href={s.url} class="text-foret font-semibold hover:underline" rel="noopener">{s.titre}</a>
               {' '}— {s.editeur}
             </li>
           ))}
@@ -119,11 +119,11 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-[#FDFBF
   )}
 
   {a.auteur && (
-    <section class="py-10 px-4 bg-[#FDFBF7]" aria-labelledby="auteur">
+    <section class="py-10 px-4 bg-coquille" aria-labelledby="auteur">
       <div class="max-w-3xl mx-auto">
-        <h2 id="auteur" class="font-display text-2xl text-[#1A1A16] mb-3">À propos de l’auteur</h2>
-        <p class="text-[#57534e] leading-relaxed">
-          <strong class="text-[#1A1A16]">{a.auteur.nom}</strong> — {a.auteur.role}. {a.auteur.bio}
+        <h2 id="auteur" class="font-display text-2xl text-foret mb-3">À propos de l’auteur</h2>
+        <p class="text-gris leading-relaxed">
+          <strong class="text-encre">{a.auteur.nom}</strong> — {a.auteur.role}. {a.auteur.bio}
         </p>
       </div>
     </section>

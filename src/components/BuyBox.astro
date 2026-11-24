@@ -31,7 +31,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
 ---
 
 <div class="mb-6">
-  <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#6E5330]">
+  <p class="mb-3 text-sm font-semibold text-olive">
     Choisissez votre quantité
   </p>
 
@@ -42,10 +42,10 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
         role="radio"
         aria-checked={t.qty === defaut.qty ? 'true' : 'false'}
         data-palier={t.qty}
-        class="group relative w-full rounded-2xl border-2 border-[#EDE8E0] bg-white px-5 py-4 text-left transition-all hover:border-[#C4B89A] aria-checked:border-[#166534] aria-checked:bg-[#F4F9F2] aria-checked:shadow-[0_2px_12px_rgba(22,101,52,0.12)]"
+        class="group relative w-full rounded-2xl border-2 border-ligne bg-white px-5 py-4 text-left transition-all hover:border-pierre-fonce aria-checked:border-foret aria-checked:bg-anis-pale aria-checked:shadow-[0_2px_12px_rgba(22,101,52,0.12)]"
       >
         {t.highlight && (
-          <span class="absolute -top-2.5 right-4 rounded-full bg-[#166534] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+          <span class="absolute -top-2.5 right-4 rounded-full bg-foret px-3 py-0.5 text-[11px] font-bold text-white">
             Le plus populaire
           </span>
         )}
@@ -53,7 +53,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
         <span class="flex items-center gap-4">
           <!-- Pastille de sélection : vide, puis cochée -->
           <span
-            class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#C4B89A] transition-colors group-aria-checked:border-[#166534] group-aria-checked:bg-[#166534]"
+            class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 border-pierre-fonce transition-colors group-aria-checked:border-foret group-aria-checked:bg-foret"
             aria-hidden="true"
           >
             <svg class="h-3.5 w-3.5 text-white opacity-0 transition-opacity group-aria-checked:opacity-100" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -62,12 +62,12 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
           </span>
 
           <span class="min-w-0 flex-1">
-            <span class="block font-semibold text-[#1A1A16]">{t.label}</span>
-            <span class="block text-sm text-[#57534e]">
+            <span class="block font-semibold text-encre">{t.label}</span>
+            <span class="block text-sm text-gris">
               {t.discountPercent > 0 ? (
                 <>
-                  <s class="text-[#A89880]">{fmtPrice(product.priceCurrent)} €</s>{' '}
-                  <strong class="font-semibold text-[#166534]">{fmtPrice(t.unitPrice)} €</strong> / unité
+                  <s class="text-pierre-fonce">{fmtPrice(product.priceCurrent)} €</s>{' '}
+                  <strong class="font-semibold text-foret">{fmtPrice(t.unitPrice)} €</strong> / unité
                 </>
               ) : (
                 <>{fmtPrice(t.unitPrice)} € / unité</>
@@ -79,11 +79,11 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
             <!-- `data-palier-total` : la barre d'achat collante recopie ce montant
                  pour toujours afficher le total du palier réellement sélectionné,
                  sans dupliquer le calcul de prix côté JS. -->
-            <span data-palier-total class="block font-display text-2xl font-bold leading-none text-[#1A1A16]">
+            <span data-palier-total class="block font-display text-2xl font-bold leading-none text-encre">
               {fmtPrice(t.total)} €
             </span>
             {t.saving > 0 && (
-              <span class="mt-1.5 inline-block rounded-full bg-[#D4E4D0] px-2.5 py-0.5 text-xs font-bold text-[#166534]">
+              <span class="mt-1.5 inline-block rounded-full bg-anis-clair px-2.5 py-0.5 text-xs font-bold text-foret">
                 Économisez {fmtPrice(t.saving)} €
               </span>
             )}
@@ -96,7 +96,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
   <button
     type="button"
     data-ajouter-panier={product.slug}
-    class="mt-5 w-full rounded-full bg-[#166534] px-10 py-4 font-semibold text-white transition-colors hover:bg-[#0D4A25]"
+    class="mt-5 w-full rounded-full bg-foret px-10 py-4 font-semibold text-white transition-colors hover:bg-foret-fonce"
   >
     Ajouter au panier
   </button>
@@ -105,10 +105,10 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
        l'acheteur hésite. Les deux promesses reprennent mot pour mot des
        engagements déjà affichés par le marchand (cf. TrustStrip) — ne rien
        ajouter ici qui ne soit pas réellement tenu. -->
-  <p class="mt-3 text-center text-sm text-[#57534e]">
-    Livraison en 2-5 jours — <strong class="text-[#1A1A16]">offerte dès {SITE.freeShippingThreshold} €</strong>
+  <p class="mt-3 text-center text-sm text-gris">
+    Livraison en 2-5 jours — <strong class="text-encre">offerte dès {SITE.freeShippingThreshold} €</strong>
   </p>
-  <p class="mt-1 text-center text-sm text-[#57534e]">
+  <p class="mt-1 text-center text-sm text-gris">
     Satisfait ou remboursé 30 jours · Paiement sécurisé
   </p>
 
@@ -118,14 +118,14 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
        et le PDF profite ici du cache du CDN Cloudflare.
        Le poids et le format sont annoncés dans le libellé : un lien qui déclenche
        un téléchargement d'un mégaoctet sans le dire est un mauvais procédé. -->
-  <p class="mt-3 border-t border-[#EDE8E0] pt-3 text-center text-sm text-[#57534e]">
-    <Icon name="bulb" class="mr-1 inline h-4 w-4 align-text-bottom text-[#166534]" />
+  <p class="mt-3 border-t border-ligne pt-3 text-center text-sm text-gris">
+    <Icon name="bulb" class="mr-1 inline h-4 w-4 align-text-bottom text-foret" />
     Guide d'utilisation offert avec votre commande —{' '}
     <a
       href="/guide-perles-de-ceramique-em.pdf"
       target="_blank"
       rel="noopener"
-      class="font-semibold text-[#166534] underline"
+      class="font-semibold text-foret underline"
     >
       le feuilleter (PDF, 68 pages)
     </a>
@@ -134,9 +134,9 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
   <!-- Sans JavaScript, le panier ne fonctionne pas : la commande par email
        reste accessible plutôt que de laisser un bouton inerte. -->
   <noscript>
-    <p class="mt-4 rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-4 text-sm text-[#57534e]">
+    <p class="mt-4 rounded-2xl border border-pierre bg-coquille p-4 text-sm text-gris">
       Le panier nécessite JavaScript. Vous pouvez commander par email à{' '}
-      <a href="mailto:commande@aimezlanature.fr" class="font-semibold text-[#166534] underline">commande@aimezlanature.fr</a>.
+      <a href="mailto:commande@aimezlanature.fr" class="font-semibold text-foret underline">commande@aimezlanature.fr</a>.
     </p>
   </noscript>
 </div>

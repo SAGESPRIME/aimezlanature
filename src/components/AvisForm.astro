@@ -29,26 +29,26 @@ interface Props {
 const { slug, nom } = Astro.props;
 
 const champClass =
-  'w-full rounded-xl border border-[#D4C9B8] bg-white px-4 py-3 text-sm text-[#1A1A16] placeholder:text-[#8A8378] focus:border-[#166534] focus:outline-none focus:ring-2 focus:ring-[#166534]/30';
-const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
+  'w-full rounded-xl border border-pierre bg-white px-4 py-3 text-sm text-encre placeholder:text-gris focus:border-foret focus:outline-none focus:ring-2 focus:ring-foret';
+const labelClass = 'mb-1.5 block text-sm font-semibold text-encre';
 ---
 
-<section class="bg-[#FDFBF7] px-4 pb-16" aria-labelledby="deposer-avis-titre">
+<section class="bg-coquille px-4 pb-16" aria-labelledby="deposer-avis-titre">
   <div class="mx-auto max-w-4xl">
-    <details class="group rounded-2xl border border-[#D4C9B8] bg-white">
+    <details class="group rounded-2xl border border-pierre bg-white">
       <summary
         class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 [&::-webkit-details-marker]:hidden"
       >
         <span>
-          <span id="deposer-avis-titre" class="font-display block text-xl text-[#1A1A16]">
+          <span id="deposer-avis-titre" class="font-display block text-xl text-encre">
             Vous avez acheté {nom} ? Donnez votre avis
           </span>
-          <span class="mt-1 block text-sm text-[#57534e]">
+          <span class="mt-1 block text-sm text-gris">
             Réservé aux clients : nous vérifions votre commande avant publication.
           </span>
         </span>
         <span
-          class="flex-shrink-0 text-2xl text-[#166534] transition-transform group-open:rotate-180"
+          class="flex-shrink-0 text-2xl text-foret transition-transform group-open:rotate-180"
           aria-hidden="true">↓</span
         >
       </summary>
@@ -57,7 +57,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
         method="post"
         action="/api/avis"
         data-formulaire-avis
-        class="space-y-5 border-t border-[#EDE8E0] p-6 sm:p-8"
+        class="space-y-5 border-t border-ligne p-6 sm:p-8"
       >
         <input type="hidden" name={CHAMPS_AVIS.produit.name} value={slug} />
 
@@ -66,7 +66,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
             lu par les lecteurs d'écran vient de `aria-label`. */}
         <fieldset>
           <legend class={labelClass}>
-            {CHAMPS_AVIS.note.label} <span class="text-[#166534]">*</span>
+            {CHAMPS_AVIS.note.label} <span class="text-foret">*</span>
           </legend>
           <div class="flex flex-wrap gap-2">
             {NOTES.map((n) => (
@@ -82,7 +82,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
                 />
                 <label
                   for={`avis-note-${n}`}
-                  class="block cursor-pointer rounded-xl border border-[#D4C9B8] px-4 py-2.5 text-sm text-[#57534e] transition-colors hover:border-[#166534] peer-checked:border-[#166534] peer-checked:bg-[#166534] peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-[#166534]/40 peer-focus-visible:ring-offset-2"
+                  class="block cursor-pointer rounded-xl border border-pierre px-4 py-2.5 text-sm text-gris transition-colors hover:border-foret peer-checked:border-foret peer-checked:bg-foret peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-foret/40 peer-focus-visible:ring-offset-2"
                 >
                   <span aria-hidden="true">{'★'.repeat(n)}{'☆'.repeat(5 - n)}</span>
                 </label>
@@ -105,7 +105,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
         <div>
           <label class={labelClass} for="avis-texte">
-            {CHAMPS_AVIS.texte.label} <span class="text-[#166534]">*</span>
+            {CHAMPS_AVIS.texte.label} <span class="text-foret">*</span>
           </label>
           <textarea
             id="avis-texte"
@@ -117,7 +117,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
             class={champClass}
             placeholder="Comment les utilisez-vous ? Qu'avez-vous constaté sur le goût de l'eau ou le tartre ?"
           ></textarea>
-          <p class="mt-1.5 text-xs text-[#57534e]">
+          <p class="mt-1.5 text-xs text-gris">
             {TEXTE_MINIMUM} caractères minimum. Votre expérience concrète aide bien plus les
             autres acheteurs qu'un « très bien ».
           </p>
@@ -126,7 +126,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
         <div class="grid gap-5 sm:grid-cols-2">
           <div>
             <label class={labelClass} for="avis-auteur">
-              {CHAMPS_AVIS.auteur.label} <span class="text-[#166534]">*</span>
+              {CHAMPS_AVIS.auteur.label} <span class="text-foret">*</span>
             </label>
             <input
               id="avis-auteur"
@@ -142,7 +142,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
           <div>
             <label class={labelClass} for="avis-email">
-              {CHAMPS_AVIS.email.label} <span class="text-[#166534]">*</span>
+              {CHAMPS_AVIS.email.label} <span class="text-foret">*</span>
             </label>
             <input
               id="avis-email"
@@ -154,7 +154,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
               class={champClass}
               placeholder="celui de votre commande"
             />
-            <p class="mt-1.5 text-xs text-[#57534e]">Jamais publié. Sert à vérifier votre achat.</p>
+            <p class="mt-1.5 text-xs text-gris">Jamais publié. Sert à vérifier votre achat.</p>
           </div>
         </div>
 
@@ -165,13 +165,13 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
             type="checkbox"
             value="oui"
             required
-            class="mt-1 h-4 w-4 flex-shrink-0 accent-[#166534]"
+            class="mt-1 h-4 w-4 flex-shrink-0 accent-foret"
           />
-          <label for="avis-consentement" class="text-sm leading-relaxed text-[#57534e]">
+          <label for="avis-consentement" class="text-sm leading-relaxed text-gris">
             {/* `{' '}` explicite : Astro supprime l'espace de fin de ligne qui
                 précède une balise, ce qui collerait « page. » et l'astérisque. */}
             J'autorise la publication de mon avis et du nom affiché sur cette page.{' '}
-            <span class="text-[#166534]">*</span>
+            <span class="text-foret">*</span>
           </label>
         </div>
 
@@ -191,7 +191,7 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
 
         <button
           type="submit"
-          class="w-full rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25] focus:outline-none focus:ring-2 focus:ring-[#166534]/40 focus:ring-offset-2"
+          class="w-full rounded-full bg-foret px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-foret-fonce focus:outline-none focus:ring-2 focus:ring-foret focus:ring-offset-2"
         >
           Envoyer mon avis
         </button>
@@ -206,16 +206,16 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-[#1A1A16]';
         >
         </p>
 
-        <p class="text-xs leading-relaxed text-[#57534e]">
+        <p class="text-xs leading-relaxed text-gris">
           Votre avis est relu avant publication : nous vérifions qu'une commande payée
           correspond à votre email, jamais son contenu — un avis négatif est publié comme un
           autre. Votre email sert uniquement à cette vérification, n'est ni publié, ni revendu,
           ni transmis à un tiers. Écrivez à{' '}
-          <a href={`mailto:${EMAIL_AVIS}`} class="font-semibold text-[#166534] underline"
+          <a href={`mailto:${EMAIL_AVIS}`} class="font-semibold text-foret underline"
             >{EMAIL_AVIS}</a
           >{' '}
           pour faire retirer un avis publié — voir nos{' '}
-          <a href="/mentions-legales/" class="font-semibold text-[#166534] underline"
+          <a href="/mentions-legales/" class="font-semibold text-foret underline"
             >mentions légales</a
           >.
         </p>

@@ -23,20 +23,20 @@ const cibleAchat = suiviAchatActif() ? cibleConversion() : '';
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
   <div data-suivi-achat data-cible={cibleAchat} hidden></div>
-  <section class="bg-[#F5F0E8] px-4 py-20">
+  <section class="bg-anis-pale px-4 py-20">
     <div class="max-w-2xl mx-auto text-center">
       <p class="text-5xl mb-6" aria-hidden="true">🌿</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] mb-5">
+      <h1 class="font-display text-4xl lg:text-5xl text-encre mb-5">
         Merci pour votre commande
       </h1>
-      <p class="text-[#57534e] text-lg leading-relaxed mb-8">
+      <p class="text-gris text-lg leading-relaxed mb-8">
         Votre paiement a bien été enregistré. Vous recevez d'ici quelques minutes un email
         de confirmation avec le détail de votre commande et votre reçu.
       </p>
 
-      <div class="rounded-2xl border border-[#D4C9B8] bg-white p-6 text-left mb-8">
-        <h2 class="font-display text-xl text-[#1A1A16] mb-4">Et maintenant ?</h2>
-        <ol class="space-y-3 text-sm text-[#57534e] list-decimal pl-5">
+      <div class="rounded-2xl border border-pierre bg-white p-6 text-left mb-8">
+        <h2 class="font-display text-xl text-foret mb-4">Et maintenant ?</h2>
+        <ol class="space-y-3 text-sm text-gris list-decimal pl-5">
           <li>Votre colis est préparé sous 24 à 48 h ouvrées.</li>
           <li>Vous recevez un email dès son expédition.</li>
           <li>Livraison sous 2 à 5 jours ouvrés.</li>
@@ -44,17 +44,17 @@ const cibleAchat = suiviAchatActif() ? cibleConversion() : '';
       </div>
 
       <div class="flex flex-wrap gap-4 justify-center">
-        <a href="/comment-ca-marche/" class="inline-flex bg-[#166534] text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#0D4A25] transition-colors">
+        <a href="/comment-ca-marche/" class="inline-flex bg-foret text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-foret-fonce transition-colors">
           Comment utiliser vos perles →
         </a>
-        <a href="/" class="inline-flex border border-[#6E5330] text-[#6E5330] px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#6E5330] hover:text-white transition-colors">
+        <a href="/" class="inline-flex border border-olive text-olive px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-olive hover:text-white transition-colors">
           Retour à l'accueil
         </a>
       </div>
 
-      <p class="mt-8 text-sm text-[#57534e]">
+      <p class="mt-8 text-sm text-gris">
         Une question ? Écrivez-nous à{' '}
-        <a href="mailto:contact@aimezlanature.fr" class="font-semibold text-[#166534] underline">contact@aimezlanature.fr</a>
+        <a href="mailto:contact@aimezlanature.fr" class="font-semibold text-foret underline">contact@aimezlanature.fr</a>
       </p>
     </div>
   </section>

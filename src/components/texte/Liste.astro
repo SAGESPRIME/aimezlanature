@@ -5,7 +5,7 @@ const { node } = Astro.props;
 ---
 
 {node.listItem === 'number' ? (
-  <ol class="list-decimal pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5"><slot /></ol>
+  <ol class="list-decimal pl-5 space-y-2 text-gris leading-relaxed mb-5"><slot /></ol>
 ) : (
-  <ul class="list-disc pl-5 space-y-2 text-[#57534e] leading-relaxed mb-5"><slot /></ul>
+  <ul class="list-disc pl-5 space-y-2 text-gris leading-relaxed mb-5"><slot /></ul>
 )}

@@ -9,11 +9,11 @@ const externe = /^https?:\/\//.test(href);
 ---
 
 {node.markType === 'strong' ? (
-  <strong class="text-[#1A1A16]"><slot /></strong>
+  <strong class="text-encre"><slot /></strong>
 ) : node.markType === 'em' ? (
   <em><slot /></em>
 ) : node.markType === 'link' && href ? (
-  <a href={href} class="text-[#166534] font-semibold hover:underline" rel={externe ? 'noopener' : undefined}><slot /></a>
+  <a href={href} class="text-foret font-semibold hover:underline" rel={externe ? 'noopener' : undefined}><slot /></a>
 ) : (
   <slot />
 )}
