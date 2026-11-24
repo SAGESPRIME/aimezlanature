@@ -156,3 +156,23 @@ grille selon le poids total. Les textes du site (bandeau, fiches, CGV art. 4)
 se mettent à jour seuls. Calcul : `src/data/livraison.mjs` (serveur) et
 `public/js/livraison.js` (panier), vérifiés identiques par
 `tests/livraison.test.mjs`.
+
+## Revendeurs (espace pro)
+
+- Chaque candidature du formulaire `/revendeurs/` arrive dans **Revendeurs → En
+  attente de validation** (document privé, identifiant `revendeurs.…` : jamais
+  lisible sans jeton, même si le dataset est public).
+- Pour accepter : statut **Validé**, puis **Publier**. Dans les 5 minutes, le
+  revendeur reçoit par email un lien de connexion (valable 7 jours) vers
+  `/pro/` : commande à −30 %, minimum 300 € de produits, livraison Colissimo au
+  poids (`src/data/commande-pro.mjs`). Il peut redemander un lien sur
+  `/pro/connexion/`.
+- **Suspendu** ou **Refusé** : l'accès est coupé dans la minute (statut relu à
+  chaque page et à chaque paiement). Les notes internes ne sont jamais montrées.
+- Ne pas créer de revendeur à la main dans le Studio (son identifiant serait
+  public) : le menu « Créer » ne le propose pas.
+
+Variables serveur (Coolify) : `SANITY_WRITE_TOKEN` (jeton Sanity **Editor**,
+saisi par le marchand), `PRO_SECRET` (≥ 32 caractères, signature des liens et
+sessions), `PRO_INVITATIONS=1` sur **un seul** environnement (celui qui envoie
+les emails d'accès).

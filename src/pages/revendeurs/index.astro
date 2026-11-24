@@ -21,11 +21,11 @@ import Faq from '../../components/Faq.astro';
 import RevendeurForm from '../../components/RevendeurForm.astro';
 import { SITE } from '../../data/products';
 import { buildFaqSchema } from '../../lib/seo';
-import { argumentsRevente, etapes, faqPro, paliersRemise } from '../../data/revendeur';
+import { argumentsRevente, conditionsPro, etapes, faqPro } from '../../data/revendeur';
 
 const metaTitle = 'Devenir revendeur — Perles de Céramique EM® | Aimez la Nature';
 const metaDescription =
-  'Boutiques bio, épiceries vrac, praticiens : revendez les Perles de Céramique EM® japonaises. Remise progressive selon le volume, devis sous 24 h.';
+  'Boutiques bio, épiceries vrac, praticiens : revendez les Perles de Céramique EM® japonaises. −30 % sur les prix publics, minimum 300 €, réponse sous 24 h.';
 
 const jsonLd = buildFaqSchema(faqPro);
 // Virgule décimale française : `4.8` s'écrit « 4,8 » en toutes lettres sur la page.
@@ -52,13 +52,13 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
           href="#demande-titre"
           class="inline-flex rounded-full bg-anis px-7 py-3.5 text-sm font-semibold text-nuit transition-colors hover:bg-anis-pale"
         >
-          Recevoir la grille revendeur
+          Devenir revendeur
         </a>
         <a
-          href="/perles-ceramique-em/"
+          href="/pro/connexion/"
           class="inline-flex rounded-full border border-anis/50 px-7 py-3.5 text-sm font-semibold text-anis-pale transition-colors hover:bg-white/10"
         >
-          Voir le catalogue
+          Espace revendeur (déjà validé)
         </a>
       </div>
     </div>
@@ -92,47 +92,24 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
     </div>
   </section>
 
-  <!-- VOTRE REMISE -->
+  <!-- VOS CONDITIONS (validées par le marchand, calculées par commande-pro.mjs) -->
   <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="remise-titre">
-    <div class="mx-auto max-w-3xl">
+    <div class="mx-auto max-w-4xl">
       <p class="mb-3 text-sm text-olive">Vos conditions</p>
-      <h2 id="remise-titre" class="font-display mb-5 text-3xl text-foret lg:text-4xl">
-        Une remise qui progresse avec votre volume
+      <h2 id="remise-titre" class="font-display mb-8 text-3xl text-foret lg:text-4xl">
+        Des conditions simples, les mêmes pour tous
       </h2>
-
-      {paliersRemise.length > 0 ? (
-        <div class="overflow-x-auto rounded-xl border border-pierre bg-white">
-          <table class="w-full text-left text-sm">
-            <thead class="border-b border-ligne text-encre">
-              <tr>
-                <th scope="col" class="px-5 py-4 font-semibold">Palier</th>
-                <th scope="col" class="px-5 py-4 font-semibold">À partir de</th>
-                <th scope="col" class="px-5 py-4 font-semibold">Remise</th>
-              </tr>
-            </thead>
-            <tbody class="text-gris">
-              {paliersRemise.map((p) => (
-                <tr class="border-b border-ligne last:border-0">
-                  <td class="px-5 py-4 font-semibold text-encre">{p.nom}</td>
-                  <td class="px-5 py-4">{p.condition}</td>
-                  <td class="px-5 py-4 font-semibold text-foret">{p.remise}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div class="rounded-xl border border-pierre bg-white p-6 sm:p-8">
-          <p class="leading-relaxed text-gris">
-            Plus votre commande est importante, plus votre remise l'est. Nous ne publions pas
-            notre grille en ligne : elle est établie en fonction de votre activité et du volume
-            que vous envisagez, puis transmise avec votre devis sous 24 h ouvrées.
-          </p>
-          <p class="mt-4 leading-relaxed text-gris">
-            Le réassort se fait à la commande, sans engagement de volume annuel.
-          </p>
-        </div>
-      )}
+      <ul class="grid gap-4 sm:grid-cols-3 list-none p-0 m-0">
+        {conditionsPro.map((c) => (
+          <li class="rounded-xl border border-pierre bg-white p-6">
+            <p class="font-display text-2xl text-encre leading-tight">{c.titre}</p>
+            <p class="mt-2 text-sm leading-relaxed text-gris">{c.texte}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-6 text-sm text-gris">
+        Déjà revendeur ? <a href="/pro/connexion/" class="lien-souligne">Accéder à mon espace revendeur</a>
+      </p>
     </div>
   </section>
 

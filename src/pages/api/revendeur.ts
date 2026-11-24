@@ -11,6 +11,7 @@ import {
 // partagée avec les autres routes, sans avoir à renommer chaque appel ici.
 import { verifierLimite, PLAFONDS } from '../../lib/rateLimit';
 import { envoyerEmail, echapperHtml as echapper } from '../../lib/email';
+import { creerCandidature } from '../../lib/pro';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -135,7 +136,22 @@ export const POST: APIRoute = async ({ request }) => {
     return echec('Le SIRET doit comporter 14 chiffres (9 pour un SIREN).', 400);
   }
 
+  // Candidature enregistrée dans le Studio (Revendeurs → En attente), en
+  // document PRIVÉ. Un échec n'empêche pas l'email : rien n'est perdu.
+  let enregistree = false;
+  try {
+    enregistree = Boolean(await creerCandidature(donnees));
+  } catch (e: any) {
+    console.error('[revendeur] candidature non enregistrée :', e?.message ?? e);
+  }
+
   const lignes: [string, string][] = [
+    [
+      'Validation',
+      enregistree
+        ? 'Candidature enregistrée dans le Studio (Revendeurs → En attente). Passez-la à « Validé » : le revendeur recevra son lien de commande (−30 %, minimum 300 €).'
+        : "Candidature NON enregistrée dans le Studio (configuration à vérifier) : répondez directement au professionnel.",
+    ],
     ['Boutique', donnees.boutique],
     ['Contact', donnees.contact],
     ['Email', donnees.email],

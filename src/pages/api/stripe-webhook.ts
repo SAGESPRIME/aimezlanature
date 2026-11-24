@@ -245,6 +245,7 @@ async function traiterCommande(session: any, cleStripe: string): Promise<Respons
     telephone: session?.customer_details?.phone ?? undefined,
     adresse: livraison.adresse,
     reference: String(session.id),
+    revendeur: Boolean(session?.metadata?.revendeur),
   };
 
   // ── 1. Le marchand, pour qu'il prépare le colis ────────────────────────

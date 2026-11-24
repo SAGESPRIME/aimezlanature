@@ -210,7 +210,7 @@ app.get('/api/sante', (_req, res) => {
 // propre signature et ne livrent aucun contenu.
 if (IDENTIFIANTS_RECETTE) {
   const attendu = empreinte(`${IDENTIFIANTS_RECETTE.u}:${IDENTIFIANTS_RECETTE.m}`);
-  const LIBRES = new Set(['/api/stripe-webhook', '/api/reconstruction']);
+  const LIBRES = new Set(['/api/stripe-webhook', '/api/reconstruction', '/api/pro/invitations']);
   app.use((req, res, next) => {
     if (LIBRES.has(req.path)) return next();
     const [type, valeur] = (req.headers.authorization ?? '').split(' ');
@@ -312,6 +312,25 @@ function ecouter(hote) {
   return s;
 }
 let serveur = ecouter(HOST);
+
+// ── Espace revendeurs : envoi des liens de connexion ──────────────────────
+// Toutes les 5 minutes, les revendeurs que le marchand vient de passer à
+// « Validé » dans le Studio reçoivent leur lien (src/lib/pro.ts). Appel
+// interne, authentifié par PRO_SECRET. Sur UN SEUL environnement
+// (PRO_INVITATIONS=1), sinon recette et prod enverraient chacune un email.
+if (process.env.PRO_INVITATIONS === '1' && (process.env.PRO_SECRET ?? '').length >= 32) {
+  const inviter = () =>
+    fetch(`http://127.0.0.1:${PORT}/api/pro/invitations`, {
+      method: 'POST',
+      headers: { 'x-aln-interne': /** @type {string} */ (process.env.PRO_SECRET) },
+      signal: AbortSignal.timeout(60_000),
+    })
+      .then((r) => r.json())
+      .then((d) => d?.envoyes && console.log(`[pro] ${d.envoyes} lien(s) d'accès envoyé(s)`))
+      .catch((e) => console.error('[pro] invitations :', e?.message ?? e));
+  setTimeout(inviter, 30_000).unref();
+  setInterval(inviter, 5 * 60_000).unref();
+}
 
 // Arrêt propre lors d'un redéploiement : Coolify envoie SIGTERM, on finit les
 // requêtes en cours (un paiement, un webhook Stripe) avant de quitter.

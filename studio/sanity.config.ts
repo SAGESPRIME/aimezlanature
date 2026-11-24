@@ -15,7 +15,7 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './schemas';
-import { structure, TYPES_UNIQUES } from './structure';
+import { structure, TYPES_UNIQUES, TYPES_CREES_PAR_LE_SITE } from './structure';
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID;
 const dataset = process.env.SANITY_STUDIO_DATASET ?? 'production';
@@ -33,7 +33,10 @@ export default defineConfig({
     types: schemaTypes,
     // Les réglages du site sont uniques : on ne peut ni en créer un second, ni
     // le dupliquer depuis le menu « Créer ».
-    templates: (modeles) => modeles.filter(({ schemaType }) => !TYPES_UNIQUES.has(schemaType)),
+    // Les revendeurs sont créés par le formulaire du site, avec un identifiant
+    // privé ; un revendeur créé ici aurait un identifiant public.
+    templates: (modeles) =>
+      modeles.filter(({ schemaType }) => !TYPES_UNIQUES.has(schemaType) && !TYPES_CREES_PAR_LE_SITE.has(schemaType)),
   },
   document: {
     actions: (actions, { schemaType }) =>

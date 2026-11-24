@@ -40,6 +40,8 @@ export interface Commande {
   adresse?: string[];
   /** Identifiant Stripe de la commande, pour la retrouver au tableau de bord. */
   reference?: string;
+  /** Commande passée depuis l'espace revendeurs (/pro/, tarif −30 %). */
+  revendeur?: boolean;
 }
 
 /**
@@ -196,7 +198,7 @@ ${lignes}
 
 export function sujetMarchand(commande: Commande): string {
   const articles = commande.lignes.reduce((total, l) => total + l.quantite, 0);
-  return `Nouvelle commande — ${articles} article${articles > 1 ? 's' : ''}, ${euros(commande.total)}`;
+  return `${commande.revendeur ? 'Commande REVENDEUR' : 'Nouvelle commande'} — ${articles} article${articles > 1 ? 's' : ''}, ${euros(commande.total)}`;
 }
 
 export function texteMarchand(commande: Commande): string {
