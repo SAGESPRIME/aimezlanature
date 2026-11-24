@@ -109,9 +109,9 @@ export function getProduct(slug: string): Product | undefined {
 
 const reglages = (await getEntry('reglages', 'reglages'))!.data;
 
-/** « a », « a et b », « a, b et c ». */
-function enFrancais(liste: string[]): string {
-  return liste.length < 2 ? (liste[0] ?? '') : `${liste.slice(0, -1).join(', ')} et ${liste.at(-1)}`;
+/** « a », « a ou b », « a, b ou c » : UN seul de ces produits suffit. */
+function auChoix(liste: string[]): string {
+  return liste.length < 2 ? (liste[0] ?? '') : `${liste.slice(0, -1).join(', ')} ou ${liste.at(-1)}`;
 }
 
 export const SITE = {
@@ -137,10 +137,10 @@ export const SITE = {
   shippingFee: reglages.fraisDePort,
   /**
    * Produits qui ouvrent la livraison offerte, en toutes lettres pour les
-   * textes : « le Pack 100 Perles et le Pack Gourde ». Calculé depuis les
+   * textes : « le Pack 100 Perles ou le Pack Gourde » (un seul suffit). Calculé depuis les
    * cases du Studio, jamais écrit en dur.
    */
-  livraisonOfferteAvec: enFrancais(
+  livraisonOfferteAvec: auChoix(
     products.filter((p) => p.livraisonOfferte && p.inStock).map((p) => `le ${p.shortName}`)
   ),
   /** Année de création de la marque. */
