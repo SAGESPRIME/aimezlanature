@@ -258,7 +258,15 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
       15 × Pack 100 = 331,34 € → paiement Stripe test, webhook, emails client + « Commande
       REVENDEUR » reçus → « Suspendu » → accès coupé. Document de test supprimé (0 revendeur).
 - [ ] Jour J : `SANITY_WRITE_TOKEN` + `PRO_SECRET` (nouveau) sur `site-prod`, et déplacer
-      `PRO_INVITATIONS=1` de la recette vers la prod (un seul environnement envoie les liens).
+      `ENVOIS_AUTOMATIQUES=1` de la recette vers la prod (un seul environnement envoie les
+      liens revendeurs et les emails de suivi).
+
+## Commandes dans le Studio (2026-11-24)
+- [x] Fiche `commandes.<session>` créée par le webhook à chaque paiement ; listes À expédier /
+      Expédiées / Annulées / Revendeurs ; « Expédiée » + n° Colissimo → email de suivi
+      (tâche des 5 min, `/api/taches`). Tests `tests/commandes.test.mjs`.
+- [ ] Les commandes payées AVANT cette version (test du 24/11) ne sont pas reprises : Stripe.
+- [ ] Avant d'arrêter WordPress : exporter les commandes WooCommerce (CSV).
 
 ## Offre revendeur B2B (2026-07-23) — LIVRÉE, non publiable en l'état
 Page `/revendeurs/` pour les boutiques bio et vendeurs pro. Plan complet :

@@ -210,7 +210,7 @@ app.get('/api/sante', (_req, res) => {
 // propre signature et ne livrent aucun contenu.
 if (IDENTIFIANTS_RECETTE) {
   const attendu = empreinte(`${IDENTIFIANTS_RECETTE.u}:${IDENTIFIANTS_RECETTE.m}`);
-  const LIBRES = new Set(['/api/stripe-webhook', '/api/reconstruction', '/api/pro/invitations']);
+  const LIBRES = new Set(['/api/stripe-webhook', '/api/reconstruction', '/api/taches']);
   app.use((req, res, next) => {
     if (LIBRES.has(req.path)) return next();
     const [type, valeur] = (req.headers.authorization ?? '').split(' ');
@@ -313,23 +313,29 @@ function ecouter(hote) {
 }
 let serveur = ecouter(HOST);
 
-// ── Espace revendeurs : envoi des liens de connexion ──────────────────────
-// Toutes les 5 minutes, les revendeurs que le marchand vient de passer à
-// « Validé » dans le Studio reçoivent leur lien (src/lib/pro.ts). Appel
-// interne, authentifié par PRO_SECRET. Sur UN SEUL environnement
-// (PRO_INVITATIONS=1), sinon recette et prod enverraient chacune un email.
-if (process.env.PRO_INVITATIONS === '1' && (process.env.PRO_SECRET ?? '').length >= 32) {
-  const inviter = () =>
-    fetch(`http://127.0.0.1:${PORT}/api/pro/invitations`, {
+// ── Envois automatiques (src/pages/api/taches.ts) ─────────────────────────
+// Toutes les 5 minutes : liens de connexion des revendeurs que le marchand
+// vient de valider dans le Studio (src/lib/pro.ts) et emails « votre colis est
+// en route » des commandes passées à « Expédiée » (src/lib/commandes.ts).
+// Appel interne, authentifié par PRO_SECRET. Sur UN SEUL environnement
+// (ENVOIS_AUTOMATIQUES=1, ancien nom PRO_INVITATIONS=1), sinon recette et
+// prod enverraient chacune un email.
+const ENVOIS_AUTO = process.env.ENVOIS_AUTOMATIQUES === '1' || process.env.PRO_INVITATIONS === '1';
+if (ENVOIS_AUTO && (process.env.PRO_SECRET ?? '').length >= 32) {
+  const lancer = () =>
+    fetch(`http://127.0.0.1:${PORT}/api/taches`, {
       method: 'POST',
       headers: { 'x-aln-interne': /** @type {string} */ (process.env.PRO_SECRET) },
-      signal: AbortSignal.timeout(60_000),
+      signal: AbortSignal.timeout(120_000),
     })
       .then((r) => r.json())
-      .then((d) => d?.envoyes && console.log(`[pro] ${d.envoyes} lien(s) d'accès envoyé(s)`))
-      .catch((e) => console.error('[pro] invitations :', e?.message ?? e));
-  setTimeout(inviter, 30_000).unref();
-  setInterval(inviter, 5 * 60_000).unref();
+      .then((d) => {
+        if (typeof d?.liens === 'number' && d.liens > 0) console.log(`[pro] ${d.liens} lien(s) d'accès envoyé(s)`);
+        if (typeof d?.suivis === 'number' && d.suivis > 0) console.log(`[commandes] ${d.suivis} email(s) d'expédition envoyé(s)`);
+      })
+      .catch((e) => console.error('[taches] :', e?.message ?? e));
+  setTimeout(lancer, 30_000).unref();
+  setInterval(lancer, 5 * 60_000).unref();
 }
 
 // Arrêt propre lors d'un redéploiement : Coolify envoie SIGTERM, on finit les

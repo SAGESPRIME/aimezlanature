@@ -174,5 +174,29 @@ se mettent à jour seuls. Calcul : `src/data/livraison.mjs` (serveur) et
 
 Variables serveur (Coolify) : `SANITY_WRITE_TOKEN` (jeton Sanity **Editor**,
 saisi par le marchand), `PRO_SECRET` (≥ 32 caractères, signature des liens et
-sessions), `PRO_INVITATIONS=1` sur **un seul** environnement (celui qui envoie
-les emails d'accès).
+sessions), `ENVOIS_AUTOMATIQUES=1` (ancien nom `PRO_INVITATIONS=1`, encore
+accepté) sur **un seul** environnement (celui qui envoie les emails d'accès et
+de suivi).
+
+## Commandes
+
+- Chaque paiement Stripe crée une fiche dans **Commandes → À expédier**
+  (document privé `commandes.<session Stripe>`, créé par le webhook ; un rejeu
+  de Stripe ne crée pas de doublon). On y lit : articles, montants, client,
+  adresse de livraison, origine (client ou revendeur), lien vers le paiement
+  dans Stripe. Les paiements de test sont marqués « TEST ».
+- À l'envoi du colis : statut **Expédiée**, **numéro de suivi Colissimo**, puis
+  **Publier**. Dans les 5 minutes, le client reçoit l'email « Votre colis est
+  en route » avec le lien de suivi La Poste (une seule fois ; le numéro est
+  ensuite verrouillé). Sans numéro, aucun email ne part.
+- **Annulée / remboursée** : simple classement ; le remboursement se fait dans
+  Stripe.
+- Seuls le statut, le numéro de suivi et les notes se modifient ; le reste vient
+  de Stripe, qui reste la référence comptable. Le menu « Créer » ne propose pas
+  de commande.
+- Si Sanity est indisponible au moment du paiement, la commande n'apparaît pas
+  dans le Studio (journal `[commandes]`) mais reste dans Stripe et dans l'email
+  « Nouvelle commande ».
+
+Code : `src/data/commande-doc.mjs` (fiche, testée par
+`tests/commandes.test.mjs`), `src/lib/commandes.ts`, `src/pages/api/taches.ts`.

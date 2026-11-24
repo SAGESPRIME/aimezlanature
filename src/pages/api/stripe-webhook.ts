@@ -5,6 +5,8 @@ import { verifierSignature } from '../../lib/stripe-signature';
 import { envoyerEmail, EMAIL_MARCHAND } from '../../lib/email';
 import { reserver, marquerFait, liberer, enCours, etapeFaite, noterEtape } from '../../lib/evenements-traites';
 import { MARQUE_SESSION } from '../../lib/marque-stripe';
+import { enregistrerCommande } from '../../lib/commandes';
+import { documentCommande, lireLivraison, numeroCommande } from '../../data/commande-doc.mjs';
 import {
   sujetCommande,
   texteCommande,
@@ -89,32 +91,6 @@ async function lireArticles(sessionId: string, cle: string): Promise<LigneComman
     console.error('Stripe injoignable (articles):', e);
     return null;
   }
-}
-
-/**
- * Met l'adresse de livraison en forme, ligne par ligne.
- *
- * Stripe l'a déplacée de `shipping_details` vers
- * `collected_information.shipping_details` dans les versions récentes de son
- * API : on lit les deux, pour ne pas dépendre de la version configurée sur le
- * compte ni casser le jour d'une mise à jour.
- */
-function lireLivraison(session: any): { nom?: string; adresse?: string[] } {
-  const livraison = session?.collected_information?.shipping_details ?? session?.shipping_details;
-  const a = livraison?.address;
-  if (!a) return {};
-
-  const lignes = [
-    a.line1,
-    a.line2,
-    [a.postal_code, a.city].filter(Boolean).join(' '),
-    a.state,
-    a.country,
-  ]
-    .map((l: unknown) => (typeof l === 'string' ? l.trim() : ''))
-    .filter((l: string) => l.length > 0);
-
-  return { nom: livraison?.name ?? undefined, adresse: lignes.length > 0 ? lignes : undefined };
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -246,7 +222,23 @@ async function traiterCommande(session: any, cleStripe: string): Promise<Respons
     adresse: livraison.adresse,
     reference: String(session.id),
     revendeur: Boolean(session?.metadata?.revendeur),
+    numero: numeroCommande(String(session.id)),
   };
+
+  // ── 0. La fiche « Commandes » du Studio (statut « À expédier ») ────────
+  // createIfNotExists : un rejeu ne crée pas de doublon. Un échec n'arrête
+  // rien (journal seulement) : la commande reste dans Stripe et dans l'email
+  // au marchand.
+  const cleFiche = `fiche:${session.id}`;
+  if (!etapeFaite(cleFiche)) {
+    let fiche: ReturnType<typeof documentCommande> | null = null;
+    try {
+      fiche = documentCommande(session, articles);
+    } catch (e: any) {
+      console.error('[commandes] fiche impossible pour', session.id, '-', e?.message ?? e);
+    }
+    if (fiche && (await enregistrerCommande(fiche))) noterEtape(cleFiche);
+  }
 
   // ── 1. Le marchand, pour qu'il prépare le colis ────────────────────────
   // Un échec ici n'interrompt PAS le traitement et ne renvoie pas d'erreur :

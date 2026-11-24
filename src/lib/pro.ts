@@ -6,7 +6,7 @@
  *      (statut « en attente »), PRIVÉ (identifiant à point = illisible sans
  *      jeton) + email au marchand.
  *   2. Le marchand passe le statut à « Validé » dans le Studio. Toutes les
- *      5 minutes, server.mjs appelle /api/pro/invitations : chaque revendeur
+ *      5 minutes, server.mjs appelle /api/taches : chaque revendeur
  *      validé sans lien envoyé reçoit son LIEN DE CONNEXION (signé, 7 jours).
  *      Il peut en redemander un sur /pro/connexion/.
  *   3. Le lien ouvre une session (cookie signé, 30 jours) → /pro/ : commande à
@@ -18,11 +18,11 @@
  *   SANITY_WRITE_TOKEN  jeton Sanity « Editor » (création des candidatures,
  *                       lecture des documents privés, date d'envoi du lien)
  *   PRO_SECRET          ≥ 32 caractères : signature des liens et sessions
- *   PRO_INVITATIONS=1   sur UN SEUL environnement : envoie les liens
- *                       (sinon recette et prod enverraient chacune le leur)
+ *   ENVOIS_AUTOMATIQUES=1  sur UN SEUL environnement : envoie les liens
+ *                       (ancien nom PRO_INVITATIONS=1, voir sanity-prive.ts)
  */
 import { randomUUID } from 'node:crypto';
-import { createClient, type SanityClient } from '@sanity/client';
+import { sanityPrive, envoisAutomatiques } from './sanity-prive';
 import type { AstroCookies } from 'astro';
 import { signerJeton, verifierJeton } from '../data/jeton-pro.mjs';
 import { envoyerEmail, echapperHtml, EMAIL_MARCHAND } from './email';
@@ -40,22 +40,6 @@ export interface Revendeur {
   contact?: string;
   email?: string;
   accesEnvoyeLe?: string;
-}
-
-let client: SanityClient | null = null;
-function sanityPrive(): SanityClient | null {
-  const token = process.env.SANITY_WRITE_TOKEN;
-  const projectId = process.env.SANITY_PROJECT_ID;
-  if (!token || !projectId) return null;
-  client ??= createClient({
-    projectId,
-    dataset: process.env.SANITY_DATASET || 'production',
-    apiVersion: '2025-02-19',
-    token,
-    useCdn: false,
-    perspective: 'published',
-  });
-  return client;
 }
 
 export const espaceProConfigure = (): boolean =>
@@ -153,11 +137,11 @@ export async function envoyerLien(r: Revendeur): Promise<boolean> {
 
 /**
  * Envoie le lien à chaque revendeur validé qui ne l'a pas encore reçu, et note
- * la date d'envoi (au plus 20 par passage). Appelé par /api/pro/invitations.
+ * la date d'envoi (au plus 20 par passage). Appelé par /api/taches.
  */
 export async function envoyerInvitations(): Promise<number> {
   const sanity = sanityPrive();
-  if (!sanity || process.env.PRO_INVITATIONS !== '1') return 0;
+  if (!sanity || !envoisAutomatiques()) return 0;
   const aInviter = await sanity.fetch<Revendeur[]>(
     `*[_type == "revendeur" && _id in path("revendeurs.**") && statut == "valide" && !defined(accesEnvoyeLe)][0...20]${CHAMPS}`
   );

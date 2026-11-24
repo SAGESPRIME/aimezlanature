@@ -5,5 +5,6 @@ import { article } from './article';
 import { faq } from './faq';
 import { auteur } from './auteur';
 import { revendeur } from './revendeur';
+import { commande } from './commande';
 
-export const schemaTypes = [reglages, produit, avis, article, faq, auteur, revendeur];
+export const schemaTypes = [reglages, produit, avis, article, faq, auteur, revendeur, commande];
