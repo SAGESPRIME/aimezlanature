@@ -1,5 +1,6 @@
 import { defineType, defineField } from 'sanity';
 import { regles } from './communs';
+import photosSite from '../../contenu/photos-site.json';
 
 /**
  * Réglages généraux — document UNIQUE.
@@ -16,6 +17,7 @@ export const reglages = defineType({
     { name: 'commerce', title: 'Livraison & avis', default: true },
     { name: 'marque', title: 'Marque' },
     { name: 'amazon', title: 'Preuve Amazon' },
+    { name: 'photos', title: 'Photos du site' },
   ],
   fields: [
     defineField({
@@ -71,6 +73,40 @@ export const reglages = defineType({
         defineField({ name: 'nbCommentaires', title: 'Nombre de commentaires', type: 'number', validation: (r) => r.required().integer().min(0) }),
         defineField({ name: 'url', title: 'Lien de la fiche Amazon', type: 'url', validation: (r) => r.required() }),
       ],
+    }),
+    defineField({
+      name: 'photos',
+      title: 'Photos du site',
+      description:
+        "Photos d'ambiance de l'accueil et des en-têtes de pages. Un emplacement laissé vide garde la photo actuelle. Après publication, le site se reconstruit tout seul (environ 2 minutes).",
+      type: 'object',
+      group: 'photos',
+      options: { collapsible: false },
+      fields: photosSite.emplacements.map((e) =>
+        defineField({
+          name: e.cle,
+          title: e.titre,
+          description: e.ou,
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Texte alternatif',
+              description: "Décrit la photo pour les personnes aveugles et pour Google. Ex. : « Carafe d'eau sur une table en bois ».",
+              type: 'string',
+              validation: (r) => r.required().min(5).max(160),
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Crédit (si la photo n\'est pas la vôtre)',
+              description: "Obligatoire pour une photo sous licence CC BY : « Titre, Auteur, CC BY 2.0 ». Affiché dans les mentions légales. Laisser vide pour vos propres photos.",
+              type: 'string',
+              validation: (r) => r.max(200),
+            }),
+          ],
+        })
+      ),
     }),
   ],
   preview: { prepare: () => ({ title: 'Réglages du site' }) },

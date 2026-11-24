@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { guides } from '../data/guides';
+import EnTetePage from '../components/EnTetePage.astro';
 
 const metaTitle = 'Page introuvable | Aimez la Nature';
 const metaDescription =
@@ -9,26 +10,21 @@ const metaDescription =
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
-  <section class="bg-anis-pale px-4 pt-16 pb-16">
-    <div class="max-w-3xl mx-auto text-center">
-      <p class="font-display text-7xl text-gris font-bold mb-4" aria-hidden="true">404</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Cette page s'est évaporée
-      </h1>
-      <p class="text-gris text-lg leading-relaxed mb-8">
-        L'adresse demandée n'existe pas ou plus. Pas de panique : tout ce qui compte
-        est à portée de clic.
-      </p>
-      <a
-        href="/perles-ceramique-em/"
-        class="inline-flex items-center gap-2 bg-foret text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-foret-fonce transition-colors"
-      >
-        Voir nos packs de perles <span aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
+  <EnTetePage centre>
+    <Fragment slot="titre">Cette page s'est évaporée</Fragment>
+    <p class="text-gris text-lg leading-relaxed mb-8">
+      L'adresse demandée n'existe pas ou plus. Pas de panique : tout ce qui compte
+      est à portée de clic.
+    </p>
+    <a
+      href="/perles-ceramique-em/"
+      class="inline-flex items-center gap-2 bg-foret text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-foret-fonce transition-colors"
+    >
+      Voir nos packs de perles <span aria-hidden="true">→</span>
+    </a>
+  </EnTetePage>
 
-  <section class="py-14 px-4 bg-white" aria-labelledby="guides-404">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="guides-404">
     <div class="max-w-4xl mx-auto">
       <h2 id="guides-404" class="font-display text-2xl text-foret mb-6">Ou consultez un guide</h2>
       <ul class="grid sm:grid-cols-2 gap-3 text-sm">

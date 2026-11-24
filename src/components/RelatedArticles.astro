@@ -44,12 +44,12 @@ const related = ordered.slice(0, limit);
 ---
 
 {related.length > 0 && (
-  <section class="py-14 px-4 bg-anis-pale" aria-labelledby="a-lire-aussi">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="a-lire-aussi">
     <div class="max-w-5xl mx-auto">
       <h2 id="a-lire-aussi" class="font-display text-3xl text-foret mb-8">{title}</h2>
       <div class="grid md:grid-cols-3 gap-5">
         {related.map((item) => (
-          <article class="rounded-2xl border border-ligne bg-white p-6">
+          <article class="rounded-xl border border-ligne bg-white p-6">
             <p class="text-sm text-olive mb-3">{item.category}</p>
             <h3 class="font-display text-xl text-encre mb-3 leading-snug">
               <a href={item.href} class="hover:text-foret transition-colors">{item.title}</a>

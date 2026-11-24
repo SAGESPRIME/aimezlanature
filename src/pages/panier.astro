@@ -10,6 +10,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
 import PaymentMethods from '../components/PaymentMethods.astro';
+import EnTetePage from '../components/EnTetePage.astro';
 
 const metaTitle = 'Votre panier | Aimez la Nature';
 const metaDescription =
@@ -18,16 +19,14 @@ const metaDescription =
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
-  <section class="bg-anis-pale px-4 pt-12 pb-10">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="font-display text-4xl lg:text-5xl text-encre">Votre panier</h1>
-    </div>
-  </section>
+  <EnTetePage>
+    <Fragment slot="titre">Votre panier</Fragment>
+  </EnTetePage>
 
-  <section class="py-12 px-4 bg-white">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white">
     <div class="max-w-4xl mx-auto grid lg:grid-cols-[1fr_320px] gap-10 items-start">
       <div>
-        <p id="panier-vide" hidden class="rounded-2xl border border-ligne bg-coquille p-8 text-center text-gris">
+        <p id="panier-vide" hidden class="rounded-xl border border-ligne bg-coquille p-8 text-center text-gris">
           Votre panier est vide.{' '}
           <a href="/perles-ceramique-em/" class="block mt-4 font-semibold text-foret underline">
             Découvrir nos packs
@@ -36,7 +35,7 @@ const metaDescription =
         <ul id="panier-contenu" class="list-none p-0 m-0"></ul>
       </div>
 
-      <aside id="panier-resume" hidden class="rounded-2xl border border-pierre bg-coquille p-6 lg:sticky lg:top-24">
+      <aside id="panier-resume" hidden class="rounded-xl border border-pierre bg-coquille p-6 lg:sticky lg:top-24">
         <h2 class="font-display text-2xl text-foret mb-5">Récapitulatif</h2>
         <dl class="space-y-2 text-sm text-gris">
           <div class="flex justify-between"><dt>Sous-total</dt><dd id="resume-sous-total">—</dd></div>

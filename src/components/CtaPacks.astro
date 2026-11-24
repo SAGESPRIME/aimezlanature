@@ -4,7 +4,7 @@ import { products, SITE } from '../data/products';
 const packs = products.filter((p) => p.inStock);
 ---
 
-<section class="py-16 px-4 bg-nuit text-white" aria-labelledby="cta-packs-titre">
+<section class="py-16 lg:py-20 px-4 sm:px-6 bg-nuit text-white" aria-labelledby="cta-packs-titre">
   <div class="max-w-5xl mx-auto text-center">
     <p class="text-sm text-anis mb-3">Passer à l'action</p>
     <h2 id="cta-packs-titre" class="font-display text-3xl lg:text-4xl mb-3">Prêt à purifier votre eau ?</h2>
@@ -16,7 +16,7 @@ const packs = products.filter((p) => p.inStock);
       {packs.map((p) => (
         <a
           href={`/perles-ceramique-em/${p.slug}/`}
-          class="bg-white/5 border border-white/15 rounded-2xl p-5 hover:bg-white/10 hover:border-anis transition-colors text-left"
+          class="bg-white/5 border border-white/15 rounded-xl p-5 hover:bg-white/10 hover:border-anis transition-colors text-left"
         >
           <p class="font-display text-lg mb-1">{p.shortName}</p>
           <p class="text-xs text-anis-clair mb-3">{p.usages[0]}</p>

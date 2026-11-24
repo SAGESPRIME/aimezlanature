@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { faqPour } from '../data/faq';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
@@ -8,16 +7,15 @@ import AnswerBox from '../components/AnswerBox.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildFaqSchema } from '../lib/seo';
-import { getProductPhoto } from '../lib/productImages';
 import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
+import EnTetePage from '../components/EnTetePage.astro';
+import { photoSite } from '../data/photosSite';
 
 const PATH = '/comment-ca-marche/';
 // Cette page porte un schema HowTo (pas Article) : la date n'a donc pas
 // d'équivalent machine à refléter, elle sert uniquement au lecteur.
 const datePublished = '2026-07-20';
 
-// Le Pack 55 est le format de référence pour la carafe décrite dans les étapes.
-const photoSlug = 'pack-55-perles';
 
 const metaTitle = 'Combien de perles de céramique par litre ? | Aimez la Nature';
 const metaDescription =
@@ -65,34 +63,14 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">Mode d'emploi</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Comment utiliser les perles de céramique ? Le guide complet
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        Dosage par litre, première utilisation, entretien, régénération : tout ce qu'il faut
-        savoir pour tirer le meilleur de vos perles EM® — en 3 étapes et quelques minutes.
-      </p>
-      <PageDate date={datePublished} class="mt-5" />
-    </div>
-  </section>
-
-  <!-- VISUEL -->
-  <div class="bg-anis-pale px-4 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <Image
-        {...getProductPhoto(photoSlug)!}
-        width={560}
-        widths={[320, 560, 1120]}
-        sizes="(max-width: 640px) 90vw, 560px"
-        loading="eager"
-        fetchpriority="high"
-        class="w-full max-w-[440px] mx-auto rounded-2xl"
-      />
-    </div>
-  </div>
+  <EnTetePage surTitre="Mode d'emploi" photo={photoSite('commentCaMarche')}>
+    <Fragment slot="titre">Comment utiliser les perles de céramique ? Le guide complet</Fragment>
+    <p>
+      Dosage par litre, première utilisation, entretien, régénération : tout ce qu'il faut
+      savoir pour tirer le meilleur de vos perles EM® — en 3 étapes et quelques minutes.
+    </p>
+    <PageDate date={datePublished} class="mt-5" />
+  </EnTetePage>
 
   <AnswerBox>
     Comptez <strong class="text-encre">15 perles par litre</strong> d'eau de boisson.
@@ -103,7 +81,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
   </AnswerBox>
 
   <!-- 3 ÉTAPES -->
-  <section class="py-16 px-4 bg-white" aria-labelledby="etapes-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="etapes-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="etapes-titre" class="font-display text-3xl text-foret mb-8">Les 3 étapes essentielles</h2>
       <ol class="space-y-8">
@@ -123,14 +101,14 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
   </section>
 
   <!-- DOSAGE -->
-  <section class="py-16 px-4 bg-anis-pale" aria-labelledby="dosage-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="dosage-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="dosage-titre" class="font-display text-3xl text-foret mb-4">Combien de perles par litre d'eau ?</h2>
       <p class="text-gris mb-8">
         La règle simple : <strong class="text-encre">{PERLES_PAR_LITRE} perles par litre</strong>
         d'eau de boisson. Les appareils électroménagers ont, eux, un dosage forfaitaire :
       </p>
-      <div class="overflow-x-auto rounded-2xl border border-pierre bg-white">
+      <div class="overflow-x-auto rounded-xl border border-pierre bg-white">
         <table class="w-full text-sm text-left">
           <thead>
             <tr class="bg-nuit text-white">
@@ -165,11 +143,11 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
   </section>
 
   <!-- CE QUE ÇA FAIT / NE FAIT PAS -->
-  <section class="py-16 px-4 bg-white" aria-labelledby="effets-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="effets-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="effets-titre" class="font-display text-3xl text-foret mb-8">Ce que les perles font — et ne font pas</h2>
       <div class="grid sm:grid-cols-2 gap-5">
-        <div class="rounded-2xl border border-anis-clair bg-anis-pale p-6">
+        <div class="rounded-xl border border-anis-clair bg-anis-pale p-6">
           <p class="font-semibold text-foret mb-3">✓ Ce qu'elles font</p>
           <ul class="space-y-2 text-sm text-gris">
             <li>Réduisent le goût et l'odeur de chlore</li>
@@ -179,7 +157,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
             <li>Zéro déchet, zéro plastique</li>
           </ul>
         </div>
-        <div class="rounded-2xl border border-ligne bg-coquille p-6">
+        <div class="rounded-xl border border-ligne bg-coquille p-6">
           <p class="font-semibold text-olive mb-3">✗ Ce qu'elles ne font pas</p>
           <ul class="space-y-2 text-sm text-gris">
             <li>Éliminer bactéries et virus</li>

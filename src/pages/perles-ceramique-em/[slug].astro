@@ -135,7 +135,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   <BenefitTransformation />
 
   <!-- DESCRIPTION -->
-  <section class="py-16 px-4 bg-white" aria-labelledby="description-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="description-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="description-titre" class="font-display text-3xl text-foret mb-6">Description</h2>
       {/* Le premier paragraphe sert d'accroche : plus grand et plus sombre.
@@ -150,7 +150,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
           {par}
         </p>
       ))}
-      <p class="flex items-start gap-2 text-sm text-gris bg-anis-pale rounded-2xl px-5 py-4 mt-6">
+      <p class="flex items-start gap-2 text-sm text-gris bg-anis-pale rounded-xl px-5 py-4 mt-6">
         <Icon name="bulb" class="w-4 h-4 mt-0.5 flex-shrink-0 text-foret" />
         <span>
           Première utilisation, dosage, entretien : tout est expliqué pas à pas dans notre guide{' '}
@@ -170,7 +170,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   <Faq items={p.qa} title={`Questions sur le ${p.shortName}`} />
 
   <!-- CROSS-SELL -->
-  <section class="py-16 px-4 bg-anis-pale" aria-labelledby="autres-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="autres-titre">
     <div class="max-w-5xl mx-auto">
       <h2 id="autres-titre" class="font-display text-2xl text-foret mb-6">Les autres packs</h2>
       <!-- `auto-fit` plutôt que 3 colonnes fixes : quand il ne reste que 2 packs
@@ -180,7 +180,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
         {others.map((o) => (
           <a
             href={`/perles-ceramique-em/${o.slug}/`}
-            class="group bg-white rounded-2xl border border-ligne overflow-hidden hover:border-pierre-fonce transition-colors"
+            class="group bg-white rounded-xl border border-ligne overflow-hidden hover:border-pierre-fonce transition-colors"
           >
             {getProductPhoto(o.slug) && (
               <Image

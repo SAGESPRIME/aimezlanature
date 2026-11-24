@@ -42,7 +42,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
         role="radio"
         aria-checked={t.qty === defaut.qty ? 'true' : 'false'}
         data-palier={t.qty}
-        class="group relative w-full rounded-2xl border-2 border-ligne bg-white px-5 py-4 text-left transition-all hover:border-pierre-fonce aria-checked:border-foret aria-checked:bg-anis-pale aria-checked:shadow-[0_2px_12px_rgba(22,101,52,0.12)]"
+        class="group relative w-full rounded-xl border-2 border-ligne bg-white px-5 py-4 text-left transition-all hover:border-pierre-fonce aria-checked:border-foret aria-checked:bg-anis-pale aria-checked:shadow-[0_2px_12px_rgba(22,101,52,0.12)]"
       >
         {t.highlight && (
           <span class="absolute -top-2.5 right-4 rounded-full bg-foret px-3 py-0.5 text-[11px] font-bold text-white">
@@ -134,7 +134,7 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
   <!-- Sans JavaScript, le panier ne fonctionne pas : la commande par email
        reste accessible plutôt que de laisser un bouton inerte. -->
   <noscript>
-    <p class="mt-4 rounded-2xl border border-pierre bg-coquille p-4 text-sm text-gris">
+    <p class="mt-4 rounded-xl border border-pierre bg-coquille p-4 text-sm text-gris">
       Le panier nécessite JavaScript. Vous pouvez commander par email à{' '}
       <a href="mailto:commande@aimezlanature.fr" class="font-semibold text-foret underline">commande@aimezlanature.fr</a>.
     </p>

@@ -5,16 +5,10 @@ import Faq from '../components/Faq.astro';
 import AmazonProof from '../components/AmazonProof.astro';
 import Irritants from '../components/Irritants.astro';
 import { SITE, getProduct, prixDEntree } from '../data/products';
-import { fmtPrice } from '../lib/pricing';
 import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
-import { getProductPhoto } from '../lib/productImages';
-import photoVerre from '../assets/ambiance/verre-eau-table.jpg';
-import photoGalets from '../assets/ambiance/galets-eau.jpg';
-import photoCuisine from '../assets/ambiance/fenetre-cuisine.jpg';
-import photoSource from '../assets/ambiance/source-montagne.jpg';
-import photoArgile from '../assets/ambiance/argile-tour.jpg';
-import photoPierre from '../assets/ambiance/pierre-eau.jpg';
+import CarteProduit from '../components/CarteProduit.astro';
+import { photoSite } from '../data/photosSite';
 import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
 
@@ -104,15 +98,16 @@ const formats = [
   { p: pGourde, usage: 'Si vous avez déjà vos perles' },
 ];
 
-// Tuiles « Pour chaque moment d'eau » : photos d'ambiance libres
-// (crédits : src/data/creditsPhotos.ts), liens vers les pages existantes.
+// Tuiles « Pour chaque moment d'eau » : photos modifiables dans le Studio
+// (Réglages → Photos du site), photo de secours sinon (src/data/photosSite.ts).
 const moments = [
-  { href: '/comment-ca-marche/', titre: 'Comment ça marche', texte: "Ce que font les perles dans l'eau", photo: photoGalets, alt: "Galets lisses affleurant à la surface d'une eau calme" },
-  { href: '/utilisations/', titre: 'À la maison', texte: 'Carafe, bouilloire, cafetière, plantes…', photo: photoCuisine, alt: 'Fenêtre de cuisine ouverte sur un jardin, une orchidée sur le rebord' },
-  { href: '/perles-ceramique-em/gourde-ecologique/', titre: 'En balade', texte: 'La gourde en verre et ses perles', photo: photoSource, alt: 'Source de montagne coulant entre des rochers moussus' },
-  { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoArgile, alt: "Mains de potier façonnant l'argile sur le tour" },
+  { href: '/comment-ca-marche/', titre: 'Comment ça marche', texte: "Ce que font les perles dans l'eau", photo: photoSite('commentCaMarche') },
+  { href: '/utilisations/', titre: 'À la maison', texte: 'Carafe, bouilloire, cafetière, plantes…', photo: photoSite('maison') },
+  { href: '/perles-ceramique-em/gourde-ecologique/', titre: 'En balade', texte: 'La gourde en verre et ses perles', photo: photoSite('balade') },
+  { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoSite('mission') },
 ];
-const prix = (n: number) => `${fmtPrice(n)} €`;
+const photoHero = photoSite('accueil');
+const photoModeEmploi = photoSite('modeEmploi');
 const note = (n: number) => n.toString().replace('.', ',');
 ---
 
@@ -166,8 +161,7 @@ const note = (n: number) => n.toString().replace('.', ',');
     </div>
     <div class="order-first lg:order-none -mx-4 sm:mx-0 h-[290px] sm:h-[460px] lg:h-auto lg:min-h-[640px] overflow-hidden arche-hero entree-photo">
       <Image
-        src={photoVerre}
-        alt="Main tenant un verre d'eau fraîche posé sur une table"
+        {...photoHero}
         widths={[480, 720, 960, 1200]}
         sizes="(min-width: 1024px) 560px, 100vw"
         loading="eager"
@@ -189,38 +183,9 @@ const note = (n: number) => n.toString().replace('.', ',');
         <a href="/perles-ceramique-em/" class="lien-souligne">Comparer les packs</a>
       </div>
       <ul class="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 lg:gap-6 list-none p-0 m-0">
-        {formats.map(({ p, usage }) => {
-          const photo = getProductPhoto(p.slug);
-          return (
-            <li>
-              <a href={`/perles-ceramique-em/${p.slug}/`} class="carte-produit group block">
-                <div class="relative aspect-[4/5] bg-white rounded-md overflow-hidden border border-ligne">
-                  {p.bestseller && <span class="badge-produit">Bestseller</span>}
-                  {!p.inStock && <span class="badge-produit badge-epuise">Bientôt de retour</span>}
-                  {photo && (
-                    <Image
-                      {...photo}
-                      width={560}
-                      height={560}
-                      widths={[280, 420, 560]}
-                      sizes="(min-width: 1024px) 270px, 45vw"
-                      class="carte-produit-photo absolute inset-0 w-full h-full object-contain p-4 sm:p-6"
-                    />
-                  )}
-                </div>
-                <h3 class="font-display text-xl sm:text-2xl text-encre mt-4 mb-1 leading-tight">{p.shortName}</h3>
-                <p class="text-sm text-gris leading-snug">{usage}</p>
-                <p class="mt-2 text-[15px] font-semibold text-encre tabular-nums">
-                  {prix(p.priceCurrent)}
-                  {p.priceOriginal && <s class="ml-2 font-normal text-gris">{prix(p.priceOriginal)}</s>}
-                </p>
-                {p.rating && (
-                  <p class="mt-1 text-xs text-gris"><span class="etoiles" aria-hidden="true">★</span> {note(p.rating)}/5 · {p.reviewCount} avis</p>
-                )}
-              </a>
-            </li>
-          );
-        })}
+        {formats.map(({ p, usage }) => (
+          <li><CarteProduit produit={p} accroche={usage} /></li>
+        ))}
       </ul>
     </div>
   </section>
@@ -241,8 +206,7 @@ const note = (n: number) => n.toString().replace('.', ',');
           <li>
             <a href={m.href} class="tuile-moment group">
               <Image
-                src={m.photo}
-                alt={m.alt}
+                {...m.photo}
                 widths={[640, 960, 1280]}
                 sizes={i === 0 ? '(min-width: 1024px) 840px, 100vw' : '(min-width: 1024px) 720px, 100vw'}
                 class="tuile-moment-photo"
@@ -265,8 +229,7 @@ const note = (n: number) => n.toString().replace('.', ',');
     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
       <div class="arche-portrait aspect-[5/6] max-w-md w-full mx-auto lg:mx-0">
         <Image
-          src={photoPierre}
-          alt="Roche lisse au bord d'une eau calme"
+          {...photoModeEmploi}
           widths={[800, 1100, 1400]}
           sizes="(min-width: 1024px) 1100px, 830px"
           class="w-full h-full object-cover object-[50%_80%]"

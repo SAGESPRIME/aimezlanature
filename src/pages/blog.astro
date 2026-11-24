@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
 import { blogPosts } from '../data/blogPosts';
+import EnTetePage from '../components/EnTetePage.astro';
+import { photoSite } from '../data/photosSite';
 
 // Titres et description repris de la version aimezlanature.vercel.app/blog.
 const metaTitle = 'Blog Perles de Céramique EM | Aimez la Nature';
@@ -44,24 +46,20 @@ function formatDate(iso: string): string {
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- EN-TÊTE — titre centré + sous-titre, comme la version d'origine -->
-  <section class="bg-anis-pale px-4 pt-16 pb-14">
-    <div class="max-w-3xl mx-auto text-center">
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.15] mb-5">
-        Blog — Perles de Céramique EM et Purification de l'Eau
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        Guides, conseils et comparatifs sur les perles de céramique EM et la
-        purification naturelle de l'eau.
-      </p>
-    </div>
-  </section>
+  <EnTetePage photo={photoSite('guides')}>
+    <Fragment slot="titre">Blog — Perles de Céramique EM et Purification de l'Eau</Fragment>
+    <p>
+      Guides, conseils et comparatifs sur les perles de céramique EM et la
+      purification naturelle de l'eau.
+    </p>
+  </EnTetePage>
 
   <!-- GRILLE D'ARTICLES — cartes blanches 2 colonnes -->
-  <section class="py-14 px-4 bg-coquille" aria-labelledby="articles-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-coquille" aria-labelledby="articles-titre">
     <h2 id="articles-titre" class="sr-only">Tous les articles</h2>
     <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
       {blogPosts.map((post) => (
-        <article class="flex flex-col rounded-2xl border border-ligne bg-white p-6 transition-colors hover:border-pierre-fonce">
+        <article class="flex flex-col rounded-xl border border-ligne bg-white p-6 transition-colors hover:border-pierre-fonce">
           <div class="flex items-center gap-3 mb-4">
             <span class="inline-flex items-center rounded-full bg-anis-clair px-3 py-1 text-xs font-semibold text-foret">
               {post.category}

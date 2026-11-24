@@ -12,6 +12,7 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import regles from '../contenu/regles.json';
+import photosSite from '../contenu/photos-site.json';
 import { chargerContenu } from './lib/cms/source';
 
 /** Montant en euros, au centime près, dans des bornes raisonnables. */
@@ -51,6 +52,21 @@ const image = z
     fichier: z.string().nullish(),
   })
   .refine((i) => (i.url && i.largeur && i.hauteur) || i.fichier, 'image sans fichier ni URL');
+
+/**
+ * Photo d'ambiance (Réglages → Photos du site). Tout est facultatif : un
+ * emplacement vide, ou rempli d'un texte sans fichier, garde la photo de
+ * secours (src/data/photosSite.ts).
+ */
+const photoSite = z
+  .object({
+    alt: z.string().min(5).max(160).nullish(),
+    credit: z.string().max(200).nullish(),
+    url: urlHttps.nullish(),
+    largeur: z.number().int().positive().nullish(),
+    hauteur: z.number().int().positive().nullish(),
+  })
+  .nullish();
 
 const questionReponse = z.object({ question: z.string().min(5), reponse: z.string().min(5) });
 
@@ -163,6 +179,9 @@ const reglages = defineCollection({
     anneeCreation: z.number().int(),
     profils: z.array(urlHttps).nullish(),
     amazon: z.object({ note: z.number().min(1).max(5), nbCommentaires: z.number().int().min(0), url: urlHttps }),
+    photos: z
+      .object(Object.fromEntries(photosSite.emplacements.map((e) => [e.cle, photoSite])))
+      .nullish(),
   }),
 });
 

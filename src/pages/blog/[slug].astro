@@ -22,6 +22,7 @@ import RelatedArticles from '../../components/RelatedArticles.astro';
 import TexteRiche from '../../components/texte/TexteRiche.astro';
 import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
 import { sourceImage } from '../../lib/cms/images';
+import EnTetePage from '../../components/EnTetePage.astro';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
@@ -53,10 +54,6 @@ const jsonLd = [
   ...(faq.length > 0 ? [buildFaqSchema(faq)] : []),
 ];
 
-// Fonds alternés : blanc / crème. La réponse courte, quand elle existe, prend
-// le premier fond blanc et décale l'alternance des sections.
-const decalage = a.reponseCourte ? 1 : 0;
-const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-coquille');
 ---
 
 <BaseLayout
@@ -68,43 +65,42 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-coquill
   modifieLe={a.dateMiseAJour ?? a.datePublication}
 >
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">{a.categorie}</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        {a.titre}
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        {a.chapo}
+  <EnTetePage surTitre={a.categorie}>
+    <Fragment slot="titre">{a.titre}</Fragment>
+    <p>
+      {a.chapo}
+    </p>
+    <PageDate date={a.datePublication} class="mt-5" />
+    {a.dateMiseAJour && a.dateMiseAJour !== a.datePublication && (
+      <PageDate date={a.dateMiseAJour} label="Mis à jour le" class="mt-1" />
+    )}
+    {a.auteur && (
+      <p class="text-sm text-gris mt-1">
+        Par <strong class="text-encre">{a.auteur.nom}</strong>, {a.auteur.role}
       </p>
-      <PageDate date={a.datePublication} class="mt-5" />
-      {a.dateMiseAJour && a.dateMiseAJour !== a.datePublication && (
-        <PageDate date={a.dateMiseAJour} label="Mis à jour le" class="mt-1" />
-      )}
-      {a.auteur && (
-        <p class="text-sm text-gris mt-1">
-          Par <strong class="text-encre">{a.auteur.nom}</strong>, {a.auteur.role}
-        </p>
-      )}
-    </div>
-  </section>
+    )}
+  </EnTetePage>
 
   {a.reponseCourte && <AnswerBox>{a.reponseCourte}</AnswerBox>}
 
-  {a.sections.map((section, i) => (
-    <section class={`py-12 px-4 ${fond(i)}`} aria-labelledby={`sec-${i}`}>
-      <div class="max-w-3xl mx-auto">
-        <h2 id={`sec-${i}`} class="font-display text-3xl text-foret mb-5">{section.titre}</h2>
-        <TexteRiche value={section.contenu} />
-      </div>
-    </section>
-  ))}
+  <!-- Corps de l'article : une seule surface, mesure de lecture (≈ 68 signes),
+       texte 17 px interligné 1,75. -->
+  <div class="px-4 sm:px-6 py-12 lg:py-16">
+    <div class="article-corps max-w-[68ch] mx-auto space-y-12">
+      {a.sections.map((section, i) => (
+        <section aria-labelledby={`sec-${i}`}>
+          <h2 id={`sec-${i}`} class="font-display text-3xl lg:text-[2.1rem] text-foret mb-5 leading-tight">{section.titre}</h2>
+          <TexteRiche value={section.contenu} />
+        </section>
+      ))}
+    </div>
+  </div>
 
   {faq.length > 0 && <Faq items={faq} title="Questions fréquentes" />}
 
   {sources.length > 0 && (
-    <section class="py-12 px-4 bg-white" aria-labelledby="sources">
-      <div class="max-w-3xl mx-auto">
+    <section class="py-12 px-4 sm:px-6 border-t border-ligne" aria-labelledby="sources">
+      <div class="max-w-[68ch] mx-auto">
         <h2 id="sources" class="font-display text-2xl text-foret mb-4">Sources</h2>
         <ol class="list-decimal pl-5 space-y-2 text-sm text-gris leading-relaxed">
           {sources.map((s) => (
@@ -119,8 +115,8 @@ const fond = (i: number) => ((i + decalage) % 2 === 0 ? 'bg-white' : 'bg-coquill
   )}
 
   {a.auteur && (
-    <section class="py-10 px-4 bg-coquille" aria-labelledby="auteur">
-      <div class="max-w-3xl mx-auto">
+    <section class="py-12 px-4 sm:px-6 border-t border-ligne" aria-labelledby="auteur">
+      <div class="max-w-[68ch] mx-auto">
         <h2 id="auteur" class="font-display text-2xl text-foret mb-3">À propos de l’auteur</h2>
         <p class="text-gris leading-relaxed">
           <strong class="text-encre">{a.auteur.nom}</strong> — {a.auteur.role}. {a.auteur.bio}

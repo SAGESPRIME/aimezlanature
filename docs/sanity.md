@@ -120,3 +120,22 @@ Ce qui a changé dans ces brouillons, et pourquoi :
 
 Sans `SANITY_PROJECT_ID`, le site lit `contenu/seed.ndjson` avec les mêmes requêtes GROQ (groq-js).
 Ce seed est un instantané : une fois Sanity en service, c'est Sanity qui fait foi.
+
+## Changer une photo du site
+
+Les photos d'ambiance (grande photo de l'accueil, tuiles, photos des en-têtes de
+pages) se changent dans le Studio : **Réglages du site → onglet « Photos du site »**.
+
+1. Choisir l'emplacement (sa description dit où la photo apparaît).
+2. Déposer la photo (format portrait pour l'accueil ; au moins 1 600 px de large
+   pour les autres), régler le point d'intérêt si besoin.
+3. Renseigner le **texte alternatif** (obligatoire : décrit la photo pour les
+   personnes aveugles et pour Google).
+4. **Crédit** : à remplir seulement si la photo n'est pas la vôtre (licence CC BY :
+   « Titre, Auteur, CC BY 2.0 ») ; il s'affiche dans les mentions légales.
+5. Publier : le site se reconstruit seul (environ 2 minutes).
+
+Un emplacement laissé vide garde la photo actuelle (photo libre de secours,
+`src/data/photosSite.ts`). Les emplacements sont déclarés dans
+`contenu/photos-site.json` (lu par le Studio et par le site). La photo est
+téléchargée et optimisée au build : le navigateur ne contacte jamais Sanity.

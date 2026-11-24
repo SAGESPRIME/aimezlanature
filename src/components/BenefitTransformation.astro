@@ -43,7 +43,7 @@ const paths: Record<string, string> = {
 };
 ---
 
-<section class="bg-nuit px-4 py-16 lg:py-20" aria-labelledby="transformation-titre">
+<section class="py-16 lg:py-20 px-4 sm:px-6 bg-nuit" aria-labelledby="transformation-titre">
   <div class="mx-auto max-w-5xl">
     <p class="mb-3 text-sm text-anis">Ce qui change chez vous</p>
     <h2
@@ -55,7 +55,7 @@ const paths: Record<string, string> = {
 
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0">
       {transformations.map((t) => (
-        <li class="flex h-full flex-col rounded-3xl bg-nuit p-6 ring-1 ring-white/5">
+        <li class="flex h-full flex-col rounded-xl bg-nuit p-6 ring-1 ring-white/5">
           <span
             class="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-anis/15"
             aria-hidden="true"

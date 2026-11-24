@@ -7,6 +7,8 @@ import AnswerBox from '../components/AnswerBox.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
+import EnTetePage from '../components/EnTetePage.astro';
+import { photoSite } from '../data/photosSite';
 
 // Chemin et date définis une seule fois : partagés par le schema Article et
 // par l'affichage, pour qu'ils ne puissent pas diverger.
@@ -74,20 +76,15 @@ const jsonLd = [
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">Comparatif · Sans langue de bois</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Purifier l'eau du robinet : perles, charbon, carafe filtrante ou osmoseur ?
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        Nous vendons des perles de céramique — et pourtant ce comparatif vous dira quand{' '}
-        <em>ne pas</em> en acheter. Chaque solution a son terrain de jeu : voici lequel,
-        chiffres à l'appui.
-      </p>
-      <PageDate date={datePublished} class="mt-5" />
-    </div>
-  </section>
+  <EnTetePage surTitre="Comparatif · Sans langue de bois" photo={photoSite('comparatif')}>
+    <Fragment slot="titre">Purifier l'eau du robinet : perles, charbon, carafe filtrante ou osmoseur ?</Fragment>
+    <p>
+      Nous vendons des perles de céramique — et pourtant ce comparatif vous dira quand{' '}
+      <em>ne pas</em> en acheter. Chaque solution a son terrain de jeu : voici lequel,
+      chiffres à l'appui.
+    </p>
+    <PageDate date={datePublished} class="mt-5" />
+  </EnTetePage>
 
   <AnswerBox>
     Si votre eau est potable et que seul le goût vous gêne :{' '}
@@ -99,10 +96,10 @@ const jsonLd = [
   </AnswerBox>
 
   <!-- TABLEAU COMPARATIF -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="tableau-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="tableau-titre">
     <div class="max-w-5xl mx-auto">
       <h2 id="tableau-titre" class="font-display text-3xl text-foret mb-8">Le match en un tableau</h2>
-      <div class="overflow-x-auto rounded-2xl border border-pierre">
+      <div class="overflow-x-auto rounded-xl border border-pierre">
         <table class="w-full text-sm text-left min-w-[720px]">
           <thead>
             <tr class="bg-nuit text-white">
@@ -135,7 +132,7 @@ const jsonLd = [
   </section>
 
   <!-- DETAIL PAR SOLUTION -->
-  <section class="py-14 px-4 bg-anis-pale" aria-labelledby="detail-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="detail-titre">
     <div class="max-w-3xl mx-auto space-y-10">
       <h2 id="detail-titre" class="font-display text-3xl text-foret">Chaque solution en détail</h2>
 
@@ -201,24 +198,24 @@ const jsonLd = [
   </section>
 
   <!-- QUEL PROFIL, QUELLE SOLUTION -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="profil-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="profil-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="profil-titre" class="font-display text-3xl text-foret mb-8">En résumé : quelle solution pour vous ?</h2>
       <div class="space-y-4">
-        <div class="rounded-2xl border border-anis-clair bg-anis-pale p-6">
+        <div class="rounded-xl border border-anis-clair bg-anis-pale p-6">
           <p class="font-semibold text-foret mb-1">« L'eau a un goût de chlore, ma bouilloire s'entartre »</p>
           <p class="text-sm text-gris">
             → Perles de céramique (achat unique) ou binchotan (si le goût est votre seul critère).
             Voir <a href="/perles-ceramique-em/" class="text-foret font-semibold hover:underline">nos packs de perles EM®</a>.
           </p>
         </div>
-        <div class="rounded-2xl border border-ligne bg-coquille p-6">
+        <div class="rounded-xl border border-ligne bg-coquille p-6">
           <p class="font-semibold text-olive mb-1">« Je veux remplacer ma carafe filtrante sans racheter de cartouches »</p>
           <p class="text-sm text-gris">
             → Perles dans votre carafe actuelle : mêmes gestes, zéro rachat, zéro déchet.
           </p>
         </div>
-        <div class="rounded-2xl border border-ligne bg-coquille p-6">
+        <div class="rounded-xl border border-ligne bg-coquille p-6">
           <p class="font-semibold text-olive mb-1">« Mon analyse d'eau révèle nitrates, plomb ou pesticides »</p>
           <p class="text-sm text-gris">
             → Osmoseur ou filtre charbon actif certifié NSF. Les perles ne traitent pas ces polluants —

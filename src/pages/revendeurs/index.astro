@@ -35,7 +35,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <section class="bg-nuit px-4 py-16 text-anis-pale lg:py-20">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-nuit text-anis-pale">
     <div class="mx-auto max-w-4xl">
       <p class="mb-4 text-sm text-anis">Espace professionnels</p>
       <h1 class="font-display mb-6 text-4xl leading-[1.1] text-anis-pale lg:text-5xl">
@@ -65,7 +65,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
   </section>
 
   <!-- POURQUOI ÇA TOURNE EN RAYON -->
-  <section class="bg-white px-4 py-16" aria-labelledby="arguments-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="arguments-titre">
     <div class="mx-auto max-w-4xl">
       <p class="mb-3 text-sm text-olive">L'intérêt pour vous</p>
       <h2 id="arguments-titre" class="font-display mb-4 text-3xl text-foret lg:text-4xl">
@@ -83,7 +83,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
           voir ces arguments sans condition. */}
       <div class="grid gap-5 sm:grid-cols-2">
         {argumentsRevente.map((a) => (
-          <div class="rounded-2xl border border-ligne bg-coquille p-6">
+          <div class="rounded-xl border border-ligne bg-coquille p-6">
             <h3 class="font-display mb-2 text-xl text-encre">{a.titre}</h3>
             <p class="text-sm leading-relaxed text-gris">{a.texte}</p>
           </div>
@@ -93,7 +93,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
   </section>
 
   <!-- VOTRE REMISE -->
-  <section class="bg-anis-pale px-4 py-16" aria-labelledby="remise-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="remise-titre">
     <div class="mx-auto max-w-3xl">
       <p class="mb-3 text-sm text-olive">Vos conditions</p>
       <h2 id="remise-titre" class="font-display mb-5 text-3xl text-foret lg:text-4xl">
@@ -101,7 +101,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
       </h2>
 
       {paliersRemise.length > 0 ? (
-        <div class="overflow-x-auto rounded-2xl border border-pierre bg-white">
+        <div class="overflow-x-auto rounded-xl border border-pierre bg-white">
           <table class="w-full text-left text-sm">
             <thead class="border-b border-ligne text-encre">
               <tr>
@@ -122,7 +122,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
           </table>
         </div>
       ) : (
-        <div class="rounded-2xl border border-pierre bg-white p-6 sm:p-8">
+        <div class="rounded-xl border border-pierre bg-white p-6 sm:p-8">
           <p class="leading-relaxed text-gris">
             Plus votre commande est importante, plus votre remise l'est. Nous ne publions pas
             notre grille en ligne : elle est établie en fonction de votre activité et du volume
@@ -137,7 +137,7 @@ const noteAmazonFr = SITE.amazon.rating.toString().replace('.', ',');
   </section>
 
   <!-- COMMENT ÇA SE PASSE -->
-  <section class="bg-white px-4 py-16" aria-labelledby="etapes-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="etapes-titre">
     <div class="mx-auto max-w-3xl">
       <p class="mb-3 text-sm text-olive">Le déroulé</p>
       <h2 id="etapes-titre" class="font-display mb-8 text-3xl text-foret lg:text-4xl">

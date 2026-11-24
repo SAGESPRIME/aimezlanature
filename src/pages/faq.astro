@@ -4,6 +4,7 @@ import { faqPour } from '../data/faq';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { buildFaqSchema } from '../lib/seo';
+import EnTetePage from '../components/EnTetePage.astro';
 
 const metaTitle = 'FAQ — Livraison, paiement, garantie | Aimez la Nature';
 const metaDescription =
@@ -17,18 +18,13 @@ const jsonLd = buildFaqSchema(faqItems);
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">FAQ</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Questions fréquentes
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        Livraison, paiement, garantie, contact : les réponses aux questions les plus posées avant
-        et après commande.
-      </p>
-    </div>
-  </section>
+  <EnTetePage>
+    <Fragment slot="titre">Questions fréquentes</Fragment>
+    <p>
+      Livraison, paiement, garantie, contact : les réponses aux questions les plus posées avant
+      et après commande.
+    </p>
+  </EnTetePage>
 
   <Faq items={faqItems} title="Vos questions" />
   <CtaPacks />

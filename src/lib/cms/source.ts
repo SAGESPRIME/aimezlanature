@@ -30,6 +30,7 @@ export const avecBrouillons = (): boolean => process.env.CONTENU_BROUILLONS === 
 import { readFileSync } from 'node:fs';
 import { createClient } from '@sanity/client';
 import { parse, evaluate } from 'groq-js';
+import photosSite from '../../../contenu/photos-site.json';
 
 export type SourceContenu = 'sanity' | 'seed';
 
@@ -49,6 +50,15 @@ const IMAGE = `{
   "fichier": _sanityAsset
 }`;
 
+/** Photo d'ambiance (Réglages → Photos du site) : une image + son crédit éventuel. */
+const PHOTO = `{
+  alt,
+  credit,
+  "url": asset->url,
+  "largeur": asset->metadata.dimensions.width,
+  "hauteur": asset->metadata.dimensions.height
+}`;
+
 /**
  * Tout le contenu en une requête (quelques dizaines de Ko) : un seul aller-retour
  * vers Sanity par build, et des données cohérentes entre elles (même instant).
@@ -56,7 +66,8 @@ const IMAGE = `{
 export const REQUETE = `{
   "reglages": *[_id == "reglages"][0]{
     nom, url, description, fraisDePort, seuilLivraisonOfferte, noteGlobale,
-    anneeCreation, profils, amazon{note, nbCommentaires, url}, _updatedAt
+    anneeCreation, profils, amazon{note, nbCommentaires, url}, _updatedAt,
+    "photos": photos{${photosSite.emplacements.map((e) => `"${e.cle}": ${e.cle}${PHOTO}`).join(', ')}}
   },
   "produits": *[_type == "produit" && defined(slug.current)] | order(ordre asc){
     "id": slug.current, nom, nomCourt, sku, ordre, prix, prixBarre, enStock,

@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
 import { buildOrganizationSchema } from '../lib/seo';
+import EnTetePage from '../components/EnTetePage.astro';
+import { photoSite } from '../data/photosSite';
 
 // Histoire réelle de la fondatrice, reprise de la page « Qui sommes-nous ? »
 // d'aimezlanature.fr (relevée le 2026-07-20). Les allégations santé du texte
@@ -66,22 +68,17 @@ const aboutSchema = {
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={aboutSchema}>
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">À propos</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Une eau meilleure, <em class="not-italic text-foret">sans plastique</em>
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        Aimez la Nature est née d'un constat simple : en France, on jette des millions de
-        bouteilles plastique pour éviter un goût de chlore. Notre mission est de rendre
-        l'eau du robinet assez agréable pour que ces bouteilles deviennent inutiles.
-      </p>
-    </div>
-  </section>
+  <EnTetePage surTitre="À propos" photo={photoSite('mission')}>
+    <Fragment slot="titre">Une eau meilleure, <em class="not-italic text-foret">sans plastique</em></Fragment>
+    <p>
+      Aimez la Nature est née d'un constat simple : en France, on jette des millions de
+      bouteilles plastique pour éviter un goût de chlore. Notre mission est de rendre
+      l'eau du robinet assez agréable pour que ces bouteilles deviennent inutiles.
+    </p>
+  </EnTetePage>
 
   <!-- HISTOIRE / TIMELINE -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="histoire-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="histoire-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="histoire-titre" class="font-display text-3xl text-foret mb-3">D'où vient Aimez la Nature</h2>
       <p class="text-gris leading-relaxed mb-10">
@@ -104,7 +101,7 @@ const aboutSchema = {
   </section>
 
   <!-- POURQUOI LES PERLES -->
-  <section class="py-14 px-4 bg-coquille" aria-labelledby="pourquoi-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-coquille" aria-labelledby="pourquoi-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="pourquoi-titre" class="font-display text-3xl text-foret mb-6">Pourquoi les perles de céramique ?</h2>
       <p class="text-gris leading-relaxed mb-4">
@@ -126,12 +123,12 @@ const aboutSchema = {
   </section>
 
   <!-- ENGAGEMENTS -->
-  <section class="py-14 px-4 bg-anis-pale" aria-labelledby="engagements-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="engagements-titre">
     <div class="max-w-4xl mx-auto">
       <h2 id="engagements-titre" class="font-display text-3xl text-foret mb-8">Nos quatre engagements</h2>
       <div class="grid sm:grid-cols-2 gap-5">
         {engagements.map((e, i) => (
-          <div class="bg-white rounded-2xl border border-ligne p-6">
+          <div class="bg-white rounded-xl border border-ligne p-6">
             <p class="font-display text-2xl text-gris font-bold mb-2" aria-hidden="true">0{i + 1}</p>
             <h3 class="font-semibold text-encre mb-2">{e.titre}</h3>
             <p class="text-sm text-gris leading-relaxed">{e.texte}</p>
@@ -142,7 +139,7 @@ const aboutSchema = {
   </section>
 
   <!-- MISSION -->
-  <section class="py-14 px-4 bg-nuit text-white" aria-labelledby="mission-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-nuit text-white" aria-labelledby="mission-titre">
     <div class="max-w-3xl mx-auto text-center">
       <p class="text-sm text-anis mb-4">Notre mission</p>
       <h2 id="mission-titre" class="font-display text-3xl lg:text-4xl mb-6">Moins de plastique, une eau meilleure</h2>

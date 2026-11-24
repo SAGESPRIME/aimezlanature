@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { faqPour } from '../data/faq';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
@@ -8,7 +7,8 @@ import AnswerBox from '../components/AnswerBox.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
-import { getProductPhoto } from '../lib/productImages';
+import EnTetePage from '../components/EnTetePage.astro';
+import { photoSite } from '../data/photosSite';
 import {
   PERLES_PAR_LITRE,
   categoriesLabels,
@@ -21,8 +21,6 @@ import {
 const PATH = '/utilisations/';
 const datePublished = '2026-07-20';
 
-// Le Pack 100 est le format qui couvre le plus d'usages simultanés.
-const photoSlug = 'pack-100-perles';
 
 const metaTitle = 'Les 16 utilisations des perles de céramique EM® | Aimez la Nature';
 const metaDescription =
@@ -63,39 +61,19 @@ const jsonLd = [
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">Guide des utilisations</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Les 16 utilisations des perles de céramique EM®
-      </h1>
-      <p class="text-gris text-lg leading-relaxed mb-6">
-        On les connaît pour la carafe d'eau. Mais les mêmes perles servent aussi dans la
-        bouilloire, le lave-vaisselle, la machine à laver, le réfrigérateur, la baignoire,
-        l'arrosoir ou l'aquarium — avec, à chaque fois, un dosage précis.
-      </p>
-      <p class="text-gris">
-        <strong class="text-encre">La règle à retenir :</strong> {PERLES_PAR_LITRE} perles
-        par litre pour l'eau de boisson. Les appareils, eux, ont un dosage forfaitaire.
-      </p>
-      <PageDate date={datePublished} class="mt-5" />
-    </div>
-  </section>
-
-  <!-- VISUEL -->
-  <div class="bg-anis-pale px-4 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <Image
-        {...getProductPhoto(photoSlug)!}
-        width={560}
-        widths={[320, 560, 1120]}
-        sizes="(max-width: 640px) 90vw, 560px"
-        loading="eager"
-        fetchpriority="high"
-        class="w-full max-w-[440px] mx-auto rounded-2xl"
-      />
-    </div>
-  </div>
+  <EnTetePage surTitre="Guide des utilisations" photo={photoSite('maison')}>
+    <Fragment slot="titre">Les 16 utilisations des perles de céramique EM®</Fragment>
+    <p>
+      On les connaît pour la carafe d'eau. Mais les mêmes perles servent aussi dans la
+      bouilloire, le lave-vaisselle, la machine à laver, le réfrigérateur, la baignoire,
+      l'arrosoir ou l'aquarium — avec, à chaque fois, un dosage précis.
+    </p>
+    <p class="text-gris">
+      <strong class="text-encre">La règle à retenir :</strong> {PERLES_PAR_LITRE} perles
+      par litre pour l'eau de boisson. Les appareils, eux, ont un dosage forfaitaire.
+    </p>
+    <PageDate date={datePublished} class="mt-5" />
+  </EnTetePage>
 
   <AnswerBox>
     Les mêmes perles servent bien au-delà de la carafe : bouilloire ou cafetière
@@ -107,7 +85,7 @@ const jsonLd = [
 
   <!-- USAGES PAR CATÉGORIE -->
   {groupes.map((cat) => (
-    <section class="py-14 px-4 odd:bg-white even:bg-coquille" aria-labelledby={`titre-${cat}`}>
+    <section class="py-16 lg:py-20 px-4 sm:px-6 odd:bg-white even:bg-coquille" aria-labelledby={`titre-${cat}`}>
       <div class="max-w-3xl mx-auto">
         <h2 id={`titre-${cat}`} class="font-display text-3xl text-foret mb-3">
           {categoriesLabels[cat]}
@@ -116,7 +94,7 @@ const jsonLd = [
 
         <div class="space-y-4">
           {dosagesParCategorie(cat).map((d) => (
-            <article class="rounded-2xl border border-ligne bg-white p-6">
+            <article class="rounded-xl border border-ligne bg-white p-6">
               <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
                 <h3 class="font-semibold text-encre">{d.usage}</h3>
                 <p class="font-display text-lg font-bold text-foret">{d.nb}</p>
@@ -138,7 +116,7 @@ const jsonLd = [
   ))}
 
   <!-- EBOOK -->
-  <section class="py-14 px-4 bg-nuit text-white" aria-labelledby="ebook-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-nuit text-white" aria-labelledby="ebook-titre">
     <div class="max-w-3xl mx-auto text-center">
       <p class="text-sm text-anis mb-4">Ebook offert</p>
       <h2 id="ebook-titre" class="font-display text-3xl lg:text-4xl mb-5">
@@ -160,7 +138,7 @@ const jsonLd = [
   </section>
 
   <!-- RAPPEL ENTRETIEN -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="entretien-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="entretien-titre">
     <div class="max-w-3xl mx-auto">
       <h2 id="entretien-titre" class="font-display text-3xl text-foret mb-4">
         Un seul entretien, quel que soit l'usage

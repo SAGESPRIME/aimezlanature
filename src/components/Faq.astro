@@ -9,13 +9,13 @@ interface Props {
 const { items, title = 'Questions fréquentes', eyebrow = 'FAQ' } = Astro.props;
 ---
 
-<section class="py-16 px-4" aria-labelledby="faq-titre">
+<section class="py-16 lg:py-20 px-4 sm:px-6" aria-labelledby="faq-titre">
   <div class="max-w-3xl mx-auto">
     <p class="text-sm text-olive mb-3">{eyebrow}</p>
     <h2 id="faq-titre" class="font-display text-4xl lg:text-5xl text-foret mb-8">{title}</h2>
     <div class="space-y-3">
       {items.map(({ question, answer }) => (
-        <details class="group bg-white rounded-2xl border border-ligne open:border-pierre-fonce transition-colors">
+        <details class="group bg-white rounded-xl border border-ligne open:border-pierre-fonce transition-colors">
           <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 font-semibold text-encre [&::-webkit-details-marker]:hidden">
             <span>{question}</span>
             <span class="flex-shrink-0 w-6 h-6 rounded-full bg-anis-pale text-foret flex items-center justify-center text-sm transition-transform group-open:rotate-45" aria-hidden="true">+</span>

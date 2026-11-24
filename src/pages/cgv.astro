@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
+import EnTetePage from '../components/EnTetePage.astro';
 
 const metaTitle = 'Conditions Générales de Vente | Aimez la Nature';
 const metaDescription =
@@ -8,16 +9,11 @@ const metaDescription =
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription}>
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">Conditions de vente</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1]">
-        Conditions Générales de Vente
-      </h1>
-    </div>
-  </section>
+  <EnTetePage surTitre="Conditions de vente">
+    <Fragment slot="titre">Conditions Générales de Vente</Fragment>
+  </EnTetePage>
 
-  <section class="py-16 px-4 bg-white" aria-labelledby="cgv-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="cgv-titre">
     <div class="max-w-3xl mx-auto space-y-10 text-gris leading-relaxed">
       <div>
         <h2 class="font-display text-2xl text-foret mb-3">1. Champ d'application</h2>

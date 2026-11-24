@@ -1,9 +1,9 @@
 # Photos d'ambiance — provenance et licences
 
-Photos provisoires, choisies le 2026-11-24 en attendant les photos du marchand
-(remplacement : déposer le nouveau fichier sous le même nom dans
-`src/assets/ambiance/`, puis mettre à jour ou retirer sa ligne dans
-`src/data/creditsPhotos.ts`).
+Photos provisoires, choisies le 2026-11-24 en attendant les photos du marchand.
+**Remplacement : dans le Studio** (Réglages du site → Photos du site, voir
+`docs/sanity.md`, « Changer une photo du site »). Ces fichiers restent les photos de SECOURS des emplacements
+laissés vides ; leurs crédits ne s'affichent que tant qu'elles sont utilisées.
 
 - **Source** : recherche Openverse (`source=wikimedia`, licences `cc0,pdm,by`),
   fichiers téléchargés depuis `upload.wikimedia.org` puis **auto-hébergés**

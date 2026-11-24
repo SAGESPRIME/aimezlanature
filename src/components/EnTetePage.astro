@@ -1,0 +1,65 @@
+---
+/**
+ * En-tête éditorial des pages intérieures (docs/design/systeme.md).
+ *
+ * Remplace le bloc « fond anis pâle + H1 » que chaque page recopiait. Sans
+ * photo : texte seul, aligné à gauche sur la grille du site. Avec photo (pages
+ * de contenu) : texte à gauche, photo en arche à droite ; en mobile la photo
+ * passe sous le texte, en bandeau bas, pour que le titre reste en haut.
+ *
+ * Le H1 se passe dans le slot « titre » (il peut contenir du balisage) ; le
+ * reste (chapô, date, encadré) dans le slot par défaut.
+ * La photo vient de photoSite() (src/data/photosSite.ts) : modifiable dans le
+ * Studio, photo libre de secours sinon.
+ */
+import { Image } from 'astro:assets';
+import type { photoSite } from '../data/photosSite';
+
+interface Props {
+  surTitre?: string;
+  photo?: ReturnType<typeof photoSite>;
+  /** Centrer le texte (page sans photo uniquement). */
+  centre?: boolean;
+}
+
+const { surTitre, photo, centre = false } = Astro.props;
+
+// Typographie française : espace insécable avant « ? ! : ; » et après « « »,
+// sinon le signe peut se retrouver seul en début de ligne (« … céramique
+// / ? Le guide »). Le titre vient du slot (texte de la page ou de Sanity) ;
+// seul le texte est touché, jamais les balises (pas d'espace + ponctuation
+// dans une balise).
+const titre = (await Astro.slots.render('titre'))
+  .replace(/ ([?!:;»])/g, '\u00a0$1')
+  .replace(/« /g, '«\u00a0');
+---
+
+<section class="border-b border-ligne px-4 sm:px-6">
+  <div
+    class:list={[
+      'max-w-6xl mx-auto',
+      photo ? 'grid lg:grid-cols-[1.25fr_1fr] gap-10 lg:gap-16 items-center pt-10 pb-12 lg:py-16' : 'pt-10 pb-12 lg:pt-14 lg:pb-16',
+    ]}
+  >
+    <div class:list={['max-w-3xl', centre && !photo && 'mx-auto text-center']}>
+      {surTitre && <p class="text-sm text-olive font-medium mb-4">{surTitre}</p>}
+      <h1 class="font-display text-[2.6rem] sm:text-5xl lg:text-[3.4rem] text-encre leading-[1.05] mb-5 text-balance">
+        <Fragment set:html={titre} />
+      </h1>
+      <div class="text-gris text-lg leading-relaxed max-w-[60ch] [&_p+p]:mt-4">
+        <slot />
+      </div>
+    </div>
+    {photo && (
+      <div class="arche-entete h-56 sm:h-72 lg:h-[440px] w-full lg:max-w-md lg:justify-self-end">
+        <Image
+          {...photo}
+          widths={[600, 900, 1200]}
+          sizes="(min-width: 1024px) 760px, 100vw"
+          loading="eager"
+          class="w-full h-full object-cover"
+        />
+      </div>
+    )}
+  </div>
+</section>

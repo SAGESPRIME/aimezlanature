@@ -53,7 +53,7 @@ const dateFr = (iso: string | null) =>
       </h2>
 
       <!-- Synthèse -->
-      <div class="mb-10 grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center rounded-2xl border border-pierre bg-white p-6">
+      <div class="mb-10 grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center rounded-xl border border-pierre bg-white p-6">
         <div class="text-center sm:border-r sm:border-ligne sm:pr-8">
           <p class="font-display text-5xl font-bold text-encre">
             {(rating ?? 0).toString().replace('.', ',')}
@@ -86,7 +86,7 @@ const dateFr = (iso: string | null) =>
 
       <ul class="grid gap-5 sm:grid-cols-2 list-none p-0 m-0">
         {visibles.map((r) => (
-          <li class="rounded-2xl border border-ligne bg-white p-6">
+          <li class="rounded-xl border border-ligne bg-white p-6">
             {r.rating !== null && (
               <p class="etoiles mb-2" aria-label={`Note ${r.rating} sur 5`}>
                 <span aria-hidden="true">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
@@ -115,7 +115,7 @@ const dateFr = (iso: string | null) =>
           </summary>
           <ul class="mt-5 grid gap-5 sm:grid-cols-2 list-none p-0">
             {reste.map((r) => (
-              <li class="rounded-2xl border border-ligne bg-white p-6">
+              <li class="rounded-xl border border-ligne bg-white p-6">
                 {r.rating !== null && (
                   <p class="etoiles mb-2" aria-label={`Note ${r.rating} sur 5`}>
                     <span aria-hidden="true">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>

@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { HEBERGEUR } from '../data/hebergeur';
-import { creditsPhotos } from '../data/creditsPhotos';
+import { creditsAffiches } from '../data/photosSite';
+import EnTetePage from '../components/EnTetePage.astro';
+
+const credits = creditsAffiches();
 
 const metaTitle = 'Mentions légales | Aimez la Nature';
 const metaDescription =
@@ -9,16 +12,11 @@ const metaDescription =
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription}>
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">Informations légales</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1]">
-        Mentions légales
-      </h1>
-    </div>
-  </section>
+  <EnTetePage surTitre="Informations légales">
+    <Fragment slot="titre">Mentions légales</Fragment>
+  </EnTetePage>
 
-  <section class="py-16 px-4 bg-white" aria-labelledby="mentions-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="mentions-titre">
     <div class="max-w-3xl mx-auto space-y-10 text-gris leading-relaxed">
       <div>
         <h2 class="font-display text-2xl text-foret mb-3">Éditeur du site</h2>
@@ -71,12 +69,12 @@ const metaDescription =
       <div>
         <h2 id="credits-photos" class="font-display text-2xl text-foret mb-3">Crédits photos</h2>
         <p class="mb-3">
-          Les photographies d'ambiance proviennent de Wikimedia Commons et sont utilisées selon
-          leur licence Creative Commons. Les photos de produits sont la propriété de
-          SAS Naturalis Vert.
+          Les photos de produits sont la propriété de SAS Naturalis Vert.
+          {credits.libres.length > 0 && " Certaines photographies d'ambiance proviennent de Wikimedia Commons et sont utilisées selon leur licence Creative Commons :"}
         </p>
         <ul class="space-y-2 list-none p-0">
-          {creditsPhotos.map((c) => (
+          {credits.studio.map((c) => <li>{c}</li>)}
+          {credits.libres.map((c) => (
             <li>
               « <a href={c.source} rel="noopener" class="underline underline-offset-2 hover:text-foret">{c.titre}</a> »,
               {' '}{c.auteur},{' '}

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import EnTetePage from '../components/EnTetePage.astro';
 
 const metaTitle = 'Contact | Aimez la Nature';
 const metaDescription =
@@ -9,23 +10,18 @@ const metaDescription =
 
 <BaseLayout title={metaTitle} description={metaDescription}>
   <!-- HERO -->
-  <section class="bg-anis-pale px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm text-olive mb-4">Contact</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-encre leading-[1.1] mb-5">
-        Une question ? Écrivez-nous
-      </h1>
-      <p class="text-gris text-lg leading-relaxed">
-        Notre équipe répond sous 24 h ouvrées, que ce soit pour une commande, un conseil
-        d'usage ou une question sur nos produits.
-      </p>
-    </div>
-  </section>
+  <EnTetePage surTitre="Contact">
+    <Fragment slot="titre">Une question ? Écrivez-nous</Fragment>
+    <p>
+      Notre équipe répond sous 24 h ouvrées, que ce soit pour une commande, un conseil
+      d'usage ou une question sur nos produits.
+    </p>
+  </EnTetePage>
 
   <!-- MOYENS DE CONTACT -->
-  <section class="py-16 px-4 bg-white" aria-labelledby="moyens-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="moyens-titre">
     <div class="max-w-3xl mx-auto grid sm:grid-cols-2 gap-5">
-      <div class="rounded-2xl border border-ligne p-6">
+      <div class="rounded-xl border border-ligne p-6">
         <p class="font-semibold text-encre mb-2">Par email</p>
         <p class="text-sm text-gris mb-3">
           Pour une question générale ou un suivi de commande.
@@ -34,7 +30,7 @@ const metaDescription =
           contact@aimezlanature.fr
         </a>
       </div>
-      <div class="rounded-2xl border border-ligne p-6">
+      <div class="rounded-xl border border-ligne p-6">
         <p class="font-semibold text-encre mb-2">Par téléphone</p>
         <p class="text-sm text-gris mb-3">
           Du lundi au vendredi, aux heures de bureau.
@@ -45,7 +41,7 @@ const metaDescription =
       </div>
     </div>
     <div class="max-w-3xl mx-auto mt-6">
-      <p class="flex items-start gap-2 text-sm text-gris bg-anis-pale rounded-2xl px-5 py-4">
+      <p class="flex items-start gap-2 text-sm text-gris bg-anis-pale rounded-xl px-5 py-4">
         <Icon name="bulb" class="w-4 h-4 mt-0.5 flex-shrink-0 text-foret" />
         <span>
           Pour commander, ajoutez vos produits au panier depuis leur fiche et réglez en ligne
