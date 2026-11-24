@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
 import { blogPosts } from '../data/blogPosts';
 import EnTetePage from '../components/EnTetePage.astro';
-import { photoSite } from '../data/photosSite';
 
 // Titres et description repris de la version aimezlanature.vercel.app/blog.
 const metaTitle = 'Blog Perles de Céramique EM | Aimez la Nature';
@@ -46,7 +45,7 @@ function formatDate(iso: string): string {
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- EN-TÊTE — titre centré + sous-titre, comme la version d'origine -->
-  <EnTetePage photo={photoSite('guides')}>
+  <EnTetePage emplacement="guides">
     <Fragment slot="titre">Blog — Perles de Céramique EM et Purification de l'Eau</Fragment>
     <p>
       Guides, conseils et comparatifs sur les perles de céramique EM et la

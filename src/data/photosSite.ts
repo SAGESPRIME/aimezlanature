@@ -62,6 +62,7 @@ interface PhotoSaisie {
   url?: string | null;
   largeur?: number | null;
   hauteur?: number | null;
+  hotspot?: { x: number; y: number } | null;
 }
 
 /** Photo saisie dans le Studio, seulement si elle a un fichier ET un texte alternatif. */
@@ -81,6 +82,19 @@ export function photoSite(
   if (p) return { src: p.url, inferSize: true, alt: p.alt.trim() };
   const s = SECOURS[cle];
   return { src: s.src, alt: s.alt };
+}
+
+/**
+ * Cadrage d'une photo recadrée (object-fit: cover) : suit le « point
+ * d'intérêt » réglé dans le Studio, au pas de 10 %. Classes CSS (et non un
+ * style en ligne, interdit par la CSP) : `.focal .fpx-NN .fpy-NN` dans
+ * global.css. Sans point d'intérêt : centré.
+ */
+export function cadrage(cle: Emplacement): string {
+  const h = saisie(cle)?.hotspot;
+  if (!h) return 'focal';
+  const pas = (v: number) => Math.min(100, Math.max(0, Math.round(v * 10) * 10));
+  return `focal fpx-${pas(h.x)} fpy-${pas(h.y)}`;
 }
 
 /**

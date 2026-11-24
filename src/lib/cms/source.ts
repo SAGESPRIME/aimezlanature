@@ -54,6 +54,7 @@ const IMAGE = `{
 const PHOTO = `{
   alt,
   credit,
+  "hotspot": hotspot{x, y},
   "url": asset->url,
   "largeur": asset->metadata.dimensions.width,
   "hauteur": asset->metadata.dimensions.height

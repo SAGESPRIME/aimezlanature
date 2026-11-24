@@ -110,4 +110,13 @@
     window.addEventListener('resize', planifier);
     evaluer();
   });
+
+  // ── Application installable (PWA) : service worker /sw.js (généré au build,
+  // voir src/pages/sw.js.ts). Pages en réseau d'abord, rien de /api/ ni /pro/
+  // n'est mis en cache. Après le chargement, pour ne pas ralentir la page.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () { /* sans effet sur le site */ });
+    });
+  }
 })();

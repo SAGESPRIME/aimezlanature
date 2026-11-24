@@ -267,6 +267,32 @@ footer :focus-visible {
   from { transform: scale(1.04); }
 }
 
+/* Cadrage des photos du Studio (src/data/photosSite.ts, cadrage()) : le point
+   d'intérêt devient object-position, sans style en ligne (CSP). */
+.focal { object-position: var(--fpx, 50%) var(--fpy, 50%); }
+.fpx-0 { --fpx: 0%; }
+.fpx-10 { --fpx: 10%; }
+.fpx-20 { --fpx: 20%; }
+.fpx-30 { --fpx: 30%; }
+.fpx-40 { --fpx: 40%; }
+.fpx-50 { --fpx: 50%; }
+.fpx-60 { --fpx: 60%; }
+.fpx-70 { --fpx: 70%; }
+.fpx-80 { --fpx: 80%; }
+.fpx-90 { --fpx: 90%; }
+.fpx-100 { --fpx: 100%; }
+.fpy-0 { --fpy: 0%; }
+.fpy-10 { --fpy: 10%; }
+.fpy-20 { --fpy: 20%; }
+.fpy-30 { --fpy: 30%; }
+.fpy-40 { --fpy: 40%; }
+.fpy-50 { --fpy: 50%; }
+.fpy-60 { --fpy: 60%; }
+.fpy-70 { --fpy: 70%; }
+.fpy-80 { --fpy: 80%; }
+.fpy-90 { --fpy: 90%; }
+.fpy-100 { --fpy: 100%; }
+
 /* Composants : dans la couche `components` de Tailwind, pour que les
    utilitaires (hidden, lg:inline…) posés sur le même élément gardent la main. */
 @layer components {
@@ -501,6 +527,12 @@ footer :focus-visible {
 #tiroir-fond.tiroir-ouvert {
   opacity: 1;
 }
+
+/* Écrans à encoche / barre d'accueil (iPhone, Android plein écran,
+   application installée) : la barre d'achat et le bas du tiroir ne passent
+   jamais sous la zone système. */
+.barre-achat { padding-bottom: env(safe-area-inset-bottom); }
+#tiroir-panier { padding-bottom: env(safe-area-inset-bottom); }
 
 /* Respect de « moins d'animations » : tout devient instantané. */
 @media (prefers-reduced-motion: reduce) {

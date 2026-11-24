@@ -8,7 +8,6 @@ import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
 import EnTetePage from '../components/EnTetePage.astro';
-import { photoSite } from '../data/photosSite';
 
 // Chemin et date définis une seule fois : partagés par le schema Article et
 // par l'affichage, pour qu'ils ne puissent pas diverger.
@@ -76,7 +75,7 @@ const jsonLd = [
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <EnTetePage surTitre="Comparatif · Sans langue de bois" photo={photoSite('comparatif')}>
+  <EnTetePage surTitre="Comparatif · Sans langue de bois" emplacement="comparatif">
     <Fragment slot="titre">Purifier l'eau du robinet : perles, charbon, carafe filtrante ou osmoseur ?</Fragment>
     <p>
       Nous vendons des perles de céramique — et pourtant ce comparatif vous dira quand{' '}

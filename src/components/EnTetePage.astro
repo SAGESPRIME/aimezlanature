@@ -13,16 +13,19 @@
  * Studio, photo libre de secours sinon.
  */
 import { Image } from 'astro:assets';
-import type { photoSite } from '../data/photosSite';
+import { photoSite, cadrage, type Emplacement } from '../data/photosSite';
 
 interface Props {
   surTitre?: string;
-  photo?: ReturnType<typeof photoSite>;
+  /** Emplacement « Photos du site » du Studio (photo + cadrage). Sans : pas de photo. */
+  emplacement?: Emplacement;
   /** Centrer le texte (page sans photo uniquement). */
   centre?: boolean;
 }
 
-const { surTitre, photo, centre = false } = Astro.props;
+const { surTitre, emplacement, centre = false } = Astro.props;
+const photo = emplacement ? photoSite(emplacement) : undefined;
+const cadre = emplacement ? cadrage(emplacement) : '';
 
 // Typographie française : espace insécable avant « ? ! : ; » et après « « »,
 // sinon le signe peut se retrouver seul en début de ligne (« … céramique
@@ -57,7 +60,7 @@ const titre = (await Astro.slots.render('titre'))
           widths={[600, 900, 1200]}
           sizes="(min-width: 1024px) 760px, 100vw"
           loading="eager"
-          class="w-full h-full object-cover"
+          class={`w-full h-full object-cover ${cadre}`}
         />
       </div>
     )}

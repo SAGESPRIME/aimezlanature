@@ -9,7 +9,6 @@ import PageDate from '../components/PageDate.astro';
 import { buildFaqSchema } from '../lib/seo';
 import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
 import EnTetePage from '../components/EnTetePage.astro';
-import { photoSite } from '../data/photosSite';
 
 const PATH = '/comment-ca-marche/';
 // Cette page porte un schema HowTo (pas Article) : la date n'a donc pas
@@ -63,7 +62,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <EnTetePage surTitre="Mode d'emploi" photo={photoSite('commentCaMarche')}>
+  <EnTetePage surTitre="Mode d'emploi" emplacement="commentCaMarche">
     <Fragment slot="titre">Comment utiliser les perles de céramique ? Le guide complet</Fragment>
     <p>
       Dosage par litre, première utilisation, entretien, régénération : tout ce qu'il faut

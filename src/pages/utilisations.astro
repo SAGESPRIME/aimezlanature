@@ -8,7 +8,6 @@ import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
 import EnTetePage from '../components/EnTetePage.astro';
-import { photoSite } from '../data/photosSite';
 import {
   PERLES_PAR_LITRE,
   categoriesLabels,
@@ -61,7 +60,7 @@ const jsonLd = [
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={jsonLd}>
   <!-- HERO -->
-  <EnTetePage surTitre="Guide des utilisations" photo={photoSite('maison')}>
+  <EnTetePage surTitre="Guide des utilisations" emplacement="maison">
     <Fragment slot="titre">Les 16 utilisations des perles de céramique EM®</Fragment>
     <p>
       On les connaît pour la carafe d'eau. Mais les mêmes perles servent aussi dans la

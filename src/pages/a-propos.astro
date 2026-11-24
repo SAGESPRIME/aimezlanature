@@ -4,7 +4,6 @@ import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
 import { buildOrganizationSchema } from '../lib/seo';
 import EnTetePage from '../components/EnTetePage.astro';
-import { photoSite } from '../data/photosSite';
 
 // Histoire réelle de la fondatrice, reprise de la page « Qui sommes-nous ? »
 // d'aimezlanature.fr (relevée le 2026-07-20). Les allégations santé du texte
@@ -68,7 +67,7 @@ const aboutSchema = {
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={aboutSchema}>
   <!-- HERO -->
-  <EnTetePage surTitre="À propos" photo={photoSite('mission')}>
+  <EnTetePage surTitre="À propos" emplacement="mission">
     <Fragment slot="titre">Une eau meilleure, <em class="not-italic text-foret">sans plastique</em></Fragment>
     <p>
       Aimez la Nature est née d'un constat simple : en France, on jette des millions de

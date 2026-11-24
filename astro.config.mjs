@@ -102,7 +102,9 @@ export default defineConfig({
         !page.includes('/commande-confirmee') &&
         !page.includes('/revendeurs/merci') &&
         !page.includes('/avis/merci') &&
-        !page.includes('/panier'),
+        !page.includes('/panier') &&
+        !page.includes('/hors-ligne') &&
+        !page.includes('/pro/'),
     }),
     lastmodSitemap,
   ],

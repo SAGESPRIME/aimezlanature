@@ -65,6 +65,8 @@ const photoSite = z
     url: urlHttps.nullish(),
     largeur: z.number().int().positive().nullish(),
     hauteur: z.number().int().positive().nullish(),
+    /** Point d'intérêt réglé dans le Studio (0 → 1). */
+    hotspot: z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }).nullish(),
   })
   .nullish();
 

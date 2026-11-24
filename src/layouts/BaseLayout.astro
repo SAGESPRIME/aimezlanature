@@ -140,7 +140,13 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Application installable (PWA) : manifest, icônes, couleur de la barre
+         du navigateur mobile (l'anis du bandeau). Service worker : /sw.js. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#BBE12C" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Aimez la Nature" />
 
     <!-- Préchargement des polices de la ligne de flottaison, placé le plus haut
          possible pour que le navigateur lance les requêtes avant même d'avoir lu

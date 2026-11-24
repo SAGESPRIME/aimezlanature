@@ -8,7 +8,7 @@ import { SITE, getProduct, prixDEntree } from '../data/products';
 import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
 import CarteProduit from '../components/CarteProduit.astro';
-import { photoSite } from '../data/photosSite';
+import { photoSite, cadrage } from '../data/photosSite';
 import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
 
@@ -101,10 +101,10 @@ const formats = [
 // Tuiles « Pour chaque moment d'eau » : photos modifiables dans le Studio
 // (Réglages → Photos du site), photo de secours sinon (src/data/photosSite.ts).
 const moments = [
-  { href: '/comment-ca-marche/', titre: 'Comment ça marche', texte: "Ce que font les perles dans l'eau", photo: photoSite('commentCaMarche') },
-  { href: '/utilisations/', titre: 'À la maison', texte: 'Carafe, bouilloire, cafetière, plantes…', photo: photoSite('maison') },
-  { href: '/perles-ceramique-em/gourde-ecologique/', titre: 'En balade', texte: 'La gourde en verre et ses perles', photo: photoSite('balade') },
-  { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoSite('mission') },
+  { href: '/comment-ca-marche/', titre: 'Comment ça marche', texte: "Ce que font les perles dans l'eau", photo: photoSite('commentCaMarche'), cadre: cadrage('commentCaMarche') },
+  { href: '/utilisations/', titre: 'À la maison', texte: 'Carafe, bouilloire, cafetière, plantes…', photo: photoSite('maison'), cadre: cadrage('maison') },
+  { href: '/perles-ceramique-em/gourde-ecologique/', titre: 'En balade', texte: 'La gourde en verre et ses perles', photo: photoSite('balade'), cadre: cadrage('balade') },
+  { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoSite('mission'), cadre: cadrage('mission') },
 ];
 const photoHero = photoSite('accueil');
 const photoModeEmploi = photoSite('modeEmploi');
@@ -159,14 +159,14 @@ const note = (n: number) => n.toString().replace('.', ',');
         </div>
       </dl>
     </div>
-    <div class="order-first lg:order-none -mx-4 sm:mx-0 h-[290px] sm:h-[460px] lg:h-auto lg:min-h-[640px] overflow-hidden arche-hero entree-photo">
+    <div class="order-first lg:order-none -mx-4 sm:mx-0 aspect-[4/3] lg:aspect-square lg:self-center overflow-hidden arche-hero entree-photo">
       <Image
         {...photoHero}
         widths={[480, 720, 960, 1200]}
         sizes="(min-width: 1024px) 560px, 100vw"
         loading="eager"
         fetchpriority="high"
-        class="w-full h-full object-cover object-[50%_60%]"
+        class={`w-full h-full object-cover ${cadrage('accueil')}`}
       />
     </div>
   </section>
@@ -209,7 +209,7 @@ const note = (n: number) => n.toString().replace('.', ',');
                 {...m.photo}
                 widths={[640, 960, 1280]}
                 sizes={i === 0 ? '(min-width: 1024px) 840px, 100vw' : '(min-width: 1024px) 720px, 100vw'}
-                class="tuile-moment-photo"
+                class={`tuile-moment-photo ${m.cadre}`}
               />
               <span class="tuile-moment-texte">
                 <span class="block font-display text-2xl sm:text-3xl text-white">{m.titre}</span>
@@ -232,7 +232,7 @@ const note = (n: number) => n.toString().replace('.', ',');
           {...photoModeEmploi}
           widths={[800, 1100, 1400]}
           sizes="(min-width: 1024px) 1100px, 830px"
-          class="w-full h-full object-cover object-[50%_80%]"
+          class={`w-full h-full object-cover ${cadrage('modeEmploi')}`}
         />
       </div>
       <div>

@@ -1,0 +1,19 @@
+---
+/**
+ * Page affichée par le service worker (/sw.js) quand une page n'est ni
+ * joignable ni déjà vue. Hors sitemap, noindex.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EnTetePage from '../components/EnTetePage.astro';
+---
+
+<BaseLayout title="Hors ligne | Aimez la Nature" description="Vous êtes hors ligne : vérifiez votre connexion pour continuer vos achats." noindex>
+  <EnTetePage>
+    <Fragment slot="titre">Vous êtes hors ligne</Fragment>
+    <p>
+      Cette page n'est pas disponible sans connexion. Votre panier est conservé sur cet
+      appareil : reprenez vos achats dès que la connexion revient.
+    </p>
+    <p class="mt-6"><a href="/" class="bouton bouton-plein">Réessayer</a></p>
+  </EnTetePage>
+</BaseLayout>
