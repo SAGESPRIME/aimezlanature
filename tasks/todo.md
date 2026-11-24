@@ -251,6 +251,15 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
       Aucun hook auto-enregistré. impeccable fait des appels externes (génération d'images) = clé API
       requise pour ces fonctions ; les fonctions audit/critique restent locales.
 
+## Espace revendeurs (−30 %, min. 300 €, Colissimo au poids) — VALIDÉ EN RECETTE (2026-11-24)
+- [x] Parcours réel sur la recette : candidature → document `revendeurs.<uuid>` « en attente »,
+      invisible en anonyme (apicdn sans jeton : 0) → lien refusé tant que non validé (réponse
+      neutre) → « Validé » → lien envoyé ~1 min après → `/pro/` à −30 %, minimum bloquant,
+      15 × Pack 100 = 331,34 € → paiement Stripe test, webhook, emails client + « Commande
+      REVENDEUR » reçus → « Suspendu » → accès coupé. Document de test supprimé (0 revendeur).
+- [ ] Jour J : `SANITY_WRITE_TOKEN` + `PRO_SECRET` (nouveau) sur `site-prod`, et déplacer
+      `PRO_INVITATIONS=1` de la recette vers la prod (un seul environnement envoie les liens).
+
 ## Offre revendeur B2B (2026-07-23) — LIVRÉE, non publiable en l'état
 Page `/revendeurs/` pour les boutiques bio et vendeurs pro. Plan complet :
 `C:\Users\consu\.claude\plans\ajouter-une-offre-kind-quiche.md`
