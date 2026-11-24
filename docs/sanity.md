@@ -139,3 +139,20 @@ Un emplacement laissé vide garde la photo actuelle (photo libre de secours,
 `src/data/photosSite.ts`). Les emplacements sont déclarés dans
 `contenu/photos-site.json` (lu par le Studio et par le site). La photo est
 téléchargée et optimisée au build : le navigateur ne contacte jamais Sanity.
+
+## Frais de livraison (au poids)
+
+Réglés dans le Studio, appliqués tels quels au panier et au paiement Stripe :
+
+- **Produit → Prix & stock** : « Poids du colis (g) », emballage compris, et
+  « Ouvre la livraison offerte » (coché pour le Pack 100 et le Pack Gourde).
+- **Réglages du site → Livraison & avis** : « Livraison des petits colis (€) »
+  (4,90 €), « Seuil de poids du forfait » (500 g) et la grille Colissimo
+  au-delà (une ligne par tranche, poids croissants).
+
+Règle : jusqu'au seuil de poids, livraison offerte si le panier contient un
+produit « Ouvre la livraison offerte », sinon le forfait ; au-delà, tarif de la
+grille selon le poids total. Les textes du site (bandeau, fiches, CGV art. 4)
+se mettent à jour seuls. Calcul : `src/data/livraison.mjs` (serveur) et
+`public/js/livraison.js` (panier), vérifiés identiques par
+`tests/livraison.test.mjs`.
