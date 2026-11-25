@@ -17,6 +17,7 @@
     "check:parite": "node scripts/parite/comparer.mjs",
     "start": "node server.mjs",
     "check:seo": "node scripts/check-seo.mjs",
+    "check:allegations": "node scripts/check-allegations.mjs",
     "test": "node --test \"tests/*.test.mjs\""
   },
   "dependencies": {

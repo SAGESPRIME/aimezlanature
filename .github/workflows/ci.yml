@@ -34,6 +34,8 @@ jobs:
         run: npm run build
       - name: Audit SEO du build (titles, h1, canonical, JSON-LD, liens, sitemap…)
         run: npm run check:seo
+      - name: Allégations (santé, « bio », théories sans fondement) — contenu publié et brouillons
+        run: npm run check:allegations
       - name: Serveur réel — redirections et en-têtes
         run: |
           SITE_RECETTE=1 CLIENT_IP_HEADER=socket PORT=4321 node server.mjs &

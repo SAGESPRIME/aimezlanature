@@ -1,0 +1,93 @@
+{
+  "_doc": "Termes refusés dans le contenu du site (scripts/check-allegations.mjs). Code de la consommation L121-2 (pratiques trompeuses) : un produit qui n'est ni un médicament ni un dispositif médical ne promet aucun effet sur la santé, et toute affirmation doit pouvoir être prouvée. « erreur » bloque la CI ; « vigilance » est signalé seulement (vocabulaire du fabricant, admis s'il est attribué : « selon le fabricant »). « dette » liste les occurrences ANCIENNES connues, tolérées en attendant la publication des réécritures : à vider, jamais à remplir.",
+  "termes": [
+    {
+      "id": "guerison",
+      "niveau": "erreur",
+      "motif": "\\bgu[ée]ri(t|r|son|ssent)?\\b|\\bsoign(e|ent|er)\\b|\\bth[ée]rapeutique",
+      "raison": "allégation thérapeutique"
+    },
+    {
+      "id": "maladie",
+      "niveau": "erreur",
+      "motif": "\\bcancer|\\bmaladies?\\b|\\bdiab[èe]te|\\bimmunit",
+      "raison": "allégation de prévention d'une maladie"
+    },
+    {
+      "id": "flore",
+      "niveau": "erreur",
+      "motif": "flore intestinale|\\bdigesti(on|f|ve)\\b",
+      "raison": "effet sur l'organisme non prouvé"
+    },
+    {
+      "id": "radicaux",
+      "niveau": "erreur",
+      "motif": "radicaux libres|vieillissement cellulaire|protection des cellules",
+      "raison": "effet sur l'organisme non prouvé"
+    },
+    {
+      "id": "toxines",
+      "niveau": "erreur",
+      "motif": "\\btoxines\\b|\\bd[ée]tox(ifi|\\b)",
+      "raison": "« détox » : effet non prouvé"
+    },
+    {
+      "id": "eau-structuree",
+      "niveau": "erreur",
+      "motif": "eau structur[ée]e|structure de l.eau|\\bclusters?\\b|m[ée]moire de l.eau|r[ée]sonance|vibrations? [ée]nerg",
+      "raison": "théorie sans fondement scientifique"
+    },
+    {
+      "id": "brevet",
+      "niveau": "erreur",
+      "motif": "\\bbrevet[ée]?s?\\b",
+      "raison": "brevet non vérifiable"
+    },
+    {
+      "id": "bio",
+      "niveau": "erreur",
+      "motif": "100\\s?% bio|\\bperles? bio\\b|alternative bio\\b",
+      "raison": "« bio » est réservé aux produits certifiés"
+    },
+    {
+      "id": "potabilise",
+      "niveau": "erreur",
+      "motif": "rend(ent)? l.eau potable|potabilis",
+      "raison": "les perles ne rendent pas potable une eau qui ne l'est pas"
+    },
+    {
+      "id": "antioxydant",
+      "niveau": "vigilance",
+      "motif": "antioxyd|probiotique|anti-?oxyd",
+      "raison": "vocabulaire du fabricant : à attribuer (« selon le fabricant »)"
+    }
+  ],
+  "dette": [
+    "/blog/leau-est-une-source-de-vie/|flore",
+    "/blog/leau-est-une-source-de-vie/|radicaux",
+    "/blog/leau-est-une-source-de-vie/|toxines",
+    "/blog/les-bienfaits-des-perles-de-ceramique/|flore",
+    "/blog/les-bienfaits-des-perles-de-ceramique/|radicaux",
+    "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/|flore",
+    "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/|radicaux",
+    "/blog/perles-de-ceramique-une-solution-ecologique-et-economique/|brevet",
+    "article-leau-est-une-source-de-vie|flore",
+    "article-leau-est-une-source-de-vie|radicaux",
+    "article-leau-est-une-source-de-vie|toxines",
+    "article-les-bienfaits-des-perles-de-ceramique|flore",
+    "article-les-bienfaits-des-perles-de-ceramique|radicaux",
+    "article-perles-de-ceramique-purifier-votre-eau-du-robinet|flore",
+    "article-perles-de-ceramique-purifier-votre-eau-du-robinet|radicaux",
+    "article-perles-de-ceramique-une-solution-ecologique-et-economique|brevet"
+  ],
+  "admis": [
+    {
+      "cle": "avis-pack-100-perles-002|guerison",
+      "raison": "La cliente cite son métier (« milieu thérapeutique »), aucune promesse d'effet."
+    },
+    {
+      "cle": "/perles-ceramique-em/pack-100-perles/|guerison",
+      "raison": "Même avis, affiché sur la fiche Pack 100."
+    }
+  ]
+}

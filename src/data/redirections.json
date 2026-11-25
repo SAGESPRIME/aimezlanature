@@ -105,11 +105,11 @@
  },
  {
   "source": "/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/",
-  "destination": "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/"
+  "destination": "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/"
  },
  {
   "source": "/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet",
-  "destination": "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/"
+  "destination": "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/"
  },
  {
   "source": "/leau-est-une-source-de-vie/",
@@ -129,11 +129,11 @@
  },
  {
   "source": "/les-differents-usages-des-perles-de-ceramique/",
-  "destination": "/blog/les-differents-usages-des-perles-de-ceramique/"
+  "destination": "/utilisations/"
  },
  {
   "source": "/les-differents-usages-des-perles-de-ceramique",
-  "destination": "/blog/les-differents-usages-des-perles-de-ceramique/"
+  "destination": "/utilisations/"
  },
  {
   "source": "/authenticite-des-perles-de-ceramique-em-et-leur-efficacite/",
@@ -153,27 +153,27 @@
  },
  {
   "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne/",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/les-perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne/",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/les-perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidienne",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/perles-de-ceramique-comment-ca-marche/",
@@ -305,11 +305,11 @@
  },
  {
   "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-pour-toute-la-maison/",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/perles-de-ceramique-em-une-vraie-source-de-vie-pour-toute-la-maison",
-  "destination": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/"
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
  },
  {
   "source": "/ebook/",
@@ -438,5 +438,29 @@
  {
   "source": "/sitemap",
   "destination": "/"
+ },
+ {
+  "source": "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/",
+  "destination": "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/"
+ },
+ {
+  "source": "/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet",
+  "destination": "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/"
+ },
+ {
+  "source": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien/",
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
+ },
+ {
+  "source": "/blog/perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien",
+  "destination": "/blog/les-bienfaits-des-perles-de-ceramique/"
+ },
+ {
+  "source": "/blog/les-differents-usages-des-perles-de-ceramique/",
+  "destination": "/utilisations/"
+ },
+ {
+  "source": "/blog/les-differents-usages-des-perles-de-ceramique",
+  "destination": "/utilisations/"
  }
 ]

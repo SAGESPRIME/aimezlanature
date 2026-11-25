@@ -8,6 +8,12 @@ import RelatedArticles from '../components/RelatedArticles.astro';
 import PageDate from '../components/PageDate.astro';
 import { buildArticleSchema, buildFaqSchema } from '../lib/seo';
 import EnTetePage from '../components/EnTetePage.astro';
+import { lienArticle } from '../data/blogPosts';
+
+// Articles dédiés : liens actifs dès leur publication (repli en attendant).
+const LIEN_AVIS = lienArticle('perles-de-ceramique-avis-dangers', '/blog/les-bienfaits-des-perles-de-ceramique/');
+const LIEN_BINCHOTAN = lienArticle('perles-de-ceramique-ou-charbon-binchotan', '/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/');
+const LIEN_CARAFE = lienArticle('alternative-carafe-filtrante', '/blog/perles-de-ceramique-une-solution-ecologique-et-economique/');
 
 // Chemin et date définis une seule fois : partagés par le schema Article et
 // par l'affichage, pour qu'ils ne puissent pas diverger.
@@ -24,7 +30,7 @@ const solutions = [
   {
     nom: 'Perles de céramique EM®',
     prix: '15-30 € (achat unique)',
-    duree: 'Plusieurs années',
+    duree: '10 ans et plus (fabricant)',
     cout: '~0 €/an après achat',
     dechets: 'Zéro',
     traite: 'Goût, chlore ressenti, tartre',
@@ -146,7 +152,7 @@ const jsonLd = [
         <p class="text-sm text-gris">
           <strong class="text-foret">Pour :</strong> goût, tartre, budget, zéro déchet ·
           <strong class="text-[#9B3B3B]">Contre :</strong> aucune action sur bactéries, nitrates, métaux lourds —{' '}
-          <a href="/blog/les-bienfaits-des-perles-de-ceramique/" class="text-foret font-semibold hover:underline">on vous le dit clairement ici</a>.
+          <a href={LIEN_AVIS} class="text-foret font-semibold hover:underline">on vous le dit clairement ici</a>.
         </p>
       </div>
 
@@ -160,7 +166,7 @@ const jsonLd = [
         <p class="text-sm text-gris">
           <strong class="text-foret">Pour :</strong> chlore, goût, naturel ·
           <strong class="text-[#9B3B3B]">Contre :</strong> rachat récurrent, fragile, inefficace sur le tartre.
-          Le duel détaillé : <a href="/blog/les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet/" class="text-foret font-semibold hover:underline">perles ou binchotan ?</a>
+          Le duel détaillé : <a href={LIEN_BINCHOTAN} class="text-foret font-semibold hover:underline">perles ou binchotan ?</a>
         </p>
       </div>
 
@@ -175,7 +181,7 @@ const jsonLd = [
         <p class="text-sm text-gris">
           <strong class="text-foret">Pour :</strong> simplicité, disponibilité partout ·
           <strong class="text-[#9B3B3B]">Contre :</strong> abonnement de fait, déchets plastique, entretien strict.
-          Pour en sortir : <a href="/blog/perles-de-ceramique-une-solution-ecologique-et-economique/" class="text-foret font-semibold hover:underline">nos 3 alternatives sans cartouche</a>.
+          Pour en sortir : <a href={LIEN_CARAFE} class="text-foret font-semibold hover:underline">nos 3 alternatives sans cartouche</a>.
         </p>
       </div>
 

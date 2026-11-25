@@ -1,5 +1,6 @@
 ---
 import { faqPour } from '../data/faq';
+import { lienArticle } from '../data/blogPosts';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
 import CtaPacks from '../components/CtaPacks.astro';
@@ -15,6 +16,8 @@ import {
   type CategorieUsage,
 } from '../data/dosages';
 
+const LIEN_AVIS = lienArticle('perles-de-ceramique-avis-dangers', '/blog/les-bienfaits-des-perles-de-ceramique/');
+
 // Chemin et date définis une seule fois : partagés par le schema Article et
 // par l'affichage, pour qu'ils ne puissent pas diverger.
 const PATH = '/utilisations/';
@@ -25,8 +28,8 @@ const metaTitle = 'Les 16 utilisations des perles de céramique EM® | Aimez la 
 const metaDescription =
   `Carafe, bouilloire, lave-vaisselle, réfrigérateur, baignoire, arrosage, aquarium : les 16 usages des perles de céramique EM® avec le dosage de chacun.`;
 
-// Lien de l'ebook officiel offert (hébergé sur Google Drive par Aimez la Nature).
-const EBOOK_URL = 'https://drive.google.com/file/d/1DPRibEB4N3Rfp3xH83vXbyy4oEmIFlDf/view';
+// Guide officiel du fabricant, hébergé sur le site (même fichier que la fiche produit).
+const EBOOK_URL = '/guide-perles-de-ceramique-em.pdf';
 
 const groupes: CategorieUsage[] = ['boisson', 'electromenager', 'maison', 'jardin'];
 
@@ -151,7 +154,7 @@ const jsonLd = [
         La première utilisation, l'activation et la régénération sont détaillées pas à pas dans
         notre guide <a href="/comment-ca-marche/" class="text-foret font-semibold hover:underline">Comment ça marche ?</a>
         Et pour savoir ce que les perles font réellement — et ce qu'elles ne font pas —
-        consultez notre <a href="/blog/les-bienfaits-des-perles-de-ceramique/" class="text-foret font-semibold hover:underline">page avis &amp; science</a>.
+        consultez notre <a href={LIEN_AVIS} class="text-foret font-semibold hover:underline">article avis, dangers et science</a>.
       </p>
     </div>
   </section>

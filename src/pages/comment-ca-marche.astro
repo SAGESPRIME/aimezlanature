@@ -9,6 +9,9 @@ import PageDate from '../components/PageDate.astro';
 import { buildFaqSchema } from '../lib/seo';
 import { PERLES_PAR_LITRE, dosages as tousLesDosages } from '../data/dosages';
 import EnTetePage from '../components/EnTetePage.astro';
+import { lienArticle } from '../data/blogPosts';
+
+const LIEN_AVIS = lienArticle('perles-de-ceramique-avis-dangers', '/blog/les-bienfaits-des-perles-de-ceramique/');
 
 const PATH = '/comment-ca-marche/';
 // Cette page porte un schema HowTo (pas Article) : la date n'a donc pas
@@ -73,8 +76,8 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
 
   <AnswerBox>
     Comptez <strong class="text-encre">15 perles par litre</strong> d'eau de boisson.
-    Rincez-les, déposez-les au fond de la carafe et laissez agir 30 minutes avant la
-    première utilisation : elles restent ensuite en permanence dans l'eau. Tous les 3 à
+    Avant la première utilisation, faites-les bouillir 10 minutes, déposez-les au fond de la
+    carafe et laissez agir 30 minutes : elles restent ensuite en permanence dans l'eau. Tous les 3 à
     6 mois, régénérez-les en les faisant <strong class="text-encre">bouillir 10 à 15
     minutes</strong> dans de l'eau claire, sans savon ni vinaigre.
   </AnswerBox>
@@ -165,7 +168,7 @@ const jsonLd = [howToSchema, buildFaqSchema(faqItems)];
           </ul>
           <p class="text-xs text-gris mt-4">
             On vous explique pourquoi, sources à l'appui, dans notre article{' '}
-            <a href="/blog/les-bienfaits-des-perles-de-ceramique/" class="text-foret font-semibold hover:underline">avis & science</a>.
+            <a href={LIEN_AVIS} class="text-foret font-semibold hover:underline">avis, dangers et science</a>.
           </p>
         </div>
       </div>

@@ -7,6 +7,9 @@ import { buildFaqSchema, buildItemListSchema } from '../../lib/seo';
 import CarteProduit from '../../components/CarteProduit.astro';
 import { PERLES_PAR_LITRE } from '../../data/dosages';
 import EnTetePage from '../../components/EnTetePage.astro';
+import { lienArticle } from '../../data/blogPosts';
+
+const LIEN_AVIS = lienArticle('perles-de-ceramique-avis-dangers', '/blog/les-bienfaits-des-perles-de-ceramique/');
 
 const metaTitle = 'Perles de Céramique EM® : Purifier l\'Eau | Aimez la Nature';
 const metaDescription =
@@ -99,7 +102,7 @@ const usageGuide = [
     <div class="max-w-4xl mx-auto">
       <h2 id="guides-titre" class="font-display text-3xl text-foret mb-8">Avant d'acheter, informez-vous</h2>
       <div class="grid sm:grid-cols-2 gap-5">
-        <a href="/blog/les-bienfaits-des-perles-de-ceramique/" class="group rounded-xl border border-ligne p-6 hover:border-pierre-fonce transition-colors">
+        <a href={LIEN_AVIS} class="group rounded-xl border border-ligne p-6 hover:border-pierre-fonce transition-colors">
           <p class="text-sm text-olive mb-2">Avis & science</p>
           <p class="font-display text-xl text-encre group-hover:text-foret transition-colors mb-2">Perles de céramique : dangers, avis scientifique, ce qui est prouvé</p>
           <p class="text-sm text-gris">Notre réponse honnête aux questions que tout le monde se pose. →</p>

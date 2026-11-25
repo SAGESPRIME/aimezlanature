@@ -31,3 +31,14 @@ export const blogPosts: BlogPost[] = (await getCollection('articles'))
     ...(a.dateMiseAJour ? { updated: a.dateMiseAJour } : {}),
   }))
   .sort((a, b) => b.date.localeCompare(a.date));
+
+/**
+ * Lien vers un article s'il est PUBLIÉ, sinon vers une page de repli.
+ * Permet d'écrire dès maintenant le lien vers un article encore en brouillon :
+ * il pointe vers le repli jusqu'à sa publication, puis vers l'article au
+ * build suivant (jamais de lien cassé, jamais de redirection).
+ */
+export function lienArticle(slug: string, repli: string): string {
+  const href = `/blog/${slug}/`;
+  return blogPosts.some((p) => p.href === href) ? href : repli;
+}

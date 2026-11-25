@@ -17,6 +17,11 @@
  *   - aucun lien interne cassé (la cible existe dans le build ou est une
  *     redirection déclarée) ;
  *   - aucun mot collé à un lien (« àcontact@… ») ;
+ *   - une même question FAQ (données FAQPage) sur une seule page du site :
+ *     deux pages qui répondent à la même question se font concurrence ;
+ *   - articles du blog : au moins LIENS_ARTICLE_MIN liens internes dans le
+ *     corps du texte (signalé seulement, tant que les anciens articles ne
+ *     sont pas republiés) ;
  * et pour le site : sitemap sans page noindex, toutes les pages indexables
  * présentes au sitemap, robots.txt qui déclare le sitemap.
  *
@@ -102,6 +107,45 @@ for (const url of Object.keys(pages)) {
   for (const c of colles) err(`${url} : mot collé à la balise suivante « ${c} » (ajouter {' '})`);
 }
 
+// ── FAQ : une question = une seule page ──────────────────────────────────
+const normaliser = (/** @type {string} */ q) =>
+  q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+/** @type {Map<string, {q: string, urls: string[]}>} */ const questions = new Map();
+/** @param {any} n @param {(q: string) => void} f */
+function questionsFaq(n, f) {
+  if (Array.isArray(n)) n.forEach((x) => questionsFaq(x, f));
+  else if (n && typeof n === 'object') {
+    if (n['@type'] === 'Question' && typeof n.name === 'string') f(n.name);
+    Object.values(n).forEach((v) => questionsFaq(v, f));
+  }
+}
+/** @type {string[]} */ const signalements = [];
+const LIENS_ARTICLE_MIN = 3;
+for (const [url] of indexables) {
+  const fichier = url.endsWith('.html') ? join(RACINE, url) : join(RACINE, url, 'index.html');
+  const doc = parse(readFileSync(fichier, 'utf8'));
+  for (const script of doc.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      questionsFaq(JSON.parse(script.textContent), (q) => {
+        const cle = normaliser(q);
+        const e = questions.get(cle) ?? { q, urls: [] };
+        if (!e.urls.includes(url)) e.urls.push(url);
+        questions.set(cle, e);
+      });
+    } catch {
+      /* JSON-LD illisible : déjà signalé plus haut */
+    }
+  }
+  const corps = doc.querySelector('.article-corps');
+  if (url.startsWith('/blog/') && corps) {
+    const liens = new Set(corps.querySelectorAll('a[href^="/"]').map((a) => (a.getAttribute('href') ?? '').split('#')[0]));
+    if (liens.size < LIENS_ARTICLE_MIN) signalements.push(`${url} : ${liens.size} lien(s) interne(s) dans le texte (au moins ${LIENS_ARTICLE_MIN} conseillés)`);
+  }
+}
+for (const { q, urls } of questions.values()) {
+  if (urls.length > 1) err(`FAQ en double « ${q} » : ${urls.join(', ')} — garder la question sur une seule page`);
+}
+
 // ── Sitemap et robots ────────────────────────────────────────────────────
 const sitemapXml = readFileSync(join(RACINE, 'sitemap-0.xml'), 'utf8');
 const auSitemap = new Set([...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(SITE, '')));
@@ -115,6 +159,7 @@ const robots = readFileSync(join(RACINE, 'robots.txt'), 'utf8');
 if (!robots.includes(`Sitemap: ${SITE}/sitemap-index.xml`)) err('robots.txt ne déclare pas le sitemap');
 
 // ── Verdict ──────────────────────────────────────────────────────────────
+for (const s of signalements) console.log(`⚠️  ${s}`);
 for (const e of erreurs) console.log(`❌ ${e}`);
 console.log(
   `\n${indexables.length} pages indexables · ${auSitemap.size} URLs au sitemap · ` +
