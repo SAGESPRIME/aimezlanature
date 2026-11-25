@@ -1,0 +1,29 @@
+{
+  "name": "aimezlanature-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Interface d'édition (Sanity Studio) du site Aimez la Nature",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "importer": "node importer.mjs"
+  },
+  "dependencies": {
+    "@sanity/vision": "^6.24.0",
+    "react": "^19.2.2",
+    "react-dom": "^19.2.2",
+    "sanity": "^6.24.0",
+    "styled-components": "^6.1.15"
+  },
+  "overrides": {
+    "smol-toml": "^1.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}

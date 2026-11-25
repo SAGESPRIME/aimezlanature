@@ -35,7 +35,7 @@ JSON-LD parsé et valide sur toutes les pages, Lighthouse accueil mobile SEO 100
 | LCP / CLS | 396 ms / 0.00 | 395 ms / 0.00 |
 
 ## Restant / notes
-- Run Lighthouse complet 16 pages × mobile+desktop à faire depuis la prod Cloudflare
+- Run Lighthouse complet mobile+desktop à faire sur la recette Coolify, puis la prod
   (les chiffres locaux ne reflètent pas le réseau réel).
 - DataForSEO : recherche du 2026-07-20 toujours valide (docs/seo/strategie-seo.md).
 - `robots.txt` garde `Disallow: /succes` en prévision de la page de confirmation Stripe.

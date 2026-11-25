@@ -56,7 +56,8 @@ export function echapperHtml(texte: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 export async function envoyerEmail(email: Email): Promise<ResultatEnvoi> {
@@ -70,6 +71,8 @@ export async function envoyerEmail(email: Email): Promise<ResultatEnvoi> {
 
   try {
     const res = await fetch(ENDPOINT, {
+      // Jamais d'attente illimitée sur un service tiers (ré-audit du 2026-11-24).
+      signal: AbortSignal.timeout(10_000),
       method: 'POST',
       headers: {
         Authorization: `Bearer ${cle}`,

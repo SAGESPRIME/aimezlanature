@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaPacks from '../components/CtaPacks.astro';
 import { SITE } from '../data/products';
+import { buildOrganizationSchema } from '../lib/seo';
+import EnTetePage from '../components/EnTetePage.astro';
 
 // Histoire réelle de la fondatrice, reprise de la page « Qui sommes-nous ? »
 // d'aimezlanature.fr (relevée le 2026-07-20). Les allégations santé du texte
@@ -30,9 +32,9 @@ const etapes = [
   },
 ];
 
-const metaTitle = 'Notre mission : une eau meilleure, sans plastique | Aimez la Nature';
+const metaTitle = 'À propos : une eau meilleure, sans plastique | Aimez la Nature';
 const metaDescription =
-  'Aimez la Nature : des Perles de Céramique EM® japonaises authentiques, un emballage zéro plastique et une ligne honnête sur ce que les perles font — et ne font pas.';
+  'Perles de Céramique EM® japonaises authentiques, emballage zéro plastique, et une ligne honnête sur ce que les perles font — et ne font pas.';
 
 const engagements = [
   {
@@ -49,7 +51,7 @@ const engagements = [
   },
   {
     titre: 'Un service client qui répond',
-    texte: 'Une question sur le dosage, une commande, un retour : nous répondons sous 24 h ouvrées, par email ou par téléphone. Pas de robot, pas de ticket perdu.',
+    texte: 'Une question sur le dosage, une commande, un retour : nous répondons par email sous 24 h ouvrées. Pas de robot, pas de ticket perdu.',
   },
 ];
 
@@ -59,52 +61,37 @@ const aboutSchema = {
   name: metaTitle,
   description: metaDescription,
   url: `${SITE.url}/a-propos/`,
-  mainEntity: {
-    '@type': 'Organization',
-    name: SITE.name,
-    url: SITE.url,
-    description: SITE.description,
-    // Création de la marque en 2019 (source : le marchand). À ne pas confondre
-    // avec le dépôt INPI n° 4664991, publié le 31/07/2020 — c'est la date
-    // d'enregistrement de la marque, pas celle du début d'activité.
-    foundingDate: String(SITE.foundingYear),
-    sameAs: [SITE.amazon.url],
-  },
+  mainEntity: buildOrganizationSchema(),
 };
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={aboutSchema}>
   <!-- HERO -->
-  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-4">À propos</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1] mb-5">
-        Une eau meilleure, <em class="not-italic text-[#166534]">sans plastique</em>
-      </h1>
-      <p class="text-[#57534e] text-lg leading-relaxed">
-        Aimez la Nature est née d'un constat simple : en France, on jette des millions de
-        bouteilles plastique pour éviter un goût de chlore. Notre mission est de rendre
-        l'eau du robinet assez agréable pour que ces bouteilles deviennent inutiles.
-      </p>
-    </div>
-  </section>
+  <EnTetePage surTitre="À propos" emplacement="mission">
+    <Fragment slot="titre">Une eau meilleure, <em class="not-italic text-foret">sans plastique</em></Fragment>
+    <p>
+      Aimez la Nature est née d'un constat simple : en France, on jette des millions de
+      bouteilles plastique pour éviter un goût de chlore. Notre mission est de rendre
+      l'eau du robinet assez agréable pour que ces bouteilles deviennent inutiles.
+    </p>
+  </EnTetePage>
 
   <!-- HISTOIRE / TIMELINE -->
-  <section class="py-14 px-4 bg-white" aria-labelledby="histoire-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="histoire-titre">
     <div class="max-w-3xl mx-auto">
-      <h2 id="histoire-titre" class="font-display text-3xl text-[#1A1A16] mb-3">D'où vient Aimez la Nature</h2>
-      <p class="text-[#57534e] leading-relaxed mb-10">
+      <h2 id="histoire-titre" class="font-display text-3xl text-foret mb-3">D'où vient Aimez la Nature</h2>
+      <p class="text-gris leading-relaxed mb-10">
         La marque n'est pas née dans un bureau marketing, mais d'un parcours personnel
         de douze ans — celui de sa fondatrice, guidée par une conviction qu'elle résume
-        en une phrase : <em class="text-[#1A1A16]">« la nature ne se trompe jamais »</em>.
+        en une phrase : <em class="text-encre">« la nature ne se trompe jamais »</em>.
       </p>
       <ol class="space-y-8 mb-4">
         {etapes.map((e) => (
           <li class="flex gap-6">
-            <span class="font-display text-2xl text-[#9C8358] font-bold leading-none flex-shrink-0 w-16 pt-0.5" aria-hidden="true">{e.annee}</span>
+            <span class="font-display text-2xl text-gris font-bold leading-none flex-shrink-0 w-16 pt-0.5" aria-hidden="true">{e.annee}</span>
             <div>
-              <h3 class="font-semibold text-lg text-[#1A1A16] mb-1">{e.titre}</h3>
-              <p class="text-[#57534e] text-sm leading-relaxed">{e.texte}</p>
+              <h3 class="font-semibold text-lg text-encre mb-1">{e.titre}</h3>
+              <p class="text-gris text-sm leading-relaxed">{e.texte}</p>
             </div>
           </li>
         ))}
@@ -113,20 +100,20 @@ const aboutSchema = {
   </section>
 
   <!-- POURQUOI LES PERLES -->
-  <section class="py-14 px-4 bg-[#FDFBF7]" aria-labelledby="pourquoi-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-coquille" aria-labelledby="pourquoi-titre">
     <div class="max-w-3xl mx-auto">
-      <h2 id="pourquoi-titre" class="font-display text-3xl text-[#1A1A16] mb-6">Pourquoi les perles de céramique ?</h2>
-      <p class="text-[#57534e] leading-relaxed mb-4">
+      <h2 id="pourquoi-titre" class="font-display text-3xl text-foret mb-6">Pourquoi les perles de céramique ?</h2>
+      <p class="text-gris leading-relaxed mb-4">
         Parce que c'est la solution la plus sobre que nous ayons trouvée : un objet unique, fabriqué
         en argile naturelle, qui dure des années, ne demande ni cartouche, ni électricité, ni
         plastique — et qui se régénère avec une simple casserole d'eau bouillante.
       </p>
-      <p class="text-[#57534e] leading-relaxed mb-4">
+      <p class="text-gris leading-relaxed mb-4">
         Nous avons choisi les perles EM® japonaises authentiques plutôt que des copies, parce que
         la qualité de l'argile et du processus de fermentation fait la différence entre un produit
         qui agit et un simple caillou décoratif.
       </p>
-      <p class="text-[#57534e] leading-relaxed">
+      <p class="text-gris leading-relaxed">
         Aujourd'hui, {SITE.totalReviews} clients nous font confiance, avec une note moyenne de
         {SITE.globalRating.toString().replace('.', ',')}/5. Notre meilleure publicité reste leur
         eau du matin.
@@ -135,15 +122,15 @@ const aboutSchema = {
   </section>
 
   <!-- ENGAGEMENTS -->
-  <section class="py-14 px-4 bg-[#F5F0E8]" aria-labelledby="engagements-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-anis-pale" aria-labelledby="engagements-titre">
     <div class="max-w-4xl mx-auto">
-      <h2 id="engagements-titre" class="font-display text-3xl text-[#1A1A16] mb-8">Nos quatre engagements</h2>
+      <h2 id="engagements-titre" class="font-display text-3xl text-foret mb-8">Nos quatre engagements</h2>
       <div class="grid sm:grid-cols-2 gap-5">
         {engagements.map((e, i) => (
-          <div class="bg-white rounded-2xl border border-[#EDE8E0] p-6">
-            <p class="font-display text-2xl text-[#9C8358] font-bold mb-2" aria-hidden="true">0{i + 1}</p>
-            <h3 class="font-semibold text-[#1A1A16] mb-2">{e.titre}</h3>
-            <p class="text-sm text-[#57534e] leading-relaxed">{e.texte}</p>
+          <div class="bg-white rounded-xl border border-ligne p-6">
+            <p class="font-display text-2xl text-gris font-bold mb-2" aria-hidden="true">0{i + 1}</p>
+            <h3 class="font-semibold text-encre mb-2">{e.titre}</h3>
+            <p class="text-sm text-gris leading-relaxed">{e.texte}</p>
           </div>
         ))}
       </div>
@@ -151,11 +138,11 @@ const aboutSchema = {
   </section>
 
   <!-- MISSION -->
-  <section class="py-14 px-4 bg-[#0D2818] text-white" aria-labelledby="mission-titre">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-nuit text-white" aria-labelledby="mission-titre">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">Notre mission</p>
+      <p class="text-sm text-anis mb-4">Notre mission</p>
       <h2 id="mission-titre" class="font-display text-3xl lg:text-4xl mb-6">Moins de plastique, une eau meilleure</h2>
-      <p class="text-[#B8CCB4] leading-relaxed">
+      <p class="text-anis-clair leading-relaxed">
         Chaque foyer qui passe aux perles, c'est de l'eau en bouteille qui n'est plus achetée,
         du plastique qui n'est plus jeté et des cartouches qui ne sont plus remplacées.
         C'est modeste à l'échelle d'une maison — et considérable à l'échelle de milliers.

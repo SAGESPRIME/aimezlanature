@@ -16,7 +16,7 @@ Suite à l'audit `docs/audit/rapport-audit-2026-07-20.md`.
   l'accueil, page à-propos (hero, engagement, section dédiée), CtaPacks, réassurance
   fiche produit, contact, llms.txt. Remplacé par la mission réelle et sourçable :
   zéro plastique (tube biodégradable, sachet coton BIO). Vérifié : 0 mention dans
-  le HTML généré. Un commentaire d'avertissement dans `products.ts` interdit de le
+  le HTML généré. Un commentaire d'avertissement dans `src/data/products.ts` (façade Sanity) interdit de le
   réintroduire.
 - **Prix barrés** : les remises -18/-23/-30 % correspondent bien aux prix affichés sur
   le site en ligne. ⚠️ Conformité Omnibus (prix le plus bas des 30 derniers jours) à

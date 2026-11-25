@@ -6,14 +6,38 @@
  * dupliquée dans un composant finit toujours par diverger de la source
  * (cf. tasks/lessons.md, l'affaire des « 192 avis »).
  *
- * ⚠️ RÈGLE ABSOLUE SUR LES CHIFFRES
- * Aucun pourcentage de remise, aucun minimum de commande, aucun franco de port
- * n'a été validé par le marchand à ce jour (23/07/2026). Tant que ce n'est pas
- * le cas, `paliersRemise` reste VIDE et la page affiche le principe sans
- * chiffre. Ne jamais y écrire une valeur « en attendant » : un tarif inventé
- * sur un site marchand est une pratique commerciale trompeuse (L121-2 code de
- * la consommation), et c'est exactement l'erreur déjà commise sur ce projet.
+ * Conditions VALIDÉES par le marchand le 2026-11-24 : −30 % sur les prix
+ * publics TTC, minimum 300 € de produits (après remise, hors livraison),
+ * livraison Colissimo selon le poids. Elles viennent de commande-pro.mjs
+ * (qui calcule le paiement) : jamais recopiées en dur ici.
+ * ⚠️ Ne jamais afficher un chiffre non validé par le marchand (L121-2 code
+ * de la consommation).
  */
+
+import { prixDEntree, products } from './products';
+import { MINIMUM_PRO, REMISE_PRO, prixPro } from './commande-pro.mjs';
+
+const euros = (n: number) => `${n.toFixed(2).replace('.', ',')} €`;
+const remiseTexte = `−${Math.round(REMISE_PRO * 100)} %`;
+const pack100 = products.find((p) => p.slug === 'pack-100-perles');
+
+/** Conditions revendeur affichées sur /revendeurs/ (et rappelées sur /pro/). */
+export const conditionsPro = [
+  {
+    titre: `${remiseTexte} sur nos prix publics`,
+    texte: pack100
+      ? `Exemple : ${pack100.shortName} à ${euros(prixPro(pack100.priceCurrent))} au lieu de ${euros(pack100.priceCurrent)} TTC.`
+      : 'Sur tous les produits du catalogue.',
+  },
+  {
+    titre: `Minimum ${MINIMUM_PRO} € par commande`,
+    texte: 'De produits, après remise et hors livraison. Panachage libre entre les formats.',
+  },
+  {
+    titre: 'Livraison Colissimo au poids',
+    texte: 'En France, au tarif Colissimo à domicile selon le poids total du colis, indiqué avant le paiement.',
+  },
+];
 
 export interface PalierRemise {
   /** Nom du palier, ex. « Boutique ». */
@@ -25,10 +49,8 @@ export interface PalierRemise {
 }
 
 /**
- * Grille de remise. VIDE tant que le marchand n'a pas validé ses chiffres.
- * Dès qu'ils le sont : remplir ce tableau, la page affiche automatiquement
- * le tableau à la place du texte « grille communiquée sous 24 h ». Aucun autre
- * fichier n'est à modifier.
+ * Ancienne grille par paliers : remplacée par la remise unique de
+ * conditionsPro. Laissée vide (la page affiche conditionsPro).
  */
 export const paliersRemise: PalierRemise[] = [];
 
@@ -42,7 +64,7 @@ export const argumentsRevente = [
   {
     titre: 'Un prix d’entrée accessible',
     texte:
-      "Le premier format est vendu 19,90 € au public. C'est un achat de test facile à conseiller en caisse, qui ne demande pas de réflexion au client.",
+      `Le premier format est vendu ${prixDEntree()} au public. C'est un achat de test facile à conseiller en caisse, qui ne demande pas de réflexion au client.`,
   },
   {
     titre: 'Un produit qui se raconte en deux phrases',
@@ -59,21 +81,20 @@ export const argumentsRevente = [
 /** Les 4 étapes du parcours revendeur. */
 export const etapes = [
   {
-    titre: 'Vous décrivez votre activité',
+    titre: 'Vous posez votre candidature',
     texte: 'Le formulaire ci-dessous prend deux minutes. Aucun engagement.',
   },
   {
-    titre: 'Nous vérifions votre SIRET',
-    texte: "L'offre est réservée aux professionnels enregistrés.",
+    titre: 'Nous vérifions votre activité',
+    texte: "L'offre est réservée aux professionnels enregistrés (SIRET). Réponse sous 24 h ouvrées.",
   },
   {
-    titre: 'Vous recevez votre devis',
-    texte:
-      'Grille de remise adaptée à votre volume, conditions professionnelles et délais, sous 24 h ouvrées.',
+    titre: 'Vous recevez votre accès revendeur',
+    texte: 'Un lien de connexion par email, sans mot de passe, vers votre espace de commande.',
   },
   {
-    titre: 'Nous expédions votre commande',
-    texte: 'Réassort à la demande, sans engagement de volume annuel.',
+    titre: 'Vous commandez en ligne',
+    texte: `Tarif ${remiseTexte}, minimum ${MINIMUM_PRO} €, paiement sécurisé, expédition Colissimo.`,
   },
 ];
 
@@ -88,8 +109,12 @@ export const etapes = [
 export const faqPro = [
   {
     question: 'Quel est le minimum de commande pour un revendeur ?',
+    answer: `${MINIMUM_PRO} € de produits par commande, après la remise de ${Math.round(REMISE_PRO * 100)} % et hors livraison. Vous panachez librement les formats.`,
+  },
+  {
+    question: 'Combien coûte la livraison d’une commande professionnelle ?',
     answer:
-      "Le minimum et la grille de remise dépendent de votre activité et du volume envisagé. Ils vous sont communiqués avec votre devis, sous 24 h ouvrées après votre demande.",
+      'Le tarif Colissimo à domicile selon le poids total du colis, en France. Le montant exact s’affiche dans votre espace revendeur avant le paiement.',
   },
   {
     question: 'Quels documents dois-je fournir pour ouvrir un compte revendeur ?',
@@ -99,12 +124,12 @@ export const faqPro = [
   {
     question: 'Puis-je revendre les perles sur ma propre boutique en ligne ?',
     answer:
-      "C'est étudié au cas par cas. Les conditions de revente en ligne sont précisées dans les conditions professionnelles transmises avec votre devis.",
+      "C'est étudié au cas par cas : précisez-le dans votre candidature.",
   },
   {
     question: 'Quelles conditions de vente s’appliquent à une commande professionnelle ?',
     answer:
-      "Les CGV publiées sur ce site encadrent les ventes aux particuliers et ne s'appliquent pas à une commande professionnelle. Des conditions dédiées vous sont transmises avec votre devis, avant toute commande.",
+      "Les CGV publiées sur ce site encadrent les ventes aux particuliers. Vos conditions professionnelles (remise, minimum, livraison) sont celles affichées sur cette page et dans votre espace revendeur ; elles vous sont confirmées avec votre accès.",
   },
   {
     question: 'Comment être sûr que les perles sont authentiques ?',

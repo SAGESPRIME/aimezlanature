@@ -1,0 +1,19 @@
+---
+/**
+ * Rendu d'un texte riche (Portable Text) venant de Sanity, avec les styles du
+ * site. Le texte est TOUJOURS échappé par Astro : un contenu saisi dans le
+ * Studio ne peut pas injecter de HTML ni de script dans la page.
+ */
+import { PortableText } from 'astro-portabletext';
+import Bloc from './Bloc.astro';
+import Liste from './Liste.astro';
+import Marque from './Marque.astro';
+
+interface Props {
+  value: unknown[];
+}
+const { value } = Astro.props;
+const components = { block: Bloc, list: Liste, mark: Marque };
+---
+
+<PortableText value={value as never} components={components} />

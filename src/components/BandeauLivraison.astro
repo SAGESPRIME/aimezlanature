@@ -1,0 +1,24 @@
+---
+/**
+ * Bandeau « Livraison offerte » animé (accueil, fiche produit).
+ * Animation dans global.css (.livraison-offerte) : le camion entre une fois,
+ * un reflet passe trois fois ; immobile si le visiteur a demandé moins
+ * d'animations. N'afficher que là où la règle de livraison (livraison.mjs)
+ * rend vraiment la livraison gratuite.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  titre?: string;
+  class?: string;
+}
+const { titre = 'Livraison offerte', class: classe = '' } = Astro.props;
+---
+
+<div class={`livraison-offerte flex items-center gap-3 rounded-xl border border-anis bg-anis-pale px-4 py-3 ${classe}`}>
+  <span class="livraison-camion flex-shrink-0 text-foret"><Icon name="truck" class="w-7 h-7" /></span>
+  <p class="text-sm leading-snug text-gris">
+    <strong class="block text-base text-encre">{titre}</strong>
+    <slot />
+  </p>
+</div>

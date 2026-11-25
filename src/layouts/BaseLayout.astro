@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import { Image } from 'astro:assets';
 import { SITE, getProduct } from '../data/products';
+import { jsonPourScript } from '../lib/json-script';
+import { getCollection } from 'astro:content';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
@@ -18,17 +20,17 @@ import logo from '../assets/logo.png';
 // 0,11, au-dessus du seuil « bon » de 0,10 (cause confirmée par une trace
 // Chrome DevTools qui nomme les 6 fichiers de police).
 //
-// Seules les 3 polices réellement visibles au-dessus de la ligne de flottaison
-// sont préchargées (~70 Ko) : Playfair 600 porte le H1 (le plus gros texte, donc
-// le plus gros décalage), Inter 400 le corps de texte, Inter 600 les boutons.
-// Inter 500 et 700 ne servent qu'à de petits éléments et restent découvertes via
-// le CSS : les précharger toutes (115 Ko) volerait de la bande passante à
-// l'image LCP, qui est déjà en fetchpriority="high".
-import fontPlayfair600 from '@fontsource/playfair-display/files/playfair-display-latin-600-normal.woff2?url';
-import fontInter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
-import fontInter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
+// Seules les polices réellement visibles au-dessus de la ligne de flottaison
+// sont préchargées (~70 Ko) : Cormorant 600 porte le H1 (le plus gros texte,
+// donc le plus gros décalage), Cormorant 500 italique le mot surligné du H1,
+// Instrument Sans (variable : un fichier pour toutes les graisses) le texte et
+// les boutons. Le reste est découvert via le CSS, pour ne pas voler de bande
+// passante à l'image LCP (fetchpriority="high").
+import fontTitre600 from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2?url';
+import fontTitre500i from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2?url';
+import fontTexte from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 
-const policesAPrecharger = [fontPlayfair600, fontInter400, fontInter600];
+const policesAPrecharger = [fontTitre600, fontTitre500i, fontTexte];
 
 interface Props {
   title: string;
@@ -38,6 +40,15 @@ interface Props {
   noindex?: boolean;
   ogImage?: string;
   ogImageAlt?: string;
+  /** Dimensions réelles de l'image de partage (par défaut celles de /og-default.jpg). */
+  ogImageLargeur?: number;
+  ogImageHauteur?: number;
+  /**
+   * Date ISO de la dernière modification SIGNIFICATIVE du contenu (prix,
+   * stock, texte d'article). Émise en og:updated_time et reprise comme
+   * <lastmod> dans le sitemap (astro.config.mjs).
+   */
+  modifieLe?: string;
 }
 
 const {
@@ -48,6 +59,9 @@ const {
   noindex = false,
   ogImage = '/og-default.jpg',
   ogImageAlt = 'Aimez la Nature — Perles de Céramique EM® authentiques du Japon pour purifier l\'eau du robinet',
+  ogImageLargeur = 1200,
+  ogImageHauteur = 630,
+  modifieLe,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.url).href;
@@ -74,20 +88,22 @@ const segmentLabels: Record<string, string> = {
   'contact': 'Contact',
   'mentions-legales': 'Mentions légales',
   'revendeurs': 'Devenir revendeur',
-  // Articles de blog
-  'perles-de-ceramique-une-solution-ecologique-et-economique': 'Solution écologique et économique',
-  'les-perles-de-ceramique-une-alternative-bio-pour-la-purification-deau-de-robinet': 'Alternative bio',
-  'leau-est-une-source-de-vie': 'L\'eau, source de vie',
-  'perles-de-ceramique-purifier-votre-eau-du-robinet': 'Purifier l\'eau du robinet',
-  'les-differents-usages-des-perles-de-ceramique': 'Les usages des perles',
-  'authenticite-des-perles-de-ceramique-em-et-leur-efficacite': 'Authenticité et efficacité',
-  'les-bienfaits-des-perles-de-ceramique': 'Les bienfaits des perles',
-  'perles-de-ceramique-em-une-vraie-source-de-vie-au-quotidien': 'Source de vie au quotidien',
+  'merci': 'Merci',
+  'panier': 'Panier',
+  'commande-confirmee': 'Commande confirmée',
+  'avis': 'Avis',
+  // Les articles du blog fournissent leur propre libellé (champ « libellé
+  // court » dans Sanity) : voir libellesArticles ci-dessous.
 };
+
+const libellesArticles: Record<string, string> = Object.fromEntries(
+  (await getCollection('articles')).map((a) => [a.id, a.data.libelleCourt])
+);
 
 function segmentLabel(seg: string): string {
   return (
     segmentLabels[seg] ??
+    libellesArticles[seg] ??
     getProduct(seg)?.shortName ??
     seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
   );
@@ -124,7 +140,13 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Application installable (PWA) : manifest, icônes, couleur de la barre
+         du navigateur mobile (l'anis du bandeau). Service worker : /sw.js. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#BBE12C" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Aimez la Nature" />
 
     <!-- Préchargement des polices de la ligne de flottaison, placé le plus haut
          possible pour que le navigateur lance les requêtes avant même d'avoir lu
@@ -137,7 +159,10 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    {/* Pas de canonical sur une page noindex : les deux signaux se contredisent
+        (« ne m'indexe pas » / « indexe cette URL »), et la 404 déclarait une
+        URL /404/ qui n'existe pas. */}
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
 
     {noindex && <meta name="robots" content="noindex,nofollow" />}
 
@@ -164,8 +189,9 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
          hasard et les lecteurs d'écran n'ont aucune description. L'image par
          défaut (/og-default.jpg) fait 1200×630, le ratio 1.91:1 attendu. -->
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={String(ogImageLargeur)} />
+    <meta property="og:image:height" content={String(ogImageHauteur)} />
+    {modifieLe && <meta property="og:updated_time" content={modifieLe} />}
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content="fr_FR" />
 
@@ -185,13 +211,13 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
 
     <!-- JSON-LD Structured Data (SSR only) -->
     {allSchemas.map((schema) => (
-      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      <script type="application/ld+json" set:html={jsonPourScript(schema)} />
     ))}
   </head>
-  <body class="bg-stone-50 text-stone-800 font-sans antialiased overflow-x-hidden">
+  <body class="bg-coquille text-encre font-sans antialiased overflow-x-hidden">
     <a
       href="#contenu"
-      class="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:top-2 focus:left-2 focus:bg-white focus:text-green-800 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow"
+      class="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:top-2 focus:left-2 focus:bg-white focus:text-foret-fonce focus:px-4 focus:py-2 focus:rounded-lg focus:shadow"
     >
       Aller au contenu
     </a>
@@ -199,66 +225,61 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     <!-- Bande d'annonce (défile hors de l'écran ; le header reste seul en sticky) -->
     <AnnouncementBar />
 
-    <!-- Navigation -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
-      <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between" aria-label="Navigation principale">
-        <a href="/" class="flex-shrink-0" aria-label="Aimez la Nature — accueil">
+    <!-- Navigation. Bureau : liens à gauche, logo centré, panier à droite
+         (mise en page éditoriale, docs/design/systeme.md). Mobile : logo à
+         gauche, panier + menu à droite. -->
+    <header class="sticky top-0 z-50 bg-coquille/95 backdrop-blur border-b border-ligne">
+      <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-16 lg:h-20 grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-4" aria-label="Navigation principale">
+        <ul class="hidden lg:flex items-center gap-6 xl:gap-7 text-sm text-encre whitespace-nowrap list-none p-0 m-0">
+          <li><a href="/perles-ceramique-em/" class="lien-nav">Nos perles</a></li>
+          <li><a href="/comment-ca-marche/" class="lien-nav">Comment ça marche</a></li>
+          <li><a href="/utilisations/" class="lien-nav">Utilisations</a></li>
+          <li><a href="/blog/" class="lien-nav">Guides</a></li>
+        </ul>
+        <a href="/" class="justify-self-start lg:justify-self-center flex-shrink-0" aria-label="Aimez la Nature — accueil">
           <Image
             src={logo}
             alt="Aimez la Nature"
             width={373}
             height={109}
             widths={[186, 373]}
-            sizes="140px"
+            sizes="(min-width: 1024px) 164px, 130px"
             loading="eager"
-            class="h-8 sm:h-9 w-auto"
+            class="h-9 lg:h-12 w-auto"
           />
         </a>
-        <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
-          <li><a href="/perles-ceramique-em/" class="hover:text-green-700 transition-colors">Nos Perles</a></li>
-          <li><a href="/blog/" class="hover:text-green-700 transition-colors">Guides</a></li>
-          <li><a href="/comment-ca-marche/" class="hover:text-green-700 transition-colors">Comment ça marche</a></li>
-          <li><a href="/faq/" class="hover:text-green-700 transition-colors">FAQ</a></li>
-          <li><a href="/a-propos/" class="hover:text-green-700 transition-colors">Notre mission</a></li>
-        </ul>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center justify-end gap-2 sm:gap-4">
+          <a href="/faq/" class="hidden xl:inline lien-nav text-sm text-encre">FAQ</a>
+          <a href="/a-propos/" class="hidden xl:inline lien-nav text-sm text-encre whitespace-nowrap">Notre mission</a>
+          <a href="/revendeurs/" class="hidden xl:inline lien-nav text-sm text-encre">Revendeurs</a>
           <a
             href="/panier/"
             data-ouvrir-panier
-            class="relative inline-flex items-center justify-center w-10 h-10 rounded-lg border border-stone-200 text-stone-700 hover:bg-stone-100 transition-colors"
+            class="relative inline-flex items-center justify-center w-11 h-11 rounded-full text-encre hover:bg-anis-pale transition-colors"
             aria-label="Voir mon panier"
           >
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
             </svg>
             <span
               data-panier-compteur
               hidden
-              class="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-green-700 text-white text-xs font-bold flex items-center justify-center"
+              class="absolute top-0.5 right-0.5 min-w-5 h-5 px-1 rounded-full bg-anis text-encre text-xs font-bold flex items-center justify-center"
             >0</span>
-          </a>
-          <!-- Masqué sous sm : logo + panier + CTA + burger ne tenaient pas sur
-               une ligne à 390 px. Le panier et le menu restent accessibles, et
-               la fiche produit a désormais sa barre d'achat collante. -->
-          <a
-            href="/perles-ceramique-em/"
-            class="hidden sm:inline-flex bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors"
-          >
-            Commander
           </a>
           <button
             id="menu-toggle"
             type="button"
-            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-stone-200 text-stone-700 hover:bg-stone-100 transition-colors"
+            class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full text-encre hover:bg-anis-pale transition-colors"
             aria-expanded="false"
             aria-controls="menu-mobile"
             aria-label="Ouvrir le menu"
           >
-            <svg class="w-5 h-5 menu-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <svg class="w-5 h-5 menu-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
-            <svg class="w-5 h-5 menu-icon-close hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <svg class="w-5 h-5 menu-icon-close hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
@@ -266,28 +287,29 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
       </nav>
       <!-- Panneau mobile, replié par défaut, déplié par le bouton (js/site.js).
            Sans JS, tous les liens restent accessibles via le footer. -->
-      <ul id="menu-mobile" class="hidden md:hidden border-t border-stone-200 bg-white px-4 py-3 space-y-1 text-sm font-medium text-stone-700">
-        <li><a href="/perles-ceramique-em/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Nos Perles</a></li>
-        <li><a href="/blog/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Guides</a></li>
-        <li><a href="/comment-ca-marche/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Comment ça marche</a></li>
-        <li><a href="/utilisations/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">16 utilisations</a></li>
-        <li><a href="/faq/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">FAQ</a></li>
-        <li><a href="/a-propos/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Notre mission</a></li>
-        <li><a href="/contact/" class="block px-2 py-2.5 rounded-lg hover:bg-stone-100">Contact</a></li>
+      <ul id="menu-mobile" class="hidden lg:hidden border-t border-ligne bg-coquille px-4 py-3 space-y-1 text-base text-encre list-none m-0">
+        <li><a href="/perles-ceramique-em/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">Nos perles</a></li>
+        <li><a href="/comment-ca-marche/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">Comment ça marche</a></li>
+        <li><a href="/utilisations/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">16 utilisations</a></li>
+        <li><a href="/blog/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">Guides</a></li>
+        <li><a href="/faq/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">FAQ</a></li>
+        <li><a href="/a-propos/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">Notre mission</a></li>
+        <li><a href="/revendeurs/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">Devenir revendeur</a></li>
+        <li><a href="/contact/" class="block px-2 py-3 rounded-lg hover:bg-anis-pale">Contact</a></li>
       </ul>
     </header>
 
     <!-- Breadcrumb (visible only on inner pages) -->
     {breadcrumbItems.length > 1 && (
       <nav class="max-w-6xl mx-auto px-4 py-3" aria-label="Fil d'Ariane">
-        <ol class="flex flex-wrap items-center gap-2 text-xs text-stone-500">
+        <ol class="flex flex-wrap items-center gap-2 text-xs text-gris">
           {breadcrumbItems.map((item, i) => (
             <li class="flex items-center gap-2">
               {i > 0 && <span aria-hidden="true">/</span>}
               {i < breadcrumbItems.length - 1 ? (
-                <a href={item.item} class="hover:text-green-700 transition-colors">{item.name}</a>
+                <a href={item.item} class="hover:text-foret transition-colors">{item.name}</a>
               ) : (
-                <span class="text-stone-700 font-medium">{item.name}</span>
+                <span class="text-encre font-medium">{item.name}</span>
               )}
             </li>
           ))}
@@ -313,6 +335,8 @@ const allSchemas = breadcrumbSchema ? [breadcrumbSchema, ...schemas] : schemas;
     <BandeauCookies />
 
     <script src="/js/site.js" defer></script>
+    <!-- Calcul de livraison au poids : avant cart.js qui l'utilise. -->
+    <script src="/js/livraison.js" defer></script>
     <script src="/js/cart.js" defer></script>
     <!-- Pilote le bandeau ET décide du chargement de Google Ads : aucun script
          Google n'est demandé avant un clic explicite sur « Accepter ». -->

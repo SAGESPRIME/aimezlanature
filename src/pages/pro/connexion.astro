@@ -1,0 +1,59 @@
+---
+/**
+ * Espace revendeurs — demander un lien de connexion (sans mot de passe).
+ * Page à la demande (messages selon l'URL), noindex, hors sitemap.
+ * Le formulaire répond de la même façon que l'email soit connu ou non.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EnTetePage from '../../components/EnTetePage.astro';
+import { sessionPro } from '../../lib/pro';
+
+export const prerender = false;
+
+if (await sessionPro(Astro.cookies).catch(() => null)) return Astro.redirect('/pro/', 303);
+
+const q = Astro.url.searchParams;
+const message = q.has('envoye')
+  ? "Si cette adresse est celle d'un revendeur validé, un lien de connexion vient de lui être envoyé (valable 7 jours). Pensez à vérifier les indésirables."
+  : q.get('lien') === 'invalide'
+    ? 'Ce lien n’est plus valable (expiré, déjà remplacé ou accès suspendu). Demandez-en un nouveau ci-dessous.'
+    : q.has('attendre')
+      ? 'Trop de demandes rapprochées : réessayez dans une minute.'
+      : q.has('sortie')
+        ? 'Vous êtes déconnecté de l’espace revendeur.'
+        : '';
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<BaseLayout title="Espace revendeur | Aimez la Nature" description="Connexion à l'espace revendeur Aimez la Nature." noindex>
+  <EnTetePage surTitre="Espace revendeur">
+    <Fragment slot="titre">Accéder à mon espace revendeur</Fragment>
+    <p>
+      Recevez par email un lien de connexion, sans mot de passe. L'espace est réservé aux
+      revendeurs dont la candidature a été validée.
+    </p>
+  </EnTetePage>
+
+  <section class="px-4 sm:px-6 py-12 lg:py-16">
+    <div class="max-w-6xl mx-auto"><div class="max-w-md">
+      {message && <p class="mb-6 rounded-xl border border-ligne bg-anis-pale px-5 py-4 text-sm text-encre" role="status">{message}</p>}
+      <form method="post" action="/api/pro/lien" class="space-y-4">
+        <label class="block">
+          <span class="block text-sm font-semibold text-encre mb-1.5">Email de votre candidature</span>
+          <input
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            inputmode="email"
+            class="w-full rounded-xl border border-pierre bg-white px-4 py-3 text-base text-encre focus:border-foret focus:outline-none focus:ring-2 focus:ring-foret"
+          />
+        </label>
+        <button type="submit" class="bouton bouton-plein w-full">Recevoir mon lien de connexion</button>
+      </form>
+      <p class="mt-6 text-sm text-gris">
+        Pas encore revendeur ? <a href="/revendeurs/" class="lien-souligne">Poser ma candidature</a>
+      </p>
+    </div></div>
+  </section>
+</BaseLayout>

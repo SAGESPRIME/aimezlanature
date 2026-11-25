@@ -2,89 +2,100 @@
 
 ---
 
-# ⏸️ REPRENDRE ICI — règle de pare-feu en brouillon (arrêt le 2026-07-30)
+# ⏸️ REPRENDRE ICI — recette en ligne sur Coolify, contenu dans Sanity (2026-11-23)
 
-**Une règle est préparée sur Vercel mais PAS publiée. Elle n'existe nulle part dans ce dépôt :
-c'est un brouillon côté Vercel, invisible d'un `git status`.** Sans cette note, la prochaine
-session la referait de zéro — ou pire, croirait la protection en place.
+Branche `claude/busy-albattani-hdkhlq`. Tout ce qui suit est **fait et vérifié dans le dépôt** ;
+ce qui reste demande un accès que le code n'a pas (VPS, Sanity, DNS, Stripe) ou une décision du
+marchand.
 
-### État exact au moment de l'arrêt
+### Audit de sécurité du 2026-11-24 (skill Cloudflare `security-audit`, profil quick)
+Code source seulement (pas de bac à sable) : 0 faille confirmée, 6 pistes à valider, **toutes
+corrigées** dans la PR — corps de requête 256 Kio max, IP de confiance vérifiée (pair privé),
+limiteur IPv6 /64 + éviction, mot de passe obligatoire sur une recette avec brouillons, avis à
+réponse uniforme + produit vérifié, notification marchand non répétée. Détail : `SECURITY-NOTES.md`.
+- [x] Prouvé sur la recette (2026-11-24) : rafale à X-Real-IP/XFF/CF-Connecting-IP falsifiés →
+      10 passent / 20 en 429 ; 300 Kio → 413 (avec et sans longueur) ; port 4321 non publié ;
+      retour Stripe sur la recette (et non plus localhost) ; avis : même réponse client/inconnu.
+- [x] Emailit : espace vérifié → commande test complète, confirmation client envoyée (2026-11-24).
+- [x] `SITE_RECETTE` était désactivée dans Coolify (ni runtime ni build) : recette indexable
+      quelques heures ; rétablie en runtime, `noindex` vérifié.
+- [x] `RECETTE_UTILISATEUR` / `RECETTE_MOT_DE_PASSE` posés sur site-recette (mot de passe visible
+      dans Coolify) — requis pour le build de relecture des brouillons.
+- [x] Anciens navigateurs sans `Sec-Fetch-Site` (Safari < 16.4) : 403 sur les formulaires avis /
+      revendeur (`url.origin` valait localhost). Corrigé par `security.allowedDomains` (prod +
+      recette) dans astro.config.mjs, vérifié sur la recette (2026-11-24).
+- [x] Ré-audit ciblé (run-2) — voir son rapport.
+- [ ] Un mois après le jour J : refuser les sessions Stripe sans `metadata.source`.
 
-| Élément | État |
-|---|---|
-| CLI Vercel | **installée** (v58.4.0), connecté comme `sagesprime` |
-| Dossier rattaché | ✅ `aimezlanatureseo` (`prj_AxqIcUMlk1i3lbacS9qAghFdumaY`) — **pas** l'autre projet `aimezlanature`, dont le nom ressemble à celui du dossier |
-| Règle | **staged (brouillon)**, `rule_limite_paiement_sK41Kp` |
-| Protection réelle aujourd'hui | ❌ **aucune** au-delà du limiteur applicatif, qui ne bloque pas le parallélisme |
+### Fait (vérifié)
+- Astro 7.4.13, 0 vulnérabilité npm ; `astro check` 0 erreur ; CI GitHub Actions.
+- Vercel → **Coolify** : `server.mjs` + `Dockerfile` (non-root, healthcheck). Contre le conteneur :
+  redirections 220/220, en-têtes conformes, **`check:ratelimit` au vert** (rafale parallèle ET IP
+  falsifiées bloquées — impossible sur Vercel). La règle de pare-feu Vercel en brouillon est sans objet.
+- **Sanity** : Studio (`studio/`), contenu extrait dans `contenu/seed.ndjson` (4 produits, 96 avis,
+  8 articles, 32 FAQ). Parité SEO 29/29 pages. Paiement : prix figés au build, zéro appel Sanity.
+- SEO/GEO : graphe JSON-LD (Organization @id, Product avec livraison/retours), `llms.txt` généré,
+  robots IA explicites, `lastmod`, `check:seo` 24/24.
+- 8 articles réécrits en **brouillons** (sources, réponse courte, FAQ) — à relire et publier.
+- Corrigés au passage : CGV « commande par email » périmée, livraison BE/LU/CH hors CGV, prix de
+  l'accueil en dur, risque d'étouffement présenté comme impossible, 16 mots collés à un lien.
 
-La règle en attente :
+### En ligne sur Coolify (coolify.presencebusiness.com, projet « aimezlanature ») — vérifié le 2026-11-23
+- **Recette** https://recette.aimezlanature.fr — `site-recette` (uuid `u13rjlpi0n6gxebymfi6wo5d`),
+  branche de la PR, contenu **issu de Sanity**. En-têtes conformes, noindex, redirections OK,
+  limite anti-abus validée derrière Traefik (une seule connexion : 10 passent / 20 bloqués ; IP
+  falsifiées 10/10 bloquées).
+- **Studio** https://studio.aimezlanature.fr — `studio` (uuid `gdhm4dyqjcp1jdfrlnrm0n2p`).
+- **Prod** `site-prod` (uuid `c720xskr2qygomdkr1mt9zmx`) : créée, sans domaine, jamais déployée.
+- **Sanity** projet `0lgh06ly`, dataset `production` (public) : 141 documents + 8 brouillons
+  d'articles ; build depuis Sanity identique au build depuis le seed (29/29 pages, 0 écart).
+- **Reconstruction automatique** : publication Studio → webhook Sanity « Reconstruire la recette »
+  (`VpljlJmEMahJRC0O`) → relais signé `/api/reconstruction` → Coolify. Test réel : 2 événements
+  (202, 202) → **1** déploiement 45 s après le dernier.
+- Hébergeur légal renseigné : Hetzner.
 
-```
-Nom        : Limite paiement
-ID         : rule_limite_paiement_sK41Kp
-Condition  : le chemin commence par /api/checkout
-Comptage   : 30 requêtes / 60 s, par adresse IP
-Si dépassé : log   ← n'empêche RIEN, se contente d'enregistrer
-```
+### Reste à faire — dans l'ordre
+1. [ ] **Utilisateur** : révoquer les jetons Sanity temporaires « import-claude » (Editor) et
+       « webhook-claude » (Administrator) ; décocher « Build Variable » sur les secrets de
+       `site-recette` (hygiène, aucune fuite constatée).
+2. [~] Commande test sur la recette (2026-11-23) : panier → Stripe Checkout (cs_test) → carte 4242
+       → retour sur /commande-confirmee/ → webhook reçu et signature valide. ✅
+       ❌ Emails refusés par Emailit (403 `unverified_workspace_recipient`) : la clé posée dans
+       `site-recette` vient d'un espace Emailit NON vérifié (celui de la prod, vérifié le
+       2026-07-29, fonctionne). → **Utilisateur** : remettre la clé Emailit de la prod (Vercel)
+       dans `site-recette`, redémarrer, puis « Renvoyer » l'événement dans Stripe (mode test).
+       Reste aussi : `async_payment_succeeded`, et désactiver Adaptive Pricing (USD affiché).
+       Cause réelle (2026-11-23) : l'ESPACE Emailit n'est pas vérifié (pas la clé). Demande de
+       vérification à envoyer par l'utilisateur (Settings → Requests), déclarée Transactionnel +
+       Marketing (choix « A et B »). Avant TOUT envoi marketing à l'audience des 1 550 :
+       retirer les clients sans achat depuis le 2023-11 (CNIL : 3 ans), lien de désinscription,
+       mention dans la politique de confidentialité, et proposer l'opposition au moment de la
+       commande (art. L34-5 CPCE) — absent du tunnel actuel, à ajouter si on prospecte.
+3. [ ] **Marchand** : relire les 8 articles (recette avec `CONTENU_BROUILLONS=1` + jeton de
+       lecture) et les publier dans le Studio.
+4. [ ] **Marchand — décisions** :
+   - prix barrés (Omnibus) : justifier ou vider le champ « Prix barré » dans le Studio ;
+   - TVA / mention TTC ;
+   - auteur des articles (fiche « Auteur » dans le Studio, E-E-A-T) ;
+   - livraison hors France : rouvrir BE/LU/CH ? (code `PAYS_LIVRAISON` + CGV) ;
+   - étiquette de conversion Google Ads (`src/data/tracking.ts`) ;
+   - droit de sous-distribuer (fournisseur EM), grille revendeur.
+5. [ ] Fusionner la PR (après avoir coupé le déploiement Git de Vercel), puis repasser
+       `site-recette` et `studio` sur `master`.
+6. [ ] **Jour J** (`docs/deploiement-coolify.md` §9) : Stripe live, domaines sur `site-prod`,
+       variables du relais pour la prod + 2e webhook Sanity (le dernier du plan Free), DNS.
+7. [ ] J+1 : Search Console + Bing Webmaster Tools (sitemap). J+30 : supprimer les projets Vercel,
+       décommissionner WordPress.
+8. [ ] Optionnel : seconde barrière Traefik sur `/api/checkout` (labels à ajouter dans l'interface
+       Coolify, l'API ne les expose pas) — la limite applicative est déjà validée.
 
-Deux garanties de cette forme : la condition ne touche **que** `/api/checkout`, donc elle ne peut
-pas atteindre `/api/stripe-webhook` où un blocage casserait les emails de commande en boucle de
-rejeu ; et l'action `log` ne peut refuser personne, même mal réglée.
-
-### Étape 1 — publier (action du marchand)
-
-```bash
-vercel firewall publish --yes
-```
-
-Rien n'est actif tant que cette commande n'a pas tourné. `vercel firewall diff` montre ce qui
-partira, `vercel firewall discard --yes` abandonne le brouillon.
-
-### Étape 2 — observer avant de bloquer
-
-```bash
-npm run check:ratelimit https://aimezlanatureseo.vercel.app
-```
-
-La rafale de 30 appels parallèles doit apparaître dans le journal de la règle **sans être bloquée**
-(action `log`). Puis relire le trafic réel :
-
-https://vercel.com/saddikis-projects/aimezlanatureseo/firewall/traffic?filter=rule_limite_paiement_sK41Kp
-
-Ce qu'on cherche : **une IP légitime dépasse-t-elle 30 paiements par minute ?** Normalement jamais.
-Le risque à écarter est un réseau d'entreprise ou un opérateur mobile qui fait sortir plusieurs
-clients par la même adresse.
-
-### Étape 3 — bloquer pour de vrai
-
-```bash
-vercel firewall rules edit "Limite paiement" \
-  --condition '{"type":"path","op":"pre","value":"/api/checkout"}' \
-  --rate-limit-action rate_limit --yes
-vercel firewall publish --yes
-```
-
-⚠️ `edit --condition` **remplace** toutes les conditions : il faut donc la redonner en entier, même
-inchangée. `rate_limit` renvoie un **429** (et non `deny`/403) : c'est le code que `cart.js` sait
-afficher proprement depuis le correctif `5375a98`.
-
-### Le critère qui prouve que c'est fini
-
-```bash
-npm run check:ratelimit https://aimezlanatureseo.vercel.app
-```
-
-Il sort **en erreur aujourd'hui**, volontairement. Il doit passer **au vert** après l'étape 3 —
-c'est la preuve que le trou est bouché, pas une affirmation.
-
-### Pourquoi tout ce travail (résumé d'une ligne)
-
-Le limiteur applicatif laisse passer **30 appels sur 30** envoyés en parallèle, et une telle rafale
-épuise le budget d'API **Stripe du compte** : les vrais clients ne peuvent alors plus payer. Détail
-mesuré et sources plus bas dans ce fichier, et dans `docs/audit/rapport-pre-bascule-2026-07-29.md`,
-section « Le mur ».
+### Avant toute campagne email (base WooCommerce de 1 550 clients)
+Prospection sans consentement possible seulement **3 ans après le dernier achat** (recommandation
+CNIL) : exclure les clients sans achat depuis novembre 2023, soit l'essentiel de la base.
 
 ---
+
+# Historique
 
 ## État actuel (2026-07-20)
 - [x] Page d'accueil codée (`src/pages/index.astro`)
@@ -239,6 +250,33 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
 - 📦 Skills installés dans `.agents/skills/` (symlink `.claude/skills/`) : ui-ux-pro-max, impeccable.
       Aucun hook auto-enregistré. impeccable fait des appels externes (génération d'images) = clé API
       requise pour ces fonctions ; les fonctions audit/critique restent locales.
+
+## Espace revendeurs (−30 %, min. 300 €, Colissimo au poids) — VALIDÉ EN RECETTE (2026-11-24)
+- [x] Parcours réel sur la recette : candidature → document `revendeurs.<uuid>` « en attente »,
+      invisible en anonyme (apicdn sans jeton : 0) → lien refusé tant que non validé (réponse
+      neutre) → « Validé » → lien envoyé ~1 min après → `/pro/` à −30 %, minimum bloquant,
+      15 × Pack 100 = 331,34 € → paiement Stripe test, webhook, emails client + « Commande
+      REVENDEUR » reçus → « Suspendu » → accès coupé. Document de test supprimé (0 revendeur).
+- [ ] Jour J : `SANITY_WRITE_TOKEN` + `PRO_SECRET` (nouveau) sur `site-prod`, et déplacer
+      `ENVOIS_AUTOMATIQUES=1` de la recette vers la prod (un seul environnement envoie les
+      liens revendeurs et les emails de suivi).
+
+## Contenu SEO (2026-11-25) — docs/seo/plan-contenu-2026-11.md
+- [x] Garde-fous CI : check:allegations, FAQ unique par page, liens dans les articles.
+- [x] 8 FAQ corrigées et publiées (durée de vie unifiée, danger + étouffement, « adoucit »).
+- [x] 3 articles fusionnés (301) ; 5 réécrits et 7 nouveaux EN BROUILLON dans Sanity.
+- [x] 12 articles relus par le marchand et publiés (25/11) ; seed synchronisé, « dette »
+      d'allégations vidée, /perles-de-ceramique-avis/ → nouvel article, check:seo exige ≥ 3
+      liens internes par article.
+
+## Commandes dans le Studio (2026-11-24)
+- [x] Fiche `commandes.<session>` créée par le webhook à chaque paiement ; listes À expédier /
+      Expédiées / Annulées / Revendeurs ; « Expédiée » + n° Colissimo → email de suivi
+      (tâche des 5 min, `/api/taches`). Tests `tests/commandes.test.mjs`.
+- [x] Validé en recette le 24/11 : vraie commande test → fiche « À expédier » créée par le
+      webhook → « Expédiée » + n° → email de suivi reçu. Fiches de test supprimées (0).
+- [ ] Les commandes payées AVANT cette version (test du 24/11) ne sont pas reprises : Stripe.
+- [ ] Avant d'arrêter WordPress : exporter les commandes WooCommerce (CSV).
 
 ## Offre revendeur B2B (2026-07-23) — LIVRÉE, non publiable en l'état
 Page `/revendeurs/` pour les boutiques bio et vendeurs pro. Plan complet :

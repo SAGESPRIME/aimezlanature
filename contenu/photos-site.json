@@ -1,0 +1,13 @@
+{
+  "_commentaire": "Emplacements des photos d'ambiance modifiables dans le Studio (Réglages du site → Photos du site). Lu par le Studio (champs), par le site (requête + validation) et par src/data/photosSite.ts (photo de secours). Une seule source : ajouter un emplacement ici, puis sa photo de secours dans photosSite.ts.",
+  "emplacements": [
+    { "cle": "accueil", "titre": "Accueil — grande photo du haut", "ou": "Première image de la page d'accueil, à droite du titre (en mobile : au-dessus). Format portrait conseillé." },
+    { "cle": "commentCaMarche", "titre": "Comment ça marche", "ou": "Grande tuile « Comment ça marche » de l'accueil et en-tête de la page Comment ça marche." },
+    { "cle": "maison", "titre": "À la maison", "ou": "Tuile « À la maison » de l'accueil et en-tête de la page Utilisations." },
+    { "cle": "balade", "titre": "En balade", "ou": "Tuile « En balade » de l'accueil (vers la gourde)." },
+    { "cle": "mission", "titre": "Notre mission", "ou": "Tuile « Notre mission » de l'accueil et en-tête de la page Notre mission." },
+    { "cle": "modeEmploi", "titre": "Mode d'emploi", "ou": "Photo en arche à côté des 3 étapes, sur l'accueil." },
+    { "cle": "guides", "titre": "Guides", "ou": "En-tête de la page Guides (liste des articles)." },
+    { "cle": "comparatif", "titre": "Comparatif", "ou": "En-tête de la page Comparatif des solutions de purification." }
+  ]
+}

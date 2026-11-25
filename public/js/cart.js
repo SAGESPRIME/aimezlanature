@@ -18,6 +18,16 @@
   var $ = function (id) { return document.getElementById(id); };
   var fmt = function (n) { return n.toFixed(2).replace('.', ',') + ' €'; };
   var round2 = function (n) { return Math.round(n * 100) / 100; };
+  /**
+   * Échappe un texte avant de l'insérer dans du HTML construit à la main.
+   * Les noms de produit viennent du CMS : un nom contenant `<` ou `"` ne doit
+   * jamais pouvoir fermer une balise ou un attribut.
+   */
+  var echapper = function (v) {
+    return String(v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
 
   function catalogue() {
     var el = $('catalogue');
@@ -85,7 +95,11 @@
       lines.push({ product: p, qty: i.qty, unit: unit, plein: plein, total: remise, discount: d });
     });
 
-    var port = net === 0 || net >= cat.freeShippingThreshold ? 0 : cat.shippingFee;
+    // Livraison au poids : même règle que le paiement (public/js/livraison.js ↔
+    // src/data/livraison.mjs, vérifiées identiques par tests/livraison.test.mjs).
+    var colis = lines.map(function (l) { return { poids: l.product.poids, qty: l.qty, offerte: l.product.offerte }; });
+    var livraison = window.alnFraisLivraison(colis, cat.livraison);
+    var port = livraison.frais === null ? 0 : livraison.frais;
     return {
       lines: lines,
       brut: brut,
@@ -93,6 +107,8 @@
       maxRemise: maxRemise,
       net: net,
       port: port,
+      poids: livraison.poids,
+      tropLourd: livraison.frais === null,
       total: round2(net + port),
       qtyTotale: qtyTotale,
     };
@@ -167,24 +183,26 @@
   /* ── Rendu ───────────────────────────────────────────────── */
 
   function ligneHTML(l) {
-    return '<li class="flex gap-3 py-4 border-b border-[#EDE8E0]">' +
+    var nom = echapper(l.product.shortName);
+    var slug = echapper(l.product.slug);
+    return '<li class="flex gap-3 py-4 border-b border-ligne">' +
       '<div class="flex-1">' +
-        '<p class="font-semibold text-[#1A1A16]">' + l.product.shortName + '</p>' +
+        '<p class="font-semibold text-encre">' + nom + '</p>' +
         (l.discount > 0
-          ? '<p class="text-xs text-[#166534] font-semibold">Remise −' + l.discount + ' % appliquée</p>'
+          ? '<p class="text-xs text-foret font-semibold">Remise −' + l.discount + ' % appliquée</p>'
           : '') +
-        '<div class="mt-2 inline-flex items-center border border-[#D4C9B8] rounded-full overflow-hidden bg-white">' +
-          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + l.product.slug + '" data-qty="' + (l.qty - 1) + '" aria-label="Retirer un ' + l.product.shortName + '">−</button>' +
+        '<div class="mt-2 inline-flex items-center border border-pierre rounded-full overflow-hidden bg-white">' +
+          '<button type="button" class="px-3 py-1 hover:bg-anis-pale" data-slug="' + slug + '" data-qty="' + (l.qty - 1) + '" aria-label="Retirer un ' + nom + '">−</button>' +
           '<span class="px-3 text-sm font-semibold">' + l.qty + '</span>' +
-          '<button type="button" class="px-3 py-1 hover:bg-[#F5F0E8]" data-slug="' + l.product.slug + '" data-qty="' + (l.qty + 1) + '" aria-label="Ajouter un ' + l.product.shortName + '">+</button>' +
+          '<button type="button" class="px-3 py-1 hover:bg-anis-pale" data-slug="' + slug + '" data-qty="' + (l.qty + 1) + '" aria-label="Ajouter un ' + nom + '">+</button>' +
         '</div>' +
       '</div>' +
       '<div class="text-right">' +
         (l.discount > 0
-          ? '<p class="text-xs text-[#6E5330]"><s>' + fmt(l.plein) + '</s></p>'
+          ? '<p class="text-xs text-olive"><s>' + fmt(l.plein) + '</s></p>'
           : '') +
-        '<p class="font-bold text-[#1A1A16]">' + fmt(l.total) + '</p>' +
-        '<button type="button" class="mt-1 text-xs text-[#6E5330] underline" data-slug="' + l.product.slug + '" data-qty="0">Retirer</button>' +
+        '<p class="font-bold text-encre">' + fmt(l.total) + '</p>' +
+        '<button type="button" class="mt-1 text-xs text-olive underline" data-slug="' + slug + '" data-qty="0">Retirer</button>' +
       '</div>' +
     '</li>';
   }
@@ -216,7 +234,7 @@
       show('tiroir-ligne-remise', t.remise > 0);
       set('tiroir-remise-label', 'Remise −' + t.maxRemise + ' %');
       set('tiroir-remise', '−' + fmt(t.remise));
-      set('tiroir-port', t.port === 0 ? 'Offerte' : fmt(t.port));
+      set('tiroir-port', t.tropLourd ? 'Sur demande' : t.port === 0 ? 'Offerte' : fmt(t.port));
       set('tiroir-total', fmt(t.total));
 
       // Relance : d'abord vers le palier suivant, sinon vers le port offert.
@@ -228,8 +246,10 @@
         if (suivant) {
           msg = 'Ajoutez encore ' + suivant.missing + ' produit' + (suivant.missing > 1 ? 's' : '') +
                 ' pour passer à −' + suivant.discountPercent + ' %.';
-        } else if (t.port > 0) {
-          msg = 'Plus que ' + fmt(round2(cat.freeShippingThreshold - t.net)) + ' pour la livraison offerte.';
+        } else if (t.tropLourd) {
+          msg = 'Colis trop lourd pour un envoi en ligne : contactez-nous pour cette commande.';
+        } else if (t.port > 0 && cat.relanceOfferte && t.poids + cat.relanceOfferte.poids <= cat.livraison.poidsMaxForfait) {
+          msg = 'Ajoutez un ' + cat.relanceOfferte.shortName + ' : la livraison devient offerte.';
         }
         relance.textContent = msg;
         relance.hidden = msg === '' || items.length === 0;
@@ -245,7 +265,7 @@
       set('resume-sous-total', fmt(t.brut));
       show('resume-ligne-remise', t.remise > 0);
       set('resume-remise', '−' + fmt(t.remise));
-      set('resume-port', t.port === 0 ? 'Offerte' : fmt(t.port));
+      set('resume-port', t.tropLourd ? 'Sur demande' : t.port === 0 ? 'Offerte' : fmt(t.port));
       set('resume-total', fmt(t.total));
     }
   }
@@ -311,8 +331,8 @@
       body: JSON.stringify({ items: items }),
     })
       // Lire le corps en TEXTE puis tenter le JSON, jamais `r.json()` direct :
-      // notre route répond du JSON, mais une règle de rate limiting du pare-feu
-      // Vercel répond une page HTML. `r.json()` rejetterait alors, et le client
+      // notre route répond du JSON, mais un proxy (limite de débit Traefik, page
+      // d'erreur 502 d'un redémarrage) peut répondre du texte ou du HTML. `r.json()` rejetterait alors, et le client
       // verrait le message d'erreur brut de l'analyseur JSON (« Unexpected
       // token '<' … ») au milieu d'une phrase française. Ici une réponse non
       // JSON donne simplement `d = null`, traité plus bas comme une erreur.

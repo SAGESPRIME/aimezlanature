@@ -16,6 +16,7 @@
 import { dosages } from './dosages';
 import { SITE } from './products';
 import { echapperHtml } from '../lib/email';
+import { origineSite } from '../lib/origine';
 
 /** Un article de la commande, tel que renvoyé par Stripe. */
 export interface LigneCommande {
@@ -39,21 +40,19 @@ export interface Commande {
   adresse?: string[];
   /** Identifiant Stripe de la commande, pour la retrouver au tableau de bord. */
   reference?: string;
+  /** Commande passée depuis l'espace revendeurs (/pro/, tarif −30 %). */
+  revendeur?: boolean;
+  /** Numéro court de la fiche « Commandes » du Studio (ex. ALN-QPXAYX9F). */
+  numero?: string;
 }
 
 /**
- * Adresse de base des liens contenus dans les emails.
- *
- * ⚠️ TEMPORAIRE. `SITE.url` vaut `aimezlanature.fr`, qui sert encore le site
- * WordPress : le lien « Voir tous les dosages » y renvoie donc un 404. Tant que
- * le domaine n'est pas basculé, définir `EMAIL_SITE_URL` dans Vercel avec
- * l'adresse du déploiement (https://aimezlanatureseo.vercel.app).
- *
- * À SUPPRIMER — la variable comme ce commentaire — le jour où aimezlanature.fr
- * sert ce site : `SITE.url` redeviendra alors la bonne réponse.
+ * Adresse de base des liens contenus dans les emails : l'adresse publique du
+ * site (src/lib/origine.ts) — la recette sur la recette, aimezlanature.fr en
+ * production.
  */
 function baseLiens(): string {
-  return (process.env.EMAIL_SITE_URL ?? SITE.url).replace(/\/$/, '');
+  return origineSite();
 }
 
 const VERT = '#166534';
@@ -201,7 +200,7 @@ ${lignes}
 
 export function sujetMarchand(commande: Commande): string {
   const articles = commande.lignes.reduce((total, l) => total + l.quantite, 0);
-  return `Nouvelle commande — ${articles} article${articles > 1 ? 's' : ''}, ${euros(commande.total)}`;
+  return `${commande.revendeur ? 'Commande REVENDEUR' : 'Nouvelle commande'} — ${articles} article${articles > 1 ? 's' : ''}, ${euros(commande.total)}`;
 }
 
 export function texteMarchand(commande: Commande): string {
@@ -219,6 +218,7 @@ export function texteMarchand(commande: Commande): string {
     `Email : ${commande.email ?? '—'}`,
     `Téléphone : ${commande.telephone ?? '—'}`,
     '',
+    ...(commande.numero ? [`Commande ${commande.numero} : Studio › Commandes › À expédier (saisissez le n° Colissimo à l'envoi).`] : []),
     `Référence Stripe : ${commande.reference ?? '—'}`,
   ].join('\n');
 }
@@ -276,7 +276,91 @@ ${echapperHtml(l.description)}
 Email&nbsp;: <a href="mailto:${echapperHtml(commande.email ?? '')}" style="color:${VERT};">${echapperHtml(commande.email ?? '—')}</a><br>
 Téléphone&nbsp;: ${echapperHtml(commande.telephone ?? '—')}
 </p>
+${commande.numero ? `<p style="margin:16px 0 0 0;color:${GRIS};font-size:13px;line-height:1.6;">Commande <strong>${echapperHtml(commande.numero)}</strong> : Studio › Commandes › À expédier. Saisissez le n° Colissimo à l'envoi, le client reçoit son lien de suivi.</p>` : ''}
 <p style="margin:16px 0 0 0;color:#8A8378;font-size:12px;">Référence Stripe&nbsp;: ${echapperHtml(commande.reference ?? '—')}</p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body></html>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Email d'expédition : « votre colis est parti », avec le lien de suivi
+// Colissimo. Envoyé quand le marchand passe la commande à « Expédiée » dans le
+// Studio avec un numéro de suivi (src/lib/commandes.ts).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Expedition {
+  prenom?: string;
+  numeroCommande: string;
+  numeroSuivi: string;
+  lienSuivi: string;
+  lignes: { description: string; quantite: number }[];
+}
+
+export function sujetExpedition(e: Expedition): string {
+  return `Votre colis Aimez la Nature est en route (${e.numeroCommande})`;
+}
+
+export function texteExpedition(e: Expedition): string {
+  return [
+    e.prenom ? `Bonjour ${e.prenom},` : 'Bonjour,',
+    '',
+    `Bonne nouvelle : votre commande ${e.numeroCommande} vient de partir par Colissimo.`,
+    '',
+    ...e.lignes.map((l) => `- ${l.description} x${l.quantite}`),
+    '',
+    `Numéro de suivi : ${e.numeroSuivi}`,
+    `Suivre le colis : ${e.lienSuivi}`,
+    '',
+    'Livraison habituelle sous 2 à 5 jours ouvrés.',
+    'Une question ? Répondez simplement à cet email.',
+    '',
+    'Aimez la Nature',
+  ].join('\n');
+}
+
+export function htmlExpedition(e: Expedition): string {
+  const prenom = e.prenom ? `Bonjour ${echapperHtml(e.prenom)},` : 'Bonjour,';
+  const lignes = e.lignes
+    .map(
+      (l) => `<tr>
+<td style="padding:8px 0;border-bottom:1px solid ${BORDURE};color:${ENCRE};font-size:15px;">${echapperHtml(l.description)}</td>
+<td style="padding:8px 0;border-bottom:1px solid ${BORDURE};color:${GRIS};font-size:15px;text-align:right;white-space:nowrap;">&times;${l.quantite}</td>
+</tr>`
+    )
+    .join('');
+  return `<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${echapperHtml(sujetExpedition(e))}</title></head>
+<body style="margin:0;padding:0;background-color:${SABLE};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${SABLE};padding:24px 12px;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border:1px solid ${BORDURE};border-radius:16px;font-family:Arial,Helvetica,sans-serif;">
+
+<tr><td style="padding:32px 32px 8px 32px;">
+<p style="margin:0 0 4px 0;color:${VERT};font-size:13px;">Commande ${echapperHtml(e.numeroCommande)}</p>
+<h1 style="margin:0;color:${ENCRE};font-size:26px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;">Votre colis est en route</h1>
+</td></tr>
+
+<tr><td style="padding:16px 32px 0 32px;">
+<p style="margin:0 0 12px 0;color:${ENCRE};font-size:15px;">${prenom}</p>
+<p style="margin:0;color:${GRIS};font-size:15px;line-height:1.6;">Votre commande vient de partir par Colissimo. Livraison habituelle sous 2 à 5 jours ouvrés.</p>
+</td></tr>
+
+<tr><td style="padding:20px 32px 0 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${lignes}</table>
+</td></tr>
+
+<tr><td style="padding:24px 32px 0 32px;">
+<p style="margin:0 0 14px 0;color:${GRIS};font-size:14px;">Numéro de suivi&nbsp;: <strong style="color:${ENCRE};">${echapperHtml(e.numeroSuivi)}</strong></p>
+<a href="${echapperHtml(e.lienSuivi)}" style="display:inline-block;background:#237F2C;color:#ffffff;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold;font-size:15px;">Suivre mon colis</a>
+</td></tr>
+
+<tr><td style="padding:24px 32px 32px 32px;">
+<p style="margin:0;color:${GRIS};font-size:14px;line-height:1.6;">Une question&nbsp;? Répondez simplement à cet email.</p>
+<p style="margin:16px 0 0 0;color:${ENCRE};font-size:14px;">Aimez la Nature</p>
 </td></tr>
 
 </table>

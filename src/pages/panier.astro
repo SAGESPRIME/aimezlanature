@@ -10,6 +10,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/products';
 import PaymentMethods from '../components/PaymentMethods.astro';
+import EnTetePage from '../components/EnTetePage.astro';
 
 const metaTitle = 'Votre panier | Aimez la Nature';
 const metaDescription =
@@ -18,41 +19,39 @@ const metaDescription =
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
-  <section class="bg-[#F5F0E8] px-4 pt-12 pb-10">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16]">Votre panier</h1>
-    </div>
-  </section>
+  <EnTetePage>
+    <Fragment slot="titre">Votre panier</Fragment>
+  </EnTetePage>
 
-  <section class="py-12 px-4 bg-white">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white">
     <div class="max-w-4xl mx-auto grid lg:grid-cols-[1fr_320px] gap-10 items-start">
       <div>
-        <p id="panier-vide" hidden class="rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-8 text-center text-[#57534e]">
-          Votre panier est vide.
-          <a href="/perles-ceramique-em/" class="block mt-4 font-semibold text-[#166534] underline">
+        <p id="panier-vide" hidden class="rounded-xl border border-ligne bg-coquille p-8 text-center text-gris">
+          Votre panier est vide.{' '}
+          <a href="/perles-ceramique-em/" class="block mt-4 font-semibold text-foret underline">
             Découvrir nos packs
           </a>
         </p>
         <ul id="panier-contenu" class="list-none p-0 m-0"></ul>
       </div>
 
-      <aside id="panier-resume" hidden class="rounded-2xl border border-[#D4C9B8] bg-[#FDFBF7] p-6 lg:sticky lg:top-24">
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-5">Récapitulatif</h2>
-        <dl class="space-y-2 text-sm text-[#57534e]">
+      <aside id="panier-resume" hidden class="rounded-xl border border-pierre bg-coquille p-6 lg:sticky lg:top-24">
+        <h2 class="font-display text-2xl text-foret mb-5">Récapitulatif</h2>
+        <dl class="space-y-2 text-sm text-gris">
           <div class="flex justify-between"><dt>Sous-total</dt><dd id="resume-sous-total">—</dd></div>
-          <div id="resume-ligne-remise" hidden class="flex justify-between text-[#166534] font-semibold"><dt>Remise quantité</dt><dd id="resume-remise">—</dd></div>
+          <div id="resume-ligne-remise" hidden class="flex justify-between text-foret font-semibold"><dt>Remise quantité</dt><dd id="resume-remise">—</dd></div>
           <div class="flex justify-between"><dt>Livraison</dt><dd id="resume-port">—</dd></div>
         </dl>
-        <p id="resume-reste" hidden class="mt-3 text-xs text-[#6E5330]"></p>
-        <div class="flex justify-between items-baseline border-t border-[#D4C9B8] mt-4 pt-4">
-          <span class="font-semibold text-[#1A1A16]">Total</span>
-          <span id="resume-total" class="font-display text-2xl font-bold text-[#166534]">—</span>
+        <p id="resume-reste" hidden class="mt-3 text-xs text-olive"></p>
+        <div class="flex justify-between items-baseline border-t border-pierre mt-4 pt-4">
+          <span class="font-semibold text-encre">Total TTC <span class="font-normal text-sm text-gris">(TVA incluse)</span></span>
+          <span id="resume-total" class="font-display text-2xl font-bold text-foret">—</span>
         </div>
 
         <button
           type="button"
           data-payer
-          class="mt-6 w-full bg-[#166534] text-white px-6 py-4 rounded-full font-semibold hover:bg-[#0D4A25] transition-colors disabled:opacity-60"
+          class="mt-6 w-full bg-foret text-white px-6 py-4 rounded-full font-semibold hover:bg-foret-fonce transition-colors disabled:opacity-60"
         >
           Payer ma commande
         </button>
@@ -60,9 +59,9 @@ const metaDescription =
 
         <PaymentMethods class="mt-4" />
 
-        <ul class="mt-5 space-y-1.5 text-xs text-[#57534e] list-none p-0">
+        <ul class="mt-5 space-y-1.5 text-xs text-gris list-none p-0">
           <li>✓ Paiement sécurisé par Stripe — carte, Apple Pay, Google Pay</li>
-          <li>✓ Livraison offerte dès {SITE.freeShippingThreshold} €, sous 2 à 5 jours</li>
+          <li>✓ Livraison offerte avec {SITE.livraisonOfferteAvec}, sous 2 à 5 jours</li>
           <li>✓ Garantie remboursement 30 jours</li>
         </ul>
       </aside>

@@ -24,27 +24,33 @@ import { Image } from 'astro:assets';
 import type { Product } from '../data/products';
 import { SITE } from '../data/products';
 import { tierPrices, fmtPrice } from '../lib/pricing';
-import { getProductImage, getProductImageAlt } from '../lib/productImages';
+import { getProductPhoto } from '../lib/productImages';
+import { fraisLivraison } from '../data/livraison.mjs';
 
 interface Props {
   product: Product;
 }
 const { product } = Astro.props;
+// Livraison d'un exemplaire seul, avec la règle au poids du paiement
+// (src/data/livraison.mjs) : 0 = offerte.
+const livraisonSeule = fraisLivraison(
+  [{ poids: product.poids, qty: 1, offerte: product.livraisonOfferte }],
+  SITE.livraison
+).frais;
 
-const photo = getProductImage(product.slug);
+const photo = getProductPhoto(product.slug);
 const tiers = tierPrices(product);
 const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
 ---
 
 <div
   id="barre-achat"
-  class="barre-achat fixed inset-x-0 bottom-0 z-40 border-t border-[#D4C9B8] bg-[#FDFBF7]/97 backdrop-blur print:hidden"
+  class="barre-achat fixed inset-x-0 bottom-0 z-40 border-t border-pierre bg-coquille/97 backdrop-blur print:hidden"
 >
   <div class="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3 sm:gap-4">
     {photo && (
       <Image
-        src={photo}
-        alt={getProductImageAlt(product.slug)}
+        {...photo}
         width={112}
         height={112}
         widths={[56, 112]}
@@ -55,19 +61,19 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
     )}
 
     <div class="min-w-0 flex-1">
-      <p class="truncate font-semibold leading-tight text-[#1A1A16]">{product.shortName}</p>
-      <p class="text-sm text-[#57534e]">
-        <span data-barre-total class="font-display text-lg font-bold text-[#166534]">
+      <p class="truncate font-semibold leading-tight text-encre">{product.shortName}</p>
+      <p class="text-sm text-gris">
+        <span data-barre-total class="font-display text-lg font-bold text-foret">
           {fmtPrice(defaut.total)} €
         </span>
-        <span class="hidden sm:inline"> · livraison offerte dès {SITE.freeShippingThreshold} €</span>
+        <span class="hidden sm:inline"> · {livraisonSeule === 0 ? 'livraison offerte' : `livraison ${fmtPrice(livraisonSeule ?? SITE.shippingFee)} €`}</span>
       </p>
     </div>
 
     <button
       type="button"
       data-ajouter-panier={product.slug}
-      class="flex-shrink-0 rounded-full bg-[#166534] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25] sm:px-8"
+      class="flex-shrink-0 rounded-full bg-foret px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-foret-fonce sm:px-8"
     >
       Ajouter au panier
     </button>

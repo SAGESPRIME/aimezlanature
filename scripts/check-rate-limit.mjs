@@ -13,10 +13,21 @@
  * test doit ressembler à la réalité qu'on redoute, pas à celle qu'on sait
  * traiter (cf. tasks/lessons.md, même date).
  *
- * CE SCRIPT ÉCHOUE TANT QUE LE MUR N'EST PAS POSÉ, et c'est voulu : il est le
- * critère d'acceptation de la règle de rate limiting du pare-feu Vercel décrite
- * dans docs/audit/rapport-pre-bascule-2026-07-29.md, section « Le mur ». Le jour
- * où cette règle est publiée, il doit passer au vert sans qu'on y touche.
+ * Depuis la migration sur le VPS (un seul processus Node), le limiteur
+ * applicatif voit toute la rafale : ce script doit passer au VERT sur la recette
+ * Coolify. Il rejoue aussi une rafale où chaque appel annonce une IP différente
+ * dans `X-Forwarded-For`, `X-Real-IP` ET `CF-Connecting-IP` : elle doit être
+ * freinée de la même façon, sinon un attaquant contournerait la limite en
+ * mentant sur son adresse. `X-Real-IP` est l'en-tête que le serveur CROIT
+ * derrière Traefik : jusqu'à l'audit du 2026-11-24, le script ne falsifiait
+ * que `X-Forwarded-For`, et n'aurait pas vu un proxy qui laisse passer la
+ * valeur envoyée par le client.
+ *
+ * ⚠️ Lancer depuis une machine qui sort par UNE seule IP (poste, CI). Derrière
+ * un proxy qui répartit les connexions simultanées sur plusieurs IP (ex.
+ * l'environnement cloud de Claude), les rafales parallèles semblent « non
+ * freinées » à tort — voir tasks/lessons.md (2026-11-23) pour la contre-épreuve
+ * sur une seule connexion.
  *
  * ⚠️ Chaque appel autorisé crée une VRAIE session Stripe Checkout. Le script
  * refuse donc de tourner si le site répond en mode live, sauf `--live` explicite :
@@ -24,17 +35,13 @@
  * compte, et les vrais clients ne pourraient plus payer pendant ce temps.
  *
  * Usage :
- *   node scripts/check-rate-limit.mjs https://aimezlanatureseo.vercel.app
+ *   node scripts/check-rate-limit.mjs https://recette.aimezlanature.fr
+ *   node scripts/check-rate-limit.mjs http://127.0.0.1:4321
  *   node scripts/check-rate-limit.mjs https://aimezlanature.fr --live   (à vos risques)
  *
  * Code de sortie 0 si la rafale parallèle est freinée, 1 sinon.
  */
 
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const args = process.argv.slice(2);
 const AUTORISE_LIVE = args.includes('--live');
@@ -51,18 +58,18 @@ const N = 30;
 const CHEMIN = '/api/checkout';
 
 /**
- * Panier d'essai construit depuis le VRAI catalogue : un slug inventé serait
- * rejeté en 400 et le script testerait la validation, pas la limite de débit.
+ * Panier d'essai construit depuis le VRAI catalogue, lu sur le site lui-même
+ * (bloc `<script id="catalogue">` du panier) : un slug inventé serait rejeté
+ * en 400 et le script testerait la validation, pas la limite de débit. Lire le
+ * site plutôt que le code source garde le script juste quand les produits
+ * viennent du CMS.
  * @returns {Promise<string>} corps JSON à envoyer
  */
 async function corpsDEssai() {
-  const src = await readFile(join(__dirname, '..', 'src', 'data', 'products.ts'), 'utf8');
-  // Les deux styles de guillemets sont acceptés : le fichier utilise des
-  // guillemets doubles, mais une reformatation ne doit pas casser ce script.
-  // La première occurrence est `slug: string;` dans le type — on l'écarte en
-  // exigeant une valeur entre guillemets.
-  const slug = src.match(/slug:\s*["']([^"']+)["']/)?.[1];
-  if (!slug) throw new Error("aucun slug trouvé dans src/data/products.ts");
+  const html = await (await fetch(BASE + '/panier/')).text();
+  const json = html.match(/<script type="application\/json" id="catalogue">([\s\S]*?)<\/script>/)?.[1];
+  const slug = json ? JSON.parse(json).products?.[0]?.slug : undefined;
+  if (!slug) throw new Error(`aucun produit trouvé dans le catalogue de ${BASE}/panier/`);
   console.log(`Panier d'essai : ${slug} ×1`);
   return JSON.stringify({ items: [{ slug, qty: 1 }] });
 }
@@ -70,13 +77,21 @@ async function corpsDEssai() {
 /**
  * Un appel à /api/checkout.
  * @param {string} corps
+ * @param {string} [ipMensongere] IP à annoncer dans tous les en-têtes d'IP usuels
  * @returns {Promise<{code: number, live: boolean, retryAfter: string}>}
  */
-async function appel(corps) {
+async function appel(corps, ipMensongere = '') {
   try {
+    /** @type {Record<string, string>} */
+    const entetes = { 'Content-Type': 'application/json', Origin: BASE };
+    if (ipMensongere) {
+      entetes['X-Forwarded-For'] = ipMensongere;
+      entetes['X-Real-IP'] = ipMensongere;
+      entetes['CF-Connecting-IP'] = ipMensongere;
+    }
     const res = await fetch(BASE + CHEMIN, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Origin: BASE },
+      headers: entetes,
       body: corps,
     });
     const txt = await res.text();
@@ -135,18 +150,36 @@ const sequentielles = [];
 for (let i = 0; i < N; i++) sequentielles.push(await appel(corps));
 const rS = resume(`RAFALE SÉQUENTIELLE — ${N} appels l'un après l'autre`, sequentielles);
 
-console.log(`\n═══ VERDICT ═══`);
-console.log(`  parallèle  : ${rP.passes} passés / ${rP.bloques} bloqués`);
-console.log(`  séquentiel : ${rS.passes} passés / ${rS.bloques} bloqués`);
+// 3) Rafale parallèle avec une fausse IP différente à chaque appel.
+console.log(`\n(attente de 65 s avant la rafale à IP falsifiées…)`);
+await new Promise((r) => setTimeout(r, 65_000));
+const falsifiees = await Promise.all(
+  Array.from({ length: N }, (_, i) => appel(corps, `203.0.113.${i + 1}`))
+);
+const rF = resume(`RAFALE PARALLÈLE, X-Forwarded-For / X-Real-IP / CF-Connecting-IP falsifiés`, falsifiees);
 
+console.log(`\n═══ VERDICT ═══`);
+console.log(`  parallèle          : ${rP.passes} passés / ${rP.bloques} bloqués`);
+console.log(`  séquentiel         : ${rS.passes} passés / ${rS.bloques} bloqués`);
+console.log(`  IP falsifiées      : ${rF.passes} passés / ${rF.bloques} bloqués`);
+
+let echec = false;
 if (rP.bloques === 0) {
+  echec = true;
   console.error(
     `\n❌ La rafale PARALLÈLE n'est pas freinée : aucun 429 sur ${N} appels simultanés.\n` +
-      `   Le limiteur applicatif compte par instance de fonction, il ne peut pas voir\n` +
-      `   cette rafale. Il faut la règle de rate limiting du pare-feu Vercel :\n` +
-      `   docs/audit/rapport-pre-bascule-2026-07-29.md, section « Le mur ».`
+      `   Plusieurs répliques du conteneur tournent-elles ? Le compteur est en mémoire :\n` +
+      `   il faut UNE seule réplique (voir src/lib/rateLimit.ts).`
   );
-  process.exit(1);
 }
+if (rF.bloques === 0) {
+  echec = true;
+  console.error(
+    `\n❌ Les fausses IP contournent la limite : le serveur lit une adresse que le\n` +
+      `   client choisit. Vérifier CLIENT_IP_HEADER (x-real-ip derrière Traefik,\n` +
+      `   cf-connecting-ip derrière Cloudflare) et la config forwardedHeaders de Traefik.`
+  );
+}
+if (echec) process.exit(1);
 
-console.log(`\n✅ La rafale parallèle est freinée (${rP.bloques} appels bloqués sur ${N}).`);
+console.log(`\n✅ Rafales freinées : ${rP.bloques}/${N} en parallèle, ${rF.bloques}/${N} avec IP falsifiées.`);

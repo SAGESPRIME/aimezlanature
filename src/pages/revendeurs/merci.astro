@@ -14,49 +14,48 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { EMAIL_REVENDEUR } from '../../data/revendeur';
 
-const metaTitle = 'Demande envoyée | Aimez la Nature';
-const metaDescription = 'Votre demande de partenariat revendeur a bien été transmise.';
+const metaTitle = 'Candidature envoyée | Aimez la Nature';
+const metaDescription = 'Votre candidature revendeur a bien été transmise.';
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} noindex>
-  <section class="bg-[#F5F0E8] px-4 py-20">
+  <section class="bg-anis-pale px-4 py-20">
     <div class="mx-auto max-w-2xl text-center">
-      <p class="mb-6 text-5xl" aria-hidden="true">🌿</p>
-      <h1 class="font-display mb-5 text-4xl text-[#1A1A16] lg:text-5xl">Demande bien reçue</h1>
-      <p class="mb-8 text-lg leading-relaxed text-[#57534e]">
-        Nous étudions votre activité et revenons vers vous sous 24 h ouvrées avec vos
-        conditions revendeur et votre devis.
+      <span class="block mx-auto mb-7 h-1.5 w-14 rounded-full bg-anis" aria-hidden="true"></span>
+      <h1 class="font-display mb-5 text-4xl text-encre lg:text-5xl">Candidature bien reçue</h1>
+      <p class="mb-8 text-lg leading-relaxed text-gris">
+        Nous étudions votre activité et vous répondons sous 24 h ouvrées.
       </p>
 
-      <div class="mb-8 rounded-2xl border border-[#D4C9B8] bg-white p-6 text-left">
-        <h2 class="font-display mb-4 text-xl text-[#1A1A16]">Et maintenant ?</h2>
-        <ol class="list-decimal space-y-3 pl-5 text-sm text-[#57534e]">
+      <div class="mb-8 rounded-xl border border-pierre bg-white p-6 text-left">
+        <h2 class="font-display mb-4 text-xl text-foret">Et maintenant ?</h2>
+        <ol class="list-decimal space-y-3 pl-5 text-sm text-gris">
           <li>Nous vérifions votre SIRET.</li>
-          <li>Nous préparons une grille de remise adaptée à votre volume.</li>
-          <li>Vous recevez le devis et les conditions professionnelles par email.</li>
+          <li>Nous validons votre candidature.</li>
+          <li>Vous recevez par email votre lien d'accès à l'espace revendeur, pour commander au tarif professionnel.</li>
         </ol>
       </div>
 
       <div class="flex flex-wrap justify-center gap-4">
         <a
           href="/perles-ceramique-em/"
-          class="inline-flex rounded-full bg-[#166534] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0D4A25]"
+          class="inline-flex rounded-full bg-foret px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-foret-fonce"
         >
           Découvrir le catalogue →
         </a>
         <a
           href="/"
-          class="inline-flex rounded-full border border-[#6E5330] px-7 py-3.5 text-sm font-semibold text-[#6E5330] transition-colors hover:bg-[#6E5330] hover:text-white"
+          class="inline-flex rounded-full border border-olive px-7 py-3.5 text-sm font-semibold text-olive transition-colors hover:bg-olive hover:text-white"
         >
           Retour à l'accueil
         </a>
       </div>
 
-      <p class="mt-8 text-sm text-[#57534e]">
+      <p class="mt-8 text-sm text-gris">
         {/* `{' '}` explicite : Astro supprime l'espace de fin de ligne qui
             précède une balise, ce qui collerait « à » et l'adresse. */}
         Une précision à ajouter ? Écrivez-nous à{' '}
-        <a href={`mailto:${EMAIL_REVENDEUR}`} class="font-semibold text-[#166534] underline">
+        <a href={`mailto:${EMAIL_REVENDEUR}`} class="font-semibold text-foret underline">
           {EMAIL_REVENDEUR}
         </a>
       </p>

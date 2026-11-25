@@ -1,0 +1,134 @@
+---
+/**
+ * Article du blog — une seule page pour tous les articles, alimentée par
+ * Sanity (collection `articles`). Remplace les 8 fichiers .astro écrits à la
+ * main : un nouvel article publié dans le Studio crée sa page au build
+ * suivant, avec ses données structurées.
+ *
+ * Gabarit identique à celui des anciens articles (héros, sections à fonds
+ * alternés, « À lire aussi », appel à l'achat). Les blocs qui rendent une page
+ * citable par les moteurs d'IA — réponse courte, FAQ, sources, auteur,
+ * date de mise à jour — n'apparaissent QUE s'ils sont renseignés : rien
+ * d'inventé, rien de vide.
+ */
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageDate from '../../components/PageDate.astro';
+import AnswerBox from '../../components/AnswerBox.astro';
+import Faq from '../../components/Faq.astro';
+import CtaPacks from '../../components/CtaPacks.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import TexteRiche from '../../components/texte/TexteRiche.astro';
+import { buildArticleSchema, buildFaqSchema } from '../../lib/seo';
+import { sourceImage } from '../../lib/cms/images';
+import EnTetePage from '../../components/EnTetePage.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const a = article.data;
+const PATH = `/blog/${article.id}/`;
+
+const faq = (a.faq ?? []).map((q) => ({ question: q.question, answer: q.reponse }));
+const sources = a.sources ?? [];
+
+// Image de partage : fichier réellement émis dans le build (jpg pour les
+// réseaux qui n'affichent pas le WebP), sinon l'image par défaut du site.
+const photo = sourceImage(a.image);
+const imagePartage = photo ? await getImage({ ...photo, width: 1200, height: 630, format: 'jpg' }) : undefined;
+
+const jsonLd = [
+  buildArticleSchema({
+    headline: a.titre,
+    description: a.metaDescription,
+    path: PATH,
+    datePublished: a.datePublication,
+    dateModified: a.dateMiseAJour ?? undefined,
+    image: imagePartage?.src,
+    author: a.auteur ?? undefined,
+  }),
+  ...(faq.length > 0 ? [buildFaqSchema(faq)] : []),
+];
+
+---
+
+<BaseLayout
+  title={a.metaTitle}
+  description={a.metaDescription}
+  jsonLd={jsonLd}
+  ogImage={imagePartage?.src}
+  ogImageAlt={a.image?.alt}
+  modifieLe={a.dateMiseAJour ?? a.datePublication}
+>
+  <!-- HERO -->
+  <EnTetePage surTitre={a.categorie}>
+    <Fragment slot="titre">{a.titre}</Fragment>
+    <p>
+      {a.chapo}
+    </p>
+    <PageDate date={a.datePublication} class="mt-5" />
+    {a.dateMiseAJour && a.dateMiseAJour !== a.datePublication && (
+      <PageDate date={a.dateMiseAJour} label="Mis à jour le" class="mt-1" />
+    )}
+    {a.auteur ? (
+      <p class="text-sm text-gris mt-1">
+        Par <strong class="text-encre">{a.auteur.nom}</strong>, {a.auteur.role}
+      </p>
+    ) : (
+      <p class="text-sm text-gris mt-1">
+        Par <strong class="text-encre">Aimez la Nature</strong>, revendeur agréé EM
+      </p>
+    )}
+  </EnTetePage>
+
+  {a.reponseCourte && <AnswerBox>{a.reponseCourte}</AnswerBox>}
+
+  <!-- Corps de l'article : une seule surface, mesure de lecture (≈ 68 signes),
+       texte 17 px interligné 1,75. -->
+  <div class="px-4 sm:px-6 py-12 lg:py-16">
+    <div class="article-corps max-w-[68ch] mx-auto space-y-12">
+      {a.sections.map((section, i) => (
+        <section aria-labelledby={`sec-${i}`}>
+          <h2 id={`sec-${i}`} class="font-display text-3xl lg:text-[2.1rem] text-foret mb-5 leading-tight">{section.titre}</h2>
+          <TexteRiche value={section.contenu} />
+        </section>
+      ))}
+    </div>
+  </div>
+
+  {faq.length > 0 && <Faq items={faq} title="Questions fréquentes" />}
+
+  {sources.length > 0 && (
+    <section class="py-12 px-4 sm:px-6 border-t border-ligne" aria-labelledby="sources">
+      <div class="max-w-[68ch] mx-auto">
+        <h2 id="sources" class="font-display text-2xl text-foret mb-4">Sources</h2>
+        <ol class="list-decimal pl-5 space-y-2 text-sm text-gris leading-relaxed">
+          {sources.map((s) => (
+            <li>
+              <a href={s.url} class="text-foret font-semibold hover:underline" rel="noopener">{s.titre}</a>
+              {' '}— {s.editeur}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {a.auteur && (
+    <section class="py-12 px-4 sm:px-6 border-t border-ligne" aria-labelledby="auteur">
+      <div class="max-w-[68ch] mx-auto">
+        <h2 id="auteur" class="font-display text-2xl text-foret mb-3">À propos de l’auteur</h2>
+        <p class="text-gris leading-relaxed">
+          <strong class="text-encre">{a.auteur.nom}</strong> — {a.auteur.role}. {a.auteur.bio}
+        </p>
+      </div>
+    </section>
+  )}
+
+  <RelatedArticles currentHref={PATH} />
+  <CtaPacks />
+</BaseLayout>

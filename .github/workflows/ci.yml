@@ -1,0 +1,77 @@
+# Intégration continue — à chaque push et pull request.
+#
+# Prouve que le code se construit et se comporte comme en production, sans
+# dépendre de Sanity ni de Stripe : le contenu vient du seed versionné
+# (contenu/seed.ndjson), interrogé par les mêmes requêtes GROQ.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      CONTENU_SOURCE: seed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Dépendances sans faille haute ou critique
+        run: npm audit --omit=dev --audit-level=high
+      - name: Tests unitaires (IP de confiance, limiteur)
+        run: npm test
+      - name: Types
+        run: npm run check
+      - name: Build
+        run: npm run build
+      - name: Audit SEO du build (titles, h1, canonical, JSON-LD, liens, sitemap…)
+        run: npm run check:seo
+      - name: Allégations (santé, « bio », théories sans fondement) — contenu publié et brouillons
+        run: npm run check:allegations
+      - name: Serveur réel — redirections et en-têtes
+        run: |
+          SITE_RECETTE=1 CLIENT_IP_HEADER=socket PORT=4321 node server.mjs &
+          for i in $(seq 30); do curl -sf http://127.0.0.1:4321/api/sante && break; sleep 1; done
+          npm run check:redirects -- http://127.0.0.1:4321
+          npm run check:headers -- http://127.0.0.1:4321 --recette
+      - name: Image Docker
+        run: docker build --build-arg CONTENU_SOURCE=seed -t aimezlanature:ci .
+
+  studio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+      # Le Studio est construit dans un dossier qui ne contient QUE ce que copie
+      # studio/Dockerfile (studio/ + contenu/regles.json + contenu/photos-site.json).
+      # Construit en place,
+      # l'outil de build lisait le tsconfig de la racine (qui étend celui
+      # d'Astro, absent ici) : la CI testerait une situation qui n'existe pas
+      # en production.
+      - name: Préparer un dossier identique au contexte Docker
+        run: |
+          mkdir -p "$RUNNER_TEMP/studio-build/contenu"
+          cp -r studio "$RUNNER_TEMP/studio-build/"
+          cp contenu/regles.json contenu/photos-site.json "$RUNNER_TEMP/studio-build/contenu/"
+      - run: npm ci
+        working-directory: ${{ runner.temp }}/studio-build/studio
+      - name: Types des schémas
+        run: npx tsc --noEmit -p .
+        working-directory: ${{ runner.temp }}/studio-build/studio
+      - name: Build du Studio
+        run: npx sanity build --yes
+        working-directory: ${{ runner.temp }}/studio-build/studio
+        env:
+          SANITY_STUDIO_PROJECT_ID: ci00test

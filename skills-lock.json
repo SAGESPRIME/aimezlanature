@@ -1,17 +1,77 @@
 {
   "version": 1,
   "skills": {
-    "impeccable": {
-      "source": "pbakaus/impeccable",
-      "sourceType": "github",
-      "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "computedHash": "61e741088147cfe1acb9a37581c6b2d08b2ac9ee8839ae9954d8bf9c0e59022a"
-    },
     "ui-ux-pro-max": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",
+      "commit": "f2f7266b07805025421611656045e9b44b41e2eb",
+      "sourcePath": ".claude/skills/ui-ux-pro-max",
       "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
-      "computedHash": "ce0af583006d2fd4731663adc50c0a5df1121f0d49a5bb9c308eca4ee295c60a"
+      "computedHash": "4009978657f52506c0383471378ab3a6ac1ed90ae3b132e70af454aadd9ccf38"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "commit": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba",
+      "sourcePath": "skills/frontend-design",
+      "skillPath": ".claude/skills/frontend-design/SKILL.md",
+      "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
+    },
+    "taste-skill": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "commit": "6c0b5c78f5d31776e2210305abaa210cdc0030bf",
+      "sourcePath": "skills/taste-skill",
+      "skillPath": ".claude/skills/taste-skill/SKILL.md",
+      "computedHash": "03024b6c9557585d4922f7957e63690e24609d09e594ec5bd01c9eb1338188f9"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "commit": "b49177d32788f2dc585c42831d845dacf1ebed2c",
+      "sourcePath": ".claude/skills/impeccable",
+      "skillPath": ".claude/skills/impeccable/SKILL.md",
+      "computedHash": "0d4f5b2c39270cd598ab7e148cf1cf9867aa22ce729166cb642bcccda459a5a4"
+    },
+    "emil-design-eng": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "sourcePath": "skills/emil-design-eng",
+      "skillPath": ".claude/skills/emil-design-eng/SKILL.md",
+      "computedHash": "479c09fe9e574178112bbbcd8473c60064539b9687a3c1a6ebd36e1c2370898e"
+    },
+    "animate": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "sourcePath": "skills/animate",
+      "skillPath": ".claude/skills/animate/SKILL.md",
+      "computedHash": "e0199f58d8defdebaf36a507165e4da0b6a45ee7f54c7c77376c87cd2c3df78a"
+    },
+    "improve-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "sourcePath": "skills/improve-animations",
+      "skillPath": ".claude/skills/improve-animations/SKILL.md",
+      "computedHash": "0ceb25784b6660c280a59dea039d9b5d56eb7dc54804dc1b6a908e47a9923f16"
+    },
+    "review-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "sourcePath": "skills/review-animations",
+      "skillPath": ".claude/skills/review-animations/SKILL.md",
+      "computedHash": "5ff2799f778472c996f548b240cea5a519980f8fe41ffe9e92e17db655c596b2"
+    },
+    "humanizer": {
+      "source": "blader/humanizer",
+      "sourceType": "github",
+      "commit": "a32f24407364c74c812b43c15926d638bee1e072",
+      "sourcePath": ".",
+      "skillPath": ".claude/skills/humanizer/SKILL.md",
+      "computedHash": "3013910ef5433dab12f0d2b86d9cf9e3421a253ef986518a68ef07aa29629bdc"
     }
   }
 }

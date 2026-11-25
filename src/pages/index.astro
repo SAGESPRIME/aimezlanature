@@ -1,81 +1,45 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Icon from '../components/Icon.astro';
 import Faq from '../components/Faq.astro';
 import AmazonProof from '../components/AmazonProof.astro';
 import Irritants from '../components/Irritants.astro';
-import { SITE } from '../data/products';
+import { SITE, getProduct, prixDEntree } from '../data/products';
+import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
-import { getProductImage, getProductImageAlt } from '../lib/productImages';
-import { buildFaqSchema } from '../lib/seo';
+import { conditionsPro } from '../data/revendeur';
+import CarteProduit from '../components/CarteProduit.astro';
+import BandeauLivraison from '../components/BandeauLivraison.astro';
+import { photoSite, cadrage, formatPhoto } from '../data/photosSite';
+import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
-// Visuel du hero : le Pack 100, notre best-seller (format famille, toutes utilisations).
-const heroPhoto = getProductImage('pack-100-perles');
 
 const metaTitle = 'Perles Céramique EM® — Purifiez votre eau | Aimez la Nature';
 const metaDescription =
-  `Purifiez votre eau du robinet avec nos Perles de Céramique EM® japonaises. ${SITE.totalReviews} avis vérifiés, livraison offerte dès ${SITE.freeShippingThreshold}€, garantie 30 jours. Zéro plastique.`;
+  `Purifiez l'eau du robinet avec nos Perles de Céramique EM® japonaises. ${SITE.totalReviews} avis vérifiés, livraison offerte selon le pack, garantie 30 jours.`;
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-  logo: `${SITE.url}/logo.png`,
-  foundingDate: String(SITE.foundingYear),
-  // Canal de vente officiel de la marque : permet à Google de rattacher la
-  // fiche Amazon (816 avis) à cette entité plutôt que de la voir comme un
-  // revendeur tiers sans lien.
-  sameAs: [SITE.amazon.url],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    telephone: '+33-1-84-80-15-22',
-    email: 'contact@aimezlanature.fr',
-    availableLanguage: 'French',
-  },
-};
-
-const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE.name,
-  url: SITE.url,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: `${SITE.url}/perles-ceramique-em/?q={search_term_string}` },
-    'query-input': 'required name=search_term_string',
-  },
-};
+const organizationSchema = buildOrganizationSchema();
+const websiteSchema = buildWebSiteSchema();
 
 // Pas de schema Product « catalogue » avec note agrégée ici : Google exige
 // qu'un aggregateRating porte sur un produit précis — agréger les avis de
 // plusieurs produits dans un Product fictif violerait ses consignes.
 // Les notes réelles restent dans le schema Product de chaque fiche.
 
-// Chaque étape porte désormais un VERBE court (`verbe`) en plus de son titre :
-// « Déposez. Patientez. Régénérez. » se retient, contrairement à trois phrases
-// complètes. Le contenu factuel des étapes n'a pas bougé — seule la forme est
-// reprise de la présentation interactive de la marque, qui condensait le mode
-// d'emploi en trois verbes.
+// Mode d'emploi : une vraie séquence, d'où la numérotation affichée.
 const steps = [
   {
     num: '01',
-    verbe: 'Déposez',
     titre: 'Placez les perles dans votre eau',
     texte: 'Déposez les perles au fond de votre carafe, bouilloire ou gourde. Aucun montage, aucun raccordement.',
   },
   {
     num: '02',
-    verbe: 'Patientez',
     titre: 'L\'eau s\'améliore naturellement',
     texte: 'En 30 minutes, le chlore est réduit, le goût s\'adoucit, le tartre diminue. Efficacité sur 3 à 6 mois.',
   },
   {
     num: '03',
-    verbe: 'Régénérez',
     titre: 'Régénérez par simple ébullition',
     texte: 'Faites bouillir les perles 10 à 15 minutes pour leur redonner toute leur efficacité. Répétez tous les 3-6 mois.',
   },
@@ -109,134 +73,132 @@ const testimonials = [
 // données. Questions choisies pour les requêtes informationnelles à fort
 // volume ; réponses fidèles aux données réelles (dosage 15/L, régénération
 // par ébullition, honnêteté sur bactéries/métaux — cf. /perles-de-ceramique-avis).
-const homeFaqItems = [
-  {
-    question: 'Qu\'est-ce que les perles de céramique EM® ?',
-    answer:
-      'Ce sont des perles d\'argile naturelle fabriquées au Japon et enrichies en Micro-organismes Efficaces (EM®). Plongées dans l\'eau du robinet, elles réduisent le goût et l\'odeur de chlore, adoucissent l\'eau et limitent les dépôts de tartre, sans aucun produit chimique.',
-  },
-  {
-    question: 'Combien de perles de céramique faut-il utiliser ?',
-    answer:
-      'Comptez environ 15 perles par litre d\'eau de boisson : 15 pour une carafe d\'1 L, 30 pour une carafe de 2 L, 25 pour une bouilloire ou une cafetière, et 8 à 10 pour une gourde de 500 ml.',
-  },
-  {
-    question: 'Combien de temps durent les perles de céramique ?',
-    answer:
-      'Les perles ne s\'usent pas. Il suffit de les régénérer par ébullition 10 à 15 minutes tous les 3 à 6 mois, selon la dureté de votre eau et votre usage. Elles se conservent ainsi sur de nombreuses années.',
-  },
-  {
-    question: 'Les perles de céramique EM® sont-elles sans danger ?',
-    answer:
-      'Oui : fabriquées à partir d\'argile naturelle selon le procédé EM® japonais, elles ne libèrent aucun produit chimique dans l\'eau. Elles améliorent une eau déjà potable (goût, chlore, tartre) et ne remplacent pas un filtre certifié contre les bactéries ou les métaux lourds.',
-  },
-  {
-    question: 'Comment entretenir et régénérer les perles ?',
-    answer:
-      'Rincez-les à l\'eau claire, puis faites-les bouillir 10 à 15 minutes tous les 3 à 6 mois, sans savon ni vinaigre. Laissez-les sécher et replacez-les dans votre carafe, votre bouilloire ou votre gourde.',
-  },
-];
+// Questions gérées dans Sanity (Studio → Questions fréquentes → page « accueil »).
+const homeFaqItems = faqPour('accueil');
 
 const homeFaqSchema = buildFaqSchema(homeFaqItems);
+
+// Cartes « Choisissez votre format » : la mise en page est propre à ces quatre
+// produits, mais prix, prix barrés et notes viennent TOUJOURS des données
+// (Sanity). Ils étaient écrits en dur ici : un changement de prix dans le
+// Studio n'aurait pas atteint la page d'accueil.
+function carte(slug: string) {
+  const p = getProduct(slug);
+  if (!p) throw new Error(`Accueil : produit « ${slug} » introuvable dans le contenu`);
+  return p;
+}
+const p100 = carte('pack-100-perles');
+const p55 = carte('pack-55-perles');
+const pGourdePack = carte('pack-gourde-ceramique-em');
+const pGourde = carte('gourde-ecologique');
+
+// Ordre et accroche de chaque carte « Choisissez votre format ».
+const formats = [
+  { p: p100, usage: 'Carafe, bouilloire, lave-vaisselle : le format famille' },
+  { p: p55, usage: "Carafe, bouilloire, cafetière : le format d'entrée" },
+  { p: pGourdePack, usage: 'Gourde en verre 500 ml et 100 perles' },
+  { p: pGourde, usage: 'Si vous avez déjà vos perles' },
+];
+
+// Tuiles « Pour chaque moment d'eau » : photos modifiables dans le Studio
+// (Réglages → Photos du site), photo de secours sinon (src/data/photosSite.ts).
+const moments = [
+  { href: '/comment-ca-marche/', titre: 'Comment ça marche', texte: "Ce que font les perles dans l'eau", photo: photoSite('commentCaMarche'), cadre: cadrage('commentCaMarche') },
+  { href: '/utilisations/', titre: 'À la maison', texte: 'Carafe, bouilloire, cafetière, plantes…', photo: photoSite('maison'), cadre: cadrage('maison') },
+  { href: '/perles-ceramique-em/gourde-ecologique/', titre: 'En balade', texte: 'La gourde en verre et ses perles', photo: photoSite('balade'), cadre: cadrage('balade') },
+  { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoSite('mission'), cadre: cadrage('mission') },
+];
+const photoHero = photoSite('accueil');
+// Cadre du hero à la forme de la photo (après recadrage du Studio) : une photo
+// portrait n'est plus rognée dans un carré, et inversement.
+const cadreHero = { portrait: 'lg:aspect-[4/5]', carre: 'lg:aspect-square', paysage: 'lg:aspect-[4/3]' }[formatPhoto('accueil')];
+const photoModeEmploi = photoSite('modeEmploi');
+const note = (n: number) => n.toString().replace('.', ',');
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription} jsonLd={[organizationSchema, websiteSchema, homeFaqSchema]}>
 
   <!-- ══════════════════════════════════
-       HERO — split éditorial
+       HERO — texte éditorial + photo en arche (docs/design/systeme.md).
+       La photo est l'image LCP : eager + fetchpriority="high". En mobile elle
+       passe au-dessus du texte, avec une hauteur fixe pour garder le bouton
+       d'achat dans le premier écran.
   ══════════════════════════════════ -->
-  <!-- `min-h-[90vh]` seulement à partir de lg : en mobile, imposer 90vh au bloc
-       de texte repoussait le bouton d'achat hors du premier écran. La hauteur
-       y est désormais dictée par le contenu. -->
-  <section class="lg:min-h-[90vh] grid grid-cols-1 lg:grid-cols-2 bg-[#F5F0E8] w-full">
-    <div class="flex flex-col justify-center px-8 lg:px-16 xl:px-24 py-10 lg:py-24">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-5 font-medium">
-        Perles de Céramique EM® · Fabriquées au Japon
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-[1.05fr_1fr] gap-0 lg:gap-12">
+    <div class="flex flex-col justify-center pt-7 pb-12 lg:py-20">
+      <p class="entree text-sm text-olive font-medium mb-5">
+        Perles de Céramique EM® authentiques, fabriquées au Japon
       </p>
-      <h1 class="font-display text-[2.75rem] sm:text-5xl lg:text-6xl xl:text-[4.5rem] text-[#1A1A16] leading-[1.05] mb-6">
-        L'eau du robinet,{' '}<br />
-        <em class="not-italic text-[#166534]">purifiée</em>{' '}<br />
-        naturellement.
+      <h1 class="entree entree-2 font-display text-[2.75rem] sm:text-6xl xl:text-[4.1rem] text-encre leading-[1.02] mb-6 text-balance">
+        L'eau du robinet, <em class="surligne">purifiée</em> naturellement.
       </h1>
-
-      <p class="text-[#57534e] text-lg leading-relaxed max-w-md mb-8">
-        Nos perles d'argile EM® réduisent le chlore, adoucissent l'eau et limitent
-        le tartre — sans filtre, sans plastique, sans effort.
+      <p class="entree entree-3 text-gris text-lg leading-relaxed max-w-[34ch] mb-9">
+        Des perles d'argile EM® à déposer dans votre carafe ou votre gourde : moins de chlore,
+        une eau plus douce, moins de tartre. Sans filtre ni plastique.
       </p>
-      <div class="flex flex-wrap gap-4 mb-10">
-        <a href="/perles-ceramique-em/" class="inline-flex items-center gap-2 bg-[#166534] text-white px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#0D4A25] transition-colors">
-          Purifier mon eau — dès 19,90 € <span aria-hidden="true">→</span>
+      {SITE.livraisonOfferteAvec && (
+        <BandeauLivraison class="entree entree-4 mb-6 max-w-lg">
+          Avec {SITE.livraisonOfferteAvec}, en Colissimo, 2 à 5 jours.
+        </BandeauLivraison>
+      )}
+      <div class="entree entree-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-10">
+        <a href="/perles-ceramique-em/" class="bouton bouton-plein">
+          Choisir mes perles, dès {prixDEntree()}
         </a>
-        <a href="/comment-ca-marche/" class="inline-flex items-center gap-2 border border-[#6E5330] text-[#6E5330] px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-[#6E5330] hover:text-white transition-colors">
-          Comment ça marche ?
+        <a href="/comment-ca-marche/" class="bouton bouton-contour">
+          Comment ça marche
         </a>
       </div>
-      <div class="flex flex-wrap items-center gap-5 text-sm text-[#57534e]">
-        <div class="flex items-center gap-2">
-          <span class="text-[#166534] font-bold" aria-label="Note 5 étoiles">★★★★★</span>
-          <span><strong class="text-[#1A1A16]">{SITE.globalRating.toString().replace('.', ',')}/5</strong> · {SITE.totalReviews} avis</span>
+      <dl class="entree entree-5 grid grid-cols-3 gap-4 border-t border-ligne pt-6 max-w-lg">
+        <div>
+          <dt class="sr-only">Note moyenne</dt>
+          <dd class="font-display text-2xl sm:text-3xl text-encre leading-none">
+            {note(SITE.globalRating)}/5 <span class="etoiles text-base align-middle" aria-hidden="true">★★★★★</span>
+          </dd>
+          <dd class="text-xs sm:text-sm text-gris mt-2">{SITE.totalReviews} avis vérifiés</dd>
         </div>
-        <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
-        <span>Livraison offerte dès 50€</span>
-        <span class="w-px h-5 bg-[#D4C9B8]" aria-hidden="true"></span>
-        <span>Garantie 30 jours</span>
-      </div>
+        <div>
+          <dt class="sr-only">Livraison</dt>
+          <dd class="font-display text-2xl sm:text-3xl text-encre leading-none">Offerte</dd>
+          <dd class="text-xs sm:text-sm text-gris mt-2">livraison selon le pack</dd>
+        </div>
+        <div>
+          <dt class="sr-only">Garantie</dt>
+          <dd class="font-display text-2xl sm:text-3xl text-encre leading-none">30 jours</dd>
+          <dd class="text-xs sm:text-sm text-gris mt-2">satisfait ou remboursé</dd>
+        </div>
+      </dl>
     </div>
-
-    <!-- Colonne visuelle. Auparavant en `hidden lg:flex` : le visiteur mobile
-         n'avait AUCUNE image de produit dans le hero. Elle est désormais
-         affichée partout, et remontée avant le texte en mobile (`order-first`)
-         pour que le produit soit la première chose vue.
-         Une seule balise <Image> sert les deux mises en page : deux images dont
-         une masquée en CSS seraient toutes deux téléchargées. -->
-    <div class="relative order-first lg:order-none flex items-center justify-center bg-[#EDE8E0] overflow-hidden py-8 lg:py-0">
-      <div class="relative w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] lg:w-[400px] lg:h-[400px] xl:w-[460px] xl:h-[460px]">
-        <div class="hero-anneau absolute inset-0 rounded-full border-2 border-[#C4B89A] opacity-30"></div>
-        <div class="hero-anneau absolute inset-3 lg:inset-4 rounded-full border border-[#C4B89A] opacity-20"></div>
-        <div class="absolute inset-0 rounded-full bg-[#F5F0E8] overflow-hidden">
-          {heroPhoto && (
-            <Image
-              src={heroPhoto}
-              alt={getProductImageAlt('pack-100-perles')}
-              width={920}
-              height={920}
-              widths={[200, 280, 460, 560, 920]}
-              sizes="(max-width: 639px) 200px, (max-width: 1023px) 280px, (max-width: 1279px) 400px, 460px"
-              loading="eager"
-              fetchpriority="high"
-              class="w-full h-full object-cover"
-            />
-          )}
-        </div>
-      </div>
-      <!-- Pastilles décoratives : masquées sous lg, le cercle mobile est trop
-           petit pour les accueillir sans chevauchement. -->
-      <div class="hidden lg:block absolute top-8 right-8 bg-white rounded-2xl px-4 py-3 shadow-sm border border-[#EDE8E0]">
-        <p class="text-xs text-[#57534e]">Procédé EM® original</p>
-        <p class="text-sm font-bold text-[#166534]">Fabriqué au Japon</p>
-      </div>
-      <div class="hidden lg:block absolute bottom-12 left-8 bg-[#166534] text-white rounded-2xl px-4 py-3">
-        <p class="text-xs opacity-75">Avis clients vérifiés</p>
-        <p class="font-bold text-sm">{SITE.totalReviews} avis · {SITE.globalRating.toString().replace('.', ',')}/5</p>
-      </div>
+    <div class={`order-first lg:order-none -mx-4 sm:mx-0 aspect-[4/3] ${cadreHero} lg:self-center overflow-hidden arche-hero entree-photo`}>
+      <Image
+        {...photoHero}
+        widths={[480, 720, 960, 1200]}
+        sizes="(min-width: 1024px) 560px, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class={`w-full h-full object-cover ${cadrage('accueil')}`}
+      />
     </div>
   </section>
 
   <!-- ══════════════════════════════════
-       TRUST STRIP
+       FORMATS — les 4 produits, photo produit sur fond blanc.
+       Pas de `data-reveal` : la section qui vend doit être visible même si
+       site.js ne charge pas. Prix et notes viennent toujours de Sanity.
   ══════════════════════════════════ -->
-  <div class="bg-[#166534] text-white">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-center gap-6 lg:gap-10 text-sm font-medium">
-      {([
-        { icon: 'truck', label: 'Livraison offerte dès 50€' },
-        { icon: 'refresh', label: 'Remboursement 30 jours' },
-        { icon: 'leaf', label: 'Perles EM® authentiques' },
-        { icon: 'droplet', label: 'Zéro plastique, zéro déchet' },
-      ] as const).map(({ icon, label }) => (
-        <span class="inline-flex items-center gap-2"><Icon name={icon} class="w-4 h-4 opacity-80" />{label}</span>
-      ))}
+  <section class="py-20 lg:py-28 px-4 sm:px-6" aria-labelledby="produits-titre">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <h2 id="produits-titre" class="font-display text-4xl lg:text-5xl text-foret">Choisissez votre format</h2>
+        <a href="/perles-ceramique-em/" class="lien-souligne">Comparer les packs</a>
+      </div>
+      <ul class="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 lg:gap-6 list-none p-0 m-0">
+        {formats.map(({ p, usage }) => (
+          <li><CarteProduit produit={p} accroche={usage} /></li>
+        ))}
+      </ul>
     </div>
-  </div>
+  </section>
 
   <!-- ══════════════════════════════════
        LE CONSTAT — nommer le problème avant de montrer la solution
@@ -244,146 +206,93 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
   <Irritants />
 
   <!-- ══════════════════════════════════
-       PRODUITS — bento asymétrique
+       MOMENTS — tuiles photo vers les pages de contenu
   ══════════════════════════════════ -->
-  <section class="py-20 px-4 bg-[#F5F0E8]" aria-labelledby="produits-titre">
+  <section class="py-20 lg:py-28 px-4 sm:px-6" aria-labelledby="moments-titre">
     <div class="max-w-6xl mx-auto">
-      <div class="mb-12">
-        <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">Nos packs</p>
-        <h2 id="produits-titre" class="font-display text-4xl text-[#1A1A16]">Choisissez votre format</h2>
-      </div>
-      <!-- Ces 4 cartes n'ont volontairement PAS de `data-reveal` : l'animation
-           d'apparition les rend `opacity: 0` tant que site.js n'a pas tourné.
-           Si ce fichier ne charge pas, la section qui vend resterait invisible.
-           Le confort d'animation ne vaut pas ce risque ici — l'effet est
-           conservé sur les blocs décoratifs (avis, guides) plus bas. -->
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-
-        <!-- Pack 100 — bestseller — 3/5 cols -->
-        <a href="/perles-ceramique-em/pack-100-perles/" class="md:col-span-3 relative rounded-3xl overflow-hidden p-8 lg:p-10 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#D4E4D0]">
-          <span class="absolute right-4 top-2 font-display text-[140px] font-bold leading-none select-none opacity-[0.08] text-[#166534]" aria-hidden="true">100</span>
-          <div>
-            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">Bestseller · ★ 4,94/5 (51 avis)</span>
-            <h3 class="font-display text-3xl text-[#1A1A16] mb-2">Pack 100 Perles</h3>
-            <p class="text-[#57534e] text-sm max-w-xs">Carafe, bouilloire, lave-vaisselle, machine à laver… Le format famille, toutes les utilisations. Le choix de 51 clients satisfaits.</p>
-          </div>
-          <div class="flex items-end justify-between mt-6">
-            <div>
-              <p class="text-xs text-[#6E5330] line-through">42,90€</p>
-              <p class="font-display text-3xl text-[#166534] font-bold">29,90€</p>
-            </div>
-            <span class="bg-[#166534] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#0D4A25] transition-colors">Purifier mon eau →</span>
-          </div>
-        </a>
-
-        <!-- Pack 55 — format d'entrée — 2/5 cols -->
-        <a href="/perles-ceramique-em/pack-55-perles/" class="md:col-span-2 relative rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[300px] group transition-transform hover:scale-[1.01] bg-[#DDD8D0]">
-          <span class="absolute right-3 top-1 font-display text-[100px] font-bold leading-none select-none opacity-[0.08] text-[#6E5330]" aria-hidden="true">55</span>
-          <div>
-            <span class="inline-block bg-[#6E5330] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">★ 4,91/5 (45 avis)</span>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-2">Pack 55 Perles</h3>
-            <p class="text-[#57534e] text-sm">Carafe, bouilloire, cafetière. Le format d'entrée idéal pour découvrir.</p>
-          </div>
-          <div>
-            <p class="text-xs text-[#6E5330] line-through">25,90€</p>
-            <p class="font-display text-2xl text-[#166534] font-bold">19,90€</p>
-          </div>
-        </a>
-
-        <!-- Pack Gourde — 3/5 cols -->
-        <a href="/perles-ceramique-em/pack-gourde-ceramique-em/" class="md:col-span-3 relative rounded-3xl overflow-hidden p-7 flex flex-col justify-between min-h-[220px] group transition-transform hover:scale-[1.01] bg-[#D0D8D4]">
-          <span class="absolute right-4 bottom-3 font-display text-[55px] font-bold leading-none select-none opacity-[0.08] text-[#57534e]" aria-hidden="true">Gourde</span>
-          <div>
-            <span class="inline-block bg-[#166534] text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">La formule complète</span>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-1">Pack Gourde + 100 Perles</h3>
-            <p class="text-[#57534e] text-sm">Gourde 500 ml en verre + 100 perles EM®. De quoi équiper aussi votre carafe.</p>
-          </div>
-          <div class="flex items-end justify-between">
-            <div>
-              <p class="text-xs text-[#6E5330] line-through">72,80€</p>
-              <p class="font-display text-2xl text-[#166534] font-bold">59,90€</p>
-            </div>
-            <span class="bg-[#166534] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#0D4A25] transition-colors">Purifier mon eau →</span>
-          </div>
-        </a>
-
-        <!-- Gourde Écologique seule — 2/5 cols -->
-        <a href="/perles-ceramique-em/gourde-ecologique/" class="md:col-span-2 relative rounded-3xl overflow-hidden p-7 flex flex-col justify-between min-h-[220px] group transition-transform hover:scale-[1.01] bg-[#EDE4D3]">
-          <span class="absolute right-3 top-0 font-display text-[70px] font-bold leading-none select-none opacity-[0.08] text-[#6E5330]" aria-hidden="true">500</span>
-          <div>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-1">Gourde Écologique</h3>
-            <p class="text-[#57534e] text-sm">500 ml en verre double paroi. Si vous avez déjà vos perles.</p>
-          </div>
-          <div>
-            <p class="text-xs text-[#6E5330] line-through">39,90€</p>
-            <p class="font-display text-2xl text-[#166534] font-bold">29,90€</p>
-          </div>
-        </a>
-
-      </div>
+      <h2 id="moments-titre" class="font-display text-4xl lg:text-5xl text-foret mb-10">Pour chaque moment d'eau</h2>
+      <ul class="tuiles-moments list-none p-0 m-0">
+        {moments.map((m, i) => (
+          <li>
+            <a href={m.href} class="tuile-moment group">
+              <Image
+                {...m.photo}
+                widths={[640, 960, 1280]}
+                sizes={i === 0 ? '(min-width: 1024px) 840px, 100vw' : '(min-width: 1024px) 720px, 100vw'}
+                class={`tuile-moment-photo ${m.cadre}`}
+              />
+              <span class="tuile-moment-texte">
+                <span class="block font-display text-2xl sm:text-3xl text-white">{m.titre}</span>
+                <span class="block text-sm text-white/90 mt-1">{m.texte}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
   <!-- ══════════════════════════════════
-       COMMENT ÇA MARCHE — bloc GEO
+       MODE D'EMPLOI — bloc GEO. Vraie séquence : numérotée.
   ══════════════════════════════════ -->
-  <section class="py-20 px-4 bg-white" aria-labelledby="how-it-works">
-    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+  <section class="py-20 lg:py-28 px-4 sm:px-6 bg-anis-pale" aria-labelledby="how-it-works">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div class="arche-portrait aspect-[5/6] max-w-md w-full mx-auto lg:mx-0">
+        <Image
+          {...photoModeEmploi}
+          widths={[800, 1100, 1400]}
+          sizes="(min-width: 1024px) 1100px, 830px"
+          class={`w-full h-full object-cover ${cadrage('modeEmploi')}`}
+        />
+      </div>
       <div>
-        <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">Mode d'emploi</p>
-        <h2 id="how-it-works" class="font-display text-4xl text-[#1A1A16] mb-4">Comment ça marche ?</h2>
-        <p class="font-display text-2xl text-[#166534] mb-6">
-          Déposez. Patientez. Régénérez.
-        </p>
-        <p class="text-[#57534e] leading-relaxed mb-8">
+        <h2 id="how-it-works" class="font-display text-4xl lg:text-5xl text-foret mb-4">Comment ça marche ?</h2>
+        <p class="text-gris leading-relaxed mb-8 max-w-[60ch]">
           Les Perles de Céramique EM® sont fabriquées à partir d'argile naturelle enrichie en
           Micro-organismes Efficaces (EM®). Ces micro-organismes bénéfiques améliorent la qualité
           de l'eau en réduisant le chlore, en adoucissant le goût et en limitant le tartre.
           Durée d'efficacité : 3 à 6 mois selon l'usage.
         </p>
-        <a href="/comment-ca-marche/" class="inline-flex items-center gap-2 text-[#166534] font-semibold text-sm border-b border-[#166534] pb-0.5 hover:gap-4 transition-all">
-          En savoir plus →
-        </a>
-        <a href="/utilisations/" class="inline-flex items-center gap-2 ml-6 text-[#166534] font-semibold text-sm border-b border-[#166534] pb-0.5 hover:gap-4 transition-all">
-          Voir les 16 utilisations
-        </a>
-      </div>
-      <div class="space-y-7">
-        {steps.map(({ num, verbe, titre, texte }) => (
-          <div class="flex gap-5">
-            <span class="font-display text-3xl text-[#9C8358] font-bold leading-none flex-shrink-0 w-10" aria-hidden="true">{num}</span>
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-[#6E5330] mb-1">{verbe}</p>
-              <h3 class="font-semibold text-[#1A1A16] mb-1">{titre}</h3>
-              <p class="text-[#57534e] text-sm leading-relaxed">{texte}</p>
-            </div>
-          </div>
-        ))}
+        <ol class="list-none p-0 m-0 border-t border-pierre">
+          {steps.map(({ num, titre, texte }) => (
+            <li class="grid grid-cols-[3rem_1fr] gap-2 py-5 border-b border-pierre">
+              <span class="font-display text-2xl text-olive leading-none pt-0.5" aria-hidden="true">{num}</span>
+              <div>
+                <h3 class="font-semibold text-encre mb-1">{titre}</h3>
+                <p class="text-gris text-sm leading-relaxed">{texte}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <div class="flex flex-wrap gap-x-8 gap-y-3 mt-8">
+          <a href="/comment-ca-marche/" class="lien-souligne">Le fonctionnement en détail</a>
+          <a href="/utilisations/" class="lien-souligne">Les 16 utilisations</a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ══════════════════════════════════
-       TESTIMONIALS
+       AVIS — extraits mot pour mot d'avis vérifiés
   ══════════════════════════════════ -->
-  <section class="py-20 px-4 bg-[#F5F0E8]" aria-labelledby="avis-titre">
+  <section class="py-20 lg:py-28 px-4 sm:px-6" aria-labelledby="avis-titre">
     <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-12">
-        <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">Ce qu'ils en disent</p>
-        <h2 id="avis-titre" class="font-display text-4xl text-[#1A1A16]">{SITE.totalReviews} clients satisfaits</h2>
-        <p class="text-[#166534] text-xl mt-2" aria-label={`Note globale ${SITE.globalRating} sur 5`}>★★★★★ <span class="text-[#57534e] text-base">{SITE.globalRating.toString().replace('.', ',')} / 5</span></p>
-        <p class="text-xs text-[#57534e] mt-1">Extraits mot pour mot d'avis vérifiés publiés sur nos fiches produit.</p>
+      <div class="mb-12 max-w-2xl">
+        <h2 id="avis-titre" class="font-display text-4xl lg:text-5xl text-foret">{SITE.totalReviews} clients satisfaits</h2>
+        <p class="mt-3 text-gris">
+          <span class="etoiles" aria-hidden="true">★★★★★</span>
+          <span class="font-semibold text-encre ml-1">{note(SITE.globalRating)}/5</span>.
+          Extraits mot pour mot d'avis vérifiés publiés sur nos fiches produit.
+        </p>
       </div>
-      <div class="grid md:grid-cols-3 gap-5 reveal-cascade" data-reveal>
+      <div class="grid md:grid-cols-3 gap-10 md:gap-8">
         {testimonials.map(({ name, pack, texte }) => (
-          <div class="carte-hover bg-white rounded-2xl p-6">
-            <p class="text-[#166534] mb-3" aria-label="Note 5 étoiles">★★★★★</p>
-            <p class="text-[#57534e] text-sm leading-relaxed mb-4 italic">« {texte} »</p>
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-[#1A1A16] text-sm">{name}</span>
-              <span class="text-xs text-[#6E5330] bg-[#F5F0E8] px-2 py-1 rounded-full">{pack}</span>
-            </div>
-          </div>
+          <figure class="border-t-2 border-anis pt-6">
+            <blockquote class="font-display text-[1.35rem] leading-snug text-encre">« {texte} »</blockquote>
+            <figcaption class="mt-5 text-sm text-gris">
+              <span class="font-semibold text-encre">{name}</span>, {pack}
+            </figcaption>
+          </figure>
         ))}
       </div>
     </div>
@@ -399,28 +308,20 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
   <!-- ══════════════════════════════════
        GUIDES — blog / ressources
   ══════════════════════════════════ -->
-  <section class="py-20 px-4 bg-white" aria-labelledby="guides-titre">
+  <section class="py-20 lg:py-28 px-4 sm:px-6" aria-labelledby="guides-titre">
     <div class="max-w-6xl mx-auto">
-      <div class="flex flex-wrap items-end justify-between gap-6 mb-12">
-        <div>
-          <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-3">Nos guides</p>
-          <h2 id="guides-titre" class="font-display text-4xl text-[#1A1A16]">Tout savoir sur les perles de céramique</h2>
-        </div>
-        <a href="/blog/" class="inline-flex items-center gap-2 text-[#166534] font-semibold text-sm border-b border-[#166534] pb-0.5 hover:gap-4 transition-all">
-          Voir tous les guides →
-        </a>
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <h2 id="guides-titre" class="font-display text-4xl lg:text-5xl text-foret max-w-2xl">Tout savoir sur les perles de céramique</h2>
+        <a href="/blog/" class="lien-souligne">Tous les guides</a>
       </div>
-      <div class="grid md:grid-cols-2 gap-5 reveal-cascade" data-reveal>
+      <div class="grid md:grid-cols-2 gap-x-10">
         {guides.filter((g) => g.category !== 'Achat').map((guide) => (
-          <article class="carte-hover rounded-2xl border border-[#EDE8E0] bg-[#FDFBF7] p-6">
-            <p class="text-xs tracking-widest uppercase text-[#6E5330] mb-3">{guide.category}</p>
-            <h3 class="font-display text-2xl text-[#1A1A16] mb-3">
-              <a href={guide.href} class="hover:text-[#166534] transition-colors">{guide.title}</a>
+          <article class="border-t border-pierre py-7">
+            <p class="text-sm text-olive mb-2">{guide.category}</p>
+            <h3 class="font-display text-2xl text-encre mb-2 leading-tight">
+              <a href={guide.href} class="hover:text-foret transition-colors">{guide.title}</a>
             </h3>
-            <p class="text-[#57534e] text-sm leading-relaxed mb-5">{guide.description}</p>
-            <a href={guide.href} class="inline-flex text-sm font-semibold text-[#166534] hover:underline">
-              Lire le guide
-            </a>
+            <p class="text-gris text-sm leading-relaxed max-w-[60ch]">{guide.description}</p>
           </article>
         ))}
       </div>
@@ -428,9 +329,41 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
   </section>
 
   <!-- ══════════════════════════════════
+       REVENDEURS — magasins bio et vendeurs professionnels
+       (conditions lues dans src/data/revendeur.ts, jamais recopiées)
+  ══════════════════════════════════ -->
+  <section class="py-20 lg:py-28 px-4 sm:px-6 bg-nuit text-anis-pale" aria-labelledby="revendeurs-titre">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-start">
+      <div>
+        <p class="text-sm text-anis mb-4">Magasins bio et vendeurs professionnels</p>
+        <h2 id="revendeurs-titre" class="font-display text-4xl lg:text-5xl leading-[1.08] text-anis-pale mb-6 text-balance">
+          Devenez revendeur de notre marque
+        </h2>
+        <p class="text-brume text-lg leading-relaxed max-w-[52ch] mb-8">
+          Boutiques bio, épiceries vrac, praticiens, revendeurs en ligne : remplissez le formulaire
+          de candidature. Une fois votre activité vérifiée, vous recevez votre accès et commandez
+          au tarif professionnel.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="/revendeurs/#demande-titre" class="bouton bouton-anis">Remplir le formulaire de candidature</a>
+          <a href="/pro/connexion/" class="bouton bouton-contour-clair">Déjà validé : mon espace</a>
+        </div>
+      </div>
+      <ul class="list-none m-0 p-0 border-t border-anis/25">
+        {conditionsPro.map((c) => (
+          <li class="border-b border-anis/25 py-6">
+            <p class="font-display text-2xl text-anis-pale mb-1">{c.titre}</p>
+            <p class="text-brume leading-relaxed">{c.texte}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
        FAQ — accordéon visible + schema FAQPage (GEO / People Also Ask)
   ══════════════════════════════════ -->
-  <div class="bg-[#F5F0E8]">
+  <div class="bg-anis-pale">
     <Faq
       items={homeFaqItems}
       eyebrow="Questions fréquentes"
@@ -441,24 +374,22 @@ const homeFaqSchema = buildFaqSchema(homeFaqItems);
   <!-- ══════════════════════════════════
        MISSION
   ══════════════════════════════════ -->
-  <section class="py-20 px-4 bg-[#0D2818] text-white">
+  <section class="py-20 lg:py-28 px-4 bg-anis text-encre">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#A8C4A0] mb-4">Notre mission</p>
-      <h2 class="font-display text-4xl lg:text-5xl mb-6 leading-tight">
-        Purifiez votre eau naturellement,<br />
-        <span class="text-[#A8C4A0]">et jetez moins de plastique</span>
+      <h2 class="font-display text-4xl lg:text-5xl mb-6 leading-tight text-foret">
+        Purifiez votre eau naturellement, et jetez moins de plastique
       </h2>
-      <p class="text-[#B8CCB4] leading-relaxed mb-10 text-lg">
+      <p class="text-encre leading-relaxed mb-10 text-lg max-w-[60ch] mx-auto">
         Un foyer qui passe aux perles cesse d'acheter de l'eau en bouteille :
         moins de plastique jeté, moins de packs à porter, et une eau du robinet
         enfin agréable à boire. C'est exactement pour ça que nous existons.
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/perles-ceramique-em/" class="bg-[#A8C4A0] text-[#0D2818] px-8 py-3.5 rounded-full font-semibold hover:bg-white transition-colors">
-          Choisir mon pack — dès 19,90 €
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/perles-ceramique-em/" class="bouton bouton-plein">
+          Choisir mon pack, dès {prixDEntree()}
         </a>
-        <a href="/a-propos/" class="border border-[#A8C4A0] text-[#A8C4A0] px-8 py-3.5 rounded-full font-semibold hover:bg-[#A8C4A0] hover:text-[#0D2818] transition-colors">
-          Notre histoire →
+        <a href="/a-propos/" class="bouton bouton-contour-encre">
+          Notre histoire
         </a>
       </div>
     </div>

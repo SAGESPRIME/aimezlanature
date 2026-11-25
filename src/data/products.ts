@@ -1,3 +1,21 @@
+/**
+ * Produits et réglages du site — FAÇADE sur le contenu Sanity.
+ *
+ * Les données vivent dans Sanity (Studio : studio.aimezlanature.fr) et sont
+ * chargées AU BUILD par src/content.config.ts, qui les valide. Ce module les
+ * expose sous la forme que tout le site utilisait déjà (`products`, `SITE`,
+ * `getProduct`) : les composants n'ont pas eu à changer.
+ *
+ * ⚠️ SÉCURITÉ DU PAIEMENT : /api/checkout lit les prix ICI. Ils ont été figés
+ * au build — aucun appel à Sanity pendant un paiement, et aucun prix ne vient
+ * jamais du navigateur.
+ *
+ * ⚠️ Ne PAS réintroduire de « don 2,5 % / puits » : cet engagement n'existe
+ * pas (confirmé par le marchand le 2026-07-20) et avait été inventé.
+ */
+import { getCollection, getEntry } from 'astro:content';
+import type { ImageCms } from '../lib/cms/images';
+
 export interface Product {
   slug: string;
   name: string;
@@ -5,261 +23,138 @@ export interface Product {
   sku: string;
   priceCurrent: number;
   /**
-   * Prix barré. ⚠️ Directive Omnibus (L112-1-1 Code conso) : un prix barré doit
-   * être le prix le plus bas pratiqué dans les 30 jours précédant la remise.
-   * Valeurs relevées sur aimezlanature.fr le 2026-07-20 (mêmes remises -18/-23/-30 %
-   * affichées en ligne) — à faire confirmer par le marchand avant toute mise en prod.
+   * Prix barré, ABSENT s'il n'y a pas de vraie réduction en cours.
+   * ⚠️ Directive Omnibus (L112-1-1 Code conso) : un prix barré doit être le
+   * prix le plus bas pratiqué dans les 30 jours précédant la réduction.
    */
-  priceOriginal: number;
+  priceOriginal?: number;
+  /** Calculé à partir du prix barré (0 sans prix barré) — jamais saisi à la main. */
   discountPercent: number;
   inStock: boolean;
   /** Nombre de perles fournies. Absent quand le produit n'est pas vendu au nombre de perles. */
   quantity?: number;
   includesBottle: boolean;
+  /** Poids du colis, emballage compris (g) — frais de livraison (src/data/livraison.mjs). */
+  poids: number;
+  /** Un panier qui contient ce produit est livré gratuitement (sous le seuil de poids). */
+  livraisonOfferte: boolean;
   /**
-   * Note et nombre d'avis vérifiés. Absents tant qu'un produit n'a reçu aucun avis :
-   * on n'affiche alors pas d'étoiles et le schema omet `aggregateRating`, plutôt
-   * que d'afficher une note inventée (interdit par Google et trompeur pour l'acheteur).
+   * Note et nombre d'avis, CALCULÉS à partir des avis publiés dans Sanity.
+   * Absents tant qu'un produit n'a reçu aucun avis : pas d'étoiles affichées,
+   * et le schema omet `aggregateRating` plutôt que d'inventer une note.
    */
   rating?: number;
   reviewCount?: number;
-  /** Best-seller de la gamme — badge « Bestseller » et mise en avant. Un seul produit à true. */
+  /** Best-seller de la gamme — badge « Bestseller » et mise en avant. */
   bestseller?: boolean;
   description: string;
   usages: string[];
   qa: { question: string; answer: string }[];
   metaTitle: string;
   metaDescription: string;
+  image: ImageCms;
+  /** Dernière modification dans Sanity (sitemap). */
+  updatedAt?: string;
 }
 
-export const products: Product[] = [
-  {
-    slug: "pack-55-perles",
-    name: "Perles de Céramique EM® Pack 55",
-    shortName: "Pack 55 Perles",
-    sku: "X001BEJHNX",
-    priceCurrent: 19.9,
-    priceOriginal: 25.9,
-    discountPercent: 23,
-    inStock: true,
-    quantity: 55,
-    includesBottle: false,
-    rating: 4.91,
-    reviewCount: 45,
-    description: `Le Pack 55 Perles de Céramique EM® est notre format d'entrée, conçu pour une carafe de 1,5 à 2 litres, une bouilloire, une machine à café ou à thé. C'est le choix idéal pour découvrir les perles ou équiper les usages quotidiens d'une personne ou d'un couple.
+const arrondi2 = (n: number) => Math.round(n * 100) / 100;
 
-Fabriquées au Japon selon le procédé EM® original (Effective Microorganisms), ces perles d'argile naturelle agissent sans produit chimique pour améliorer le goût de l'eau du robinet, réduire la sensation de chlore et limiter les dépôts calcaires sur vos appareils. Utilisées comme billes anti calcaire dans la bouilloire, elles réduisent visiblement le tartre sur la résistance.
+const avisPublies = (await getCollection('avis')).map((e) => e.data);
 
-Conditionnées dans un emballage biodégradable avec sachet coton BIO, les 55 perles se glissent dans votre carafe ou directement dans le réservoir d'eau de votre cafetière ou machine à thé.
+/** Note moyenne (au centième) et nombre d'avis d'un produit. */
+function noteDe(slug: string): { rating?: number; reviewCount?: number } {
+  const liste = avisPublies.filter((a) => a.produit === slug);
+  const notes = liste.map((a) => a.note).filter((n): n is number => typeof n === 'number');
+  if (liste.length === 0 || notes.length === 0) return {};
+  return { rating: arrondi2(notes.reduce((s, n) => s + n, 0) / notes.length), reviewCount: liste.length };
+}
 
-Entretien simple : ébullition 10 à 15 minutes tous les 3 à 6 mois.`,
-    usages: ["Carafe 1,5-2 L", "Bouilloire", "Machine à café", "Machine à thé", "Gourde XL"],
-    qa: [
-      {
-        question: "À qui s'adresse le Pack 55 ?",
-        answer: "C'est le format d'entrée : il couvre les deux usages quotidiens les plus fréquents — 30 perles pour une carafe de 2 L et 25 pour la bouilloire ou la cafetière. Pour équiper toute la maison (lave-vaisselle, machine à laver…), le Pack 100 est plus adapté.",
-      },
-      {
-        question: "Puis-je utiliser les 55 perles dans ma cafetière ?",
-        answer: "Oui, placez les perles dans le réservoir d'eau de votre cafetière ou machine à thé. Elles réduiront le calcaire et amélioreront le goût de vos boissons.",
-      },
-      {
-        question: "Combien de temps durent les perles du Pack 55 ?",
-        answer: "Avec un entretien régulier (ébullition tous les 3 à 6 mois), les perles conservent leurs propriétés sur le long terme. La fréquence de régénération dépend de la dureté de votre eau et de votre usage quotidien.",
-      },
-      {
-        question: "La note de 4,91/5 est-elle vérifiée ?",
-        answer: "Oui, cette note est calculée sur 45 avis clients vérifiés. Tous les avis sont collectés après achat et vérifiés avant publication.",
-      },
-      {
-        question: "Peut-on utiliser le Pack 55 dans le lave-vaisselle ?",
-        answer: "Le lave-vaisselle demande à lui seul 40 perles, en permanence dans le panier à couverts. Le Pack 55 y suffirait tout juste sans rien laisser pour votre carafe : pour cumuler les deux, prenez plutôt le Pack 100.",
-      },
-    ],
-    metaTitle: "Perles de Céramique EM® Pack 55 — 19,90 € | Aimez la Nature",
-    metaDescription: "55 Perles de Céramique EM® japonaises : note 4,91/5. Idéal carafe 2L, bouilloire, cafetière. Purifie l'eau naturellement. Livraison offerte dès 50€.",
-  },
-  {
-    slug: "pack-100-perles",
-    name: "Perles de Céramique EM® Pack 100",
-    shortName: "Pack 100 Perles",
-    sku: "X001GW669N",
-    priceCurrent: 29.9,
-    priceOriginal: 42.9,
-    discountPercent: 30,
-    inStock: true,
-    quantity: 100,
-    includesBottle: false,
-    rating: 4.94,
-    reviewCount: 51,
-    bestseller: true,
-    description: `Le Pack 100 Perles de Céramique EM® est notre best-seller — le format famille qui couvre toutes les utilisations à la maison : carafe, bouilloire et cafetière pour l'eau de boisson, puis lave-vaisselle, machine à laver, bonbonne, vase ou bassine. C'est aussi le choix le plus économique : le coût par perle est le plus bas de la gamme, et c'est notre produit le mieux noté (4,94/5 sur 51 avis).
+export const products: Product[] = (await getCollection('produits'))
+  .map(({ id, data: p }) => ({
+    slug: id,
+    name: p.nom,
+    shortName: p.nomCourt,
+    sku: p.sku,
+    priceCurrent: p.prix,
+    ...(p.prixBarre ? { priceOriginal: p.prixBarre } : {}),
+    discountPercent: p.prixBarre ? Math.round((1 - p.prix / p.prixBarre) * 100) : 0,
+    inStock: p.enStock,
+    ...(p.nombrePerles ? { quantity: p.nombrePerles } : {}),
+    includesBottle: Boolean(p.avecGourde),
+    poids: p.poids,
+    livraisonOfferte: Boolean(p.livraisonOfferte),
+    ...noteDe(id),
+    bestseller: Boolean(p.bestseller),
+    description: p.description,
+    usages: p.usages,
+    qa: (p.questions ?? []).map((q) => ({ question: q.question, answer: q.reponse })),
+    metaTitle: p.metaTitle,
+    metaDescription: p.metaDescription,
+    image: p.image,
+    ...(p._updatedAt ? { updatedAt: p._updatedAt } : {}),
+    ordre: p.ordre,
+  }))
+  .sort((a, b) => a.ordre - b.ordre)
+  .map(({ ordre: _ordre, ...p }) => p);
 
-100 perles d'argile japonaise enrichies en EM® (Micro-organismes Efficaces) pour traiter de grands volumes d'eau. Véritable anti-calcaire naturel pour le lave-vaisselle et la machine à laver, elles réduisent aussi le chlore et améliorent le goût — testées et plébiscitées avec une note de 4,94/5 sur 51 avis clients vérifiés.
-
-Idéal pour les foyers de 3 personnes et plus, les adeptes du zéro déchet souhaitant supprimer totalement les bouteilles plastique, ou pour équiper plusieurs usages simultanément.
-
-Emballage : tube biodégradable + sachet coton BIO. Régénération : ébullition 10-15 min tous les 3-6 mois.`,
-    usages: ["Carafe & bouilloire", "Lave-vaisselle", "Machine à laver", "Bonbonne", "Toute la maison"],
-    qa: [
-      {
-        question: "Combien de perles faut-il pour un lave-vaisselle ?",
-        answer: "Comptez 40 perles, placées dans un filet en permanence dans le panier à couverts. Le Pack 100 permet d'équiper le lave-vaisselle tout en gardant de quoi traiter une carafe et une bouilloire.",
-      },
-      {
-        question: "Peut-on utiliser les perles dans la machine à laver ?",
-        answer: "Oui : 50 perles dans un filet de lavage, directement dans le tambour. Elles améliorent la qualité de l'eau de lavage et permettent de réduire les quantités de lessive et d'adoucissant.",
-      },
-      {
-        question: "Pourquoi le Pack 100 a-t-il la meilleure note (4,94/5) ?",
-        answer: "Les clients qui choisissent le Pack 100 sont généralement ceux qui ont déjà testé un pack plus petit et reviennent pour équiper tous leurs usages. Leur satisfaction est donc naturellement plus élevée.",
-      },
-      {
-        question: "Peut-on diviser le Pack 100 entre plusieurs usages ?",
-        answer: "Absolument, c'est même l'intérêt du format. Une répartition typique : 30 perles dans une carafe de 2 L, 25 dans la bouilloire et 40 dans le lave-vaisselle — soit 95 des 100 perles.",
-      },
-      {
-        question: "Le Pack 100 convient-il pour une bonbonne de 10 litres ?",
-        answer: "À raison de 15 perles par litre, 100 perles traitent environ 6,5 litres d'eau de boisson. Pour une bonbonne de 10 litres remplie à ras bord, comptez plutôt 150 perles, soit un pack et demi.",
-      },
-    ],
-    metaTitle: "Perles Céramique EM® Pack 100 — 29,90€ | Aimez la Nature",
-    metaDescription: "100 Perles de Céramique EM® japonaises, note 4,94/5. Lave-vaisselle, machine à laver, bonbonne. Meilleur rapport qualité/prix. Livraison offerte dès 50€.",
-  },
-  {
-    slug: "pack-gourde-ceramique-em",
-    name: "Pack Gourde + 100 Perles de Céramique EM®",
-    shortName: "Pack Gourde",
-    sku: "QFP7JRDS03",
-    priceCurrent: 59.9,
-    priceOriginal: 72.8,
-    discountPercent: 18,
-    // En rupture sur aimezlanature.fr (relevé le 2026-07-22). Le schema envoie
-    // donc OutOfStock à Google : annoncer un produit disponible qu'on ne peut
-    // pas livrer dégrade la fiche marchand et trompe l'acheteur.
-    inStock: false,
-    quantity: 100,
-    includesBottle: true,
-    // Aucun avis client à ce jour (vérifié sur aimezlanature.fr le 2026-07-20) :
-    // pas de note affichée ni d'aggregateRating dans le schema.
-    description: `Le Pack Gourde regroupe notre Pack 100 Perles de Céramique EM® et la Gourde Écologique en verre double paroi conçue pour accueillir les perles. Le duo parfait pour boire une eau purifiée, sans plastique, à la maison comme en déplacement.
-
-La gourde de 500 ml est en verre borosilicate double paroi, sans plastique au contact de l'eau, avec un compartiment intégré qui reçoit directement les perles. Plus besoin de cartouche à remplacer : les perles se régénèrent par simple ébullition.
-
-Avec 100 perles, vous équipez la gourde et gardez de quoi traiter une carafe, une bouilloire ou un lave-vaisselle en parallèle. C'est la formule la plus complète de la gamme.
-
-Emballage biodégradable, sans plastique.`,
-    usages: ["Gourde sport", "Usage quotidien", "Voyage", "Bureau"],
-    qa: [
-      {
-        question: "La gourde est-elle compatible avec d'autres marques de perles ?",
-        answer: "La gourde est conçue pour accueillir des perles de 6 à 10 mm de diamètre. Elle est optimisée pour nos Perles de Céramique EM® mais peut techniquement accueillir des perles de taille similaire.",
-      },
-      {
-        question: "Quelle différence avec la Gourde Écologique vendue seule ?",
-        answer: "C'est la même gourde 500 ml. Le Pack Gourde y ajoute 100 perles de céramique EM®, de quoi équiper la gourde et traiter en plus une carafe ou une bouilloire. Si vous avez déjà des perles, la gourde seule à 29,90 € suffit.",
-      },
-      {
-        question: "Combien de perles mettre dans la gourde ?",
-        answer: "Comptez 8 à 10 perles pour une gourde de 500 ml, à raison de 15 perles par litre. Les perles restantes du pack équipent une carafe, une bouilloire ou votre lave-vaisselle.",
-      },
-    ],
-    metaTitle: "Pack Gourde + 100 Perles EM® — 59,90 € | Aimez la Nature",
-    metaDescription: "Gourde écologique 500 ml en verre + 100 Perles de Céramique EM® japonaises. Eau pure en déplacement, zéro plastique. Livraison offerte dès 50 €.",
-  },
-  {
-    slug: "gourde-ecologique",
-    name: "Gourde Écologique avec Perles de Céramique EM®",
-    shortName: "Gourde Écologique",
-    sku: "ALN-EM-GOURDE-500",
-    priceCurrent: 29.9,
-    priceOriginal: 39.9,
-    discountPercent: 25,
-    inStock: true,
-    includesBottle: true,
-    description: `La Gourde Écologique de 500 ml est pensée pour emporter votre eau purifiée partout : au bureau, en voyage, au sport. Elle est livrée avec des Perles de Céramique EM® logées dans son compartiment intégré.
-
-Le corps est en verre borosilicate double paroi : aucun plastique au contact de l'eau, pas de goût parasite, et une paroi isolante qui garde la boisson à température plus longtemps. Le bouchon et la base sont protégés par un revêtement antidérapant.
-
-Le compartiment inférieur reçoit les perles et les maintient en place quand vous buvez. Comme pour tous nos formats, les perles se régénèrent par ébullition de 10 à 15 minutes tous les 3 à 6 mois — rien à racheter.
-
-Vous avez déjà des perles ? Cette gourde seule vous suffit. Sinon, le Pack Gourde ajoute 100 perles pour équiper aussi votre carafe ou votre bouilloire.`,
-    usages: ["Gourde 500 ml", "Bureau", "Voyage", "Sport"],
-    qa: [
-      {
-        question: "Combien de perles sont fournies avec la gourde ?",
-        answer: "La gourde est livrée avec des perles de céramique EM® pour son compartiment. Si vous souhaitez en équiper d'autres contenants (carafe, bouilloire, lave-vaisselle), choisissez plutôt le Pack Gourde qui inclut 100 perles.",
-      },
-      {
-        question: "Quelle est la contenance de la gourde ?",
-        answer: "500 ml, un format qui tient dans un sac et dans la plupart des porte-gobelets. À 15 perles par litre, comptez 8 à 10 perles pour ce volume.",
-      },
-      {
-        question: "La gourde est-elle en plastique ?",
-        answer: "Non. Le corps est en verre borosilicate double paroi : aucun plastique n'est en contact avec votre eau. C'est cohérent avec notre objectif — remplacer les bouteilles plastique, pas les déplacer.",
-      },
-      {
-        question: "Peut-on mettre une boisson chaude dedans ?",
-        answer: "Le verre borosilicate double paroi supporte les liquides chauds et isole la main. Évitez cependant les chocs thermiques brutaux (eau bouillante dans une gourde sortie du réfrigérateur).",
-      },
-      {
-        question: "Comment nettoyer la gourde ?",
-        answer: "À la main, à l'eau tiède savonneuse, en retirant les perles au préalable. Les perles, elles, se régénèrent séparément par ébullition 10 à 15 minutes tous les 3 à 6 mois.",
-      },
-    ],
-    metaTitle: "Gourde Écologique 500 ml avec Perles de Céramique EM® — 29,90€",
-    metaDescription: "Gourde filtrante 500 ml en verre double paroi avec Perles de Céramique EM®. Zéro plastique au contact de l'eau, perles régénérables. Livraison offerte dès 50 €.",
-  },
-];
+/** Prix d'entrée de gamme (produits en stock), formaté « 19,90 € ». Pour les « dès … ». */
+export const prixDEntree = (): string => {
+  const enVente = products.filter((p) => p.inStock).map((p) => p.priceCurrent);
+  return `${Math.min(...enVente).toFixed(2).replace('.', ',')} €`;
+};
 
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
+const reglages = (await getEntry('reglages', 'reglages'))!.data;
+
+/** « a », « a ou b », « a, b ou c » : UN seul de ces produits suffit. */
+function auChoix(liste: string[]): string {
+  return liste.length < 2 ? (liste[0] ?? '') : `${liste.slice(0, -1).join(', ')} ou ${liste.at(-1)}`;
+}
+
 export const SITE = {
-  name: "Aimez la Nature",
-  url: "https://aimezlanature.fr",
-  description: "Perles de Céramique EM® japonaises pour purifier l'eau du robinet naturellement.",
+  name: reglages.nom,
+  url: reglages.url.replace(/\/$/, ''),
+  description: reglages.description,
+  /** Nombre d'avis publiés sur le site — calculé, jamais saisi à la main. */
+  totalReviews: avisPublies.length,
+  /** Note globale affichée — réglage du Studio, à garder fidèle aux avis réels. */
+  globalRating: reglages.noteGlobale,
   /**
-   * Avis clients — SOURCE DE VÉRITÉ : aimezlanature.fr (relevé le 2026-07-22).
-   *
-   * Le site en ligne affiche « 4,8/5 Avis clients » dans son bandeau. C'est
-   * cette note qui fait foi, et non la moyenne pondérée des deux fiches
-   * produit (qui donnerait 4,93) : afficher deux notes globales différentes
-   * selon la page mettrait le site en contradiction avec lui-même.
-   *
-   * Détail par produit, également relevé en ligne :
-   * Pack 55 : 4,91/5 sur 45 avis · Pack 100 : 4,94/5 sur 51 avis.
-   * Le Pack Gourde et la Gourde Écologique n'ont aucun avis.
-   *
-   * Ne pas modifier sans recompter sur aimezlanature.fr : ces valeurs sont
-   * affichées publiquement et envoyées à Google.
+   * Règles de livraison au poids (Réglages du Studio) : forfait des petits
+   * colis, seuil de poids du forfait, grille Colissimo au-delà. Source UNIQUE
+   * du calcul serveur (api/checkout.ts, via src/data/livraison.mjs) et du
+   * panier (CartDrawer → public/js/livraison.js).
    */
-  totalReviews: 96,
-  globalRating: 4.8,
-  // ⚠️ Ne PAS réintroduire de « don 2,5 % / puits » : cet engagement n'existe
-  // nulle part sur le site marchand (vérifié le 2026-07-20 et confirmé par le
-  // marchand). Il avait été inventé lors d'une session précédente et a été
-  // retiré de tout le site le 2026-07-20.
-  freeShippingThreshold: 50,
-
-  /** Année de création de la marque, communiquée par le marchand. */
-  foundingYear: 2019,
-
+  livraison: {
+    forfait: reglages.fraisDePort,
+    poidsMaxForfait: reglages.poidsMaxForfait,
+    grille: reglages.grilleColissimo,
+  },
+  /** Forfait des petits colis, en euros (alias lisible de livraison.forfait). */
+  shippingFee: reglages.fraisDePort,
   /**
-   * Preuve sociale Amazon — relevée sur la fiche produit le 2026-07-22
-   * (ASIN B09J4Y2C1H, « Aimez La Nature 100 Perles de Céramique EM® ») :
-   * 4,6/5 sur 816 commentaires.
-   *
-   * ⚠️ Ces avis sont collectés par Amazon, PAS sur ce site. Ils sont donc
-   * toujours affichés avec la mention explicite « sur Amazon » et ne sont
-   * jamais injectés dans l'aggregateRating des fiches produit : Google exige
-   * que la note publiée par une page reflète les avis collectés par cette
-   * page. Les mélanger ferait sauter les étoiles dans les résultats.
+   * Produits qui ouvrent la livraison offerte, en toutes lettres pour les
+   * textes : « le Pack 100 Perles ou le Pack Gourde » (un seul suffit). Calculé depuis les
+   * cases du Studio, jamais écrit en dur.
+   */
+  livraisonOfferteAvec: auChoix(
+    products.filter((p) => p.livraisonOfferte && p.inStock).map((p) => `le ${p.shortName}`)
+  ),
+  /** Année de création de la marque. */
+  foundingYear: reglages.anneeCreation,
+  /** Profils officiels de la marque (schema sameAs). */
+  profiles: reglages.profils ?? [],
+  /**
+   * Preuve sociale Amazon. ⚠️ Ces avis sont collectés par Amazon, PAS sur ce
+   * site : toujours affichés avec la mention « sur Amazon » et jamais injectés
+   * dans l'aggregateRating des fiches produit (règle Google).
    */
   amazon: {
-    rating: 4.6,
-    reviewCount: 816,
-    url: 'https://www.amazon.fr/Aimez-Nature-Ecologique-Purificateur-Filtration/dp/B09J4Y2C1H',
+    rating: reglages.amazon.note,
+    reviewCount: reglages.amazon.nbCommentaires,
+    url: reglages.amazon.url,
   },
 };

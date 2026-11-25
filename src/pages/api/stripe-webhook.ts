@@ -1,8 +1,13 @@
 import type { APIRoute } from 'astro';
-// Route serverless Vercel (prerender = false) : l'environnement est lu via
-// process.env — même accès que api/checkout.ts.
+// Route à la demande (prerender = false), servie par server.mjs : les secrets
+// sont lus dans process.env (variables d'environnement Coolify).
 import { verifierSignature } from '../../lib/stripe-signature';
 import { envoyerEmail, EMAIL_MARCHAND } from '../../lib/email';
+import { reserver, marquerFait, liberer, enCours, etapeFaite, noterEtape } from '../../lib/evenements-traites';
+import { MARQUE_SESSION } from '../../lib/marque-stripe';
+import { enregistrerCommande } from '../../lib/commandes';
+import { majClient } from '../../lib/clients';
+import { documentCommande, lireLivraison, numeroCommande } from '../../data/commande-doc.mjs';
 import {
   sujetCommande,
   texteCommande,
@@ -33,8 +38,25 @@ export const prerender = false;
  * parti), soit il a réussi et Stripe ne rejoue pas.
  */
 
-/** Événement traité. Les autres sont acquittés sans rien faire. */
-const EVENEMENT_ATTENDU = 'checkout.session.completed';
+/**
+ * Événements qui signifient « l'argent est arrivé ».
+ *
+ * - `checkout.session.completed` : paiement immédiat (carte, Apple Pay…).
+ * - `checkout.session.async_payment_succeeded` : paiement DIFFÉRÉ confirmé
+ *   plus tard (prélèvement SEPA, virement…). Sans lui, une commande payée par
+ *   un moyen différé n'aurait déclenché AUCUN email, ni au client ni au
+ *   marchand : la session arrive d'abord `completed` mais `unpaid`, puis cet
+ *   événement arrive quand l'argent est encaissé.
+ *
+ * Les autres événements sont acquittés sans rien faire.
+ */
+const EVENEMENTS_PAYES = new Set([
+  'checkout.session.completed',
+  'checkout.session.async_payment_succeeded',
+]);
+
+/** Paiement différé finalement refusé : rien à expédier, on le trace. */
+const EVENEMENT_ECHEC_DIFFERE = 'checkout.session.async_payment_failed';
 
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -53,7 +75,7 @@ async function lireArticles(sessionId: string, cle: string): Promise<LigneComman
   try {
     const res = await fetch(
       `https://api.stripe.com/v1/checkout/sessions/${sessionId}/line_items?limit=100`,
-      { headers: { Authorization: `Bearer ${cle}` } }
+      { headers: { Authorization: `Bearer ${cle}` }, signal: AbortSignal.timeout(10_000) }
     );
     if (!res.ok) {
       console.error('Stripe (articles):', res.status, await res.text());
@@ -72,32 +94,6 @@ async function lireArticles(sessionId: string, cle: string): Promise<LigneComman
   }
 }
 
-/**
- * Met l'adresse de livraison en forme, ligne par ligne.
- *
- * Stripe l'a déplacée de `shipping_details` vers
- * `collected_information.shipping_details` dans les versions récentes de son
- * API : on lit les deux, pour ne pas dépendre de la version configurée sur le
- * compte ni casser le jour d'une mise à jour.
- */
-function lireLivraison(session: any): { nom?: string; adresse?: string[] } {
-  const livraison = session?.collected_information?.shipping_details ?? session?.shipping_details;
-  const a = livraison?.address;
-  if (!a) return {};
-
-  const lignes = [
-    a.line1,
-    a.line2,
-    [a.postal_code, a.city].filter(Boolean).join(' '),
-    a.state,
-    a.country,
-  ]
-    .map((l: unknown) => (typeof l === 'string' ? l.trim() : ''))
-    .filter((l: string) => l.length > 0);
-
-  return { nom: livraison?.name ?? undefined, adresse: lignes.length > 0 ? lignes : undefined };
-}
-
 export const POST: APIRoute = async ({ request }) => {
   const secret: string | undefined = process.env.STRIPE_WEBHOOK_SECRET;
   const cleStripe: string | undefined = process.env.STRIPE_SECRET_KEY;
@@ -110,7 +106,13 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Corps BRUT, avant toute analyse : la signature porte sur ces octets exacts.
-  const corpsBrut = await request.text();
+  // La lecture échoue au-delà de `bodySizeLimit` (astro.config.mjs).
+  let corpsBrut: string;
+  try {
+    corpsBrut = await request.text();
+  } catch {
+    return json({ error: 'Requête trop volumineuse.' }, 413);
+  }
 
   const verdict = await verifierSignature(corpsBrut, request.headers.get('stripe-signature'), secret);
   if (!verdict.valide) {
@@ -130,16 +132,67 @@ export const POST: APIRoute = async ({ request }) => {
   // Tout autre événement est acquitté sans traitement : renvoyer une erreur
   // ferait rejouer Stripe indéfiniment pour rien, et il finirait par
   // désactiver l'endpoint.
-  if (evenement?.type !== EVENEMENT_ATTENDU) {
+  if (evenement?.type === EVENEMENT_ECHEC_DIFFERE) {
+    console.warn('Paiement différé refusé pour la session', evenement?.data?.object?.id);
+    return json({ recu: true, ignore: 'paiement différé refusé' });
+  }
+  if (!EVENEMENTS_PAYES.has(evenement?.type)) {
     return json({ recu: true, ignore: evenement?.type ?? 'inconnu' });
   }
 
   const session = evenement?.data?.object;
 
-  // Une session peut être « complète » sans être payée (paiement différé).
+  // Événement d'un autre MODE que la clé du serveur (test reçu par la prod ou
+  // l'inverse) : la session est introuvable avec cette clé, la lecture des
+  // articles échouerait et Stripe rejouerait pour rien pendant trois jours.
+  const cleEnLigne = /^(sk|rk)_live_/.test(cleStripe);
+  if (typeof evenement?.livemode === 'boolean' && evenement.livemode !== cleEnLigne) {
+    console.warn('Événement Stripe ignoré : mode', evenement.livemode ? 'live' : 'test', 'différent de la clé.');
+    return json({ recu: true, ignore: 'mode différent' });
+  }
+
+  // Session créée par CE site ? /api/checkout pose la marque `metadata.source`.
+  // Une session sans marque (lien de paiement, facture, autre outil branché
+  // sur le même compte Stripe) déclencherait sinon un email « commande
+  // confirmée » du site. TRANSITOIRE : on ne fait que le signaler, pour ne pas
+  // perdre les commandes en cours au moment de la bascule (sessions créées par
+  // l'ancien site, valables 24 h). À passer en refus un mois après le jour J
+  // (tasks/todo.md).
+  if (session?.metadata?.source !== MARQUE_SESSION) {
+    console.warn('Session Stripe sans marque du site :', session?.id);
+  }
+
+  // Une session peut être « complète » sans être payée (paiement différé) :
+  // l'email partira alors à la réception de `async_payment_succeeded`.
   if (session?.payment_status !== 'paid') {
     return json({ recu: true, ignore: 'paiement non abouti' });
   }
+
+  // Anti-doublon : Stripe peut livrer deux fois le même événement.
+  const idEvenement = String(evenement?.id ?? '');
+  if (idEvenement && !reserver(idEvenement)) {
+    // Encore EN COURS (Stripe a relancé avant notre réponse) : surtout pas de
+    // 200, sinon Stripe tiendrait l'événement pour livré alors que le premier
+    // essai peut encore échouer — et la confirmation serait perdue. 409 :
+    // Stripe réessaiera plus tard (ré-audit du 2026-11-24).
+    if (enCours(idEvenement)) return json({ error: 'Traitement en cours.' }, 409);
+    return json({ recu: true, ignore: 'déjà traité' });
+  }
+  try {
+    const reponse = await traiterCommande(session, cleStripe);
+    if (idEvenement) {
+      if (reponse.ok) marquerFait(idEvenement);
+      else liberer(idEvenement);
+    }
+    return reponse;
+  } catch (e) {
+    if (idEvenement) liberer(idEvenement);
+    throw e;
+  }
+};
+
+/** Envoie les emails d'une commande payée. Renvoie la réponse à faire à Stripe. */
+async function traiterCommande(session: any, cleStripe: string): Promise<Response> {
 
   const email: string | undefined = session?.customer_details?.email;
   if (!email) {
@@ -169,27 +222,62 @@ export const POST: APIRoute = async ({ request }) => {
     telephone: session?.customer_details?.phone ?? undefined,
     adresse: livraison.adresse,
     reference: String(session.id),
+    revendeur: Boolean(session?.metadata?.revendeur),
+    numero: numeroCommande(String(session.id)),
   };
+
+  // ── 0. La fiche « Commandes » du Studio (statut « À expédier ») ────────
+  // createIfNotExists : un rejeu ne crée pas de doublon. Un échec n'arrête
+  // rien (journal seulement) : la commande reste dans Stripe et dans l'email
+  // au marchand.
+  const cleFiche = `fiche:${session.id}`;
+  if (!etapeFaite(cleFiche)) {
+    let fiche: ReturnType<typeof documentCommande> | null = null;
+    try {
+      fiche = documentCommande(session, articles);
+    } catch (e: any) {
+      console.error('[commandes] fiche impossible pour', session.id, '-', e?.message ?? e);
+    }
+    if (fiche && (await enregistrerCommande(fiche))) noterEtape(cleFiche);
+  }
+
+  // ── 0 bis. La fiche « Clients » (créée ou complétée) ──────────────────
+  // Notée comme faite pour ne pas compter deux fois la commande si Stripe
+  // rejoue l'événement. Échec → journal seulement.
+  const cleClient = `client:${session.id}`;
+  if (!etapeFaite(cleClient)) {
+    try {
+      if (await majClient(documentCommande(session, articles))) noterEtape(cleClient);
+    } catch (e: any) {
+      console.error('[clients] fiche client impossible pour', session.id, '-', e?.message ?? e);
+    }
+  }
 
   // ── 1. Le marchand, pour qu'il prépare le colis ────────────────────────
   // Un échec ici n'interrompt PAS le traitement et ne renvoie pas d'erreur :
   // sinon Stripe rejouerait et le client recevrait deux confirmations. La
   // commande reste de toute façon visible dans le tableau de bord Stripe,
-  // et l'incident est tracé dans les logs.
-  const versMarchand = await envoyerEmail({
-    to: EMAIL_MARCHAND,
-    replyTo: email,
-    subject: sujetMarchand(commande),
-    text: texteMarchand(commande),
-    html: htmlMarchand(commande),
-  });
-  if (!versMarchand.ok) {
-    console.error(
-      'Notification marchand NON envoyée pour la session',
-      session.id,
-      '- raison:',
-      versMarchand.raison
-    );
+  // et l'incident est tracé dans les logs. Une fois partie, la notification
+  // n'est plus renvoyée lors des rejeux (voir `etapeFaite`).
+  const cleMarchand = `marchand:${session.id}`;
+  if (!etapeFaite(cleMarchand)) {
+    const versMarchand = await envoyerEmail({
+      to: EMAIL_MARCHAND,
+      replyTo: email,
+      subject: sujetMarchand(commande),
+      text: texteMarchand(commande),
+      html: htmlMarchand(commande),
+    });
+    if (versMarchand.ok) {
+      noterEtape(cleMarchand);
+    } else {
+      console.error(
+        'Notification marchand NON envoyée pour la session',
+        session.id,
+        '- raison:',
+        versMarchand.raison
+      );
+    }
   }
 
   // ── 2. Le client, en DERNIER ───────────────────────────────────────────
@@ -202,11 +290,11 @@ export const POST: APIRoute = async ({ request }) => {
   });
 
   if (!versClient.ok) {
-    // 500 : Stripe rejouera, et l'email partira au prochain essai. Le marchand
-    // recevra alors un doublon de notification — gênant, jamais bloquant.
+    // 500 : Stripe rejouera, et l'email partira au prochain essai. La
+    // notification marchand, déjà partie, ne sera pas renvoyée.
     return json({ error: "Envoi de la confirmation échoué." }, 500);
   }
 
   console.log('Confirmation de commande envoyée pour la session', session.id);
   return json({ recu: true });
-};
+}

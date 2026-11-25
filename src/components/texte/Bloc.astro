@@ -1,0 +1,14 @@
+---
+// Paragraphe ou intertitre d'un texte riche venant de Sanity. Seuls les
+// styles autorisés par le Studio existent ici (paragraphe, h3) : un style
+// inconnu est rendu en paragraphe plutôt que de casser la page.
+import type { BlockProps } from 'astro-portabletext/types';
+type Props = BlockProps;
+const { node } = Astro.props;
+---
+
+{node.style === 'h3' ? (
+  <h3 class="font-display text-2xl text-encre mt-8 mb-3"><slot /></h3>
+) : (
+  <p class="text-gris leading-relaxed mb-5"><slot /></p>
+)}

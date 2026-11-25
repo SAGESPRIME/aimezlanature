@@ -1,0 +1,20 @@
+{
+  "name": "Aimez la Nature — Perles de Céramique EM®",
+  "short_name": "Aimez la Nature",
+  "description": "Perles de Céramique EM® japonaises pour une eau du robinet plus douce.",
+  "lang": "fr",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF5",
+  "theme_color": "#BBE12C",
+  "icons": [
+    { "src": "/icons/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Nos perles", "url": "/perles-ceramique-em/", "icons": [{ "src": "/icons/icone-192.png", "sizes": "192x192" }] },
+    { "name": "Mon panier", "url": "/panier/", "icons": [{ "src": "/icons/icone-192.png", "sizes": "192x192" }] }
+  ]
+}

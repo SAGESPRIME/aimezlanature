@@ -1,5 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { HEBERGEUR } from '../data/hebergeur';
+import { creditsAffiches } from '../data/photosSite';
+import EnTetePage from '../components/EnTetePage.astro';
+
+const credits = creditsAffiches();
 
 const metaTitle = 'Mentions légales | Aimez la Nature';
 const metaDescription =
@@ -7,21 +12,16 @@ const metaDescription =
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription}>
-  <section class="bg-[#F5F0E8] px-4 pt-12 pb-14">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-xs tracking-[0.3em] uppercase text-[#6E5330] mb-4">Informations légales</p>
-      <h1 class="font-display text-4xl lg:text-5xl text-[#1A1A16] leading-[1.1]">
-        Mentions légales
-      </h1>
-    </div>
-  </section>
+  <EnTetePage surTitre="Informations légales">
+    <Fragment slot="titre">Mentions légales</Fragment>
+  </EnTetePage>
 
-  <section class="py-16 px-4 bg-white" aria-labelledby="mentions-titre">
-    <div class="max-w-3xl mx-auto space-y-10 text-[#57534e] leading-relaxed">
+  <section class="py-16 lg:py-20 px-4 sm:px-6 bg-white" aria-labelledby="mentions-titre">
+    <div class="max-w-3xl mx-auto space-y-10 text-gris leading-relaxed">
       <div>
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Éditeur du site</h2>
+        <h2 class="font-display text-2xl text-foret mb-3">Éditeur du site</h2>
         <p>
-          Le site aimezlanature.fr est édité par <strong class="text-[#1A1A16]">SAS Naturalis Vert</strong>,
+          Le site aimezlanature.fr est édité par <strong class="text-encre">SAS Naturalis Vert</strong>,
           société par actions simplifiée dont le siège social est situé au 145 rue de Noisy-le-Sec,
           CS 20008, 93260 Les Lilas cedex, France.
         </p>
@@ -32,53 +32,88 @@ const metaDescription =
       </div>
 
       <div>
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Responsable de publication</h2>
+        <h2 class="font-display text-2xl text-foret mb-3">Responsable de publication</h2>
         <p>
-          Responsable de la publication et webmaster : M. Chappellier.
-          Représentant légal de la société : M. Saddiki.
+          Responsable de la publication et webmaster : M. Chappellier,
+          représentant légal de la société.
         </p>
         <p class="mt-2">
-          Contact : <a href="mailto:contact@aimezlanature.fr" class="text-[#166534] font-semibold hover:underline">contact@aimezlanature.fr</a>
-          — +33 1 84 80 15 22.
+          Contact : <a href="mailto:contact@aimezlanature.fr" class="text-foret font-semibold hover:underline">contact@aimezlanature.fr</a>.
         </p>
       </div>
 
       <div>
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Hébergement</h2>
-        <!-- Hébergeur mis à jour le 2026-07-30 : le site quitte Hostinger pour
-             Vercel. C'est une mention obligatoire (article 6 III de la LCEN),
-             laisser l'ancien hébergeur serait une information fausse. -->
-        <p>
-          Le site est hébergé par Vercel Inc., 440 N Barranca Ave #4133, Covina,
-          CA 91723, États-Unis —
-          <a href="https://vercel.com/contact" class="text-[#166534] font-semibold hover:underline" rel="nofollow">vercel.com/contact</a>.
+        <h2 class="font-display text-2xl text-foret mb-3">Hébergement</h2>
+        {/* Mention obligatoire (article 6 III de la LCEN). Source unique :
+            src/data/hebergeur.ts. Le marqueur data-a-completer bloque le
+            démarrage du serveur en production tant qu'il est présent. */}
+        <p data-a-completer={HEBERGEUR.aCompleter ? 'hebergeur' : undefined}>
+          Le site est hébergé par {HEBERGEUR.nom}, {HEBERGEUR.adresse}
+          {HEBERGEUR.telephone && <> — {HEBERGEUR.telephone}</>}
+          {HEBERGEUR.site && <> — <a href={HEBERGEUR.site} class="text-foret font-semibold hover:underline" rel="nofollow">{HEBERGEUR.site.replace(/^https?:\/\//, '')}</a></>}.
         </p>
       </div>
 
       <div>
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Propriété intellectuelle</h2>
+        <h2 class="font-display text-2xl text-foret mb-3">Propriété intellectuelle</h2>
         <p>
           L'ensemble des contenus présents sur ce site (textes, visuels, marque, logo) est protégé
           par le droit de la propriété intellectuelle. Toute reproduction, représentation ou
           diffusion, totale ou partielle, sans autorisation préalable de SAS Naturalis Vert est
-          interdite.
+          interdite, à l'exception des photographies d'ambiance sous licence libre listées
+          ci-dessous, qui restent la propriété de leurs auteurs.
         </p>
       </div>
 
       <div>
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Données personnelles</h2>
+        <h2 id="credits-photos" class="font-display text-2xl text-foret mb-3">Crédits photos</h2>
+        <p class="mb-3">
+          Les photos de produits sont la propriété de SAS Naturalis Vert.
+          {credits.libres.length > 0 && " Certaines photographies d'ambiance proviennent de Wikimedia Commons et sont utilisées selon leur licence Creative Commons :"}
+        </p>
+        <ul class="space-y-2 list-none p-0">
+          {credits.studio.map((c) => <li>{c}</li>)}
+          {credits.libres.map((c) => (
+            <li>
+              « <a href={c.source} rel="noopener" class="underline underline-offset-2 hover:text-foret">{c.titre}</a> »,
+              {' '}{c.auteur},{' '}
+              <a href={c.urlLicence} rel="noopener license" class="underline underline-offset-2 hover:text-foret">{c.licence}</a>
+              {c.modifiee && ' (recadrée)'}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-foret mb-3">Données personnelles</h2>
         <p>
           Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi
           Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, de
           suppression et de portabilité de vos données personnelles. Pour l'exercer, contactez
-          notre délégué à la protection des données :
-          <a href="mailto:contact@aimezlanature.fr" class="text-[#166534] font-semibold hover:underline">contact@aimezlanature.fr</a>
+          notre délégué à la protection des données :{' '}
+          <a href="mailto:contact@aimezlanature.fr" class="text-foret font-semibold hover:underline">contact@aimezlanature.fr</a>
           (SAS Naturalis Vert, 145 rue de Noisy-le-Sec, 93260 Les Lilas).
+        </p>
+        <p class="mt-3">
+          Lors d'une commande, vos nom, email, téléphone, adresse de livraison et le détail de la
+          commande sont traités pour l'exécuter et la suivre : par Stripe (paiement), par Sanity
+          (fiche de commande, accessible uniquement à notre équipe) et par Emailit (emails de
+          confirmation et de suivi). Ils sont conservés le temps nécessaire au suivi de la
+          commande et au respect de nos obligations légales, notamment comptables.
+        </p>
+        <p class="mt-3">
+          Nous tenons aussi un fichier clients (Sanity, accessible uniquement à notre équipe) :
+          email, nom, ville, code postal, pays, nombre, dates et montants de vos commandes. Il sert
+          au service client, à reconnaître nos clients fidèles et à vous envoyer des informations
+          sur des produits analogues à ceux que vous avez achetés, pendant 3 ans après votre
+          dernier achat. Chaque email contient un lien de désinscription ; vous pouvez aussi vous
+          désinscrire à tout moment en écrivant à
+          <a href="mailto:contact@aimezlanature.fr" class="text-foret font-semibold hover:underline">contact@aimezlanature.fr</a>.
         </p>
       </div>
 
       <div>
-        <h2 id="cookies" class="font-display text-2xl text-[#1A1A16] mb-3">Cookies</h2>
+        <h2 id="cookies" class="font-display text-2xl text-foret mb-3">Cookies</h2>
         <p>
           <strong>Aucun cookie de mesure n'est déposé sans votre accord.</strong> À votre première
           visite, un bandeau vous demande si vous acceptez les cookies publicitaires de Google Ads.
@@ -87,14 +122,14 @@ const metaDescription =
         </p>
         <table class="w-full text-sm mt-4 mb-4">
           <thead>
-            <tr class="border-b border-[#D4C9B8] text-left">
+            <tr class="border-b border-pierre text-left">
               <th class="py-2 pr-3 font-semibold">Cookie</th>
               <th class="py-2 pr-3 font-semibold">Finalité</th>
               <th class="py-2 font-semibold">Durée</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="border-b border-[#D4C9B8]/50">
+            <tr class="border-b border-pierre/50">
               <td class="py-2 pr-3 align-top">Choix de consentement</td>
               <td class="py-2 pr-3 align-top">
                 Mémoriser votre réponse au bandeau, pour ne pas vous la redemander. Stocké dans
@@ -102,7 +137,7 @@ const metaDescription =
               </td>
               <td class="py-2 align-top">6 mois</td>
             </tr>
-            <tr class="border-b border-[#D4C9B8]/50">
+            <tr class="border-b border-pierre/50">
               <td class="py-2 pr-3 align-top">Panier</td>
               <td class="py-2 pr-3 align-top">
                 Conserver les articles que vous avez ajoutés. Stocké dans votre navigateur,
@@ -130,7 +165,7 @@ const metaDescription =
       </div>
 
       <div>
-        <h2 class="font-display text-2xl text-[#1A1A16] mb-3">Droit applicable et juridiction</h2>
+        <h2 class="font-display text-2xl text-foret mb-3">Droit applicable et juridiction</h2>
         <p>
           Les présentes mentions légales sont soumises au droit français. Tout litige relatif à
           l'utilisation du site relève de la compétence des tribunaux de Versailles.

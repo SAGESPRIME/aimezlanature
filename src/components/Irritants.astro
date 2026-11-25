@@ -19,36 +19,32 @@
  */
 const irritants = [
   {
-    num: '01',
     titre: 'Le goût et l’odeur',
     texte: 'Une présence de chlore qui coupe l’envie de se servir un verre au robinet.',
   },
   {
-    num: '02',
     titre: 'Les packs à porter',
     texte: 'Du poids, de la place perdue, et la corvée qui recommence chaque semaine.',
   },
   {
-    num: '03',
     titre: 'Le plastique jetable',
     texte: 'Des bouteilles vides qui s’accumulent bien plus vite qu’on ne le voudrait.',
   },
   {
-    num: '04',
     titre: 'Les dépôts visibles',
     texte: 'Le tartre au fond de la bouilloire et sur la résistance de la cafetière.',
   },
 ];
 ---
 
-<section class="bg-white px-4 py-20" aria-labelledby="irritants-titre">
+<section class="bg-white px-4 sm:px-6 py-20 lg:py-28 border-y border-ligne" aria-labelledby="irritants-titre">
   <div class="mx-auto max-w-6xl">
     <div class="max-w-2xl">
-      <p class="mb-3 text-xs uppercase tracking-[0.3em] text-[#6E5330]">Le constat</p>
-      <h2 id="irritants-titre" class="font-display mb-5 text-3xl text-[#1A1A16] lg:text-4xl">
+      <p class="mb-3 text-sm text-olive">Le constat</p>
+      <h2 id="irritants-titre" class="font-display mb-4 text-4xl text-foret lg:text-5xl">
         Le problème n’est pas l’eau
       </h2>
-      <p class="text-lg leading-relaxed text-[#57534e]">
+      <p class="text-lg leading-relaxed text-gris">
         C’est tout ce qui finit par vous faire préférer la bouteille.
       </p>
     </div>
@@ -56,16 +52,14 @@ const irritants = [
     <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       {irritants.map((i) => (
         <div>
-          <p class="font-display text-3xl font-bold leading-none text-[#9C8358]" aria-hidden="true">
-            {i.num}
-          </p>
-          <h3 class="mt-3 font-semibold text-[#1A1A16]">{i.titre}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-[#57534e]">{i.texte}</p>
+          <span class="block h-1 w-10 rounded-full bg-anis" aria-hidden="true"></span>
+          <h3 class="mt-4 font-semibold text-encre">{i.titre}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-gris">{i.texte}</p>
         </div>
       ))}
     </div>
 
-    <p class="mt-12 border-l-2 border-[#A8C4A0] pl-5 text-lg leading-relaxed text-[#1A1A16]">
+    <p class="mt-12 border-l-2 border-anis pl-5 text-lg leading-relaxed text-encre">
       Et si la réponse n’était pas un appareil de plus, mais simplement un geste à adopter ?
     </p>
   </div>

@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-// Route serverless Vercel (prerender = false) : l'environnement est lu via
-// process.env — même accès que api/checkout.ts et api/revendeur.ts.
+// Route à la demande (prerender = false), servie par server.mjs : les secrets
+// sont lus dans process.env (variables d'environnement Coolify).
 import { CHAMPS_AVIS, LIMITES_AVIS, TEXTE_MINIMUM, EMAIL_AVIS } from '../../data/avis';
 import { products } from '../../data/products';
 import {
@@ -52,12 +52,21 @@ function pageErreur(message: string, status: number): Response {
   });
 }
 
+/** Résultat de la vérification d'achat. */
+type Achat = 'produit' | 'autre-produit' | 'aucun' | null;
+
 /**
- * Vérifie chez Stripe qu'une commande payée existe pour cet email.
+ * Vérifie chez Stripe qu'une commande payée existe pour cet email ET qu'elle
+ * contient le produit avisé.
  *
- * Retourne `true` (achat confirmé), `false` (aucune commande payée) ou `null`
- * (vérification impossible : clé absente, Stripe injoignable, réponse
- * inattendue).
+ * Retourne `'produit'` (achat de CE produit confirmé), `'autre-produit'`
+ * (commande payée, mais pas de ce produit), `'aucun'` (aucune commande payée)
+ * ou `null` (vérification impossible : Stripe injoignable, réponse inattendue).
+ *
+ * Le produit est reconnu par son nom : c'est le `name` que /api/checkout pose
+ * sur chaque ligne Stripe, et que Stripe renvoie en `description`. Avant
+ * l'audit du 2026-11-24, n'importe quelle commande payée suffisait, quel que
+ * soit le produit avisé.
  *
  * ⚠️ Le `null` est traité comme un REFUS par l'appelant, jamais comme un
  * accord. Publier un avis sous le badge « Achat vérifié » sans avoir pu
@@ -65,7 +74,7 @@ function pageErreur(message: string, status: number): Response {
  * de la consommation) et ferait sauter les étoiles Google sur tout le site.
  * En cas de panne, mieux vaut un client qui écrit un email qu'un badge faux.
  */
-async function achatConfirme(email: string, cle: string): Promise<boolean | null> {
+async function achatConfirme(email: string, nomProduit: string, cle: string): Promise<Achat> {
   // Filtre officiel de l'API « List Checkout Sessions ». `status=complete`
   // écarte les paniers abandonnés ; `payment_status` est revérifié ensuite car
   // une session complète peut rester impayée (paiement différé).
@@ -73,11 +82,13 @@ async function achatConfirme(email: string, cle: string): Promise<boolean | null
     'customer_details[email]': email,
     status: 'complete',
     limit: '100',
+    'expand[]': 'data.line_items',
   });
 
   try {
     const res = await fetch(`https://api.stripe.com/v1/checkout/sessions?${params}`, {
       headers: { Authorization: `Bearer ${cle}` },
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!res.ok) {
@@ -92,14 +103,19 @@ async function achatConfirme(email: string, cle: string): Promise<boolean | null
       console.error('Stripe : réponse inattendue à la vérification d\'achat.');
       return null;
     }
-    return data.data.some((s: any) => s?.payment_status === 'paid');
+    const payees = data.data.filter((s: any) => s?.payment_status === 'paid');
+    if (payees.length === 0) return 'aucun';
+    const contientProduit = payees.some((s: any) =>
+      (s?.line_items?.data ?? []).some((l: any) => l?.description === nomProduit)
+    );
+    return contientProduit ? 'produit' : 'autre-produit';
   } catch (e) {
     console.error('Stripe injoignable (vérification avis):', e);
     return null;
   }
 }
 
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request }) => {
   const veutJson = (request.headers.get('accept') ?? '').includes('application/json');
 
   const succes = () =>
@@ -107,7 +123,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       ? new Response(JSON.stringify({ ok: true }), {
           headers: { 'Content-Type': 'application/json' },
         })
-      : Response.redirect(new URL('/avis/merci/', url.origin), 303);
+      : new Response(null, { status: 303, headers: { Location: '/avis/merci/' } });
 
   const echec = (message: string, status: number) =>
     veutJson
@@ -181,32 +197,54 @@ export const POST: APIRoute = async ({ request, url }) => {
     );
   }
 
-  const verifie = await achatConfirme(donnees.email, cleStripe);
+  void traiterAvis({ donnees, produit, note }, cleStripe).catch((e) =>
+    console.error('Avis : échec inattendu du traitement en arrière-plan', e)
+  );
+  return succes();
+};
+
+/** Données d'un avis validé, pour la vérification en arrière-plan. */
+interface AvisValide {
+  donnees: { titre: string; texte: string; auteur: string; email: string };
+  produit: { name: string; slug: string; shortName: string };
+  note: number;
+}
+
+/**
+ * Vérifie l'achat chez Stripe, puis notifie le marchand — APRÈS la réponse
+ * au visiteur.
+ *
+ * ⚠️ POURQUOI EN ARRIÈRE-PLAN. Tout ce qui dépend de l'email saisi doit
+ * rester invisible pour celui qui envoie le formulaire, sinon n'importe qui
+ * peut savoir si une personne est cliente :
+ *   - audit du 2026-11-24 : un 403 « aucune commande payée pour cet email » ;
+ *   - ré-audit, même jour : un 502/503 quand l'email marchand échouait (cas
+ *     réservé aux clients), puis le TEMPS de réponse, qui incluait la
+ *     recherche Stripe (plus lente quand l'email a des commandes).
+ * La réponse part donc dès que le formulaire est valide, toujours la même.
+ * Le serveur est un processus Node durable : ce travail aboutit après la
+ * réponse. Tout échec laisse l'avis au journal (sans l'email du client),
+ * pour être recopié à la main.
+ */
+async function traiterAvis({ donnees, produit, note }: AvisValide, cleStripe: string): Promise<void> {
+  const aRecopier = () =>
+    JSON.stringify({ produit: produit.slug, note, titre: donnees.titre, texte: donnees.texte, auteur: donnees.auteur });
+  const verifie = await achatConfirme(donnees.email, produit.name, cleStripe);
   if (verifie === null) {
-    return echec(
-      "Nous n'avons pas pu vérifier votre commande pour le moment. Réessayez dans quelques minutes.",
-      503
-    );
+    // Stripe indisponible : l'avis n'est pas perdu, il reste au journal.
+    console.error('Avis NON vérifié (Stripe indisponible) — à traiter à la main :', aRecopier());
+    return;
   }
-  if (verifie === false) {
-    return echec(
-      "Aucune commande payée n'est associée à cette adresse email. Utilisez l'adresse saisie lors de votre achat — les avis de ce site sont réservés aux clients vérifiés.",
-      403
-    );
+  // Un avis non vérifié n'est simplement pas transmis ; la page de
+  // remerciement invite le client qui s'est trompé d'adresse à écrire au
+  // marchand. Le journal ne garde pas l'email (donnée personnelle).
+  if (verifie !== 'produit') {
+    console.log(`Avis non transmis (${verifie}) pour le produit ${produit.slug}.`);
+    return;
   }
 
   // ── Notification du marchand ───────────────────────────────────────────
   const aujourdhui = new Date().toISOString().slice(0, 10);
-
-  // Ligne prête à coller dans src/data/reviews.ts après relecture.
-  // `JSON.stringify` gère seul les apostrophes, guillemets et retours à la
-  // ligne : pas d'échappement à la main, donc pas de fichier cassé au collage.
-  const ligneReviews =
-    `    { author: ${JSON.stringify(donnees.auteur)}, ` +
-    `date: ${JSON.stringify(aujourdhui)}, ` +
-    `rating: ${note}, ` +
-    `title: ${donnees.titre ? JSON.stringify(donnees.titre) : 'null'}, ` +
-    `text: ${JSON.stringify(donnees.texte)} },`;
 
   const lignes: [string, string][] = [
     ['Produit', `${produit.name} (${produit.slug})`],
@@ -214,16 +252,24 @@ export const POST: APIRoute = async ({ request, url }) => {
     ['Titre', donnees.titre || '—'],
     ['Avis', donnees.texte],
     ['Nom affiché', donnees.auteur],
+    ['Date', aujourdhui],
     ['Email (NE PAS publier)', donnees.email],
-    ['Achat', 'Vérifié via Stripe — commande payée trouvée pour cet email'],
+    ['Achat', 'Commande payée de CE produit trouvée chez Stripe pour cet email'],
+    [
+      'À savoir',
+      "Le site ne prouve pas que l'auteur possède cette adresse. En cas de doute (avis " +
+        "très négatif, nom sans rapport avec la commande), répondre à ce message avant de publier.",
+    ],
   ];
 
-  const texte = [
-    ...lignes.map(([k, v]) => `${k} : ${v}`),
-    '',
-    `À coller dans src/data/reviews.ts, tableau '${produit.slug}' :`,
-    ligneReviews,
-  ].join('\n');
+  // Marche à suivre : l'avis se publie dans le Studio Sanity. La note moyenne
+  // et le nombre d'avis du produit se recalculent seuls à la reconstruction.
+  const consigne =
+    `Pour le publier : Studio Sanity → Avis clients → Créer, puis recopier ` +
+    `TEL QUEL produit, nom affiché, date, note, titre et texte (jamais l'email), ` +
+    `et cliquer « Publier ». La note du produit se met à jour automatiquement.`;
+
+  const texte = [...lignes.map(([k, v]) => `${k} : ${v}`), '', consigne].join('\n');
 
   const html =
     `<h2>Nouvel avis à modérer — ${echapperHtml(produit.name)}</h2>` +
@@ -233,11 +279,7 @@ export const POST: APIRoute = async ({ request, url }) => {
           `<tr><td valign="top"><strong>${echapperHtml(k)}</strong></td><td>${echapperHtml(v).replace(/\n/g, '<br>')}</td></tr>`
       )
       .join('')}</table>` +
-    `<p><strong>Si vous publiez cet avis</strong>, collez cette ligne dans ` +
-    `<code>src/data/reviews.ts</code>, tableau <code>${echapperHtml(produit.slug)}</code> :</p>` +
-    `<pre>${echapperHtml(ligneReviews)}</pre>` +
-    `<p>Pensez à mettre à jour <code>rating</code> et <code>reviewCount</code> du produit ` +
-    `dans <code>products.ts</code>, ainsi que <code>totalReviews</code> dans <code>SITE</code>.</p>`;
+    `<p><strong>Si vous publiez cet avis</strong> : ${echapperHtml(consigne)}</p>`;
 
   const envoi = await envoyerEmail({
     to: EMAIL_AVIS,
@@ -248,12 +290,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     text: texte,
     html,
   });
-
   if (!envoi.ok) {
-    return envoi.raison === 'config'
-      ? echec("Notre service d'envoi n'est pas encore activé.", 503)
-      : echec("L'envoi a échoué.", 502);
+    console.error(`Avis vérifié NON transmis au marchand (${envoi.raison}) — à recopier :`, aRecopier());
   }
-
-  return succes();
-};
+}

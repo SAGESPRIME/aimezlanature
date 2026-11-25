@@ -1,0 +1,61 @@
+---
+/**
+ * Carte produit (accueil, collection, « Les autres packs » de la fiche).
+ *
+ * Photo sur fond blanc, badge, nom, accroche, prix et note. Prix, prix barré
+ * et notes viennent TOUJOURS des données (Sanity) : jamais écrits à la main.
+ * À placer dans un <li> (liste de produits).
+ */
+import { Image } from 'astro:assets';
+import type { Product } from '../data/products';
+import { getProductPhoto } from '../lib/productImages';
+import { fmtPrice } from '../lib/pricing';
+import Icon from './Icon.astro';
+
+interface Props {
+  produit: Product;
+  /** Phrase d'usage sous le nom ; par défaut, les usages Sanity du produit. */
+  accroche?: string;
+  /** Niveau du titre de la carte (h2 sur une page dont c'est le contenu principal). */
+  titre?: 'h2' | 'h3';
+}
+
+const { produit: p, accroche, titre: Titre = 'h3' } = Astro.props;
+const photo = getProductPhoto(p.slug);
+const prix = (n: number) => `${fmtPrice(n)} €`;
+const note = (n: number) => n.toString().replace('.', ',');
+const texte = accroche ?? p.usages.slice(0, 3).join(', ');
+---
+
+<a href={`/perles-ceramique-em/${p.slug}/`} class="carte-produit group block">
+  <div class="relative aspect-[4/5] bg-white rounded-md overflow-hidden border border-ligne">
+    {p.bestseller && <span class="badge-produit">Bestseller</span>}
+    {!p.inStock && <span class="badge-produit badge-epuise">Bientôt de retour</span>}
+    {photo && (
+      <Image
+        {...photo}
+        width={560}
+        height={560}
+        widths={[280, 420, 560]}
+        sizes="(min-width: 1024px) 270px, 45vw"
+        class="carte-produit-photo absolute inset-0 w-full h-full object-contain p-4 sm:p-6"
+      />
+    )}
+  </div>
+  <Titre class="font-display text-xl sm:text-2xl text-encre mt-4 mb-1 leading-tight">{p.shortName}</Titre>
+  <p class="text-sm text-gris leading-snug">{texte}</p>
+  <p class="mt-2 text-[15px] font-semibold text-encre tabular-nums">
+    {prix(p.priceCurrent)}
+    {p.priceOriginal && <s class="ml-2 font-normal text-gris">{prix(p.priceOriginal)}</s>}
+  </p>
+  {p.livraisonOfferte && p.inStock && (
+    <p class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-foret">
+      <Icon name="truck" class="w-3.5 h-3.5" /> Livraison offerte
+    </p>
+  )}
+  {p.rating && (
+    <p class="mt-1 text-xs text-gris">
+      <span class="etoiles" aria-hidden="true">★</span> {note(p.rating)}/5 · {p.reviewCount} avis
+    </p>
+  )}
+</a>

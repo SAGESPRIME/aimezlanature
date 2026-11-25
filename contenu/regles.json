@@ -1,0 +1,11 @@
+{
+  "_commentaire": "Limites partagées par le Studio Sanity (validation à la saisie), le site (validation zod au build) et scripts/check-seo.mjs. Une seule source : ne pas recopier ces nombres ailleurs.",
+  "metaTitleMax": 65,
+  "metaDescriptionMax": 160,
+  "metaDescriptionMin": 70,
+  "prixMin": 0.5,
+  "prixMax": 1000,
+  "reponseCourteMax": 320,
+  "noteMin": 1,
+  "noteMax": 5
+}

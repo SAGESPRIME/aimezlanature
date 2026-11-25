@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-// Route serverless Vercel (prerender = false) : l'environnement est lu via
-// process.env — même accès que api/checkout.ts.
+// Route à la demande (prerender = false), servie par server.mjs : les secrets
+// sont lus dans process.env (variables d'environnement Coolify).
 import {
   CHAMPS,
   CHAMP_PIEGE,
@@ -11,6 +11,7 @@ import {
 // partagée avec les autres routes, sans avoir à renommer chaque appel ici.
 import { verifierLimite, PLAFONDS } from '../../lib/rateLimit';
 import { envoyerEmail, echapperHtml as echapper } from '../../lib/email';
+import { creerCandidature } from '../../lib/pro';
 
 // Route exécutée à la demande : le reste du site reste statique.
 export const prerender = false;
@@ -67,7 +68,7 @@ function pageErreur(message: string, status: number): Response {
   });
 }
 
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request }) => {
   const veutJson = (request.headers.get('accept') ?? '').includes('application/json');
 
   const echec = (message: string, status: number) =>
@@ -101,7 +102,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       ? new Response(JSON.stringify({ ok: true }), {
           headers: { 'Content-Type': 'application/json' },
         })
-      : Response.redirect(new URL('/revendeurs/merci/', url.origin), 303);
+      : new Response(null, { status: 303, headers: { Location: '/revendeurs/merci/' } });
   }
 
   // Délai de remplissage. Absent = navigateur sans JavaScript : on laisse passer,
@@ -135,7 +136,22 @@ export const POST: APIRoute = async ({ request, url }) => {
     return echec('Le SIRET doit comporter 14 chiffres (9 pour un SIREN).', 400);
   }
 
+  // Candidature enregistrée dans le Studio (Revendeurs → En attente), en
+  // document PRIVÉ. Un échec n'empêche pas l'email : rien n'est perdu.
+  let enregistree = false;
+  try {
+    enregistree = Boolean(await creerCandidature(donnees));
+  } catch (e: any) {
+    console.error('[revendeur] candidature non enregistrée :', e?.message ?? e);
+  }
+
   const lignes: [string, string][] = [
+    [
+      'Validation',
+      enregistree
+        ? 'Candidature enregistrée dans le Studio (Revendeurs → En attente). Passez-la à « Validé » : le revendeur recevra son lien de commande (−30 %, minimum 300 €).'
+        : "Candidature NON enregistrée dans le Studio (configuration à vérifier) : répondez directement au professionnel.",
+    ],
     ['Boutique', donnees.boutique],
     ['Contact', donnees.contact],
     ['Email', donnees.email],
@@ -159,7 +175,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     // `replyTo` = le professionnel : le marchand répond directement
     // depuis sa boîte, sans recopier l'adresse.
     replyTo: donnees.email,
-    subject: `Demande revendeur — ${donnees.boutique}`,
+    // Jamais de retour à la ligne dans un sujet d'email.
+    subject: `Demande revendeur — ${donnees.boutique.replace(/[\r\n\t]+/g, ' ')}`,
     text: texte,
     html,
   });
@@ -174,5 +191,5 @@ export const POST: APIRoute = async ({ request, url }) => {
     ? new Response(JSON.stringify({ ok: true }), {
         headers: { 'Content-Type': 'application/json' },
       })
-    : Response.redirect(new URL('/revendeurs/merci/', url.origin), 303);
+    : new Response(null, { status: 303, headers: { Location: '/revendeurs/merci/' } });
 };

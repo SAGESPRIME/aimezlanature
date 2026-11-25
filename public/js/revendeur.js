@@ -74,7 +74,7 @@
         );
         if (bouton) {
           bouton.disabled = false;
-          bouton.textContent = 'Envoyer ma demande';
+          bouton.textContent = 'Envoyer ma candidature';
         }
       });
   });
