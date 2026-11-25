@@ -35,7 +35,25 @@ const livraisonSeule = fraisLivraison(
 ).frais;
 const tiers = tierPrices(product);
 const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
+// Livraison offerte palier par palier (même règle au poids que le paiement) :
+// au-delà du seuil de poids, un palier n'affiche pas la pastille.
+const offerte = (qty: number) =>
+  fraisLivraison([{ poids: product.poids, qty, offerte: product.livraisonOfferte }], SITE.livraison).frais === 0;
+const tousOfferts = tiers.every((t) => offerte(t.qty));
 ---
+
+{/* Bandeau « livraison offerte » animé (global.css, .livraison-offerte) : le camion
+    arrive une fois, un reflet passe trois fois ; immobile si le visiteur a demandé
+    moins d'animations. */}
+{livraisonSeule === 0 && (
+  <div class="livraison-offerte mb-5 flex items-center gap-3 rounded-xl border border-anis bg-anis-pale px-4 py-3">
+    <span class="livraison-camion flex-shrink-0 text-foret"><Icon name="truck" class="w-7 h-7" /></span>
+    <p class="text-sm leading-snug text-gris">
+      <strong class="block text-base text-encre">Livraison offerte</strong>
+      Colissimo à domicile, 2 à 5 jours{tousOfferts ? ', quelle que soit la formule choisie' : ''}.
+    </p>
+  </div>
+)}
 
 <div class="mb-6">
   <p class="mb-3 text-sm font-semibold text-olive">
@@ -80,6 +98,11 @@ const defaut = tiers.find((t) => t.highlight) ?? tiers[0];
                 <>{fmtPrice(t.unitPrice)} € / unité</>
               )}
             </span>
+            {offerte(t.qty) && (
+              <span class="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-foret">
+                <Icon name="truck" class="w-3.5 h-3.5" /> Livraison offerte
+              </span>
+            )}
           </span>
 
           <span class="flex-shrink-0 text-right">

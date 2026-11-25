@@ -542,3 +542,31 @@ footer :focus-visible {
     transition: none;
   }
 }
+
+/* ── Fiche produit : bandeau « Livraison offerte » (BuyBox.astro) ──────────
+   Le camion entre une fois depuis la gauche, puis un reflet balaie le bandeau
+   trois fois. Uniquement si le visiteur n'a pas demandé moins d'animations. */
+.livraison-offerte { position: relative; overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .livraison-camion { animation: camion-arrive 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.3s both; }
+  .livraison-camion svg { animation: camion-roule 0.5s ease-in-out 1.2s 3 alternate; }
+  .livraison-offerte::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.7) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: reflet-livraison 1.6s ease-in-out 1.4s 3;
+    pointer-events: none;
+  }
+}
+@keyframes camion-arrive {
+  from { transform: translateX(-2.5rem); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes camion-roule {
+  to { transform: translateY(-2px) rotate(-3deg); }
+}
+@keyframes reflet-livraison {
+  to { transform: translateX(100%); }
+}
