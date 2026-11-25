@@ -74,9 +74,13 @@ const jsonLd = [
     {a.dateMiseAJour && a.dateMiseAJour !== a.datePublication && (
       <PageDate date={a.dateMiseAJour} label="Mis à jour le" class="mt-1" />
     )}
-    {a.auteur && (
+    {a.auteur ? (
       <p class="text-sm text-gris mt-1">
         Par <strong class="text-encre">{a.auteur.nom}</strong>, {a.auteur.role}
+      </p>
+    ) : (
+      <p class="text-sm text-gris mt-1">
+        Par <strong class="text-encre">Aimez la Nature</strong>, revendeur agréé EM
       </p>
     )}
   </EnTetePage>

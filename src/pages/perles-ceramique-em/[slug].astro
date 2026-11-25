@@ -104,6 +104,7 @@ const fmt = (n: number) => n.toFixed(2).replace('.', ',');
         <div class="flex items-end gap-3 mb-6">
           <p class="font-display text-4xl text-encre tabular-nums">{fmt(p.priceCurrent)} €</p>
           {p.priceOriginal && <p class="text-lg text-gris line-through mb-1">{fmt(p.priceOriginal)} €</p>}
+          <p class="text-sm text-gris mb-1.5">TTC, TVA incluse</p>
         </div>
 
         <ul class="flex flex-wrap gap-2 mb-7">
