@@ -21,6 +21,7 @@ import type { Product } from '../data/products';
 import { tierPrices, fmtPrice } from '../lib/pricing';
 import { SITE } from '../data/products';
 import Icon from './Icon.astro';
+import BandeauLivraison from './BandeauLivraison.astro';
 import { fraisLivraison } from '../data/livraison.mjs';
 
 interface Props {
@@ -46,13 +47,9 @@ const tousOfferts = tiers.every((t) => offerte(t.qty));
     arrive une fois, un reflet passe trois fois ; immobile si le visiteur a demandé
     moins d'animations. */}
 {livraisonSeule === 0 && (
-  <div class="livraison-offerte mb-5 flex items-center gap-3 rounded-xl border border-anis bg-anis-pale px-4 py-3">
-    <span class="livraison-camion flex-shrink-0 text-foret"><Icon name="truck" class="w-7 h-7" /></span>
-    <p class="text-sm leading-snug text-gris">
-      <strong class="block text-base text-encre">Livraison offerte</strong>
-      Colissimo à domicile, 2 à 5 jours{tousOfferts ? ', quelle que soit la formule choisie' : ''}.
-    </p>
-  </div>
+  <BandeauLivraison class="mb-5">
+    Colissimo à domicile, 2 à 5 jours{tousOfferts ? ', quelle que soit la formule choisie' : ''}.
+  </BandeauLivraison>
 )}
 
 <div class="mb-6">

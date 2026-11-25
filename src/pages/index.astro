@@ -9,6 +9,7 @@ import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
 import { conditionsPro } from '../data/revendeur';
 import CarteProduit from '../components/CarteProduit.astro';
+import BandeauLivraison from '../components/BandeauLivraison.astro';
 import { photoSite, cadrage, formatPhoto } from '../data/photosSite';
 import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
@@ -135,6 +136,11 @@ const note = (n: number) => n.toString().replace('.', ',');
         Des perles d'argile EM® à déposer dans votre carafe ou votre gourde : moins de chlore,
         une eau plus douce, moins de tartre. Sans filtre ni plastique.
       </p>
+      {SITE.livraisonOfferteAvec && (
+        <BandeauLivraison class="entree entree-4 mb-6 max-w-lg">
+          Avec {SITE.livraisonOfferteAvec}, en Colissimo, 2 à 5 jours.
+        </BandeauLivraison>
+      )}
       <div class="entree entree-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-10">
         <a href="/perles-ceramique-em/" class="bouton bouton-plein">
           Choisir mes perles, dès {prixDEntree()}

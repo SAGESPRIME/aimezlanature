@@ -10,6 +10,7 @@ import { Image } from 'astro:assets';
 import type { Product } from '../data/products';
 import { getProductPhoto } from '../lib/productImages';
 import { fmtPrice } from '../lib/pricing';
+import Icon from './Icon.astro';
 
 interface Props {
   produit: Product;
@@ -47,6 +48,11 @@ const texte = accroche ?? p.usages.slice(0, 3).join(', ');
     {prix(p.priceCurrent)}
     {p.priceOriginal && <s class="ml-2 font-normal text-gris">{prix(p.priceOriginal)}</s>}
   </p>
+  {p.livraisonOfferte && p.inStock && (
+    <p class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-foret">
+      <Icon name="truck" class="w-3.5 h-3.5" /> Livraison offerte
+    </p>
+  )}
   {p.rating && (
     <p class="mt-1 text-xs text-gris">
       <span class="etoiles" aria-hidden="true">★</span> {note(p.rating)}/5 · {p.reviewCount} avis
