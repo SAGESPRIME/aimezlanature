@@ -1,4 +1,6 @@
 import type { StructureResolver } from 'sanity/structure';
+import { TableauClients } from './tableaux/TableauClients';
+import { TableauCommandes } from './tableaux/TableauCommandes';
 
 /** Types à document unique (pas de liste, un seul formulaire). */
 export const TYPES_UNIQUES = new Set(['reglages']);
@@ -18,6 +20,11 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('Commandes')
             .items([
+              S.listItem()
+                .title('Tableau des commandes')
+                .id('commandes-tableau')
+                .child(S.component(TableauCommandes).id('tableau-commandes').title('Tableau des commandes')),
+              S.divider(),
               ...[
                 ['a_expedier', 'À expédier'],
                 ['expediee', 'Expédiées'],
@@ -56,6 +63,11 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('Clients')
             .items([
+              S.listItem()
+                .title('Tableau des clients')
+                .id('clients-tableau')
+                .child(S.component(TableauClients).id('tableau-clients').title('Tableau des clients')),
+              S.divider(),
               ...(
                 [
                   ['fideles', 'Clients fidèles (2 commandes et plus)', '_type == "client" && !modeTest && nbCommandes >= 2', 'depense'],
