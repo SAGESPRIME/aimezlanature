@@ -20,8 +20,7 @@
  *   - une même question FAQ (données FAQPage) sur une seule page du site :
  *     deux pages qui répondent à la même question se font concurrence ;
  *   - articles du blog : au moins LIENS_ARTICLE_MIN liens internes dans le
- *     corps du texte (signalé seulement, tant que les anciens articles ne
- *     sont pas republiés) ;
+ *     corps du texte ;
  * et pour le site : sitemap sans page noindex, toutes les pages indexables
  * présentes au sitemap, robots.txt qui déclare le sitemap.
  *
@@ -139,7 +138,7 @@ for (const [url] of indexables) {
   const corps = doc.querySelector('.article-corps');
   if (url.startsWith('/blog/') && corps) {
     const liens = new Set(corps.querySelectorAll('a[href^="/"]').map((a) => (a.getAttribute('href') ?? '').split('#')[0]));
-    if (liens.size < LIENS_ARTICLE_MIN) signalements.push(`${url} : ${liens.size} lien(s) interne(s) dans le texte (au moins ${LIENS_ARTICLE_MIN} conseillés)`);
+    if (liens.size < LIENS_ARTICLE_MIN) err(`${url} : ${liens.size} lien(s) interne(s) dans le texte (au moins ${LIENS_ARTICLE_MIN} conseillés)`);
   }
 }
 for (const { q, urls } of questions.values()) {

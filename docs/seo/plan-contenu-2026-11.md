@@ -13,18 +13,18 @@ sans renier son discours.
 ## Carte des articles (slug → requêtes)
 | Article | Requêtes | Statut |
 |---|---|---|
-| perles-de-ceramique-avis-dangers | danger 480, avis scientifique 390, UFC 2×260, eau avis 260 | brouillon (nouveau) |
-| gourde-filtrante | gourde filtrante 12 100 | brouillon (nouveau) |
-| alternative-carafe-filtrante | carafe filtrante 14 800 (traîne), alternative 110 | brouillon (nouveau) |
-| perles-de-ceramique-ou-charbon-binchotan | binchotan 1 000, charbon actif eau 1 300 | brouillon (nouveau) |
-| anti-calcaire-naturel-bouilloire | billes anti calcaire 390, anti calcaire naturel 320 | brouillon (nouveau) |
-| gout-de-chlore-eau-du-robinet | goût / odeur de chlore | brouillon (nouveau) |
-| entretenir-perles-de-ceramique | nettoyer, entretenir, faire bouillir, durée de vie | brouillon (nouveau) |
-| perles-de-ceramique-purifier-votre-eau-du-robinet | perles pour purifier l'eau 260-320 | réécrit (+ fusion « alternative bio ») |
-| les-bienfaits-des-perles-de-ceramique | bienfaits | réécrit (+ fusion « source de vie ») |
-| perles-de-ceramique-une-solution-ecologique-et-economique | remplacer l'eau en bouteille | réécrit |
-| authenticite-des-perles-de-ceramique-em-et-leur-efficacite | perles authentiques, où acheter | réécrit |
-| leau-est-une-source-de-vie | combien d'eau boire par jour | réécrit |
+| perles-de-ceramique-avis-dangers | danger 480, avis scientifique 390, UFC 2×260, eau avis 260 | publié (nouveau) |
+| gourde-filtrante | gourde filtrante 12 100 | publié (nouveau) |
+| alternative-carafe-filtrante | carafe filtrante 14 800 (traîne), alternative 110 | publié (nouveau) |
+| perles-de-ceramique-ou-charbon-binchotan | binchotan 1 000, charbon actif eau 1 300 | publié (nouveau) |
+| anti-calcaire-naturel-bouilloire | billes anti calcaire 390, anti calcaire naturel 320 | publié (nouveau) |
+| gout-de-chlore-eau-du-robinet | goût / odeur de chlore | publié (nouveau) |
+| entretenir-perles-de-ceramique | nettoyer, entretenir, faire bouillir, durée de vie | publié (nouveau) |
+| perles-de-ceramique-purifier-votre-eau-du-robinet | perles pour purifier l'eau 260-320 | publié (+ fusion « alternative bio ») |
+| les-bienfaits-des-perles-de-ceramique | bienfaits | publié (+ fusion « source de vie ») |
+| perles-de-ceramique-une-solution-ecologique-et-economique | remplacer l'eau en bouteille | publié |
+| authenticite-des-perles-de-ceramique-em-et-leur-efficacite | perles authentiques, où acheter | publié |
+| leau-est-une-source-de-vie | combien d'eau boire par jour | publié |
 Fusionnés (301) : alternative-bio → purifier ; source-de-vie → bienfaits ; differents-usages → /utilisations/.
 
 Règles de chaque article : réponse courte, 3 questions FAQ uniques au site, sources, au moins

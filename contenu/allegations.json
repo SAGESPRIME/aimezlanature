@@ -62,24 +62,7 @@
       "raison": "vocabulaire du fabricant : à attribuer (« selon le fabricant »)"
     }
   ],
-  "dette": [
-    "/blog/leau-est-une-source-de-vie/|flore",
-    "/blog/leau-est-une-source-de-vie/|radicaux",
-    "/blog/leau-est-une-source-de-vie/|toxines",
-    "/blog/les-bienfaits-des-perles-de-ceramique/|flore",
-    "/blog/les-bienfaits-des-perles-de-ceramique/|radicaux",
-    "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/|flore",
-    "/blog/perles-de-ceramique-purifier-votre-eau-du-robinet/|radicaux",
-    "/blog/perles-de-ceramique-une-solution-ecologique-et-economique/|brevet",
-    "article-leau-est-une-source-de-vie|flore",
-    "article-leau-est-une-source-de-vie|radicaux",
-    "article-leau-est-une-source-de-vie|toxines",
-    "article-les-bienfaits-des-perles-de-ceramique|flore",
-    "article-les-bienfaits-des-perles-de-ceramique|radicaux",
-    "article-perles-de-ceramique-purifier-votre-eau-du-robinet|flore",
-    "article-perles-de-ceramique-purifier-votre-eau-du-robinet|radicaux",
-    "article-perles-de-ceramique-une-solution-ecologique-et-economique|brevet"
-  ],
+  "dette": [],
   "admis": [
     {
       "cle": "avis-pack-100-perles-002|guerison",

@@ -265,9 +265,9 @@ avec CSP stricte → l'utiliser comme inspiration, porter à la main en `.astro`
 - [x] Garde-fous CI : check:allegations, FAQ unique par page, liens dans les articles.
 - [x] 8 FAQ corrigées et publiées (durée de vie unifiée, danger + étouffement, « adoucit »).
 - [x] 3 articles fusionnés (301) ; 5 réécrits et 7 nouveaux EN BROUILLON dans Sanity.
-- [ ] Marchand : relire et publier les 12 brouillons (build de relecture de la recette).
-- [ ] Après publication : synchroniser le seed, vider la « dette » d'allégations, rediriger
-      /perles-de-ceramique-avis/ vers le nouvel article.
+- [x] 12 articles relus par le marchand et publiés (25/11) ; seed synchronisé, « dette »
+      d'allégations vidée, /perles-de-ceramique-avis/ → nouvel article, check:seo exige ≥ 3
+      liens internes par article.
 
 ## Commandes dans le Studio (2026-11-24)
 - [x] Fiche `commandes.<session>` créée par le webhook à chaque paiement ; listes À expédier /
