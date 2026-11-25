@@ -12,7 +12,6 @@ export const ID_ORGANISATION = `${SITE.url}/#organisation`;
 export const ID_SITE_WEB = `${SITE.url}/#site`;
 
 const CONTACT = {
-  telephone: '+33-1-84-80-15-22',
   email: 'contact@aimezlanature.fr',
 };
 
