@@ -9,6 +9,9 @@
  * deux sources différentes.
  *
  * Source unique des chiffres : SITE.amazon dans src/data/products.ts.
+ *
+ * Aucun lien vers Amazon (choix du marchand) : le visiteur reste sur le site
+ * et commande ici. Seuls les chiffres sont cités, avec leur source.
  */
 import { SITE } from '../data/products';
 
@@ -38,14 +41,6 @@ const label = `Note de ${note} sur 5 sur Amazon, fondée sur ${avis} commentaire
       <strong class="text-encre">{avis} commentaires</strong> sur Amazon
       <span class="text-olive"> ({note}/5)</span>
     </span>
-    <a
-      href={SITE.amazon.url}
-      rel="nofollow noopener"
-      target="_blank"
-      class="font-semibold text-foret hover:underline"
-    >
-      Voir la fiche<span class="sr-only"> Amazon (nouvel onglet)</span> →
-    </a>
   </p>
 ) : (
   <section class={`py-10 px-4 bg-anis-pale ${className}`} aria-labelledby="amazon-titre">
@@ -57,18 +52,10 @@ const label = `Note de ${note} sur 5 sur Amazon, fondée sur ${avis} commentaire
         ★★★★★
         <span class="font-display font-bold text-encre align-middle ml-2">{note}/5</span>
       </p>
-      <p class="text-gris mb-4">
+      <p class="text-gris">
         <strong class="text-encre">{avis} commentaires</strong> laissés par les clients
         Amazon sur nos Perles de Céramique EM®, depuis {SITE.foundingYear}.
       </p>
-      <a
-        href={SITE.amazon.url}
-        rel="nofollow noopener"
-        target="_blank"
-        class="inline-flex text-sm font-semibold text-foret border-b border-foret pb-0.5 hover:text-nuit hover:border-nuit transition-colors"
-      >
-        Lire les avis sur Amazon<span class="sr-only"> (nouvel onglet)</span> →
-      </a>
     </div>
   </section>
 )}
