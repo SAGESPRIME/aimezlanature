@@ -9,7 +9,7 @@ import { faqPour } from '../data/faq';
 import { guides } from '../data/guides';
 import { conditionsPro } from '../data/revendeur';
 import CarteProduit from '../components/CarteProduit.astro';
-import { photoSite, cadrage } from '../data/photosSite';
+import { photoSite, cadrage, formatPhoto } from '../data/photosSite';
 import { buildFaqSchema, buildOrganizationSchema, buildWebSiteSchema } from '../lib/seo';
 
 
@@ -107,6 +107,10 @@ const moments = [
   { href: '/perles-ceramique-em/gourde-ecologique/', titre: 'En balade', texte: 'La gourde en verre et ses perles', photo: photoSite('balade'), cadre: cadrage('balade') },
   { href: '/a-propos/', titre: 'Notre mission', texte: 'Moins de bouteilles plastique', photo: photoSite('mission'), cadre: cadrage('mission') },
 ];
+const photoHero = photoSite('accueil');
+// Cadre du hero à la forme de la photo (après recadrage du Studio) : une photo
+// portrait n'est plus rognée dans un carré, et inversement.
+const cadreHero = { portrait: 'lg:aspect-[4/5]', carre: 'lg:aspect-square', paysage: 'lg:aspect-[4/3]' }[formatPhoto('accueil')];
 const photoModeEmploi = photoSite('modeEmploi');
 const note = (n: number) => n.toString().replace('.', ',');
 ---
@@ -159,30 +163,14 @@ const note = (n: number) => n.toString().replace('.', ',');
         </div>
       </dl>
     </div>
-    <!-- Vidéo animée (video/hero-perles, rendu HyperFrames) : lue une fois, sans son,
-         elle s'arrête sur les perles au fond de la carafe. Mouvement réduit demandé
-         par le visiteur : image fixe de cette dernière scène (global.css). -->
-    <div class="order-first lg:order-none -mx-4 sm:mx-0 aspect-[4/3] lg:aspect-square lg:self-center overflow-hidden arche-hero entree-photo bg-[#f4efe4]">
-      <video
-        class="hero-video w-full h-full object-cover"
-        autoplay
-        muted
-        playsinline
-        preload="auto"
-        poster="/video/hero-perles-debut.jpg"
-        width="900"
-        height="900"
-        aria-label="Des perles de céramique tombent dans une carafe d'eau et reposent au fond"
-      >
-        <source src="/video/hero-perles.webm" type="video/webm" />
-        <source src="/video/hero-perles.mp4" type="video/mp4" />
-      </video>
-      <img
-        class="hero-video-fixe w-full h-full object-cover"
-        src="/video/hero-perles-affiche.jpg"
-        width="900"
-        height="900"
-        alt="Perles de céramique au fond d'une carafe d'eau"
+    <div class={`order-first lg:order-none -mx-4 sm:mx-0 aspect-[4/3] ${cadreHero} lg:self-center overflow-hidden arche-hero entree-photo`}>
+      <Image
+        {...photoHero}
+        widths={[480, 720, 960, 1200]}
+        sizes="(min-width: 1024px) 560px, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class={`w-full h-full object-cover ${cadrage('accueil')}`}
       />
     </div>
   </section>
