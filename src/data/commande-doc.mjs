@@ -11,6 +11,8 @@
  * qu'une seule fiche (createIfNotExists).
  */
 
+import { idClient, refClient, normaliserEmail } from './client-doc.mjs';
+
 /** Statuts de suivi, modifiés par le marchand dans le Studio. */
 export const STATUTS_COMMANDE = ['a_expedier', 'expediee', 'annulee'];
 
@@ -63,6 +65,9 @@ export function documentCommande(session, articles) {
     source: session?.metadata?.revendeur ? 'revendeur' : 'client',
     revendeurId: session?.metadata?.revendeur || undefined,
     modeTest: test,
+    ficheClient: normaliserEmail(session?.customer_details?.email)
+      ? refClient(idClient(session.customer_details.email, { test }))
+      : undefined,
     client: {
       nom: session?.customer_details?.name ?? livraison.nom ?? undefined,
       email: session?.customer_details?.email ?? undefined,

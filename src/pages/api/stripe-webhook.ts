@@ -6,6 +6,7 @@ import { envoyerEmail, EMAIL_MARCHAND } from '../../lib/email';
 import { reserver, marquerFait, liberer, enCours, etapeFaite, noterEtape } from '../../lib/evenements-traites';
 import { MARQUE_SESSION } from '../../lib/marque-stripe';
 import { enregistrerCommande } from '../../lib/commandes';
+import { majClient } from '../../lib/clients';
 import { documentCommande, lireLivraison, numeroCommande } from '../../data/commande-doc.mjs';
 import {
   sujetCommande,
@@ -238,6 +239,18 @@ async function traiterCommande(session: any, cleStripe: string): Promise<Respons
       console.error('[commandes] fiche impossible pour', session.id, '-', e?.message ?? e);
     }
     if (fiche && (await enregistrerCommande(fiche))) noterEtape(cleFiche);
+  }
+
+  // ── 0 bis. La fiche « Clients » (créée ou complétée) ──────────────────
+  // Notée comme faite pour ne pas compter deux fois la commande si Stripe
+  // rejoue l'événement. Échec → journal seulement.
+  const cleClient = `client:${session.id}`;
+  if (!etapeFaite(cleClient)) {
+    try {
+      if (await majClient(documentCommande(session, articles))) noterEtape(cleClient);
+    } catch (e: any) {
+      console.error('[clients] fiche client impossible pour', session.id, '-', e?.message ?? e);
+    }
   }
 
   // ── 1. Le marchand, pour qu'il prépare le colis ────────────────────────

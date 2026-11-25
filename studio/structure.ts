@@ -4,7 +4,7 @@ import type { StructureResolver } from 'sanity/structure';
 export const TYPES_UNIQUES = new Set(['reglages']);
 
 /** Types créés uniquement par le site (jamais depuis le menu « Créer »). */
-export const TYPES_CREES_PAR_LE_SITE = new Set(['revendeur', 'commande']);
+export const TYPES_CREES_PAR_LE_SITE = new Set(['revendeur', 'commande', 'client']);
 
 /** Menu de gauche du Studio, dans l'ordre où le marchand en a besoin. */
 export const structure: StructureResolver = (S) =>
@@ -47,6 +47,56 @@ export const structure: StructureResolver = (S) =>
                     .defaultOrdering([{ field: 'date', direction: 'desc' }])
                 ),
               S.documentTypeListItem('commande').title('Toutes les commandes'),
+            ])
+        ),
+      S.listItem()
+        .title('Clients')
+        .id('clients')
+        .child(
+          S.list()
+            .title('Clients')
+            .items([
+              ...(
+                [
+                  ['fideles', 'Clients fidèles (2 commandes et plus)', '_type == "client" && !modeTest && nbCommandes >= 2', 'depense'],
+                  ['tous', 'Tous les clients', '_type == "client" && !modeTest', 'derniereCommande'],
+                  ['emails', 'Emails autorisés', '_type == "client" && !modeTest && emails == "client_existant"', 'derniereCommande'],
+                  ['desinscrits', 'Désinscrits', '_type == "client" && emails == "desinscrit"', 'derniereCommande'],
+                  ['test', 'Clients de test', '_type == "client" && modeTest == true', 'derniereCommande'],
+                ] as const
+              ).map(([id, titre, filtre, tri]) =>
+                S.listItem()
+                  .title(titre)
+                  .id(`clients-${id}`)
+                  .child(
+                    S.documentList()
+                      .title(titre)
+                      .schemaType('client')
+                      .filter(filtre)
+                      .defaultOrdering([{ field: tri, direction: 'desc' }])
+                      .child((clientId) =>
+                        S.list()
+                          .title('Client')
+                          .items([
+                            S.listItem()
+                              .title('Fiche')
+                              .id('fiche')
+                              .child(S.document().schemaType('client').documentId(clientId)),
+                            S.listItem()
+                              .title('Commandes sur le nouveau site')
+                              .id('commandes')
+                              .child(
+                                S.documentList()
+                                  .title('Commandes')
+                                  .schemaType('commande')
+                                  .filter('_type == "commande" && ficheClient._ref == $clientId')
+                                  .params({ clientId })
+                                  .defaultOrdering([{ field: 'date', direction: 'desc' }])
+                              ),
+                          ])
+                      )
+                  )
+              ),
             ])
         ),
       S.divider(),

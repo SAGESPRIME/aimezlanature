@@ -200,3 +200,22 @@ de suivi).
 
 Code : `src/data/commande-doc.mjs` (fiche, testée par
 `tests/commandes.test.mjs`), `src/lib/commandes.ts`, `src/pages/api/taches.ts`.
+
+## Clients
+
+Menu **Clients** du Studio : une fiche par adresse email (`clients.<empreinte>` : privée,
+illisible sans jeton, l'email n'est pas dans l'identifiant).
+
+- **Fidèles** (2 commandes et plus), **Tous**, **Emails autorisés**, **Désinscrits**,
+  **Clients de test** (paiements de test, comptés à part). Ouvrir un client → « Fiche » et
+  « Commandes sur le nouveau site ».
+- Anciens clients : importés une fois depuis WooCommerce (`scripts/clients/importer-woocommerce.mjs
+  <rapport-clients.csv> <export-wordpress.xml> [--sanity]`). Seuls ceux qui ont **payé** une
+  commande ; onglet « Historique WooCommerce » (date, numéro, montant). Fichiers sources hors
+  du dépôt (données personnelles). Ré-exécutable sans doublon (`createIfNotExists`).
+- Nouvelles commandes : le webhook Stripe crée ou complète la fiche (`src/lib/clients.ts`) ;
+  chaque commande n'est comptée qu'une fois (`compteeClient` posé sur la fiche commande dans la
+  même transaction, protégée par sa révision).
+- **Emails commerciaux** : « autorisés » pendant 3 ans après le dernier achat (règle CNIL des
+  clients existants, produits analogues, lien de désinscription dans chaque email) ; au-delà,
+  « hors délai » ; « Désinscrit » à poser dès qu'un client le demande.
