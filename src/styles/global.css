@@ -267,6 +267,13 @@ footer :focus-visible {
   from { transform: scale(1.04); }
 }
 
+/* Vidéo du haut de l'accueil : image fixe si le visiteur a demandé moins d'animations. */
+.hero-video-fixe { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+  .hero-video-fixe { display: block; }
+}
+
 /* Cadrage des photos du Studio (src/data/photosSite.ts, cadrage()) : le point
    d'intérêt devient object-position, sans style en ligne (CSP). */
 .focal { object-position: var(--fpx, 50%) var(--fpy, 50%); }
