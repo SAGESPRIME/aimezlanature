@@ -22,7 +22,7 @@ const hydratation = avecLecture({
   datePublication: '2025-03-22',
   dateMiseAJour: MAJ,
   extrait: 'Combien d’eau boire par jour selon l’EFSA, les signes qui doivent alerter, les erreurs courantes, et pourquoi le goût de l’eau compte.',
-  chapo: 'L’eau représente environ 60 % du poids d’un adulte. Voici les repères officiels pour bien s’hydrater, les signes qui doivent alerter, et pourquoi le goût de l’eau compte autant que la quantité.',
+  chapo: 'Les besoins en eau varient avec la chaleur, l’effort et l’âge, mais l’EFSA donne des repères simples. Et on boit moins quand l’eau a un goût de chlore, ce qui explique bien des verres laissés à moitié pleins.',
   reponseCourte: 'L’Autorité européenne de sécurité des aliments (EFSA) considère comme adéquat un apport total en eau de 2 litres par jour pour une femme et de 2,5 litres pour un homme, eau des aliments comprise. Par forte chaleur ou en cas d’effort, les besoins augmentent.',
   metaTitle: 'Combien d’eau boire par jour ? Les repères de l’EFSA',
   metaDescription: 'Combien d’eau boire par jour selon l’EFSA, signes de manque d’eau, erreurs courantes et astuces pour boire plus, notamment l’eau du robinet.',
@@ -30,7 +30,7 @@ const hydratation = avecLecture({
     {
       titre: 'Les repères officiels',
       blocs: [
-        'L’EFSA considère comme adéquat un apport total en eau de **2 litres par jour pour une femme** et de **2,5 litres pour un homme**. Ce total comprend l’eau des aliments, qui en apportent environ un cinquième : fruits, légumes, soupes. Il reste donc à boire de l’ordre de 1,6 à 2 litres.',
+        'L’EFSA considère comme adéquat un apport total en eau de 2 litres par jour pour une femme et de 2,5 litres pour un homme. Ce total comprend l’eau des aliments, qui en apportent environ un cinquième : fruits, légumes, soupes. Il reste donc à boire de l’ordre de 1,6 à 2 litres.',
         'Ces repères valent pour une température et une activité modérées. Par temps chaud, en cas d’effort physique ou de fièvre, les besoins augmentent. Les femmes enceintes ou qui allaitent ont aussi des besoins plus élevés ; en cas de problème de santé, demandez conseil à votre médecin.',
       ],
     },
@@ -55,17 +55,17 @@ const hydratation = avecLecture({
     {
       titre: 'Les erreurs courantes',
       blocs: [
-        '- **Attendre d’avoir soif** : mieux vaut boire régulièrement, par petites quantités, tout au long de la journée.',
-        '- **Boire beaucoup d’un coup** : le corps n’en tire pas davantage ; répartir est plus efficace.',
-        '- **Compter sur les boissons sucrées** : l’eau reste la seule boisson indispensable, sans calories.',
-        '- **Oublier les journées chaudes** : par forte chaleur, buvez avant d’avoir soif et augmentez les quantités.',
+        '- Attendre d’avoir soif : mieux vaut boire régulièrement, par petites quantités, tout au long de la journée.',
+        '- Boire beaucoup d’un coup : le corps n’en tire pas davantage ; répartir est plus efficace.',
+        '- Compter sur les boissons sucrées : l’eau reste la seule boisson indispensable, sans calories.',
+        '- Oublier les journées chaudes : par forte chaleur, buvez avant d’avoir soif et augmentez les quantités.',
       ],
     },
     {
       titre: 'Le goût de l’eau compte autant que la quantité',
       blocs: [
         'On boit plus volontiers une eau qu’on trouve bonne. Or le premier reproche fait à l’eau du robinet, c’est son goût de chlore, ajouté pour qu’elle reste saine jusqu’au robinet. Nous expliquons d’où il vient et comment l’atténuer dans [goût de chlore de l’eau du robinet : pourquoi et que faire](' + P.chlore + ').',
-        'C’est précisément le rôle des [perles de céramique EM](' + P.collection + ') : déposées dans une carafe (15 perles par litre), elles atténuent le goût de chlore en une trentaine de minutes, sans cartouche. ' + LIMITE,
+        'Les [perles de céramique EM](' + P.collection + ') servent à cela : déposées dans une carafe (15 perles par litre), elles atténuent le goût de chlore en une trentaine de minutes, sans cartouche. ' + LIMITE,
         'Quelques astuces pour boire plus sans y penser :',
         '- une carafe en verre sur la table ou le bureau, remplie chaque matin ;',
         '- une gourde dans le sac, que l’on remplit au robinet ([notre gourde en verre](' + P.gourde + ')) ;',
@@ -90,7 +90,7 @@ const ecologique = avecLecture({
   datePublication: '2025-04-18',
   dateMiseAJour: MAJ,
   extrait: 'Plastique, budget, packs à porter : pourquoi et comment remplacer l’eau en bouteille par l’eau du robinet, chiffres sourcés et calcul à faire chez soi.',
-  chapo: 'Boire l’eau du robinet plutôt que de l’eau en bouteille : moins de plastique, moins de packs à porter, et une dépense qui fond. Le principal frein reste le goût de chlore ; voici comment le lever, et comment calculer ce que vous économisez.',
+  chapo: 'Passer de l’eau en bouteille à l’eau du robinet réduit le plastique et les packs à porter, et la dépense devient presque nulle. Le principal frein reste le goût de chlore. Voici comment le lever, et comment calculer ce que vous économisez.',
   reponseCourte: 'Oui, on peut remplacer l’eau en bouteille par l’eau du robinet : elle est contrôlée en permanence et coûte environ 120 fois moins cher selon le guide du fabricant des perles EM. Les perles de céramique atténuent le goût de chlore, principal frein, sans cartouche ni consommable.',
   metaTitle: 'Remplacer l’eau en bouteille par l’eau du robinet',
   metaDescription: 'Pourquoi et comment remplacer l’eau en bouteille par l’eau du robinet : plastique, coût, goût de chlore. Chiffres sourcés et calcul à faire chez soi.',
@@ -100,7 +100,7 @@ const ecologique = avecLecture({
       blocs: [
         'Boire de l’eau en bouteille, c’est acheter, transporter puis jeter des centaines de bouteilles chaque année : à 1,5 litre par jour, une seule personne en consomme environ 365 bouteilles de 1,5 litre par an.',
         'Pendant ce temps, l’eau du robinet est contrôlée en permanence par l’exploitant du réseau et par les Agences régionales de santé, avec des résultats publics commune par commune. Et selon le guide du fabricant des perles EM, elle coûte environ 120 fois moins cher que l’eau en bouteille.',
-        'Pourquoi continuer à acheter des packs ? Surtout à cause du goût de chlore. C’est ce frein que les perles lèvent.',
+        'Si l’on continue à acheter des packs, c’est surtout à cause du goût de chlore, et c’est ce goût que les perles atténuent.',
       ],
     },
     {
@@ -115,18 +115,18 @@ const ecologique = avecLecture({
       titre: 'Faire le calcul avec vos propres chiffres',
       blocs: [
         'Le montant de l’économie dépend de ce que vous achetez aujourd’hui. Trois chiffres suffisent :',
-        '1. **Votre dépense actuelle** : le prix d’un pack, multiplié par le nombre de packs achetés par mois, puis par 12.',
-        '2. **Le coût de l’eau du robinet** : il figure sur votre facture, en euros par mètre cube (1 000 litres). Pour l’eau de boisson d’un foyer, il représente quelques euros par an.',
-        '3. **Le coût des perles** : un achat unique, sans consommable — plus de 10 ans d’utilisation selon le guide du fabricant.',
+        '1. Votre dépense actuelle : le prix d’un pack, multiplié par le nombre de packs achetés par mois, puis par 12.',
+        '2. Le coût de l’eau du robinet : il figure sur votre facture, en euros par mètre cube (1 000 litres). Pour l’eau de boisson d’un foyer, il représente quelques euros par an.',
+        '3. Le coût des perles : un achat unique, sans consommable. Le guide du fabricant annonce plus de 10 ans d’utilisation.',
         'Exemple : un foyer de 4 personnes qui boit 1,5 litre d’eau en bouteille par personne et par jour achète environ 2 190 litres par an, soit plus de 2 tonnes à porter. L’essentiel de cette dépense devient une économie dès la première année.',
       ],
     },
     {
       titre: 'Ce que vous évitez chaque année',
       blocs: [
-        '- **Bouteilles** : environ 365 bouteilles de 1,5 litre par personne, pour qui boit 1,5 litre par jour.',
-        '- **Transport** : plus de 500 kg d’eau par personne à ne plus porter du magasin à la maison.',
-        '- **Cartouches** : si vous utilisiez une carafe filtrante, une douzaine de cartouches par an. Voir [les alternatives à la carafe filtrante](' + P.carafe + ').',
+        '- Bouteilles : environ 365 bouteilles de 1,5 litre par personne, pour qui boit 1,5 litre par jour.',
+        '- Transport : plus de 500 kg d’eau par personne à ne plus porter du magasin à la maison.',
+        '- Cartouches : si vous utilisiez une carafe filtrante, une douzaine de cartouches par an. Voir [les alternatives à la carafe filtrante](' + P.carafe + ').',
       ],
     },
     {
@@ -143,13 +143,13 @@ const ecologique = avecLecture({
       titre: 'L’eau du robinet est-elle sûre ?',
       blocs: [
         'En France, l’eau du robinet fait l’objet d’une double surveillance : celle de l’exploitant du réseau et le contrôle sanitaire des ARS. Vous pouvez consulter la qualité de l’eau de votre commune en ligne ou en mairie.',
-        'Son goût de chlore ne signifie pas qu’elle est impropre : ce désinfectant la protège jusqu’à votre robinet. ' + LIMITE + ' Ce que les perles font et ne font pas, sans détour : [avis, dangers et science](' + P.avis + ').',
+        'Son goût de chlore ne signifie pas qu’elle est impropre : ce désinfectant la protège jusqu’à votre robinet. ' + LIMITE + ' Ce que les perles font et ne font pas : [avis, dangers et science](' + P.avis + ').',
       ],
     },
   ],
   faq: [
     { question: 'Combien économise-t-on en remplaçant l’eau en bouteille ?', reponse: 'Tout dépend de votre consommation. Selon le guide du fabricant des perles EM, l’eau du robinet coûte environ 120 fois moins cher que l’eau en bouteille : pour un foyer qui achète régulièrement des packs, l’essentiel de cette dépense devient une économie.' },
-    { question: 'Que deviennent les perles en fin de vie ?', reponse: 'Ce sont des billes d’argile cuite : en fin de vie, elles peuvent être enfouies au jardin. Aucun déchet plastique, contrairement aux bouteilles ou aux cartouches.' },
+    { question: 'Que deviennent les perles en fin de vie ?', reponse: 'Ce sont des billes d’argile cuite : en fin de vie, elles peuvent être enfouies au jardin, sans laisser de déchet plastique.' },
     { question: 'Faut-il une carafe en verre ?', reponse: 'C’est préférable : le verre ne retient pas les odeurs, se lave facilement, et l’Anses recommande le verre ou l’inox pour conserver l’eau du robinet.' },
   ],
   sources: [S.guide, S.columbia, S.ansesBouteille, S.santeControle, S.servicePublic],
@@ -164,7 +164,7 @@ const authentiques = avecLecture({
   datePublication: '2025-02-10',
   dateMiseAJour: MAJ,
   extrait: 'Origine du procédé EM, fabrication au Japon, revendeurs agréés, pièges des imitations et tests à faire chez soi : comment choisir de vraies perles EM.',
-  chapo: 'Toutes les perles vendues sous le nom « EM » ne se valent pas. Origine du procédé, fabrication, agrément des revendeurs, pièges des imitations et tests à faire chez soi : comment reconnaître des perles authentiques.',
+  chapo: 'Toutes les perles vendues sous le nom « EM » ne se valent pas. Le plus sûr est de remonter à l’origine du procédé et à l’agrément du vendeur ; deux tests faits chez soi complètent la vérification.',
   reponseCourte: 'Des perles de céramique EM authentiques sont fabriquées au Japon selon le procédé du Pr Teruo Higa et vendues par des revendeurs agréés. Le plus sûr est de vérifier l’agrément du vendeur ; un test du goût à l’aveugle (30 minutes dans une carafe d’eau du robinet) permet ensuite de constater l’effet sur le chlore.',
   metaTitle: 'Perles de céramique EM authentiques : les reconnaître',
   metaDescription: 'Procédé EM du Pr Teruo Higa, fabrication au Japon, revendeurs agréés, imitations et tests chez soi : comment reconnaître et où acheter de vraies perles EM.',
@@ -198,14 +198,14 @@ const authentiques = avecLecture({
       titre: 'Où acheter des perles de céramique EM ?',
       blocs: [
         'Magasins bio, sites spécialisés, places de marché : l’offre est large, la traçabilité inégale. Avant d’acheter, vérifiez que le vendeur indique l’origine des perles et son agrément EM.',
-        'Aimez la Nature est revendeur agréé EM : nos perles sont importées du Japon, et vendues en [Pack 55](' + P.pack55 + '), [Pack 100](' + P.pack100 + ') et avec notre [gourde en verre](' + P.packGourde + '). Elles sont aussi proposées par des magasins partenaires : [devenir revendeur](/revendeurs/).',
+        'Aimez la Nature est revendeur agréé EM : nos perles sont importées du Japon, et vendues en [Pack 55](' + P.pack55 + '), [Pack 100](' + P.pack100 + ') et avec notre [gourde en verre](' + P.packGourde + '). Vous tenez un magasin ? Voyez notre [offre revendeurs](/revendeurs/).',
       ],
     },
     {
       titre: 'Les tests à faire chez soi',
       blocs: [
         '### Le test du goût à l’aveugle',
-        'Remplissez deux carafes d’eau du robinet à la même heure, mettez 15 perles par litre dans l’une seulement, attendez 30 minutes, puis faites goûter les deux à l’aveugle. C’est le test le plus parlant : l’effet sur le goût de chlore est celui que l’on constate le plus nettement.',
+        'Remplissez deux carafes d’eau du robinet à la même heure, mettez 15 perles par litre dans l’une seulement, attendez 30 minutes, puis faites goûter les deux à l’aveugle. C’est sur le goût de chlore que l’effet se remarque le plus nettement.',
         '### Le test du vase',
         'Le fabricant propose aussi de comparer deux bouquets identiques, l’un dans un vase avec 10 à 15 perles, l’autre sans. C’est un test amusant, dont le résultat dépend de nombreux facteurs (fleurs, chaleur, eau) : à prendre comme une observation, pas comme une preuve.',
         'Ce que l’on peut vérifier, et ce qui reste à prouver : [perles de céramique, avis, dangers et science](' + P.avis + ').',

@@ -29,6 +29,8 @@ const SEED = resolve(RACINE, 'contenu', 'seed.ndjson');
 const [fichierLot] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const versSanity = process.argv.includes('--sanity');
 const annuler = process.argv.includes('--annuler');
+/** --intact-jusqu-a=<date ISO> : brouillons non modifiés depuis cette date (vérifié à la main) remplaçables. */
+const intactDepuis = process.argv.find((a) => a.startsWith('--intact-jusqu-a='))?.split('=')[1];
 if (!fichierLot) {
   console.error('Usage : appliquer.mjs <lot.mjs> [--sanity] [--annuler]');
   process.exit(1);
@@ -91,7 +93,7 @@ if (versSanity) {
     const actuel = await lire(b._id);
     // Remplaçable : absent, intact depuis l'import initial des brouillons
     // (23/11), ou identique à ce que ce script a écrit la dernière fois.
-    const intact = !actuel || actuel._updatedAt <= IMPORT_INITIAL || empreintes[b._id] === empreinte(actuel);
+    const intact = !actuel || actuel._updatedAt <= IMPORT_INITIAL || actuel._updatedAt <= (intactDepuis ?? '') || empreintes[b._id] === empreinte(actuel);
     if (!intact) {
       console.warn(`⚠️  ${b._id} a été modifié dans le Studio : non remplacé (reporter la modification à la main)`);
       continue;
@@ -112,7 +114,9 @@ if (versSanity) {
 /** Empreinte du contenu rédactionnel (hors champs système) : détecte une retouche dans le Studio. */
 function empreinte(d) {
   const { _rev, _updatedAt, _createdAt, _system, ...reste } = d;
+  // Clés triées : Sanity réordonne les champs qu'il enregistre.
+  const trie = (v) => (Array.isArray(v) ? v.map(trie) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, trie(v[k])])) : v);
   let h = 0;
-  for (const c of JSON.stringify(reste)) h = (Math.imul(31, h) + c.charCodeAt(0)) | 0;
+  for (const c of JSON.stringify(trie(reste))) h = (Math.imul(31, h) + c.charCodeAt(0)) | 0;
   return String(h >>> 0);
 }

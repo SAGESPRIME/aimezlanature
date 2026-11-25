@@ -64,6 +64,14 @@
       "sourcePath": "skills/review-animations",
       "skillPath": ".claude/skills/review-animations/SKILL.md",
       "computedHash": "5ff2799f778472c996f548b240cea5a519980f8fe41ffe9e92e17db655c596b2"
+    },
+    "humanizer": {
+      "source": "blader/humanizer",
+      "sourceType": "github",
+      "commit": "a32f24407364c74c812b43c15926d638bee1e072",
+      "sourcePath": ".",
+      "skillPath": ".claude/skills/humanizer/SKILL.md",
+      "computedHash": "3013910ef5433dab12f0d2b86d9cf9e3421a253ef986518a68ef07aa29629bdc"
     }
   }
 }
